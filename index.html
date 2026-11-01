@@ -509,7 +509,7 @@ function finSeance(){
   var s=sess,ok=s.res.filter(Boolean).length,tot=s.items.length,h='<div class="ecran">';
   if(s.type==='qcm'){
     var c=CO[s.n],pr=P.cours[s.n]||(P.cours[s.n]={pg:0,best:0,last:0,nb:0,at:''});
-    if(!s.enregistre){if(pr.nb&&!pr.tot)pr.best=Math.round(pr.best*tot/12);pr.tot=tot;pr.last=ok;pr.best=Math.max(pr.best||0,ok);pr.nb=(pr.nb||0)+1;pr.at=jour();P.dernier={n:s.n,pg:nbPages(s.n),t:Date.now()};s.enregistre=true;sauver()}
+    if(!s.enregistre){if(pr.nb&&totQ(pr)!==tot)pr.best=Math.min(tot,Math.round(pr.best*tot/totQ(pr)));pr.tot=tot;pr.last=ok;pr.best=Math.max(pr.best||0,ok);pr.nb=(pr.nb||0)+1;pr.at=jour();P.dernier={n:s.n,pg:nbPages(s.n),t:Date.now()};s.enregistre=true;sauver()}
     var mm=Math.ceil(tot*MAITRISE-1e-9),ma=Math.ceil(tot*SEUIL-1e-9);
     var msg=ok>=mm?'Maîtrisé. Les questions reviendront espacées pour le rester.':ok>=ma?'Acquis. Les questions ratées reviennent demain en révision.':'À revoir. Relis les pages concernées, puis refais le QCM.';
     h+='<div class="pc" style="'+pc(c.p)+'"><a class="mono" href="#cours-'+c.n+'" style="font-size:13px;color:var(--pt);text-decoration:none">Cours '+esc(c.num)+' · '+esc(c.t)+'</a></div>';
