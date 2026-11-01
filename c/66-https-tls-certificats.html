@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>66 · HTTPS, TLS et certificats</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-9">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 66</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>HTTPS, TLS et certificats</h1>
+  <p class="chapeau"><b>HTTPS</b>, c'est HTTP transporté dans un tunnel <b>TLS</b>. Les requêtes et réponses restent les mêmes (cours 61), mais entre le navigateur et le serveur, personne ne peut les lire ni les modifier. Et grâce au <b>certificat</b>, le navigateur sait qu'il parle bien au site demandé, pas à un imposteur.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>61</b>, <b>63</b> et <b>65</b></span>
+    <span class="pastille">Exemples · <b>compute-proxy.mjs</b>, <b>app.cjs</b>, <b>README</b> (Magpie)</span>
+  </div>
+
+  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+    <svg viewBox="0 0 600 186" width="100%">
+<rect x="10" y="14" width="96" height="52" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="58.0" y="42.8" font-size="8.4" fill="#6B7378" text-anchor="middle" font-weight="700">navigateur</text>
+<rect x="494" y="14" width="96" height="52" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="542.0" y="42.8" font-size="8.4" fill="#6B7378" text-anchor="middle" font-weight="700">serveur</text>
+<line x1="108" y1="40" x2="490" y2="40" stroke="#C62828" stroke-width="1.6"/><polygon points="490,40 483.6,42.7 483.6,37.3" fill="#C62828"/>
+<text x="300" y="28" font-size="9.4" fill="#C62828" text-anchor="middle" font-weight="700">HTTP</text>
+<text x="300" y="56" font-size="8.2" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.2px">GET /api/admin/exercises</text>
+<text x="300" y="69" font-size="7.8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.8px">Authorization: Basic ZW5zZWlnbmFudDpzZWNyZXQ=</text>
+<rect x="10" y="88" width="96" height="52" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="58.0" y="116.8" font-size="8.4" fill="#6B7378" text-anchor="middle" font-weight="700">navigateur</text>
+<rect x="494" y="88" width="96" height="52" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="542.0" y="116.8" font-size="8.4" fill="#6B7378" text-anchor="middle" font-weight="700">serveur</text>
+<line x1="108" y1="114" x2="490" y2="114" stroke="#2E7D32" stroke-width="1.6"/><polygon points="490,114 483.6,116.7 483.6,111.3" fill="#2E7D32"/>
+<text x="300" y="102" font-size="9.4" fill="#2E7D32" text-anchor="middle" font-weight="700">HTTPS</text>
+<text x="300" y="130" font-size="8.2" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.2px">17 03 03 01 2a 9c 4e f1 07 b3 …</text>
+<text x="300" y="143" font-size="7.8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.8px">(octets chiffrés, illisibles)</text>
+<text x="300" y="176" font-size="7.8" fill="#6B7378" text-anchor="middle" font-style="italic">En HTTPS, l'espion voit encore l'adresse IP et le nom du site, mais ni le chemin, ni les en-têtes, ni le corps.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>TLS apporte trois garanties à une connexion : la <b>confidentialité</b> (chiffrée), l'<b>intégrité</b> (non modifiée en route) et l'<b>authenticité</b> du serveur (prouvée par son certificat).</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Une lettre recommandée sous enveloppe scellée, remise à un guichet dont l'employé montre une carte officielle. Le facteur transporte l'enveloppe sans pouvoir l'ouvrir, et tu sais à qui tu la confies.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>dire ce que HTTPS protège, et pas ;</li>
+        <li>suivre une poignée de main TLS ;</li>
+        <li>lire une chaîne de certificats ;</li>
+        <li>situer TLS dans un déploiement.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:5mm">
+    <span class="titre">À retenir</span>
+    HTTPS protège le <b>trajet</b>, pas les extrémités. Il ne rend pas un serveur sûr, ni un site honnête : un site d'hameçonnage peut avoir un certificat valide. Le cadenas dit seulement « tu parles bien à ce nom de domaine, et personne n'écoute ».
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 66 · HTTPS, TLS et certificats</div>
+</section>
+
+<!-- ============ PAGE 2 · LA POIGNÉE DE MAIN ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 66</b></div>
+  <p class="rubrique">Schéma 1 · La poignée de main</p>
+  <h2>Se mettre d'accord sur un secret, en public</h2>
+  <p style="max-width:165mm">Avant la première requête, navigateur et serveur s'échangent quelques messages. Chacun envoie une clé publique éphémère ; à partir de la sienne et de celle de l'autre, chacun calcule le <b>même secret</b>, que l'espion ne peut pas reconstituer. Le serveur signe l'échange avec la clé privée de son certificat.</p>
+
+  <svg viewBox="0 0 600 240" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="240" fill="#EFE9E1"/>
+<line x1="110" y1="20" x2="110" y2="200" stroke="#A03A2C" stroke-width="1.2"/>
+<line x1="490" y1="20" x2="490" y2="200" stroke="#7B1FA2" stroke-width="1.2"/>
+<text x="110" y="16" font-size="8.4" fill="#A03A2C" text-anchor="middle" font-weight="700">navigateur</text>
+<text x="490" y="16" font-size="8.4" fill="#7B1FA2" text-anchor="middle" font-weight="700">serveur</text>
+<line x1="112" y1="44" x2="486" y2="44" stroke="#1565C0" stroke-width="1.3"/><polygon points="486,44 479.6,46.7 479.6,41.3" fill="#1565C0"/>
+<text x="300" y="36" font-size="8.4" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">ClientHello</text>
+<text x="300" y="58" font-size="7.8" fill="#2B2F33" text-anchor="middle">versions, nom du site (SNI), clé éphémère du client</text>
+<line x1="488" y1="90" x2="114" y2="90" stroke="#7B1FA2" stroke-width="1.3"/><polygon points="114,90 120.4,87.3 120.4,92.7" fill="#7B1FA2"/>
+<text x="300" y="82" font-size="8.4" fill="#7B1FA2" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">ServerHello + certificat + preuve</text>
+<text x="300" y="104" font-size="7.8" fill="#2B2F33" text-anchor="middle">clé éphémère du serveur, signée avec sa clé privée</text>
+<line x1="112" y1="136" x2="486" y2="136" stroke="#1565C0" stroke-width="1.3"/><polygon points="486,136 479.6,138.7 479.6,133.3" fill="#1565C0"/>
+<text x="300" y="128" font-size="8.4" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">Finished</text>
+<text x="300" y="150" font-size="7.8" fill="#2B2F33" text-anchor="middle">les deux ont calculé le même secret, sans l'avoir envoyé</text>
+<line x1="112" y1="178" x2="486" y2="178" stroke="#2E7D32" stroke-width="1.3"/><polygon points="486,178 479.6,180.7 479.6,175.3" fill="#2E7D32"/>
+<text x="300" y="170" font-size="8.4" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">GET /admin …</text>
+<text x="300" y="192" font-size="7.8" fill="#2B2F33" text-anchor="middle">tout le reste circule chiffré avec ce secret</text>
+<text x="16" y="70" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">1 aller-</text>
+<text x="16" y="82" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">retour</text>
+<text x="300" y="226" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">L'échange de clés (ECDHE) donne un secret neuf à chaque connexion : voler la clé privée plus tard ne déchiffre pas le passé.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · terminal</span>curl -v https://www.exemple.fr 2&gt;&amp;1 | grep -i "SSL\|TLS"
+#   SSL connection using TLSv1.3 / TLS_AES_256_GCM_SHA384
+openssl s_client -connect www.exemple.fr:443 -servername www.exemple.fr
+#   affiche la chaîne de certificats, la version, l'algorithme</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Deux sortes de chiffrement</h3>
+      <p>Le chiffrement à clé publique (lent) ne sert qu'à la poignée de main. Ensuite, tout passe en chiffrement symétrique (AES, ChaCha20), très rapide, avec un contrôle d'intégrité intégré à chaque paquet.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Les versions</h3>
+      <p>TLS 1.3 (2018) ne demande qu'un aller-retour et a retiré les algorithmes faibles. TLS 1.2 reste accepté. SSL, TLS 1.0 et 1.1 sont abandonnés : « SSL » ne survit que dans les noms d'usage, comme AutoSSL.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Croire que HTTPS cache le site visité. Le nom de domaine passe en clair dans le ClientHello (SNI) et dans la requête DNS, et l'adresse IP est visible. Ce qui est chiffré : le chemin, les paramètres, les en-têtes, les cookies et le corps.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 66 · HTTPS, TLS et certificats</div>
+</section>
+
+<!-- ============ PAGE 3 · LES CERTIFICATS ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 66</b></div>
+  <p class="rubrique">Schéma 2 · La chaîne de confiance</p>
+  <h2>Qui garantit que c'est bien le bon site ?</h2>
+  <p style="max-width:165mm">Un certificat associe un nom de domaine à une clé publique, et il est <b>signé</b> par une autorité de certification (cours 65, page 4). Le navigateur ne connaît qu'une centaine d'autorités racines ; il remonte la chaîne de signatures jusqu'à l'une d'elles.</p>
+
+  <svg viewBox="0 0 600 218" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="218" fill="#EFE9E1"/>
+<rect x="16" y="12" width="300" height="46" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="30" y="31" font-size="9" fill="#2E7D32" text-anchor="start" font-weight="700">Autorité racine</text>
+<text x="30" y="47" font-size="7.8" fill="#2B2F33" text-anchor="start">dans le magasin du système ou du navigateur</text>
+<text x="306" y="47" font-size="7.6" fill="#6B7378" text-anchor="end" font-style="italic">se signe elle-même</text>
+<line x1="166" y1="60" x2="166" y2="72" stroke="#6B7378" stroke-width="1.2"/><polygon points="166,72 163.3,65.6 168.7,65.6" fill="#6B7378"/>
+<text x="176" y="69" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">signe</text>
+<rect x="16" y="74" width="300" height="46" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
+<text x="30" y="93" font-size="9" fill="#7B1FA2" text-anchor="start" font-weight="700">Autorité intermédiaire</text>
+<text x="30" y="109" font-size="7.8" fill="#2B2F33" text-anchor="start">émise et signée par la racine</text>
+<text x="306" y="109" font-size="7.6" fill="#6B7378" text-anchor="end" font-style="italic">signe les sites</text>
+<line x1="166" y1="122" x2="166" y2="134" stroke="#6B7378" stroke-width="1.2"/><polygon points="166,134 163.3,127.6 168.7,127.6" fill="#6B7378"/>
+<text x="176" y="131" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">signe</text>
+<rect x="16" y="136" width="300" height="46" rx="4" fill="#fff" stroke="#A03A2C" stroke-width="1.2"/>
+<text x="30" y="155" font-size="9" fill="#A03A2C" text-anchor="start" font-weight="700">Certificat du site</text>
+<text x="30" y="171" font-size="7.8" fill="#2B2F33" text-anchor="start">nom : www.exemple.fr · valable 90 jours</text>
+<text x="306" y="171" font-size="7.6" fill="#6B7378" text-anchor="end" font-style="italic">clé publique du site</text>
+<text x="346" y="26" font-size="8.6" fill="#A03A2C" text-anchor="start" font-weight="700">Le navigateur vérifie :</text>
+<text x="346" y="48" font-size="8" fill="#2B2F33" text-anchor="start">chaque signature, jusqu'à une racine</text>
+<text x="346" y="64" font-size="8" fill="#2B2F33" text-anchor="start">connue de lui ;</text>
+<text x="346" y="80" font-size="8" fill="#2B2F33" text-anchor="start">le nom demandé = le nom du certificat ;</text>
+<text x="346" y="96" font-size="8" fill="#2B2F33" text-anchor="start">les dates de validité ;</text>
+<text x="346" y="112" font-size="8" fill="#2B2F33" text-anchor="start">que le serveur détient la clé privée</text>
+<text x="346" y="128" font-size="8" fill="#2B2F33" text-anchor="start">(la preuve de la poignée de main).</text>
+<text x="346" y="160" font-size="8" fill="#C62828" text-anchor="start" font-weight="700">Un seul échec : page d'alerte,</text>
+<text x="346" y="174" font-size="8" fill="#C62828" text-anchor="start" font-weight="700">et la connexion n'aboutit pas.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · terminal</span>openssl x509 -in site.pem -noout -subject -issuer -dates
+#   subject= CN = www.exemple.fr
+#   issuer = C = US, O = Let's Encrypt, CN = R11
+#   notBefore=… notAfter=…            (90 jours plus tard)
+mkcert localhost      # certificat de développement, reconnu par TA machine seule</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Gratuit et automatique</h3>
+      <p>Let's Encrypt (2015) a rendu les certificats gratuits et renouvelés par un robot qui prouve qu'on contrôle le domaine. AutoSSL de cPanel fait la même chose pour un hébergement mutualisé. Les durées de validité raccourcissent : l'automatisation devient obligatoire.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Auto-signé</h3>
+      <p>Un certificat qui se signe lui-même chiffre aussi bien, mais rien ne prouve qui l'a fait : le navigateur avertit. Acceptable en local pour soi, jamais pour des élèves à qui l'on apprendrait à cliquer « continuer quand même ».</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Le certificat valable pour <code>exemple.fr</code> ne couvre pas forcément <code>www.exemple.fr</code>, ni un sous-domaine comme <code>magpie.exemple.fr</code>. Chaque nom doit figurer dans le certificat (ou être couvert par un joker <code>*.exemple.fr</code>), sinon : alerte de nom.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 66 · HTTPS, TLS et certificats</div>
+</section>
+
+<!-- ============ PAGE 4 · DANS UN DÉPLOIEMENT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 66</b></div>
+  <p class="rubrique">Schéma 3 · Où commence et finit TLS</p>
+  <h2>Le chiffrement s'arrête quelque part</h2>
+  <p style="max-width:165mm">Sur un hébergement mutualisé, l'application ne gère pas TLS elle-même : le serveur web de l'hébergeur reçoit la connexion HTTPS, la déchiffre, puis passe une requête HTTP ordinaire à l'application, sur la même machine. Chaque saut du trajet a sa propre protection, ou pas.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<rect x="10" y="40" width="130" height="54" rx="6" fill="#fff" stroke="#1565C0" stroke-width="1.3"/>
+<text x="75" y="62" font-size="8.6" fill="#1565C0" text-anchor="middle" font-weight="700">navigateur</text>
+<text x="75" y="80" font-size="7.6" fill="#2B2F33" text-anchor="middle">élève, enseignant</text>
+<rect x="160" y="40" width="130" height="54" rx="6" fill="#fff" stroke="#7B1FA2" stroke-width="1.3"/>
+<text x="225" y="62" font-size="8.6" fill="#7B1FA2" text-anchor="middle" font-weight="700">serveur web d'o2switch</text>
+<text x="225" y="80" font-size="7.6" fill="#2B2F33" text-anchor="middle">Passenger · AutoSSL</text>
+<rect x="310" y="40" width="130" height="54" rx="6" fill="#fff" stroke="#A03A2C" stroke-width="1.3"/>
+<text x="375" y="62" font-size="8.6" fill="#A03A2C" text-anchor="middle" font-weight="700">Node · compute-proxy</text>
+<text x="375" y="80" font-size="7.6" fill="#2B2F33" text-anchor="middle">http.createServer</text>
+<rect x="460" y="40" width="130" height="54" rx="6" fill="#fff" stroke="#2E7D32" stroke-width="1.3"/>
+<text x="525" y="62" font-size="8.6" fill="#2E7D32" text-anchor="middle" font-weight="700">Rhino Compute</text>
+<text x="525" y="80" font-size="7.6" fill="#2B2F33" text-anchor="middle">PC, via un tunnel</text>
+<line x1="141" y1="67" x2="158" y2="67" stroke="#2E7D32" stroke-width="1.6"/><polygon points="158,67 151.6,69.7 151.6,64.3" fill="#2E7D32"/>
+<text x="150.0" y="30" font-size="8" fill="#2E7D32" text-anchor="middle" font-weight="700">HTTPS</text>
+<line x1="291" y1="67" x2="308" y2="67" stroke="#E65100" stroke-width="1.6"/><polygon points="308,67 301.6,69.7 301.6,64.3" fill="#E65100"/>
+<text x="300.0" y="30" font-size="8" fill="#E65100" text-anchor="middle" font-weight="700">HTTP</text>
+<line x1="441" y1="67" x2="458" y2="67" stroke="#E65100" stroke-width="1.6"/><polygon points="458,67 451.6,69.7 451.6,64.3" fill="#E65100"/>
+<text x="450.0" y="30" font-size="8" fill="#E65100" text-anchor="middle" font-weight="700">HTTPS ?</text>
+<text x="75" y="122" font-size="8" fill="#2E7D32" text-anchor="start" font-weight="700">HTTPS : chiffré, certificat AutoSSL du domaine</text>
+<text x="75" y="140" font-size="8" fill="#E65100" text-anchor="start" font-weight="700">HTTP : en clair, mais sans sortir du serveur</text>
+<text x="75" y="158" font-size="8" fill="#E65100" text-anchor="start" font-weight="700">HTTPS ? : chiffré si COMPUTE_TARGET commence par https://</text>
+<line x1="16" y1="176" x2="584" y2="176" stroke="#CFC6B8" stroke-dasharray="3 3"/>
+<text x="300" y="198" font-size="8" fill="#6B7378" text-anchor="middle" font-style="italic">On dit que TLS est « terminé » devant Node : il ne voit jamais de certificat, ni de chiffrement.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Node</span>// si Node devait faire TLS lui-même (serveur dédié) :
+https.createServer({ key: readFileSync("cle.pem"),
+                     cert: readFileSync("cert.pem") }, handler).listen(443);
+// imposer HTTPS pour l'avenir (HSTS), une fois HTTPS en place :
+res.setHeader("Strict-Transport-Security", "max-age=31536000");</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>La redirection et HSTS</h3>
+      <p>Une adresse tapée sans <code>https://</code> part d'abord en HTTP. La redirection 301 renvoie vers HTTPS ; l'en-tête HSTS dit au navigateur de ne plus jamais essayer HTTP sur ce site, ce qui ferme la porte à un attaquant placé sur ce premier saut.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Le contenu mixte</h3>
+      <p>Une page HTTPS qui charge un script en <code>http://</code> perd sa protection : le navigateur bloque ces ressources. Les URL relatives de Magpie (<code>/api</code>, <code>/assets</code>) suivent toujours le schéma de la page.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Mettre HSTS avec une longue durée avant d'être sûr que HTTPS marche partout, sous-domaines compris. Le navigateur s'en souvient : si le certificat tombe, le site devient inaccessible pour ces visiteurs jusqu'à la fin de la durée. On commence avec quelques minutes.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 66 · HTTPS, TLS et certificats</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 66</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Node en HTTP, l'hébergeur en HTTPS</h2>
+  <p style="max-width:165mm">Le backend de Magpie ne contient ni certificat ni clé : il écoute en HTTP, et son README confie HTTPS à l'hébergeur. Ses commentaires disent pourquoi HTTPS est indispensable en ligne.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">magpie/web/compute-proxy.mjs · app.cjs</span></div>
+<div class="l k1"><span class="n">18</span><span class="kw">import</span> http <span class="kw">from</span> <span class="st">"node:http"</span>;<span class="rep r1">1</span></div>
+<div class="l k1"><span class="n">605</span><span class="kw">const</span> server = http.createServer((req, res) =&gt; {</div>
+<div class="l k1"><span class="n">3</span><span class="cm">// … Passenger intercepte son listen() et lui donne le port.</span></div>
+<div class="l"><span class="cm">magpie/web/compute-proxy.mjs</span></div>
+<div class="l k2"><span class="n">71</span><span class="cm">// Administration : un seul compte, en HTTP Basic, …</span><span class="rep r2">2</span></div>
+<div class="l k2"><span class="n">73</span><span class="cm">// … HTTP Basic n'a de sens qu'en HTTPS.</span></div>
+<div class="l k3"><span class="n">34</span><span class="kw">const</span> COMPUTE_TARGET = process.env.COMPUTE_TARGET<span class="rep r3">3</span></div>
+<div class="l k3"><span class="n"></span>  || <span class="st">"http://localhost:6500"</span>;</div>
+<div class="l k3"><span class="n">37</span><span class="cm">// … dès que Compute est joignable par un tunnel public.</span></div>
+<div class="l"><span class="cm">magpie/web/README.md</span></div>
+<div class="l k4"><span class="n">114</span>4. HTTPS : certificat AutoSSL actif sur le domaine,<span class="rep r4">4</span></div>
+<div class="l k4"><span class="n"></span>   et redirection HTTP → HTTPS — le</div>
+<div class="l k4"><span class="n">115</span>   mot de passe d'admin circule en HTTP Basic.</div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>HTTP seulement</b>TLS est terminé avant Node, par l'hébergeur.</li>
+      <li><span class="rep r2">2</span><b>Pourquoi c'est vital</b>En Basic, le mot de passe voyage en base64 à chaque requête (cours 63).</li>
+      <li><span class="rep r3">3</span><b>Le dernier saut</b>Vers Compute, le chiffrement dépend de l'adresse du tunnel.</li>
+      <li><span class="rep r4">4</span><b>La procédure</b>Certificat et redirection réglés dans cPanel.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À surveiller · HSTS et vérification</span>
+    Aucun en-tête <code>Strict-Transport-Security</code> dans le backend (recherche faite sur tout <code>web/</code>) : la protection repose sur la redirection de l'hébergeur. Le journal de développement (<code>magpie_web_guideline_dev.md:720</code>) note qu'il reste à vérifier AutoSSL avant d'ouvrir l'admin en ligne. Une fois HTTPS confirmé, un HSTS court, puis allongé, compléterait la redirection.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 66 · HTTPS, TLS et certificats</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 66</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">HTTPS, c'est…</div><ul>
+      <li><span>A</span>un autre langage que HTTP</li><li><span>B</span>un antivirus</li><li><span>C</span>HTTP dans un tunnel TLS</li><li><span>D</span>un pare-feu</li></ul></div>
+
+    <div class="q"><div class="enonce">TLS garantit : <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>l'intégrité</li><li><span>B</span>l'authenticité du serveur</li><li><span>C</span>l'honnêteté du site</li><li><span>D</span>la confidentialité</li></ul></div>
+
+    <div class="q"><div class="enonce">En HTTPS, l'espion du Wi-Fi voit encore…</div><ul>
+      <li><span>A</span>les cookies</li><li><span>B</span>le mot de passe</li><li><span>C</span>le chemin demandé</li><li><span>D</span>le nom du site</li></ul></div>
+
+    <div class="q"><div class="enonce">Le secret de session est…</div><ul>
+      <li><span>A</span>calculé des deux côtés, jamais envoyé</li><li><span>B</span>envoyé chiffré</li><li><span>C</span>le mot de passe</li><li><span>D</span>dans le certificat</li></ul></div>
+
+    <div class="q"><div class="enonce">Après la poignée de main, les données sont chiffrées…</div><ul>
+      <li><span>A</span>par clé publique</li><li><span>B</span>en symétrique (AES…)</li><li><span>C</span>pas du tout</li><li><span>D</span>en base64</li></ul></div>
+
+    <div class="q"><div class="enonce">Un certificat associe…</div><ul>
+      <li><span>A</span>un nom de domaine et une clé publique</li><li><span>B</span>une IP et un port</li><li><span>C</span>un site et un hébergeur</li><li><span>D</span>un mot de passe et un compte</li></ul></div>
+
+    <div class="q"><div class="enonce">Le navigateur fait confiance à un certificat…</div><ul>
+      <li><span>A</span>s'il remonte à une racine connue</li><li><span>B</span>toujours</li><li><span>C</span>s'il est gratuit</li><li><span>D</span>s'il est long</li></ul></div>
+
+    <div class="q"><div class="enonce">Un certificat auto-signé…</div><ul>
+      <li><span>A</span>est interdit</li><li><span>B</span>est plus sûr</li><li><span>C</span>chiffre, mais ne prouve pas l'identité</li><li><span>D</span>ne chiffre pas</li></ul></div>
+
+    <div class="q"><div class="enonce">« TLS terminé avant Node » signifie…</div><ul>
+      <li><span>A</span>qu'il n'y a pas de HTTPS</li><li><span>B</span>que TLS est fini</li><li><span>C</span>que Node reçoit du HTTP déchiffré</li><li><span>D</span>une erreur</li></ul></div>
+
+    <div class="q"><div class="enonce">HSTS sert à…</div><ul>
+      <li><span>A</span>signer</li><li><span>B</span>compresser</li><li><span>C</span>créer un certificat</li><li><span>D</span>ne plus jamais essayer HTTP sur ce site</li></ul></div>
+
+    <div class="q"><div class="enonce">Pourquoi HTTPS est-il obligatoire pour l'admin de Magpie ?</div><ul>
+      <li><span>A</span>pour la vitesse</li><li><span>B</span>le mot de passe passe en Basic</li><li><span>C</span>pour Passenger</li><li><span>D</span>pour le référencement</li></ul></div>
+
+    <div class="q"><div class="enonce">Le trajet chiffré à coup sûr dans Magpie en ligne…</div><ul>
+      <li><span>A</span>aucun</li><li><span>B</span>hébergeur → Node</li><li><span>C</span>Node → Compute, quelle que soit l'adresse</li><li><span>D</span>navigateur → hébergeur</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 66 · HTTPS, TLS et certificats</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 66</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · C.</b> Mêmes requêtes, autre transport.</div>
+    <div><b>02 · A, B et D.</b> Pas l'honnêteté.</div>
+    <div><b>03 · D.</b> SNI, DNS et adresse IP.</div>
+    <div><b>04 · A.</b> Échange de clés ECDHE.</div>
+    <div><b>05 · B.</b> Rapide, intégrité comprise.</div>
+    <div><b>06 · A.</b> Signé par une autorité.</div>
+    <div><b>07 · A.</b> La chaîne de signatures.</div>
+    <div><b>08 · C.</b> D'où l'alerte.</div>
+    <div><b>09 · C.</b> compute-proxy.mjs:605.</div>
+    <div><b>10 · D.</b> Retenu par le navigateur.</div>
+    <div><b>11 · B.</b> compute-proxy.mjs:73, README:115.</div>
+    <div><b>12 · D.</b> Seul ce saut est garanti.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : la partie 9 est terminée ; passe à sa fiche récap.
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">http.createServer(…)</td><td>serveur HTTP, TLS fait en amont</td><td>compute-proxy.mjs:605</td></tr>
+      <tr><td class="c">https.createServer({ key, cert }, …)</td><td>serveur qui fait TLS lui-même</td><td>exemple autonome, page 4</td></tr>
+      <tr><td class="c">Strict-Transport-Security</td><td>imposer HTTPS au navigateur</td><td>exemple autonome, page 4</td></tr>
+      <tr><td class="c">openssl x509 -noout -dates</td><td>lire un certificat</td><td>exemple autonome, page 3</td></tr>
+      <tr><td class="c">curl -v https://…</td><td>voir la version TLS négociée</td><td>exemple autonome, page 2</td></tr>
+      <tr><td class="c">AutoSSL + redirection</td><td>HTTPS sur l'hébergement</td><td>web/README.md:114–115</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>TLS</dt><dd>Le protocole qui chiffre et authentifie une connexion ; successeur de SSL.</dd>
+    <dt>Certificat</dt><dd>Un document signé qui lie un nom de domaine à une clé publique.</dd>
+    <dt>Autorité</dt><dd>Un organisme dont la signature sur un certificat est reconnue des navigateurs.</dd>
+    <dt>SNI</dt><dd>Le nom du site envoyé en clair au début de la poignée de main.</dd>
+    <dt>HSTS</dt><dd>Un en-tête qui interdit au navigateur de revenir en HTTP sur ce site.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : fiche récap de la partie 9</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 66 · HTTPS, TLS et certificats</div>
+</section>
+
+</body>
+</html>

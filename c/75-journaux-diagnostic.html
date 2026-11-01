@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>75 · Journaux et diagnostic</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-11">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 75</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Journaux et diagnostic</h1>
+  <p class="chapeau">Quand un programme se trompe chez quelqu'un d'autre, tu n'es pas là pour le voir. Un <b>journal</b> (log) est la trace écrite qu'il laisse en route : ce qui s'est passé, quand, et dans quel contexte. Le <b>diagnostic</b>, c'est l'enquête menée à partir de ces traces. Bien écrire ses messages, c'est préparer l'enquête avant le crime.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>47</b> et <b>69</b></span>
+    <span class="pastille">Exemples · <b>CapsuleExecution</b> (SnapSet), <b>Bubble</b> (Cuttlefish), <b>compute-proxy</b> (Magpie)</span>
+  </div>
+
+  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+    <svg viewBox="0 0 600 190" width="100%">
+<rect x="4" y="10" width="140" height="98" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
+<text x="74" y="34" font-size="8.6" fill="#7B1FA2" text-anchor="middle" font-weight="700">bulle du composant</text>
+<text x="74" y="56" font-size="7.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.2px">AddRuntimeMessage</text>
+<line x1="18" y1="70" x2="130" y2="70" stroke="#E2DACB"/>
+<text x="74" y="90" font-size="7.4" fill="#6B7378" text-anchor="middle" font-style="italic">l'utilisateur de Grasshopper</text>
+<rect x="153" y="10" width="140" height="98" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="223" y="34" font-size="8.6" fill="#1565C0" text-anchor="middle" font-weight="700">ligne de commande Rhino</text>
+<text x="223" y="56" font-size="7.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.2px">RhinoApp.WriteLine</text>
+<line x1="167" y1="70" x2="279" y2="70" stroke="#E2DACB"/>
+<text x="223" y="90" font-size="7.4" fill="#6B7378" text-anchor="middle" font-style="italic">l'utilisateur, et toi</text>
+<rect x="302" y="10" width="140" height="98" rx="4" fill="#fff" stroke="#4F46B8" stroke-width="1.2"/>
+<text x="372" y="34" font-size="8.6" fill="#4F46B8" text-anchor="middle" font-weight="700">journal du serveur</text>
+<text x="372" y="56" font-size="7.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.2px">console.log / console.error</text>
+<line x1="316" y1="70" x2="428" y2="70" stroke="#E2DACB"/>
+<text x="372" y="90" font-size="7.4" fill="#6B7378" text-anchor="middle" font-style="italic">toi seul, après coup</text>
+<rect x="451" y="10" width="140" height="98" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
+<text x="521" y="34" font-size="8.6" fill="#E65100" text-anchor="middle" font-weight="700">panneau Debug</text>
+<text x="521" y="56" font-size="7.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.2px">MagpieDebugPanel</text>
+<line x1="465" y1="70" x2="577" y2="70" stroke="#E2DACB"/>
+<text x="521" y="90" font-size="7.4" fill="#6B7378" text-anchor="middle" font-style="italic">toi, en direct, sur ton poste</text>
+<text x="300" y="140" font-size="9" fill="#4F46B8" text-anchor="middle" font-weight="700">Avant d'écrire un message, deux questions : qui le lira, et quand ?</text>
+<text x="300" y="162" font-size="7.8" fill="#6B7378" text-anchor="middle" font-style="italic">Un message pour l'utilisateur dit quoi faire ; une ligne de journal dit ce qui s'est passé, pour qui enquêtera.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Chaque message a un <b>destinataire</b> (l'utilisateur maintenant, ou toi plus tard) et une <b>gravité</b> ; on choisit la sortie et le niveau d'après eux, et on y met ce qu'il faudra pour comprendre sans pouvoir reproduire.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>La boîte noire d'un avion. Elle n'empêche rien, elle ne parle pas aux passagers ; elle enregistre en continu, horodaté, ce dont les enquêteurs auront besoin, y compris ce qui paraissait sans importance sur le moment.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>choisir entre bulle, console et journal ;</li>
+        <li>choisir le bon niveau ;</li>
+        <li>écrire une ligne de journal exploitable ;</li>
+        <li>garder la pile d'appels d'une exception.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:5mm">
+    <span class="titre">À retenir</span>
+    Le débogueur (cours 47) montre ce qui se passe <i>maintenant</i>, sur ton poste, quand tu sais reproduire. Le journal montre ce qui s'est passé <i>avant</i>, ailleurs, une seule fois peut-être. Les deux se complètent : le journal dit où poser le point d'arrêt.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 75 · Journaux et diagnostic</div>
+</section>
+
+<!-- ============ PAGE 2 · LES NIVEAUX ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 75</b></div>
+  <p class="rubrique">Schéma 1 · Les niveaux</p>
+  <h2>Tout n'est pas une erreur</h2>
+  <p style="max-width:165mm">Grasshopper offre trois niveaux de bulle : Remark, Warning, Error ; Node a <code>console.log</code>, <code>warn</code>, <code>error</code> et <code>debug</code>. Le niveau dit à qui lit s'il doit agir. Une Error colore le composant en rouge, un Warning en orange, un Remark ne le colore pas.</p>
+
+  <svg viewBox="0 0 600 208" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="208" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">Les niveaux : la gravité décide qui doit réagir</text>
+<rect x="16" y="34" width="140" height="34" fill="#C62828"/>
+<text x="26" y="55" font-size="8.8" fill="#fff" text-anchor="start" font-weight="700">Erreur</text>
+<text x="170" y="49" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">le travail demandé n'a pas été fait</text>
+<text x="170" y="63" font-size="7.6" fill="#6B7378" text-anchor="start" class="mono" style="font-size:7.6px">Error · console.error</text>
+<rect x="16" y="76" width="112" height="34" fill="#E65100"/>
+<text x="26" y="97" font-size="8.8" fill="#fff" text-anchor="start" font-weight="700">Avertissement</text>
+<text x="170" y="91" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">fait, mais en écartant ou en supposant quelque chose</text>
+<text x="170" y="105" font-size="7.6" fill="#6B7378" text-anchor="start" class="mono" style="font-size:7.6px">Warning · console.warn</text>
+<rect x="16" y="118" width="84" height="34" fill="#1565C0"/>
+<text x="26" y="139" font-size="8.8" fill="#fff" text-anchor="start" font-weight="700">Information</text>
+<text x="170" y="133" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">un événement normal qui vaut d'être tracé</text>
+<text x="170" y="147" font-size="7.6" fill="#6B7378" text-anchor="start" class="mono" style="font-size:7.6px">Remark · console.log</text>
+<rect x="16" y="160" width="56" height="34" fill="#6B7378"/>
+<text x="26" y="181" font-size="8.8" fill="#fff" text-anchor="start" font-weight="700">Débogage</text>
+<text x="170" y="175" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">le détail utile pendant une enquête, coupé sinon</text>
+<text x="170" y="189" font-size="7.6" fill="#6B7378" text-anchor="start" class="mono" style="font-size:7.6px">console.debug</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">cuttlefish/Bubble.cs · lignes 53 à 64, commentaires ajoutés</span>if (factor &lt;= 0)
+{   // rien de sensé à produire : erreur, et on s'arrête
+    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Factor must be greater than 0.");
+    return;
+}
+if (all.Count &lt; 2)
+{   // pas une faute : rien à relier, on prévient
+    AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "At least 2 points are needed.");</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Un message qui dit quoi faire</h3>
+      <p>« Factor must be greater than 0. » nomme l'entrée fautive et la règle : l'utilisateur corrige sans lire le code. « Erreur de calcul » l'aurait laissé seul. Un message pour l'utilisateur parle de ses données, pas de ton code.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>stdout et stderr</h3>
+      <p>Dans Node, <code>console.log</code> écrit sur la sortie standard et <code>console.error</code> sur la sortie d'erreur (mesuré en redirigeant chacune vers <code>/dev/null</code>). Un hébergeur peut les ranger dans deux fichiers distincts (cours 69).</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Tout journaliser en erreur « pour être sûr de le voir ». Au bout d'une semaine, le journal compte des centaines d'erreurs qui n'en sont pas, et la vraie passe inaperçue. Un niveau ne sert que s'il est rare là où il est grave.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 75 · Journaux et diagnostic</div>
+</section>
+
+<!-- ============ PAGE 3 · UNE BONNE LIGNE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 75</b></div>
+  <p class="rubrique">Schéma 2 · Une ligne exploitable</p>
+  <h2>Écrite pour quelqu'un qui n'était pas là</h2>
+  <p style="max-width:165mm">La ligne sera lue des jours plus tard, souvent par une recherche dans un fichier de milliers de lignes. Elle doit se suffire à elle-même, et se retrouver par une recherche simple : un identifiant, un code d'erreur stable, un nom d'exercice.</p>
+
+  <svg viewBox="0 0 600 196" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="196" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">Une ligne de journal utile répond seule à cinq questions</text>
+<rect x="16" y="36" width="128" height="30" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="80.0" y="53.6" font-size="7.8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.8px">2026-10-24T14:02:11Z</text>
+<text x="80.0" y="84" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700">quand</text>
+<rect x="150" y="36" width="50" height="30" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="175.0" y="53.6" font-size="7.8" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.8px">ERROR</text>
+<text x="175.0" y="84" font-size="8" fill="#C62828" text-anchor="middle" font-weight="700">gravité</text>
+<rect x="206" y="36" width="54" height="30" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
+<text x="233.0" y="53.6" font-size="7.8" fill="#7B1FA2" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.8px">submit</text>
+<text x="233.0" y="84" font-size="8" fill="#7B1FA2" text-anchor="middle" font-weight="700">où</text>
+<rect x="266" y="36" width="132" height="30" rx="4" fill="#fff" stroke="#4F46B8" stroke-width="1.2"/>
+<text x="332.0" y="53.6" font-size="7.8" fill="#4F46B8" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.8px">Compute injoignable</text>
+<text x="332.0" y="84" font-size="8" fill="#4F46B8" text-anchor="middle" font-weight="700">quoi</text>
+<rect x="404" y="36" width="140" height="30" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="474.0" y="53.6" font-size="7.8" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.8px">req=7f3a exo=G2V-04</text>
+<text x="474.0" y="84" font-size="8" fill="#2E7D32" text-anchor="middle" font-weight="700">contexte</text>
+<line x1="16" y1="100" x2="584" y2="100" stroke="#CFC6B8" stroke-dasharray="3 3"/>
+<text x="16" y="122" font-size="8" fill="#2B2F33" text-anchor="start">Sans l'heure, on ne relie pas la ligne à la plainte d'un élève ; sans contexte, on ne sait pas quelle requête a échoué.</text>
+<text x="16" y="142" font-size="8" fill="#C62828" text-anchor="start" font-weight="700">Ce qui n'y entre jamais : mot de passe, jeton, en-tête Authorization (cours 63), ni la réponse attendue d'un exercice.</text>
+<text x="16" y="172" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Ligne inventée pour l'exemple. Celles de compute-proxy.mjs disent le quoi ; la gravité n'y tient qu'au canal choisi.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript, une ligne par événement, en JSON</span>function journal(niveau, quoi, contexte = {}) {
+  const ligne = { t: new Date().toISOString(), niveau, quoi, ...contexte };
+  (niveau === "error" ? console.error : console.log)(JSON.stringify(ligne));
+}
+journal("error", "Compute injoignable", { req: "7f3a", exo: "G2V-04" });</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Pourquoi du JSON</h3>
+      <p>Une ligne JSON se filtre par champ (<code>niveau</code>, <code>exo</code>) avec un outil, sans expression régulière fragile (cours 57). L'heure en ISO 8601 et en UTC se trie et se compare d'un serveur à l'autre (cours 72).</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Ce que le journal ne doit pas dire</h3>
+      <p>Un journal est lu par plus de monde que la base de données, et conservé longtemps. Aucun secret, aucune donnée personnelle superflue ; et dans Magpie, jamais la réponse attendue d'un exercice.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Journaliser la requête entière « pour avoir tout ». Elle contient l'en-tête <code>Authorization</code>, et le mot de passe d'administration se retrouve en clair dans un fichier que l'hébergeur garde et que d'autres peuvent lire. On choisit les champs, on ne vide pas l'objet.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 75 · Journaux et diagnostic</div>
+</section>
+
+<!-- ============ PAGE 4 · LA PILE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 75</b></div>
+  <p class="rubrique">Schéma 3 · Garder la pile d'appels</p>
+  <h2>Le message dit quoi, la pile dit où</h2>
+  <p style="max-width:165mm">Une exception transporte son type, son message et la <b>pile d'appels</b> : la liste des fonctions en cours au moment de l'erreur, avec fichier et ligne. Ne garder que le message, c'est jeter l'adresse et garder la plainte.</p>
+
+  <svg viewBox="0 0 600 204" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="204" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">La même erreur, deux façons de la journaliser (mesuré dans Node)</text>
+<rect x="16" y="34" width="568" height="44" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
+<text x="28" y="52" font-size="8.6" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">e.message</text>
+<text x="28" y="68" font-size="8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8px">Cannot read properties of undefined (reading 'rayon')</text>
+<rect x="16" y="88" width="568" height="70" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="28" y="106" font-size="8.6" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">e.stack</text>
+<text x="28" y="122" font-size="8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8px">TypeError: Cannot read properties of undefined (reading 'rayon')</text>
+<text x="28" y="136" font-size="8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8px">    at lireRayon (journ.mjs:1:44)</text>
+<text x="28" y="150" font-size="8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8px">    at journ.mjs:2:7</text>
+<text x="16" y="180" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">Le message dit ce qui a raté ; la pile dit où, et par quel chemin on y est arrivé.</text>
+<text x="16" y="196" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">En C#, ex.Message contre ex.ToString(), qui ajoute le type, la pile et les exceptions internes.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#</span>catch (Exception ex)
+{
+    RhinoApp.WriteLine("Capsule — " + ex.Message);   // pour l'utilisateur
+    Debug.WriteLine(ex.ToString());                  // type, pile, exceptions internes
+}</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Une méthode d'enquête</h3>
+      <p><b>Reproduire</b> : obtenir l'erreur à volonté. <b>Réduire</b> : retirer tout ce qui n'est pas nécessaire pour qu'elle apparaisse. <b>Observer</b> : journal ou point d'arrêt sur ce qui reste. Une seule hypothèse à la fois, vérifiée avant la suivante.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Journal ou tableau de bord</h3>
+      <p>Un journal empile des événements ; un tableau de bord montre un état présent. Le panneau Debug de Magpie est un tableau de bord : neuf valeurs de TrainingManager, recalculées à chaque changement et chaque seconde.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Le <code>catch</code> vide, ou qui affiche « Une erreur est survenue ». Le programme continue dans un état faux, et la seule trace qui aurait permis de comprendre a disparu. Un <code>catch</code> qui ne sait pas réparer doit au moins garder la trace entière.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 75 · Journaux et diagnostic</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 75</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Bulles, ligne de commande, journal serveur</h2>
+  <p style="max-width:165mm">Chaque projet utilise la sortie qui convient à son lecteur. Cuttlefish parle à l'utilisateur dans la bulle ; SnapSet écrit dans la ligne de commande de Rhino ; le serveur de Magpie journalise ce que l'élève ne doit pas voir.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">SnapSet/…/Execution/CapsuleExecution.cs</span></div>
+<div class="l k1"><span class="n">1087</span><span class="kw">private void</span> Signaler(Exception ex)<span class="rep r1">1</span></div>
+<div class="l k1"><span class="n">1089</span>… WriteLine(Owner.NickName + <span class="st">" — "</span> + ex.Message);</div>
+<div class="l"><span class="cm">cuttlefish/Bubble.cs</span></div>
+<div class="l k2"><span class="n">55</span>AddRuntimeMessage(…Error, <span class="st">"Factor must be…"</span>);<span class="rep r2">2</span></div>
+<div class="l"><span class="cm">magpie/web/compute-proxy.mjs</span></div>
+<div class="l k3"><span class="n">361</span>console.log(<span class="st">`Soumission … — ${reason}`</span>);<span class="rep r3">3</span></div>
+<div class="l k4"><span class="n">725</span>console.error(<span class="st">`Erreur ${status} -&gt;`</span>, err.message);<span class="rep r4">4</span></div>
+<div class="l"><span class="cm">magpie/plugin/Admin/MagpieDebugPanel.cs</span></div>
+<div class="l k5"><span class="n">50</span>DA.SetData(7, tm.CurrentExpectedAnswer ?? …);<span class="rep r5">5</span></div>
+<div class="l k5"><span class="n">59</span>_timer = <span class="kw">new</span> Timer { Interval = 1000 };</div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Un seul point de sortie</b>Sept appels, de 730 à 1083.</li>
+      <li><span class="rep r2">2</span><b>La bulle</b>Le niveau et la règle à respecter.</li>
+      <li><span class="rep r3">3</span><b>Le motif reste au serveur</b>L'élève ne reçoit que le verdict (355–359).</li>
+      <li><span class="rep r4">4</span><b>Le filet</b>Toute route qui échoue finit là.</li>
+      <li><span class="rep r5">5</span><b>Version Dev seulement</b>Il montre la réponse : MagpieDev.csproj:21.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À surveiller · des traces qui perdent le « où » et le « quand »</span>
+    <b>Signaler</b> (CapsuleExecution.cs:1087–1089) n'écrit que <code>ex.Message</code> : pour une <code>NullReferenceException</code>, la ligne dira seulement que la référence d'objet n'est pas définie, sans type ni pile. Garder <code>ex.ToString()</code> dans une sortie de développeur suffirait. <b>Le journal serveur</b> (compute-proxy.mjs:361, 725) n'inscrit ni l'heure ni l'identifiant de la requête ; si l'hébergeur ne les ajoute pas lui-même, relier une ligne à la plainte d'un élève demandera de deviner.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 75 · Journaux et diagnostic</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 75</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Un journal sert surtout à…</div><ul>
+      <li><span>A</span>comprendre après coup ce qui s'est passé ailleurs</li><li><span>B</span>accélérer le programme</li><li><span>C</span>parler à l'utilisateur</li><li><span>D</span>remplacer les tests</li></ul></div>
+
+    <div class="q"><div class="enonce">Un composant reçoit un facteur négatif, rien de sensé à produire :</div><ul>
+      <li><span>A</span>Remark</li><li><span>B</span>Warning</li><li><span>C</span>Error</li><li><span>D</span>aucun message</li></ul></div>
+
+    <div class="q"><div class="enonce">Une ligne vide ignorée, le reste calculé :</div><ul>
+      <li><span>A</span>une exception</li><li><span>B</span>Error</li><li><span>C</span>un arrêt de Rhino</li><li><span>D</span>Warning</li></ul></div>
+
+    <div class="q"><div class="enonce"><code>console.error</code> écrit sur…</div><ul>
+      <li><span>A</span>la réponse HTTP</li><li><span>B</span>la sortie standard</li><li><span>C</span>la sortie d'erreur (stderr)</li><li><span>D</span>un fichier .log</li></ul></div>
+
+    <div class="q"><div class="enonce">Une ligne de journal exploitable contient : <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>un identifiant de contexte</li><li><span>B</span>l'heure</li><li><span>C</span>l'en-tête Authorization</li><li><span>D</span>le mot de passe saisi</li></ul></div>
+
+    <div class="q"><div class="enonce">L'heure d'un journal s'écrit de préférence…</div><ul>
+      <li><span>A</span>en heure locale, sans fuseau</li><li><span>B</span>en ISO 8601, UTC</li><li><span>C</span>en toutes lettres</li><li><span>D</span>en jours depuis la mise en ligne</li></ul></div>
+
+    <div class="q"><div class="enonce">Par rapport à <code>e.message</code>, <code>e.stack</code> ajoute…</div><ul>
+      <li><span>A</span>le type et les fonctions en cours, avec leurs lignes</li><li><span>B</span>l'heure</li><li><span>C</span>rien</li><li><span>D</span>la valeur des variables</li></ul></div>
+
+    <div class="q"><div class="enonce">En C#, pour garder type, pile et exceptions internes :</div><ul>
+      <li><span>A</span>ex.Message</li><li><span>B</span>ex.GetType().Name</li><li><span>C</span>ex.ToString()</li><li><span>D</span>ex.Source</li></ul></div>
+
+    <div class="q"><div class="enonce">L'ordre d'une enquête :</div><ul>
+      <li><span>A</span>observer, corriger, livrer</li><li><span>B</span>reproduire, réduire, observer</li><li><span>C</span>ajouter des try partout</li><li><span>D</span>réécrire, puis tester</li></ul></div>
+
+    <div class="q"><div class="enonce">Le panneau Debug de Magpie est…</div><ul>
+      <li><span>A</span>un composant pour l'élève</li><li><span>B</span>un tableau de bord d'état présent</li><li><span>C</span>un journal d'événements</li><li><span>D</span>un test automatique</li></ul></div>
+
+    <div class="q"><div class="enonce">Le motif d'un verdict (compute-proxy.mjs:361) va…</div><ul>
+      <li><span>A</span>à l'élève</li><li><span>B</span>nulle part</li><li><span>C</span>dans le certificat</li><li><span>D</span>au journal du serveur seulement</li></ul></div>
+
+    <div class="q"><div class="enonce">Signaler (CapsuleExecution.cs:1089) perd…</div><ul>
+      <li><span>A</span>rien</li><li><span>B</span>le nom du composant</li><li><span>C</span>le message</li><li><span>D</span>le type et la pile de l'exception</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 75 · Journaux et diagnostic</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 75</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · A.</b> Quand tu n'étais pas là.</div>
+    <div><b>02 · C.</b> Bubble.cs:55, puis return.</div>
+    <div><b>03 · D.</b> Fait, en écartant quelque chose.</div>
+    <div><b>04 · C.</b> Mesuré par redirection.</div>
+    <div><b>05 · A et B.</b> Jamais de secret.</div>
+    <div><b>06 · B.</b> Se trie, se compare (cours 72).</div>
+    <div><b>07 · A.</b> Le chemin jusqu'à l'erreur.</div>
+    <div><b>08 · C.</b> Message ne garde que le texte.</div>
+    <div><b>09 · B.</b> Une hypothèse à la fois.</div>
+    <div><b>10 · B.</b> Neuf valeurs, chaque seconde.</div>
+    <div><b>11 · D.</b> L'élève n'a que le verdict.</div>
+    <div><b>12 · D.</b> Seul ex.Message est écrit.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 76, « La gestion des erreurs ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">AddRuntimeMessage(Error, …)</td><td>bulle rouge : rien n'a été fait</td><td>Bubble.cs:55</td></tr>
+      <tr><td class="c">AddRuntimeMessage(Warning, …)</td><td>bulle orange : fait, avec réserve</td><td>Bubble.cs:63</td></tr>
+      <tr><td class="c">RhinoApp.WriteLine(…)</td><td>ligne de commande de Rhino</td><td>CapsuleExecution.cs:1089</td></tr>
+      <tr><td class="c">console.log / console.error</td><td>stdout / stderr du serveur</td><td>compute-proxy.mjs:361, 725</td></tr>
+      <tr><td class="c">ex.ToString()</td><td>type, message, pile, internes</td><td>exemple autonome, page 4</td></tr>
+      <tr><td class="c">JSON.stringify({ t, niveau, … })</td><td>une ligne filtrable par champ</td><td>exemple autonome, page 3</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Journal (log)</dt><dd>La suite horodatée des événements qu'un programme choisit de tracer.</dd>
+    <dt>Niveau</dt><dd>La gravité d'un message : débogage, information, avertissement, erreur.</dd>
+    <dt>Pile d'appels</dt><dd>Les fonctions en cours au moment d'une erreur, avec fichier et ligne.</dd>
+    <dt>stderr</dt><dd>La sortie d'erreur d'un processus, distincte de la sortie standard.</dd>
+    <dt>Tableau de bord</dt><dd>Un affichage de l'état présent, sans historique.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 76</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 75 · Journaux et diagnostic</div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>104 · Branches et références</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-11">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 104</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Branches et références</h1>
+  <p class="chapeau">Les objets de Git ne portent pas de noms lisibles. Pour s'y retrouver, Git garde des <b>références</b> : de petits fichiers qui associent un nom à un identifiant. Une branche est une référence qui avance à chaque commit, une étiquette une référence qui ne bouge plus, et <code>HEAD</code> dit où l'on se trouve.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>06</b> et <b>103</b></span>
+    <span class="pastille">Exemples · les dépôts <b>SnapSet</b> et <b>Magpie</b> (copies), un dépôt d'essai</span>
+  </div>
+
+  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+    <svg viewBox="0 0 600 200" width="100%">
+<rect x="40" y="120" width="90" height="28" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="85.0" y="136.8" font-size="8.4" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">61ee655</text>
+<rect x="160" y="120" width="90" height="28" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="205.0" y="136.8" font-size="8.4" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">a557f9f</text>
+<rect x="300" y="120" width="90" height="28" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="345.0" y="136.8" font-size="8.4" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">e25bdac</text>
+<rect x="440" y="120" width="90" height="28" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="485.0" y="136.8" font-size="8.4" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">0d72ba6</text>
+<line x1="158" y1="134" x2="132" y2="134" stroke="#6B7378" stroke-width="1"/><polygon points="132,134 138.4,131.3 138.4,136.7" fill="#6B7378"/>
+<line x1="298" y1="134" x2="252" y2="134" stroke="#6B7378" stroke-width="1"/><polygon points="252,134 258.4,131.3 258.4,136.7" fill="#6B7378"/>
+<line x1="438" y1="134" x2="392" y2="134" stroke="#6B7378" stroke-width="1"/><polygon points="392,134 398.4,131.3 398.4,136.7" fill="#6B7378"/>
+<text x="345" y="166" font-size="7.2" fill="#6B7378" text-anchor="middle" font-style="italic">fusion PR #1</text>
+<text x="485" y="166" font-size="7.2" fill="#6B7378" text-anchor="middle" font-style="italic">fusion PR #2</text>
+<rect x="140" y="66" width="130" height="24" rx="4" fill="#ECEBFA" stroke="#4F46B8" stroke-width="1.2"/>
+<text x="205.0" y="80.66666666666667" font-size="8" fill="#4F46B8" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">etapes-pilote-ui</text>
+<line x1="205" y1="92" x2="205" y2="118" stroke="#4F46B8" stroke-width="1.3"/><polygon points="205,118 202.3,111.6 207.7,111.6" fill="#4F46B8"/>
+<rect x="160" y="14" width="90" height="24" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="205.0" y="28.8" font-size="8.4" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">HEAD</text>
+<line x1="205" y1="40" x2="205" y2="64" stroke="#1565C0" stroke-width="1.3"/><polygon points="205,64 202.3,57.6 207.7,57.6" fill="#1565C0"/>
+<rect x="420" y="66" width="130" height="24" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="485.0" y="80.66666666666667" font-size="8" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">origin/principal</text>
+<line x1="485" y1="92" x2="485" y2="118" stroke="#2E7D32" stroke-width="1.3"/><polygon points="485,118 482.3,111.6 487.7,111.6" fill="#2E7D32"/>
+<text x="10" y="30" font-size="7.8" fill="#2B2F33" text-anchor="start">HEAD désigne une branche,</text>
+<text x="10" y="44" font-size="7.8" fill="#2B2F33" text-anchor="start">la branche un commit.</text>
+<text x="300" y="192" font-size="7.2" fill="#6B7378" text-anchor="middle" font-style="italic">Les vraies références de la copie de SnapSet ; e25bdac et 0d72ba6 ont aussi a557f9f pour parent (non dessiné).</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Une branche est un nom posé sur un commit ; committer déplace ce nom vers le nouveau commit ; HEAD dit quel nom déplacer.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Des marque-pages dans un livre qu'on écrit. Le marque-page « en cours » avance à chaque page écrite ; celui de « l'édition de septembre » reste où il est, pour toujours.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>dire ce qu'est une branche, matériellement ;</li>
+        <li>lire HEAD et les branches distantes ;</li>
+        <li>comparer deux branches ;</li>
+        <li>marquer une version par une étiquette.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À retenir</span>
+    <code>origin/principal</code> n'est pas la branche de GitHub : c'est la mémoire locale de ce que GitHub montrait au dernier <code>git fetch</code>. Elle ne bouge que quand on la rafraîchit.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 104 · Branches et références</div>
+</section>
+
+<!-- ============ PAGE 2 · UN FICHIER ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 104</b></div>
+  <p class="rubrique">Schéma 1 · Ce qu'est une branche</p>
+  <h2>Quarante et un octets</h2>
+  <p style="max-width:165mm">Dans <code>.git/refs/heads</code>, chaque branche est un fichier qui contient l'identifiant d'un commit. <code>.git/HEAD</code> contient d'ordinaire le nom d'une branche. Faire un commit écrit les objets, puis remplace l'identifiant dans le fichier de la branche que HEAD désigne.</p>
+
+  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">Ce que contiennent les références, dans le dossier .git de SnapSet (mesuré)</text>
+<rect x="16" y="34" width="568" height="40" rx="4" fill="#ECEBFA" stroke="#4F46B8" stroke-width="1.2"/>
+<text x="28" y="50" font-size="8" fill="#4F46B8" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">.git/HEAD</text>
+<text x="240" y="50" font-size="7.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.8px">ref: refs/heads/etapes-pilote-ui</text>
+<text x="240" y="65" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">une référence symbolique : le nom d'une branche</text>
+<rect x="16" y="80" width="568" height="40" rx="4" fill="#fff" stroke="#4F46B8" stroke-width="1.2"/>
+<text x="28" y="96" font-size="8" fill="#4F46B8" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">.git/refs/heads/principal</text>
+<text x="240" y="96" font-size="7.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.8px">0d72ba615058e406aa7e8d53d1e464ff973f1b10</text>
+<text x="240" y="111" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">41 octets : 40 chiffres et un saut de ligne</text>
+<rect x="16" y="126" width="568" height="40" rx="4" fill="#ECEBFA" stroke="#4F46B8" stroke-width="1.2"/>
+<text x="28" y="142" font-size="8" fill="#4F46B8" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">.git/packed-refs</text>
+<text x="240" y="142" font-size="7.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.8px">a557f9f7… refs/remotes/origin/etapes-pilote-ui</text>
+<text x="240" y="157" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">plusieurs références rangées dans un seul fichier</text>
+<text x="16" y="184" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">Créer une branche, c'est écrire 41 octets ; la supprimer, effacer un fichier. Les commits, eux, ne bougent pas.</text>
+<text x="16" y="198" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Une branche n'est pas une copie du projet : c'est un marque-page posé sur un commit.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Git, lire les références sans ouvrir les fichiers</span>git symbolic-ref HEAD          # refs/heads/etapes-pilote-ui
+git rev-parse principal        # 0d72ba615058e406aa7e8d53d1e464ff973f1b10
+git for-each-ref --format="%(refname) %(objectname:short)"</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Les branches distantes</h3>
+      <p><code>refs/remotes/origin/…</code> range ce que <code>git fetch</code> a vu sur GitHub. On ne committe jamais dessus ; <code>git pull</code> commence par les rafraîchir, puis fusionne la branche distante dans la branche locale.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Le suivi</h3>
+      <p>Une branche locale peut suivre une branche distante : <code>git status</code> annonce alors « en avance de 2 commits ». Ce compte compare deux références locales ; sans <code>fetch</code> récent, il peut être faux.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Croire qu'une branche « contient » ses commits. Supprimer une branche n'efface aucun commit ; ceux que plus aucun nom ne désigne deviennent seulement invisibles, puis sont nettoyés des semaines plus tard.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 104 · Branches et références</div>
+</section>
+
+<!-- ============ PAGE 3 · COMPARER ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 104</b></div>
+  <p class="rubrique">Schéma 2 · Comparer, se détacher</p>
+  <h2>En avance, en retard, détaché</h2>
+  <p style="max-width:165mm">Deux branches partagent un ancêtre commun, leur <b>base de fusion</b>. Ce que chacune a depuis se compte en commits : en avance d'un côté, en retard de l'autre. Et HEAD peut désigner directement un commit au lieu d'une branche : c'est l'état <b>détaché</b>.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">Comparer deux branches, et quitter une branche (mesuré)</text>
+<rect x="16" y="34" width="568" height="64" rx="4" fill="#fff" stroke="#4F46B8" stroke-width="1.2"/>
+<text x="28" y="52" font-size="8" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">git rev-list --left-right --count origin/principal...etapes-pilote-ui</text>
+<text x="28" y="70" font-size="9.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:9.4px">2    0</text>
+<text x="110" y="70" font-size="7.8" fill="#2B2F33" text-anchor="start">principal a 2 commits que la branche de travail n'a pas : les deux fusions de pull request ;</text>
+<text x="110" y="86" font-size="7.8" fill="#2B2F33" text-anchor="start">la branche de travail n'en a aucun que principal n'ait pas : tout son travail est fusionné.</text>
+<rect x="16" y="108" width="568" height="82" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="28" y="126" font-size="8" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">git switch --detach HEAD~1 ; un commit ; git switch master</text>
+<text x="28" y="144" font-size="7.8" fill="#C62828" text-anchor="start" class="mono" style="font-size:7.8px">Warning: you are leaving 1 commit behind, not connected to any of your branches:</text>
+<text x="28" y="158" font-size="7.8" fill="#C62828" text-anchor="start" class="mono" style="font-size:7.8px">  2d96b9b essai détaché</text>
+<text x="28" y="178" font-size="7.8" fill="#2B2F33" text-anchor="start">HEAD détaché pointe sur un commit, pas sur une branche : ce qu'on y fait n'est retenu par aucun nom.</text>
+<text x="16" y="206" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Dépôt d'essai pour le second cadre ; copie de SnapSet pour le premier.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Git, garder un travail fait en HEAD détaché</span>git switch -c essai 2d96b9b     # un nom pour le commit abandonné
+# ou, avant de partir : git switch -c essai</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Les fusions restent sur principal</h3>
+      <p>Chaque pull request fusionnée a créé sur <code>principal</code> un commit de fusion que la branche de travail ne reprend pas. C'est normal : ces commits n'apportent aucun fichier nouveau. Le compte « 2, 0 » dit que rien ne manque à principal.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Quand on se détache</h3>
+      <p>En revenant à un ancien commit pour l'examiner, en suivant un <code>git checkout</code> sur un identifiant ou une étiquette, ou pendant un <code>rebase</code>. Regarder est sans risque ; committer l'est aussi, à condition de nommer le résultat avant de partir.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Ignorer l'avertissement « you are leaving 1 commit behind ». Le commit existe encore, mais aucun nom ne le désigne : il faut son identifiant, ou le journal des références (cours 107), pour le retrouver.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 104 · Branches et références</div>
+</section>
+
+<!-- ============ PAGE 4 · LES ÉTIQUETTES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 104</b></div>
+  <p class="rubrique">Schéma 3 · Les étiquettes</p>
+  <h2>Marquer une version</h2>
+  <p style="max-width:165mm">Une <b>étiquette</b> (tag) nomme un commit une fois pour toutes. L'étiquette légère n'est qu'une référence. L'étiquette annotée est un quatrième objet Git, avec auteur, date et message ; c'est elle qu'on emploie pour une version publiée. GitHub construit ses « releases » sur des étiquettes.</p>
+
+  <svg viewBox="0 0 600 208" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="208" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">Une étiquette (tag) est une référence qui ne bouge jamais</text>
+<rect x="16" y="34" width="568" height="38" rx="4" fill="#ECEBFA" stroke="#4F46B8" stroke-width="1.2"/>
+<text x="28" y="50" font-size="8.8" fill="#4F46B8" text-anchor="start" font-weight="700">légère</text>
+<text x="120" y="50" font-size="8" fill="#1565C0" text-anchor="start" class="mono" style="font-size:8px">git tag v1</text>
+<text x="28" y="65" font-size="7.8" fill="#2B2F33" text-anchor="start">git cat-file -t rend « commit » : un nom, rien de plus</text>
+<rect x="16" y="78" width="568" height="38" rx="4" fill="#fff" stroke="#4F46B8" stroke-width="1.2"/>
+<text x="28" y="94" font-size="8.8" fill="#4F46B8" text-anchor="start" font-weight="700">annotée</text>
+<text x="120" y="94" font-size="8" fill="#1565C0" text-anchor="start" class="mono" style="font-size:8px">git tag -a v1a -m "version 1"</text>
+<text x="28" y="109" font-size="7.8" fill="#2B2F33" text-anchor="start">git cat-file -t rend « tag » : un objet : auteur, date, message</text>
+<text x="16" y="140" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">Magpie sur GitHub : v0.1.0 (22/09/2026) et v0.1.5 (24/09/2026), chacune publiée comme release.</text>
+<text x="16" y="156" font-size="8" fill="#2B2F33" text-anchor="start">Dans la copie locale, faite superficielle (--depth), git tag ne rend rien : les étiquettes n'ont pas été rapatriées.</text>
+<text x="16" y="172" font-size="8" fill="#2B2F33" text-anchor="start">Les commits marqués, eux, sont bien là (168460f, 73dda66) : seul le nom manque. git fetch --tags le ramène.</text>
+<text x="16" y="196" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Relevé par l'API de GitHub et par git cat-file sur la copie de Magpie.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Git, publier une version</span>git tag -a v0.1.6 -m "Magpie 0.1.6"
+git push origin v0.1.6           # les étiquettes ne partent pas avec un simple push</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Pousser une étiquette</h3>
+      <p><code>git push</code> envoie la branche, pas les étiquettes. On pousse une étiquette par son nom, ou toutes avec <code>--tags</code>. À l'inverse, un clone superficiel ou un <code>fetch</code> partiel peut ne pas les ramener.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Une étiquette ne se déplace pas</h3>
+      <p>Git refuse de recréer une étiquette existante sans <code>-f</code>, et ceux qui l'ont déjà gardent l'ancienne. Une version publiée se corrige par une nouvelle étiquette, jamais en déplaçant l'ancienne.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Conclure d'un <code>git tag</code> vide qu'un projet n'a pas de versions. La copie locale de Magpie n'en montre aucune, GitHub en a deux : il manquait seulement le <code>fetch</code> des étiquettes.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 104 · Branches et références</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 104</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>La version de Magpie et ses étiquettes</h2>
+  <p style="max-width:165mm">Magpie écrit son numéro de version dans un fichier de projet et marque ses versions publiées par des étiquettes. Les deux devraient avancer ensemble.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">magpie/plugin/Directory.Build.props</span></div>
+<div class="l k1"><span class="n">33</span>    &lt;Version&gt;0.1.5&lt;/Version&gt;<span class="rep r1">1</span></div>
+<div class="l"><span class="cm">git log -S"&lt;Version&gt;0.1.5&lt;/Version&gt;"   (magpie)</span></div>
+<div class="l k2"><span class="n">—</span>40875fe 2026-09-24 La version du plugin passe à 0.1.5<span class="rep r2">2</span></div>
+<div class="l"><span class="cm">GitHub, étiquettes de Magpie-Project/Magpie</span></div>
+<div class="l k3"><span class="n">—</span>v0.1.5 → 168460f   (24/09)   v0.1.0 → 73dda66   (22/09)<span class="rep r3">3</span></div>
+<div class="l"><span class="cm">git rev-list --count 168460f..HEAD [-- plugin]</span></div>
+<div class="l k4"><span class="n">—</span>66 commits depuis l'étiquette, dont 20 dans plugin/<span class="rep r4">4</span></div>
+<div class="l"><span class="cm">git tag   (copie locale, superficielle)</span></div>
+<div class="l k5"><span class="n">—</span><span class="cm">rien</span><span class="rep r5">5</span></div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Le numéro</b>Dans le build.</li>
+      <li><span class="rep r2">2</span><b>Fixé</b>Le 24/09.</li>
+      <li><span class="rep r3">3</span><b>Les versions</b>Publiées.</li>
+      <li><span class="rep r4">4</span><b>Depuis</b>Du travail.</li>
+      <li><span class="rep r5">5</span><b>Localement</b>Pas rapatriées.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À surveiller · plusieurs plugins différents s'appellent 0.1.5</span>
+    Le numéro 0.1.5 n'a pas changé depuis l'étiquette du 24/09, alors que 20 commits ont touché le plugin, dont sa séparation en trois assemblages (9d32457, 20/10). Un .gha construit aujourd'hui annonce la même version que celui de la release. Si un apprenant signale un défaut « en 0.1.5 », impossible de savoir lequel. Passer à 0.1.6-dev après chaque étiquette, ou inscrire l'identifiant du commit dans la version (cours 73), lèverait le doute. Relevé par git log et l'API GitHub.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 104 · Branches et références</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 104</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Matériellement, une branche est…</div><ul>
+      <li><span>A</span>une copie du projet</li><li><span>B</span>un objet Git</li><li><span>C</span>un dossier de commits</li><li><span>D</span>un fichier de 41 octets contenant un identifiant</li></ul></div>
+
+    <div class="q"><div class="enonce">.git/HEAD contient d'ordinaire…</div><ul>
+      <li><span>A</span>l'adresse de GitHub</li><li><span>B</span>le nom de la branche courante</li><li><span>C</span>la liste des fichiers</li><li><span>D</span>le dernier message de commit</li></ul></div>
+
+    <div class="q"><div class="enonce">Faire un commit…</div><ul>
+      <li><span>A</span>déplace origin/principal</li><li><span>B</span>crée une branche</li><li><span>C</span>déplace toutes les branches</li><li><span>D</span>déplace la branche que HEAD désigne</li></ul></div>
+
+    <div class="q"><div class="enonce">origin/principal est…</div><ul>
+      <li><span>A</span>une étiquette</li><li><span>B</span>la branche de GitHub elle-même</li><li><span>C</span>mise à jour en continu</li><li><span>D</span>la mémoire locale du dernier fetch</li></ul></div>
+
+    <div class="q"><div class="enonce">Supprimer une branche…</div><ul>
+      <li><span>A</span>efface un nom, pas les commits</li><li><span>B</span>efface le dépôt distant</li><li><span>C</span>efface tous ses commits</li><li><span>D</span>est impossible</li></ul></div>
+
+    <div class="q"><div class="enonce">« 2 0 » entre origin/principal et etapes-pilote-ui signifie…</div><ul>
+      <li><span>A</span>la branche a 2 commits non fusionnés</li><li><span>B</span>principal a 2 commits de plus, la branche aucun</li><li><span>C</span>deux conflits</li><li><span>D</span>deux branches</li></ul></div>
+
+    <div class="q"><div class="enonce">En HEAD détaché, HEAD désigne…</div><ul>
+      <li><span>A</span>principal</li><li><span>B</span>le dépôt distant</li><li><span>C</span>un commit, sans branche</li><li><span>D</span>rien</li></ul></div>
+
+    <div class="q"><div class="enonce">Pour garder un commit fait en HEAD détaché… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>git tag -d</li><li><span>B</span>git switch -c essai avant de partir</li><li><span>C</span>supprimer .git/HEAD</li><li><span>D</span>git switch -c essai 2d96b9b ensuite</li></ul></div>
+
+    <div class="q"><div class="enonce">Une étiquette annotée est…</div><ul>
+      <li><span>A</span>un objet Git avec auteur, date et message</li><li><span>B</span>un blob</li><li><span>C</span>un fichier .gitattributes</li><li><span>D</span>une branche</li></ul></div>
+
+    <div class="q"><div class="enonce">git push sans option…</div><ul>
+      <li><span>A</span>n'envoie pas les étiquettes</li><li><span>B</span>supprime les étiquettes</li><li><span>C</span>crée une release</li><li><span>D</span>envoie toutes les étiquettes</li></ul></div>
+
+    <div class="q"><div class="enonce">git tag est vide dans la copie de Magpie parce que…</div><ul>
+      <li><span>A</span>Git les a effacées</li><li><span>B</span>Magpie n'a aucune version</li><li><span>C</span>la copie superficielle n'a pas rapatrié les étiquettes</li><li><span>D</span>les étiquettes sont privées</li></ul></div>
+
+    <div class="q"><div class="enonce">Depuis l'étiquette v0.1.5, le plugin…</div><ul>
+      <li><span>A</span>est passé en 0.2</li><li><span>B</span>n'a pas changé</li><li><span>C</span>a changé en 20 commits sans changer de numéro</li><li><span>D</span>a été supprimé</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 104 · Branches et références</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 104</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · D.</b> 40 chiffres et un saut de ligne.</div>
+    <div><b>02 · B.</b> Une référence symbolique.</div>
+    <div><b>03 · D.</b> Seule la branche courante avance.</div>
+    <div><b>04 · D.</b> Rafraîchie par fetch.</div>
+    <div><b>05 · A.</b> Un marque-page retiré.</div>
+    <div><b>06 · B.</b> Les deux fusions de PR.</div>
+    <div><b>07 · C.</b> Aucun nom ne suit.</div>
+    <div><b>08 · B et D.</b> Nommer avant ou après.</div>
+    <div><b>09 · A.</b> Un quatrième type d'objet.</div>
+    <div><b>10 · A.</b> On les pousse par leur nom.</div>
+    <div><b>11 · C.</b> GitHub en a deux.</div>
+    <div><b>12 · C.</b> Deux .gha, un seul numéro.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 105, « Fusionner et rebaser ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">git symbolic-ref HEAD</td><td>la branche courante</td><td>exemple autonome, page 2</td></tr>
+      <tr><td class="c">git for-each-ref</td><td>toutes les références</td><td>exemple autonome, page 2</td></tr>
+      <tr><td class="c">git rev-list --left-right --count A...B</td><td>en avance, en retard</td><td>schéma 2, page 3</td></tr>
+      <tr><td class="c">git merge-base A B</td><td>l'ancêtre commun</td><td>page 3</td></tr>
+      <tr><td class="c">git tag -a v1 -m "…"</td><td>une étiquette annotée</td><td>exemple autonome, page 4</td></tr>
+      <tr><td class="c">git fetch --tags</td><td>rapatrier les étiquettes</td><td>schéma 3, page 4</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Référence</dt><dd>Un nom qui désigne un identifiant d'objet Git.</dd>
+    <dt>HEAD</dt><dd>La référence qui dit où l'on se trouve, d'ordinaire une branche.</dd>
+    <dt>HEAD détaché</dt><dd>HEAD qui désigne un commit directement, sans branche.</dd>
+    <dt>Branche distante</dt><dd>La copie locale d'une branche du dépôt distant, rafraîchie par fetch.</dd>
+    <dt>Étiquette (tag)</dt><dd>Une référence fixe, souvent un objet annoté, qui marque une version.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 105</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 104 · Branches et références</div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>47 · Déboguer un plugin dans Rhino</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-3">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 3A</b> · Le plugin Grasshopper</span><b>Cours 47</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Déboguer un plugin dans Rhino</h1>
+  <p class="chapeau">Un plugin Grasshopper ne tourne pas seul : il vit dans Rhino. Le déboguer, c'est donc faire démarrer Rhino <b>par</b> Visual Studio, sur le <b>dernier</b> build, et pouvoir regarder dedans : un point d'arrêt quand on est devant l'écran, un volet de diagnostic quand on veut voir l'état en continu.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>04</b>, <b>05</b>, <b>07</b> et <b>27</b></span>
+    <span class="pastille">Exemples · <b>launchSettings.json</b> (Cuttlefish), <b>SnapSet.Conception.csproj</b> (SnapSet), <b>MagpieDebugPanel.cs</b> (Magpie)</span>
+  </div>
+
+  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+    <svg viewBox="0 0 600 196" width="100%">
+<rect x="6" y="70" width="90" height="40" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.3"/>
+<text x="51.0" y="87.0" font-size="9" fill="#1565C0" text-anchor="middle" font-weight="700">Code</text>
+<text x="51.0" y="101.0" font-size="8.2" fill="#2B2F33" text-anchor="middle">Visual Studio</text>
+<line x1="96" y1="90" x2="120" y2="90" stroke="#2B2F33" stroke-width="1.4"/><polygon points="120,90 113.6,92.7 113.6,87.3" fill="#2B2F33"/>
+<rect x="122" y="70" width="90" height="40" rx="4" fill="#fff" stroke="#6D4C41" stroke-width="1.3"/>
+<text x="167.0" y="87.0" font-size="9" fill="#6D4C41" text-anchor="middle" font-weight="700">Build</text>
+<text x="167.0" y="101.0" font-size="8.2" fill="#2B2F33" text-anchor="middle">bin\Debug\…</text>
+<line x1="212" y1="82" x2="250" y2="40" stroke="#2B2F33" stroke-width="1.4"/><polygon points="250,40 247.7,46.6 243.7,43.0" fill="#2B2F33"/>
+<line x1="212" y1="98" x2="250" y2="140" stroke="#2B2F33" stroke-width="1.4"/><polygon points="250,140 243.7,137.0 247.7,133.4" fill="#2B2F33"/>
+<rect x="252" y="14" width="170" height="48" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.3"/>
+<text x="337.0" y="35.0" font-size="9" fill="#E65100" text-anchor="middle" font-weight="700">F5 : Rhino.exe</text>
+<text x="337.0" y="49.0" font-size="8.2" fill="#2B2F33" text-anchor="middle">RHINO_PACKAGE_DIRS = sortie</text>
+<text x="337" y="74" font-size="7.4" fill="#6B7378" text-anchor="middle" font-style="italic">Cuttlefish</text>
+<rect x="252" y="118" width="170" height="48" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.3"/>
+<text x="337.0" y="139.0" font-size="9" fill="#7B1FA2" text-anchor="middle" font-weight="700">Copie vers Libraries</text>
+<text x="337.0" y="153.0" font-size="8.2" fill="#2B2F33" text-anchor="middle">cible MSBuild après le build</text>
+<text x="337" y="113" font-size="7.4" fill="#6B7378" text-anchor="middle" font-style="italic">SnapSet</text>
+<line x1="422" y1="38" x2="452" y2="80" stroke="#2B2F33" stroke-width="1.4"/><polygon points="452,80 446.0,76.3 450.5,73.2" fill="#2B2F33"/>
+<line x1="422" y1="142" x2="452" y2="100" stroke="#2B2F33" stroke-width="1.4"/><polygon points="452,100 450.5,106.8 446.0,103.7" fill="#2B2F33"/>
+<rect x="454" y="44" width="138" height="92" rx="6" fill="#3A3A3A"/>
+<text x="523" y="62" font-size="8.4" fill="#fff" text-anchor="middle" font-weight="700">Rhino + Grasshopper</text>
+<text x="523" y="82" font-size="7.8" fill="#ddd" text-anchor="middle">· point d'arrêt</text>
+<text x="523" y="98" font-size="7.8" fill="#ddd" text-anchor="middle">· volet de diagnostic</text>
+<text x="523" y="114" font-size="7.8" fill="#ddd" text-anchor="middle">· WriteLine, messages</text>
+<path d="M523 136 C 523 190, 51 190, 51 112" fill="none" stroke="#6B7378" stroke-dasharray="4 3"/><line x1="51" y1="118" x2="51" y2="112" stroke="#6B7378" stroke-width="1.4"/><polygon points="51,112 53.7,118.4 48.3,118.4" fill="#6B7378"/>
+<text x="290" y="192" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">on corrige, on recommence</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Trois questions à régler une fois pour toutes : quel Rhino démarre et sur quel moteur .NET, d'où il charge ton plugin, et comment tu vois ce qui se passe quand tu ne peux pas t'arrêter dans le code.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Le banc moteur d'un garage. On ne teste pas un moteur posé sur l'établi : on le monte sur le banc, on branche les capteurs, et l'on regarde les cadrans tourner pendant qu'il marche.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>lire un profil de lancement Rhino dans <code>launchSettings.json</code> ;</li>
+        <li>choisir entre <code>/netcore</code> et <code>/netfx</code> ;</li>
+        <li>dire ce qui se remplace Rhino ouvert, et ce qui ne se remplace pas ;</li>
+        <li>construire un volet de diagnostic, et le garder hors des versions publiées.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:5mm">
+    <span class="titre">À retenir</span>
+    Avant de poser un point d'arrêt, demande-toi <b>quel fichier Rhino a chargé</b>. La moitié des « mon correctif ne marche pas » viennent d'un Rhino qui tourne encore sur l'ancien build : SnapSet a même une erreur de build dédiée à ce cas (ATC911).
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 47 · Déboguer un plugin dans Rhino</div>
+</section>
+
+<!-- ============ PAGE 2 · LE PROFIL ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 3A</b> · Le plugin Grasshopper</span><b>Cours 47</b></div>
+  <p class="rubrique">Schéma 1 · Lancer Rhino depuis Visual Studio</p>
+  <h2>Un profil de lancement</h2>
+  <p style="max-width:165mm">Le fichier <code>Properties/launchSettings.json</code> décrit ce que fait F5. Pour un plugin, on ne lance pas son projet, qui n'est pas un programme : on lance <b>Rhino.exe</b>, avec des arguments, et Visual Studio s'attache à lui.</p>
+
+  <svg viewBox="0 0 600 190" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="190" fill="#EFE9E1"/>
+<rect x="16" y="14" width="568" height="30" rx="5" fill="#3A3A3A"/>
+<text x="28" y="34" font-size="9.4" fill="#fff" text-anchor="start" font-weight="700" class="mono" style="font-size:9.4px">Rhino.exe</text>
+<text x="110" y="34" font-size="8.6" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">/netfx</text>
+<line x1="130" y1="46" x2="130" y2="70" stroke="#1565C0"/>
+<rect x="106" y="72" width="128" height="56" rx="4" fill="#fff" stroke="#1565C0"/>
+<text x="114" y="90" font-size="7.8" fill="#1565C0" text-anchor="start" font-weight="700">le moteur .NET :</text>
+<text x="114" y="104" font-size="7.6" fill="#2B2F33" text-anchor="start">netfx = Framework 4.8</text>
+<text x="114" y="116" font-size="7.6" fill="#2B2F33" text-anchor="start">netcore = .NET 7</text>
+<text x="250" y="34" font-size="8.6" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">/runscript="_Grasshopper"</text>
+<line x1="270" y1="46" x2="270" y2="70" stroke="#2E7D32"/>
+<rect x="246" y="72" width="128" height="56" rx="4" fill="#fff" stroke="#2E7D32"/>
+<text x="254" y="90" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700">une commande au</text>
+<text x="254" y="104" font-size="7.6" fill="#2B2F33" text-anchor="start">démarrage : ouvre</text>
+<text x="254" y="116" font-size="7.6" fill="#2B2F33" text-anchor="start">Grasshopper</text>
+<text x="430" y="34" font-size="8.6" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">RHINO_PACKAGE_DIRS</text>
+<line x1="450" y1="46" x2="450" y2="70" stroke="#E65100"/>
+<rect x="426" y="72" width="128" height="56" rx="4" fill="#fff" stroke="#E65100"/>
+<text x="434" y="90" font-size="7.8" fill="#E65100" text-anchor="start" font-weight="700">variable : un dossier</text>
+<text x="434" y="104" font-size="7.6" fill="#2B2F33" text-anchor="start">de plus où chercher</text>
+<text x="434" y="116" font-size="7.6" fill="#2B2F33" text-anchor="start">les plugins</text>
+<text x="16" y="156" font-size="8.2" fill="#2B2F33" text-anchor="start">"commandName": "Executable" : F5 lance un programme extérieur, et Visual Studio s'y attache.</text>
+<text x="16" y="174" font-size="8" fill="#6B7378" text-anchor="start" font-style="italic">$(ProjectDir)$(OutputPath) : les variables MSBuild sont remplacées par Visual Studio au lancement.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Cuttlefish · Properties/launchSettings.json · 3–17</span>"Rhino 8 - netcore": {
+  "commandName": "Executable",
+  "executablePath": "D:\\programme\\Rhino\\System\\Rhino.exe",
+  "commandLineArgs": "/netcore /runscript=\"_Grasshopper\"",
+  "environmentVariables": { "RHINO_PACKAGE_DIRS": "$(ProjectDir)$(OutputPath)\\" }
+},
+"Rhino 8 - netfx": {
+  "commandName": "Executable",
+  "executablePath": "D:\\programme\\Rhino\\System\\Rhino.exe",
+  "commandLineArgs": "/netfx /runscript=\"_Grasshopper\"", …</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>/netcore ou /netfx</h3>
+      <p>Rhino 8 sait tourner sur .NET 7 (<code>/netcore</code>) ou sur le .NET Framework 4.8 (<code>/netfx</code>). Cuttlefish ne cible que <code>net48</code> (Cuttlefish.csproj, ligne 10) : son profil <code>netfx</code> fait tourner Rhino sur le moteur pour lequel il est compilé.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>RHINO_PACKAGE_DIRS</h3>
+      <p>Cette variable d'environnement donne à Rhino un dossier de plus où chercher des plugins : ici, le dossier de sortie du build. Rhino charge donc le <code>.gha</code> que tu viens de compiler, sans rien copier nulle part.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège réel</span>
+    Un chemin propre à une machine. <code>D:\programme\Rhino\System\Rhino.exe</code> n'existe que sur ton poste ; ailleurs, F5 échoue avant même de démarrer. Le profil « Rhino 7 », lui, garde le chemin d'installation par défaut (<code>C:\Program Files\Rhino 7</code>). Un profil se versionne, mais se relit sur chaque nouveau poste.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 47 · Déboguer un plugin dans Rhino</div>
+</section>
+
+<!-- ============ PAGE 3 · DÉPLOYER ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 3A</b> · Le plugin Grasshopper</span><b>Cours 47</b></div>
+  <p class="rubrique">Schéma 2 · Copier, Rhino ouvert ou fermé</p>
+  <h2>Ce qui se remplace, et ce qui est verrouillé</h2>
+  <p style="max-width:165mm">SnapSet fait l'inverse : après chaque build, une cible MSBuild copie le plugin dans <code>%APPDATA%\Grasshopper\Libraries</code>, où tout Rhino le trouve. Mais les deux fichiers ne se comportent pas pareil quand Rhino est ouvert.</p>
+
+  <svg viewBox="0 0 600 178" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="178" fill="#EFE9E1"/>
+<rect x="16" y="12" width="250" height="150" rx="6" fill="#3A3A3A"/>
+<text x="28" y="32" font-size="9" fill="#fff" text-anchor="start" font-weight="700">Rhino ouvert</text>
+<rect x="28" y="44" width="226" height="44" rx="4" fill="#555"/><text x="40" y="62" font-size="8" fill="#fff" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">SnapSet.Conception.gha</text><text x="40" y="78" font-size="7.6" fill="#ddd" text-anchor="start">lu en mémoire par Grasshopper</text>
+<rect x="28" y="102" width="226" height="44" rx="4" fill="#555"/><text x="40" y="120" font-size="8" fill="#fff" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">SnapSet.Constituants.dll</text><text x="40" y="136" font-size="7.6" fill="#ddd" text-anchor="start">chargée depuis le disque</text>
+<line x1="266" y1="66" x2="330" y2="66" stroke="#2E7D32" stroke-width="1.4"/><polygon points="330,66 323.6,68.7 323.6,63.3" fill="#2E7D32"/>
+<line x1="266" y1="124" x2="330" y2="124" stroke="#C62828" stroke-width="1.4"/><polygon points="330,124 323.6,126.7 323.6,121.3" fill="#C62828"/>
+<rect x="332" y="44" width="252" height="44" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.4"/><text x="344" y="62" font-size="8.6" fill="#2E7D32" text-anchor="start" font-weight="700">copie possible</text><text x="344" y="78" font-size="7.6" fill="#2B2F33" text-anchor="start">mais l'ancien reste en mémoire</text>
+<rect x="332" y="102" width="252" height="44" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.4"/><text x="344" y="120" font-size="8.6" fill="#C62828" text-anchor="start" font-weight="700">fichier verrouillé : copie refusée</text><text x="344" y="136" font-size="7.6" fill="#2B2F33" text-anchor="start">→ erreur ATC911, build en échec</text>
+<text x="16" y="174" font-size="8.2" fill="#1F5F7A" text-anchor="start" font-weight="700">Les deux, ou aucun : ferme Rhino, ou construis avec -p:DeployerVersLibraries=false.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">SnapSet · src/SnapSet.Conception/SnapSet.Conception.csproj · 61–65 et 83–85</span>DÉPLOIEMENT : le .gha se remplace même Rhino ouvert (Grasshopper le charge en mémoire), la DLL
+d'exécution SnapSet.Constituants.dll non (assembly chargé depuis le disque, donc
+verrouillé). Copier l'un sans l'autre donnerait un déploiement à moitié périmé SANS RIEN DIRE :
+la copie de la DLL échoue donc franchement (ATC911). Ferme Rhino avant de déployer.
+…
+&lt;Error Condition="'@(ConstituantsCopie)' == ''" Code="ATC911" Text="… Ferme Rhino et relance le build." /&gt;</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Construire sans déployer</h3>
+      <p>Rhino ouvert, on veut quand même savoir si ça compile : <code>dotnet build SnapSet.sln -p:DeployerVersLibraries=false</code> (README, ligne 44). La cible de copie a pour condition cette propriété (ligne 70) et ne s'exécute pas.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Échouer franchement</h3>
+      <p>Une copie ratée est d'abord tolérée (<code>ContinueOnError</code>), puis on regarde si la DLL est bien passée. Si non, <code>&lt;Error&gt;</code> arrête le build avec un message qui dit quoi faire. Un échec bruyant vaut mieux qu'un succès trompeur.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège réel</span>
+    Le déploiement à moitié périmé. Le <code>.gha</code> neuf est copié, la DLL ancienne reste : Rhino redémarré charge un plugin qui appelle des types d'avant le correctif. Rien ne plante tout de suite, et l'on cherche un bogue déjà corrigé. C'est ce que l'erreur ATC911 empêche.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 47 · Déboguer un plugin dans Rhino</div>
+</section>
+
+<!-- ============ PAGE 4 · VOIR L'ÉTAT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 3A</b> · Le plugin Grasshopper</span><b>Cours 47</b></div>
+  <p class="rubrique">Schéma 3 · Voir sans s'arrêter</p>
+  <h2>Un composant de diagnostic</h2>
+  <p style="max-width:165mm">Un point d'arrêt fige tout ; or certains bogues ne se voient qu'en marche : un compteur de tentatives, un temps écoulé, un verdict qui change. Magpie a donc un composant « Magpie - Debug » qui expose l'état de la session sur ses sorties, à brancher sur des Panels.</p>
+
+  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
+<rect x="40" y="16" width="150" height="176" rx="8" fill="#D8D8D8" stroke="#2B2F33" stroke-width="1.2"/>
+<text x="115" y="108" font-size="8.6" fill="#2B2F33" text-anchor="middle" font-weight="700">Magpie - Debug</text>
+<text x="115" y="122" font-size="7.4" fill="#6B7378" text-anchor="middle" font-style="italic">(aucune entrée)</text>
+<circle cx="190" cy="28" r="3.5" fill="#fff" stroke="#2B2F33"/><text x="182" y="31" font-size="7.2" fill="#2B2F33" text-anchor="end" font-weight="700">Id</text>
+<line x1="194" y1="28" x2="250" y2="28" stroke="#6B7378"/>
+<text x="256" y="31" font-size="7.8" fill="#2B2F33" text-anchor="start">exercice chargé</text>
+<circle cx="190" cy="47" r="3.5" fill="#fff" stroke="#2B2F33"/><text x="182" y="50" font-size="7.2" fill="#2B2F33" text-anchor="end" font-weight="700">Pos</text>
+<line x1="194" y1="47" x2="250" y2="47" stroke="#6B7378"/>
+<text x="256" y="50" font-size="7.8" fill="#2B2F33" text-anchor="start">n° / total</text>
+<circle cx="190" cy="66" r="3.5" fill="#fff" stroke="#2B2F33"/><text x="182" y="69" font-size="7.2" fill="#2B2F33" text-anchor="end" font-weight="700">Nb</text>
+<line x1="194" y1="66" x2="250" y2="66" stroke="#6B7378"/>
+<text x="256" y="69" font-size="7.8" fill="#2B2F33" text-anchor="start">tentatives</text>
+<circle cx="190" cy="85" r="3.5" fill="#fff" stroke="#2B2F33"/><text x="182" y="88" font-size="7.2" fill="#2B2F33" text-anchor="end" font-weight="700">Live</text>
+<line x1="194" y1="85" x2="250" y2="85" stroke="#6B7378"/>
+<text x="256" y="88" font-size="7.8" fill="#2B2F33" text-anchor="start">dernier checker</text>
+<circle cx="190" cy="104" r="3.5" fill="#fff" stroke="#2B2F33"/><text x="182" y="107" font-size="7.2" fill="#2B2F33" text-anchor="end" font-weight="700">V</text>
+<line x1="194" y1="104" x2="250" y2="104" stroke="#6B7378"/>
+<text x="256" y="107" font-size="7.8" fill="#2B2F33" text-anchor="start">validé</text>
+<circle cx="190" cy="123" r="3.5" fill="#fff" stroke="#2B2F33"/><text x="182" y="126" font-size="7.2" fill="#2B2F33" text-anchor="end" font-weight="700">Cu</text>
+<line x1="194" y1="123" x2="250" y2="123" stroke="#6B7378"/>
+<text x="256" y="126" font-size="7.8" fill="#2B2F33" text-anchor="start">composants ajoutés</text>
+<circle cx="190" cy="142" r="3.5" fill="#fff" stroke="#2B2F33"/><text x="182" y="145" font-size="7.2" fill="#2B2F33" text-anchor="end" font-weight="700">T</text>
+<line x1="194" y1="142" x2="250" y2="142" stroke="#6B7378"/>
+<text x="256" y="145" font-size="7.8" fill="#2B2F33" text-anchor="start">temps écoulé</text>
+<circle cx="190" cy="161" r="3.5" fill="#fff" stroke="#2B2F33"/><text x="182" y="164" font-size="7.2" fill="#2B2F33" text-anchor="end" font-weight="700">Att</text>
+<line x1="194" y1="161" x2="250" y2="161" stroke="#6B7378"/>
+<text x="256" y="164" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700">RÉPONSE ATTENDUE</text>
+<circle cx="190" cy="180" r="3.5" fill="#fff" stroke="#2B2F33"/><text x="182" y="183" font-size="7.2" fill="#2B2F33" text-anchor="end" font-weight="700">Fb</text>
+<line x1="194" y1="180" x2="250" y2="180" stroke="#6B7378"/>
+<text x="256" y="183" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700">retour du checker</text>
+<rect x="400" y="20" width="184" height="170" rx="5" fill="#fff" stroke="#1F5F7A" stroke-width="1.3"/>
+<text x="412" y="40" font-size="8.6" fill="#1F5F7A" text-anchor="start" font-weight="700">Comment il se tient à jour</text>
+<text x="412" y="58" font-size="7.8" fill="#2B2F33" text-anchor="start">abonné à StateChanged</text>
+<text x="412" y="72" font-size="7.8" fill="#2B2F33" text-anchor="start">de TrainingManager ;</text>
+<text x="412" y="86" font-size="7.8" fill="#2B2F33" text-anchor="start">minuterie d'une seconde</text>
+<text x="412" y="100" font-size="7.8" fill="#2B2F33" text-anchor="start">pour le temps écoulé ;</text>
+<text x="412" y="114" font-size="7.8" fill="#2B2F33" text-anchor="start">les deux → ScheduleSolution</text>
+<text x="412" y="128" font-size="7.8" fill="#2B2F33" text-anchor="start">→ ExpireSolution(true).</text>
+<text x="412" y="142" font-size="7.8" fill="#2B2F33" text-anchor="start"></text>
+<text x="412" y="156" font-size="7.8" fill="#C62828" text-anchor="start">En rouge : ce qui ne doit</text>
+<text x="412" y="170" font-size="7.8" fill="#C62828" text-anchor="start">jamais quitter le poste.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Magpie · plugin/Dev/MagpieDev.csproj · 3–8 et 19–22</span>LA VERSION DEV : MagpieDev.gha. Le seul volet de debug (« Magpie - Debug »), qui
+montre l'état de la session et la réponse attendue. Pour le poste de développement
+uniquement : elle N'A PAS VOCATION À ÊTRE RENDUE PUBLIQUE, ni jointe aux releases.
+…
+&lt;Compile Include="MagpieDevInfo.cs" /&gt;
+&lt;Compile Include="..\Admin\MagpieDebugPanel.cs" Link="Admin\MagpieDebugPanel.cs" /&gt;</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Un binaire à part</h3>
+      <p>Le volet n'est dans aucun <code>.gha</code> livré : il a son propre projet, qui ne compile que lui (<code>EnableDefaultCompileItems</code> à false). Il s'installe à côté de l'Apprenant et observe la même session, grâce au Core partagé (cours 27).</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Les deux autres voix</h3>
+      <p><code>RhinoApp.WriteLine</code> écrit dans la ligne de commande de Rhino, <code>AddRuntimeMessage</code> colore le composant en orange ou en rouge avec un message au survol. Tes trois dépôts y ont recours plus de soixante-dix fois : c'est le débogage du quotidien.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège réel</span>
+    Livrer le diagnostic. Le volet montre la <b>réponse attendue</b>, et le message du checker nomme le premier élément fautif : « ce texte RÉVÈLE la réponse attendue » (GenericChecker.cs, lignes 306–310). Dans un <code>.gha</code> d'apprenant, ce serait le corrigé offert. D'où MagpieDev.gha, jamais publié.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 47 · Déboguer un plugin dans Rhino</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 3A</b> · Le plugin Grasshopper</span><b>Cours 47</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>MagpieDebugPanel : se tenir à jour</h2>
+  <p style="max-width:165mm">Le volet n'a aucune entrée : rien ne le ferait recalculer. Il s'abonne donc lui-même aux changements de la session, et ajoute une minuterie d'une seconde pour le temps écoulé. Tout ce qu'il ouvre en arrivant, il le referme en partant.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="n">54</span><span class="kw">public override void</span> AddedToDocument(<span class="ty">GH_Document</span> document)</div>
+<div class="l k1"><span class="n">57</span>  <span class="ty">TrainingManager</span>.Instance.StateChanged += OnStateChanged;<span class="rep r1">1</span></div>
+<div class="l k2"><span class="n">59</span>  _timer = <span class="kw">new</span> <span class="ty">Timer</span> { Interval = 1000 };<span class="rep r2">2</span></div>
+<div class="l k2"><span class="n">60</span>  _timer.Tick += (s, e) =&gt; RequestRefresh();</div>
+<div class="l k2"><span class="n">61</span>  _timer.Start();</div>
+<div class="l"><span class="n"> </span></div>
+<div class="l"><span class="n">64</span><span class="kw">public override void</span> RemovedFromDocument(<span class="ty">GH_Document</span> d)</div>
+<div class="l k3"><span class="n">66</span>  <span class="ty">TrainingManager</span>.Instance.StateChanged -= OnStateChanged;<span class="rep r3">3</span></div>
+<div class="l k4"><span class="n">67</span>  _timer?.Stop();<span class="rep r4">4</span></div>
+<div class="l k4"><span class="n">68</span>  _timer?.Dispose();</div>
+<div class="l k4"><span class="n">69</span>  _timer = <span class="kw">null</span>;</div>
+<div class="l"><span class="n"> </span></div>
+<div class="l k5"><span class="n">75</span><span class="kw">private void</span> RequestRefresh()<span class="rep r5">5</span></div>
+<div class="l k6"><span class="n">77</span>  OnPingDocument()?.ScheduleSolution(1,<span class="rep r6">6</span></div>
+<div class="l k6"><span class="n"> </span>    doc =&gt; ExpireSolution(<span class="kw">true</span>));</div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>S'abonner</b>Chaque changement de session.</li>
+      <li><span class="rep r2">2</span><b>Une minuterie</b>WinForms : elle sonne sur le fil d'interface.</li>
+      <li><span class="rep r3">3</span><b>Se désabonner</b>Sinon la session retient le volet supprimé.</li>
+      <li><span class="rep r4">4</span><b>Arrêter, libérer</b>Le ?. couvre un retrait sans ajout.</li>
+      <li><span class="rep r5">5</span><b>Un seul chemin</b>Minuterie et session passent par là.</li>
+      <li><span class="rep r6">6</span><b>Planifier</b>Pas d'expiration au milieu d'une solution.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">Pourquoi ScheduleSolution</span>
+    La minuterie peut sonner pendant que Grasshopper calcule. Expirer un composant en pleine solution n'est pas permis ; <code>ScheduleSolution(1, …)</code> demande une solution dans une milliseconde et appelle le rappel juste avant, au moment où expirer est sûr. Les éditeurs de Magpie l'emploient aussi (MagpieExerciseEditor.cs, ligne 405).
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 47 · Déboguer un plugin dans Rhino</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 3A</b> · Le plugin Grasshopper</span><b>Cours 47</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Pour déboguer un .gha, F5 lance…</div><ul>
+      <li><span>A</span>le .gha lui-même</li><li><span>B</span>Rhino.exe, avec des arguments</li><li><span>C</span>Grasshopper.exe</li><li><span>D</span>dotnet test</li></ul></div>
+
+    <div class="q"><div class="enonce">/runscript="_Grasshopper" sert à…</div><ul>
+      <li><span>A</span>compiler Grasshopper</li><li><span>B</span>désactiver les scripts</li><li><span>C</span>ouvrir Grasshopper dès le démarrage</li><li><span>D</span>choisir le moteur .NET</li></ul></div>
+
+    <div class="q"><div class="enonce">Cuttlefish cible net48. Le profil cohérent est…</div><ul>
+      <li><span>A</span>Rhino 8 - netfx</li><li><span>B</span>Rhino 8 - netcore</li><li><span>C</span>aucun</li><li><span>D</span>n'importe lequel, c'est pareil</li></ul></div>
+
+    <div class="q"><div class="enonce">RHINO_PACKAGE_DIRS pointé sur la sortie du build…</div><ul>
+      <li><span>A</span>efface les plugins installés</li><li><span>B</span>accélère le build</li><li><span>C</span>copie le .gha dans Libraries</li><li><span>D</span>fait charger le .gha tout juste compilé</li></ul></div>
+
+    <div class="q"><div class="enonce">Rhino ouvert, SnapSet.Constituants.dll…</div><ul>
+      <li><span>A</span>se remplace sans souci</li><li><span>B</span>est verrouillée : la copie échoue</li><li><span>C</span>est rechargée à chaud</li><li><span>D</span>est supprimée</li></ul></div>
+
+    <div class="q"><div class="enonce">Et le .gha de conception, Rhino ouvert ?</div><ul>
+      <li><span>A</span>il se remplace : Grasshopper l'a chargé en mémoire</li><li><span>B</span>il est verrouillé</li><li><span>C</span>il est renommé</li><li><span>D</span>il est rechargé à chaud</li></ul></div>
+
+    <div class="q"><div class="enonce">L'erreur ATC911 empêche…</div><ul>
+      <li><span>A</span>un build lent</li><li><span>B</span>un .gha trop gros</li><li><span>C</span>un déploiement à moitié périmé, sans rien dire</li><li><span>D</span>un test qui échoue</li></ul></div>
+
+    <div class="q"><div class="enonce">Rhino ouvert, vérifier que ça compile :</div><ul>
+      <li><span>A</span>fermer Rhino d'abord, toujours</li><li><span>B</span>dotnet build -p:DeployerVersLibraries=false</li><li><span>C</span>supprimer Libraries</li><li><span>D</span>c'est impossible</li></ul></div>
+
+    <div class="q"><div class="enonce">Pourquoi MagpieDev.gha n'est-il jamais publié ?</div><ul>
+      <li><span>A</span>il est trop lent</li><li><span>B</span>il n'a pas d'icône</li><li><span>C</span>il est en anglais</li><li><span>D</span>il montre la réponse attendue</li></ul></div>
+
+    <div class="q"><div class="enonce">Voir ce qui se passe sans point d'arrêt : <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>RhinoApp.WriteLine</li><li><span>B</span>AddRuntimeMessage</li><li><span>C</span>un composant de diagnostic</li><li><span>D</span>recompiler en Release</li></ul></div>
+
+    <div class="q"><div class="enonce">Le volet oublie de se désabonner de StateChanged :</div><ul>
+      <li><span>A</span>rien</li><li><span>B</span>la session retient le volet supprimé</li><li><span>C</span>Rhino plante</li><li><span>D</span>le volet se duplique</li></ul></div>
+
+    <div class="q"><div class="enonce">Pourquoi ScheduleSolution plutôt qu'ExpireSolution direct ?</div><ul>
+      <li><span>A</span>pour ne pas expirer en pleine solution</li><li><span>B</span>c'est plus court à écrire</li><li><span>C</span>pour sauter une solution</li><li><span>D</span>pour changer de fil</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 47 · Déboguer un plugin dans Rhino</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 3A</b> · Le plugin Grasshopper</span><b>Cours 47</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · B.</b> Un plugin n'est pas un programme.</div>
+    <div><b>02 · C.</b> Une commande lancée au démarrage.</div>
+    <div><b>03 · A.</b> Le moteur de sa cible.</div>
+    <div><b>04 · D.</b> Rien à copier.</div>
+    <div><b>05 · B.</b> Chargée depuis le disque.</div>
+    <div><b>06 · A.</b> Commentaire des lignes 61–65.</div>
+    <div><b>07 · C.</b> Bruyant plutôt que trompeur.</div>
+    <div><b>08 · B.</b> README, ligne 44.</div>
+    <div><b>09 · D.</b> Le corrigé offert.</div>
+    <div><b>10 · A, B et C.</b> Ligne de commande, composant, volet.</div>
+    <div><b>11 · B.</b> L'abonnement garde une référence.</div>
+    <div><b>12 · A.</b> Le rappel vient au bon moment.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis la page 4 et le volet de la page 5. <b>10 à 12</b> : passe au cours 09, « La géométrie RhinoCommon ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">"commandName": "Executable"</td><td>F5 lance un exécutable</td><td>launchSettings.json:4</td></tr>
+      <tr><td class="c">/netfx /runscript="_Grasshopper"</td><td>moteur .NET, Grasshopper ouvert</td><td>launchSettings.json:14</td></tr>
+      <tr><td class="c">RHINO_PACKAGE_DIRS</td><td>charger depuis la sortie du build</td><td>launchSettings.json:8</td></tr>
+      <tr><td class="c">-p:DeployerVersLibraries=false</td><td>construire sans copier</td><td>SnapSet README:44</td></tr>
+      <tr><td class="c">&lt;Error Code="ATC911" … /&gt;</td><td>échouer franchement</td><td>SnapSet.Conception.csproj:83</td></tr>
+      <tr><td class="c">doc.ScheduleSolution(1, cb)</td><td>expirer au bon moment</td><td>MagpieDebugPanel.cs:77</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Profil de lancement</dt><dd>Ce que fait F5 : quel exécutable, quels arguments, quelles variables.</dd>
+    <dt>Point d'arrêt</dt><dd>Une ligne où le débogueur suspend le programme pour l'inspecter.</dd>
+    <dt>Fichier verrouillé</dt><dd>Un fichier ouvert par un programme, que Windows refuse de remplacer.</dd>
+    <dt>Libraries</dt><dd>%APPDATA%\Grasshopper\Libraries : le dossier où Grasshopper cherche ses plugins.</dd>
+    <dt>Volet de diagnostic</dt><dd>Un composant qui expose un état interne, pour le développeur seul.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 09</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 47 · Déboguer un plugin dans Rhino</div>
+</section>
+
+</body>
+</html>

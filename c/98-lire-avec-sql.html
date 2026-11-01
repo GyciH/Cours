@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>98 · Lire avec SQL</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-10">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 98</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Lire avec SQL</h1>
+  <p class="chapeau">Une requête SQL ne dit pas comment chercher : elle décrit les lignes voulues, et la base trouve le chemin. Quelques mots suffisent pour la plupart des lectures : choisir des colonnes, filtrer, relier deux tables, grouper et compter, trier. Les surprises viennent presque toutes de NULL et des noms de colonnes.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>34</b> et <b>97</b></span>
+    <span class="pastille">Exemples · <b>compute-proxy.mjs</b>, <b>authorize-components.mjs</b> (Magpie)</span>
+  </div>
+
+  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+    <svg viewBox="0 0 600 196" width="100%">
+<text x="10" y="18" font-size="8" fill="#6B7378" text-anchor="start" font-weight="700">on l'écrit</text>
+<text x="10" y="98" font-size="8" fill="#4A4A68" text-anchor="start" font-weight="700">la base l'évalue</text>
+<rect x="10" y="26" width="74" height="26" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="47.0" y="41.666666666666664" font-size="8" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">SELECT</text>
+<rect x="10" y="106" width="74" height="26" rx="4" fill="#ECECF2" stroke="#4A4A68" stroke-width="1.2"/>
+<text x="47.0" y="121.66666666666667" font-size="8" fill="#4A4A68" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">FROM</text>
+<line x1="85" y1="119" x2="92" y2="119" stroke="#6B7378" stroke-width="1"/><polygon points="92,119 85.6,121.7 85.6,116.3" fill="#6B7378"/>
+<rect x="93" y="26" width="74" height="26" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="130.0" y="41.666666666666664" font-size="8" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">FROM</text>
+<rect x="93" y="106" width="74" height="26" rx="4" fill="#ECECF2" stroke="#4A4A68" stroke-width="1.2"/>
+<text x="130.0" y="121.66666666666667" font-size="8" fill="#4A4A68" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">WHERE</text>
+<line x1="168" y1="119" x2="175" y2="119" stroke="#6B7378" stroke-width="1"/><polygon points="175,119 168.6,121.7 168.6,116.3" fill="#6B7378"/>
+<rect x="176" y="26" width="74" height="26" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="213.0" y="41.666666666666664" font-size="8" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">WHERE</text>
+<rect x="176" y="106" width="74" height="26" rx="4" fill="#ECECF2" stroke="#4A4A68" stroke-width="1.2"/>
+<text x="213.0" y="121.66666666666667" font-size="8" fill="#4A4A68" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">GROUP BY</text>
+<line x1="251" y1="119" x2="258" y2="119" stroke="#6B7378" stroke-width="1"/><polygon points="258,119 251.6,121.7 251.6,116.3" fill="#6B7378"/>
+<rect x="259" y="26" width="74" height="26" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="296.0" y="41.666666666666664" font-size="8" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">GROUP BY</text>
+<rect x="259" y="106" width="74" height="26" rx="4" fill="#ECECF2" stroke="#4A4A68" stroke-width="1.2"/>
+<text x="296.0" y="121.66666666666667" font-size="8" fill="#4A4A68" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">HAVING</text>
+<line x1="334" y1="119" x2="341" y2="119" stroke="#6B7378" stroke-width="1"/><polygon points="341,119 334.6,121.7 334.6,116.3" fill="#6B7378"/>
+<rect x="342" y="26" width="74" height="26" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="379.0" y="41.666666666666664" font-size="8" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">HAVING</text>
+<rect x="342" y="106" width="74" height="26" rx="4" fill="#ECECF2" stroke="#1565C0" stroke-width="1.2"/>
+<text x="379.0" y="121.66666666666667" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">SELECT</text>
+<line x1="417" y1="119" x2="424" y2="119" stroke="#6B7378" stroke-width="1"/><polygon points="424,119 417.6,121.7 417.6,116.3" fill="#6B7378"/>
+<rect x="425" y="26" width="74" height="26" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="462.0" y="41.666666666666664" font-size="8" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">ORDER BY</text>
+<rect x="425" y="106" width="74" height="26" rx="4" fill="#ECECF2" stroke="#4A4A68" stroke-width="1.2"/>
+<text x="462.0" y="121.66666666666667" font-size="8" fill="#4A4A68" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">ORDER BY</text>
+<line x1="500" y1="119" x2="507" y2="119" stroke="#6B7378" stroke-width="1"/><polygon points="507,119 500.6,121.7 500.6,116.3" fill="#6B7378"/>
+<rect x="508" y="26" width="74" height="26" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="545.0" y="41.666666666666664" font-size="8" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">LIMIT</text>
+<rect x="508" y="106" width="74" height="26" rx="4" fill="#ECECF2" stroke="#4A4A68" stroke-width="1.2"/>
+<text x="545.0" y="121.66666666666667" font-size="8" fill="#4A4A68" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">LIMIT</text>
+<line x1="51" y1="54" x2="383" y2="104" stroke="#1565C0" stroke-width="1.2"/><polygon points="383,104 376.2,105.7 377.0,100.3" fill="#1565C0"/>
+<text x="10" y="156" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">On décrit le résultat voulu ; la base choisit comment l'obtenir. L'ordre logique explique pourtant bien des choses :</text>
+<text x="10" y="172" font-size="8.2" fill="#2B2F33" text-anchor="start">HAVING filtre des groupes déjà formés, et selon la norme un alias de SELECT n'existe pas encore dans WHERE.</text>
+<text x="10" y="188" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Ordre logique de la norme SQL. SQLite accepte pourtant un alias dans WHERE (mesuré) ; PostgreSQL le refuse.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>On filtre les lignes, on les relie, on les groupe, puis on choisit ce qu'on affiche et dans quel ordre : la base suit cette logique, quel que soit l'ordre d'écriture.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Commander au restaurant : on dit le plat, pas la recette. Le cuisinier choisit l'ordre des gestes, mais le plat doit être celui qu'on a décrit.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>lire une requête dans l'ordre de la base ;</li>
+        <li>choisir entre JOIN et LEFT JOIN ;</li>
+        <li>compter par groupe sans erreur ;</li>
+        <li>éviter les pièges de NULL.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À retenir</span>
+    Les résultats de ce cours ont été obtenus avec node:sqlite, sur une petite base en mémoire qui reprend les tables de Magpie. SQLite suit la norme SQL de près ; PostgreSQL ou SQL Server rendraient les mêmes lignes, à quelques fonctions près.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 98 · Lire avec SQL</div>
+</section>
+
+<!-- ============ PAGE 2 · LES JOINTURES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 98</b></div>
+  <p class="rubrique">Schéma 1 · Les jointures</p>
+  <h2>Relier deux tables</h2>
+  <p style="max-width:165mm">Une <b>jointure</b> associe chaque ligne d'une table aux lignes de l'autre qui vérifient une condition, ici l'égalité de la clé étrangère et de la clé primaire. <code>JOIN</code> jette les lignes sans partenaire ; <code>LEFT JOIN</code> garde toutes celles de gauche.</p>
+
+  <svg viewBox="0 0 600 222" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="222" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#4A4A68" text-anchor="start" font-weight="700">Trois parcours, quatre exercices dont un sans parcours : deux jointures (node:sqlite, mesuré)</text>
+<text x="16" y="42" font-size="7.8" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">parcours</text>
+<text x="16" y="128" font-size="7.8" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">exercises</text>
+<rect x="16" y="46" width="154" height="16" fill="#4A4A68"/>
+<text x="22" y="57.5" font-size="7.4" fill="#fff" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">id</text>
+<text x="84" y="57.5" font-size="7.4" fill="#fff" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">title</text>
+<rect x="16" y="62" width="154" height="15" fill="#fff" stroke="#E2D9CB" stroke-width=".5"/>
+<text x="22" y="73" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">nombres</text>
+<text x="84" y="73" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">Les nombres</text>
+<rect x="16" y="77" width="154" height="15" fill="#ECECF2" stroke="#E2D9CB" stroke-width=".5"/>
+<text x="22" y="88" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">courbes</text>
+<text x="84" y="88" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">Les courbes</text>
+<rect x="16" y="92" width="154" height="15" fill="#fff" stroke="#E2D9CB" stroke-width=".5"/>
+<text x="22" y="103" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">vide</text>
+<text x="84" y="103" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">Parcours vide</text>
+<rect x="16" y="132" width="170" height="16" fill="#4A4A68"/>
+<text x="22" y="143.5" font-size="7.4" fill="#fff" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">id</text>
+<text x="56" y="143.5" font-size="7.4" fill="#fff" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">parcoursId</text>
+<text x="122" y="143.5" font-size="7.4" fill="#fff" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">title</text>
+<rect x="16" y="148" width="170" height="15" fill="#fff" stroke="#E2D9CB" stroke-width=".5"/>
+<text x="22" y="159" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">ex1</text>
+<text x="56" y="159" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">nombres</text>
+<text x="122" y="159" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">Impairs</text>
+<rect x="16" y="163" width="170" height="15" fill="#ECECF2" stroke="#E2D9CB" stroke-width=".5"/>
+<text x="22" y="174" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">ex2</text>
+<text x="56" y="174" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">nombres</text>
+<text x="122" y="174" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">Somme</text>
+<rect x="16" y="178" width="170" height="15" fill="#fff" stroke="#E2D9CB" stroke-width=".5"/>
+<text x="22" y="189" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">ex3</text>
+<text x="56" y="189" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">courbes</text>
+<text x="122" y="189" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">Cercle</text>
+<rect x="16" y="193" width="170" height="15" fill="#ECECF2" stroke="#E2D9CB" stroke-width=".5"/>
+<text x="22" y="204" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">ex4</text>
+<text x="56" y="204" font-size="7.4" fill="#6B7378" text-anchor="start" class="mono" style="font-size:7.4px">NULL</text>
+<text x="122" y="204" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">Brouillon</text>
+<text x="220" y="42" font-size="7.8" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">… JOIN exercises e ON e.parcoursId = p.id</text>
+<rect x="220" y="46" width="170" height="16" fill="#1565C0"/>
+<text x="226" y="57.5" font-size="7.4" fill="#fff" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">parcours</text>
+<text x="316" y="57.5" font-size="7.4" fill="#fff" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">exercice</text>
+<rect x="220" y="62" width="170" height="15" fill="#fff" stroke="#E2D9CB" stroke-width=".5"/>
+<text x="226" y="73" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">Les nombres</text>
+<text x="316" y="73" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">Impairs</text>
+<rect x="220" y="77" width="170" height="15" fill="#ECECF2" stroke="#E2D9CB" stroke-width=".5"/>
+<text x="226" y="88" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">Les nombres</text>
+<text x="316" y="88" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">Somme</text>
+<rect x="220" y="92" width="170" height="15" fill="#fff" stroke="#E2D9CB" stroke-width=".5"/>
+<text x="226" y="103" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">Les courbes</text>
+<text x="316" y="103" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">Cercle</text>
+<text x="220" y="128" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">… LEFT JOIN exercises e ON …</text>
+<rect x="220" y="132" width="170" height="16" fill="#2E7D32"/>
+<text x="226" y="143.5" font-size="7.4" fill="#fff" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">parcours</text>
+<text x="316" y="143.5" font-size="7.4" fill="#fff" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">exercice</text>
+<rect x="220" y="148" width="170" height="15" fill="#fff" stroke="#E2D9CB" stroke-width=".5"/>
+<text x="226" y="159" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">Les nombres</text>
+<text x="316" y="159" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">Impairs</text>
+<rect x="220" y="163" width="170" height="15" fill="#ECECF2" stroke="#E2D9CB" stroke-width=".5"/>
+<text x="226" y="174" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">Les nombres</text>
+<text x="316" y="174" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">Somme</text>
+<rect x="220" y="178" width="170" height="15" fill="#fff" stroke="#E2D9CB" stroke-width=".5"/>
+<text x="226" y="189" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">Les courbes</text>
+<text x="316" y="189" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">Cercle</text>
+<rect x="220" y="193" width="170" height="15" fill="#FBE3DD" stroke="#E2D9CB" stroke-width=".5"/>
+<text x="226" y="204" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">Parcours vide</text>
+<text x="316" y="204" font-size="7.4" fill="#6B7378" text-anchor="start" class="mono" style="font-size:7.4px">NULL</text>
+<text x="410" y="70" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">JOIN ne garde que</text>
+<text x="410" y="84" font-size="7.8" fill="#2B2F33" text-anchor="start">les paires qui se répondent.</text>
+<text x="410" y="156" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">LEFT JOIN garde chaque</text>
+<text x="410" y="170" font-size="7.8" fill="#2B2F33" text-anchor="start">parcours, même sans exercice,</text>
+<text x="410" y="184" font-size="7.8" fill="#2B2F33" text-anchor="start">et complète par NULL.</text>
+<text x="410" y="206" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">ex4, sans parcours, n'apparaît dans aucune.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/compute-proxy.mjs · lignes 346 à 353, ligne 348 coupée en deux</span>function loadParcoursForAdmin() {
+  const parcoursRows = db.prepare("SELECT * FROM parcours ORDER BY sortOrder, title").all();
+  const exerciseRows = db.prepare("SELECT id, title, parcoursId, sortOrder FROM exercises ORDER BY sortOrder")
+    .all();
+  return parcoursRows.map((p) =&gt; ({
+    ...p,
+    exercises: exerciseRows.filter((e) =&gt; e.parcoursId === p.id),
+  }));
+}</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Une jointure écrite en JavaScript</h3>
+      <p>Magpie lit les deux tables, puis relie chaque parcours à ses exercices par un <code>filter</code>. C'est un <code>LEFT JOIN</code> : un parcours vide reçoit une liste vide. Le résultat est déjà la forme imbriquée que l'interface attend, ce qu'une jointure SQL, à plat, ne donnerait pas.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Le coût</h3>
+      <p>Chaque parcours parcourt tous les exercices : parcours × exercices comparaisons. Pour quelques dizaines d'exercices, c'est instantané. Un <code>Map</code> des exercices par parcours ramènerait le coût à une seule passe (cours 55).</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Écrire <code>JOIN</code> quand on veut « tous les parcours, avec leurs exercices ». Le parcours vide disparaît sans erreur : il faut <code>LEFT JOIN</code>, et la table qu'on veut garder entière à gauche.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 98 · Lire avec SQL</div>
+</section>
+
+<!-- ============ PAGE 3 · GROUPER ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 98</b></div>
+  <p class="rubrique">Schéma 2 · Grouper et compter</p>
+  <h2>Une ligne par groupe</h2>
+  <p style="max-width:165mm"><code>GROUP BY</code> rassemble les lignes qui partagent une valeur, et une <b>fonction d'agrégat</b> résume chaque groupe en une valeur : <code>COUNT</code>, <code>SUM</code>, <code>AVG</code>, <code>MIN</code>, <code>MAX</code>. Le résultat a une ligne par groupe, plus une par ligne de départ.</p>
+
+  <svg viewBox="0 0 600 204" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="204" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#4A4A68" text-anchor="start" font-weight="700">Compter les exercices de chaque parcours : la même jointure, groupée (mesuré)</text>
+<text x="16" y="44" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">SELECT p.title, COUNT(e.id) AS n … LEFT JOIN … GROUP BY p.id</text>
+<rect x="16" y="50" width="150" height="16" fill="#2E7D32"/>
+<text x="22" y="61.5" font-size="7.4" fill="#fff" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">title</text>
+<text x="132" y="61.5" font-size="7.4" fill="#fff" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">n</text>
+<rect x="16" y="66" width="150" height="15" fill="#fff" stroke="#E2D9CB" stroke-width=".5"/>
+<text x="22" y="77" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">Les nombres</text>
+<text x="132" y="77" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">2</text>
+<rect x="16" y="81" width="150" height="15" fill="#ECECF2" stroke="#E2D9CB" stroke-width=".5"/>
+<text x="22" y="92" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">Les courbes</text>
+<text x="132" y="92" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">1</text>
+<rect x="16" y="96" width="150" height="15" fill="#fff" stroke="#E2D9CB" stroke-width=".5"/>
+<text x="22" y="107" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">Parcours vide</text>
+<text x="132" y="107" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">0</text>
+<text x="310" y="44" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">SELECT p.title, COUNT(*) AS n … même requête</text>
+<rect x="310" y="50" width="150" height="16" fill="#C62828"/>
+<text x="316" y="61.5" font-size="7.4" fill="#fff" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">title</text>
+<text x="426" y="61.5" font-size="7.4" fill="#fff" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">n</text>
+<rect x="310" y="66" width="150" height="15" fill="#fff" stroke="#E2D9CB" stroke-width=".5"/>
+<text x="316" y="77" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">Les nombres</text>
+<text x="426" y="77" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">2</text>
+<rect x="310" y="81" width="150" height="15" fill="#ECECF2" stroke="#E2D9CB" stroke-width=".5"/>
+<text x="316" y="92" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">Les courbes</text>
+<text x="426" y="92" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">1</text>
+<rect x="310" y="96" width="150" height="15" fill="#FBE3DD" stroke="#E2D9CB" stroke-width=".5"/>
+<text x="316" y="107" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">Parcours vide</text>
+<text x="426" y="107" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">1</text>
+<text x="16" y="136" font-size="8" fill="#2B2F33" text-anchor="start">COUNT(*) compte les lignes ; COUNT(e.id) compte les valeurs non nulles. La ligne complétée par NULL</text>
+<text x="16" y="150" font-size="8" fill="#2B2F33" text-anchor="start">du parcours vide est une ligne : COUNT(*) la compte, et annonce un exercice qui n'existe pas.</text>
+<text x="16" y="174" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">HAVING COUNT(*) &gt;= 2 garde les groupes d'au moins deux lignes : seul « nombres » reste (mesuré).</text>
+<text x="16" y="192" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">WHERE filtre les lignes avant de grouper ; HAVING filtre les groupes après.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/authorize-components.mjs · ligne 47</span>const total = db.prepare("SELECT COUNT(*) AS n FROM components WHERE isAuthorized = 1").get().n;</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Un agrégat sans groupe</h3>
+      <p>Sans <code>GROUP BY</code>, toute la table forme un seul groupe : la requête rend une ligne, et <code>get()</code> la lit. Ici, <code>COUNT(*)</code> est juste, car il n'y a pas de jointure : chaque ligne est un composant.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Nommer le résultat</h3>
+      <p><code>AS n</code> donne un nom à la colonne calculée. Sans lui, la clé de l'objet JavaScript serait le texte <code>COUNT(*)</code>, qu'il faudrait écrire entre crochets. Les scripts de Magpie nomment toujours leurs comptes.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Compter avec <code>COUNT(*)</code> après un <code>LEFT JOIN</code>. Le groupe sans partenaire contient une ligne remplie de NULL, que <code>COUNT(*)</code> compte : on compte la colonne de droite, <code>COUNT(e.id)</code>.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 98 · Lire avec SQL</div>
+</section>
+
+<!-- ============ PAGE 4 · LES SURPRISES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 98</b></div>
+  <p class="rubrique">Schéma 3 · NULL, texte et noms</p>
+  <h2>Ce qui surprend</h2>
+  <p style="max-width:165mm">NULL veut dire « valeur inconnue ». Toute comparaison avec lui rend inconnu, que <code>WHERE</code> traite comme faux. Les fonctions de texte de SQLite ignorent les accents. Et un pilote qui rend des objets doit choisir quand deux colonnes portent le même nom.</p>
+
+  <svg viewBox="0 0 600 220" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="220" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#4A4A68" text-anchor="start" font-weight="700">Quatre résultats qui surprennent, mesurés avec node:sqlite</text>
+<rect x="16" y="34" width="568" height="38" rx="4" fill="#ECECF2" stroke="#4A4A68" stroke-width="1.2"/>
+<text x="28" y="50" font-size="8" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">WHERE parcoursId = NULL</text>
+<text x="574" y="50" font-size="8.2" fill="#C62828" text-anchor="end" font-weight="700">aucune ligne</text>
+<text x="28" y="65" font-size="7.8" fill="#2B2F33" text-anchor="start">NULL n'est égal à rien, pas même à NULL : IS NULL rend ex4.</text>
+<rect x="16" y="78" width="568" height="38" rx="4" fill="#fff" stroke="#4A4A68" stroke-width="1.2"/>
+<text x="28" y="94" font-size="8" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">WHERE parcoursId != 'nombres'</text>
+<text x="574" y="94" font-size="8.2" fill="#C62828" text-anchor="end" font-weight="700">ex3 seul</text>
+<text x="28" y="109" font-size="7.8" fill="#2B2F33" text-anchor="start">ex4, sans parcours, n'est ni égal ni différent : il disparaît.</text>
+<rect x="16" y="122" width="568" height="38" rx="4" fill="#ECECF2" stroke="#4A4A68" stroke-width="1.2"/>
+<text x="28" y="138" font-size="8" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">LOWER('Évaluer')</text>
+<text x="574" y="138" font-size="8.2" fill="#C62828" text-anchor="end" font-weight="700">'Évaluer'</text>
+<text x="28" y="153" font-size="7.8" fill="#2B2F33" text-anchor="start">LOWER et LIKE ne changent que les lettres ASCII ; É reste É.</text>
+<rect x="16" y="166" width="568" height="38" rx="4" fill="#fff" stroke="#4A4A68" stroke-width="1.2"/>
+<text x="28" y="182" font-size="8" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">SELECT p.title, e.title …</text>
+<text x="574" y="182" font-size="8.2" fill="#C62828" text-anchor="end" font-weight="700">une seule clé title</text>
+<text x="28" y="197" font-size="7.8" fill="#2B2F33" text-anchor="start">deux colonnes de même nom : l'objet JavaScript n'en garde qu'une.</text>
+<text x="16" y="212" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Remèdes : IS NULL et IS NOT NULL, des alias (AS parcours, AS exercice), et comparer des noms accentués côté JavaScript.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/authorize-components.mjs · lignes 21 à 26</span>const findExact = db.prepare(
+  "SELECT typeGuid, displayName, name FROM components WHERE LOWER(displayName) = LOWER(?) OR LOWER(name) = LOWER(?)"
+);
+const findSimilar = db.prepare(
+  "SELECT displayName FROM components WHERE LOWER(displayName) LIKE LOWER(?) LIMIT 5"
+);</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Insensible à la casse, pour l'ASCII</h3>
+      <p>Le script retrouve « Panel » quand on tape « panel ». Mais <code>"Circle (Paramètre)"</code> et <code>"circle (PARAMÈTRE)"</code> ne sont pas égaux une fois passés par <code>LOWER</code> : le È reste majuscule (mesuré). Les noms du catalogue n'ont pas de majuscule accentuée, et la saisie habituelle passe.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>La recherche approchée</h3>
+      <p>Faute de résultat exact, <code>LIKE '%nom%'</code> propose jusqu'à cinq noms qui contiennent la saisie. Les <code>%</code> sont ajoutés côté JavaScript, la valeur passe par <code>?</code> : la requête reste paramétrée.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Écrire <code>!= 'nombres'</code> pour « tous les exercices hors de ce parcours ». Les exercices sans parcours disparaissent aussi : il faut ajouter <code>OR parcoursId IS NULL</code>.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 98 · Lire avec SQL</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 98</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Les lectures de Magpie</h2>
+  <p style="max-width:165mm">Le backend de Magpie lit sa base avec des requêtes courtes, une table à la fois, et relie en JavaScript. Toutes trient ; presque toutes trient de la même façon.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">magpie/web/compute-proxy.mjs</span></div>
+<div class="l k1"><span class="n">244</span><span class="st">"SELECT … WHERE parcoursId = ? ORDER BY sortOrder, title"</span><span class="rep r1">1</span></div>
+<div class="l k2"><span class="n">348</span><span class="st">"SELECT … FROM exercises ORDER BY sortOrder"</span><span class="rep r2">2</span></div>
+<div class="l k3"><span class="n">351</span>exerciseRows.filter((e) =&gt; e.parcoursId === p.id)<span class="rep r3">3</span></div>
+<div class="l"><span class="cm">magpie/web/authorize-components.mjs</span></div>
+<div class="l k4"><span class="n">22</span><span class="st">"… WHERE LOWER(displayName) = LOWER(?) OR …"</span><span class="rep r4">4</span></div>
+<div class="l k5"><span class="n">47</span><span class="st">"SELECT COUNT(*) AS n FROM components WHERE …"</span><span class="rep r5">5</span></div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Côté apprenant</b>Ordre, puis titre.</li>
+      <li><span class="rep r2">2</span><b>Côté admin</b>Ordre seul.</li>
+      <li><span class="rep r3">3</span><b>LEFT JOIN</b>En JavaScript.</li>
+      <li><span class="rep r4">4</span><b>Casse</b>ASCII seulement.</li>
+      <li><span class="rep r5">5</span><b>Un agrégat</b>Nommé n.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À surveiller · deux ordres pour le même parcours</span>
+    La page de l'apprenant trie par <code>sortOrder, title</code> (ligne 244), la page d'administration par <code>sortOrder</code> seul (ligne 348). Tant que les positions sont distinctes, c'est sans effet. Avec deux exercices à la même position, le cas du cours 97, la mesure sur une reproduction donne « ex3, ex1 » côté admin et « ex1, ex3 » côté apprenant : l'auteur ne voit pas l'ordre que l'apprenant suivra. Ajouter <code>, title</code> à la ligne 348 alignerait les deux.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 98 · Lire avec SQL</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 98</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Dans l'ordre logique, la base évalue en premier…</div><ul>
+      <li><span>A</span>SELECT</li><li><span>B</span>FROM</li><li><span>C</span>ORDER BY</li><li><span>D</span>LIMIT</li></ul></div>
+
+    <div class="q"><div class="enonce">Dans SQLite, un alias de SELECT utilisé dans WHERE…</div><ul>
+      <li><span>A</span>est accepté, par une extension à la norme</li><li><span>B</span>est ignoré</li><li><span>C</span>provoque toujours une erreur</li><li><span>D</span>est remplacé par NULL</li></ul></div>
+
+    <div class="q"><div class="enonce">JOIN entre parcours et exercices omet…</div><ul>
+      <li><span>A</span>les exercices rattachés</li><li><span>B</span>le parcours sans exercice</li><li><span>C</span>rien</li><li><span>D</span>tous les parcours</li></ul></div>
+
+    <div class="q"><div class="enonce">LEFT JOIN complète les lignes sans partenaire par…</div><ul>
+      <li><span>A</span>0</li><li><span>B</span>NULL</li><li><span>C</span>une chaîne vide</li><li><span>D</span>une erreur</li></ul></div>
+
+    <div class="q"><div class="enonce">Après un LEFT JOIN, pour compter les exercices d'un parcours vide, on écrit…</div><ul>
+      <li><span>A</span>COUNT(*)</li><li><span>B</span>SUM(*)</li><li><span>C</span>COUNT(e.id)</li><li><span>D</span>COUNT(p.id)</li></ul></div>
+
+    <div class="q"><div class="enonce">HAVING filtre…</div><ul>
+      <li><span>A</span>les tables</li><li><span>B</span>les lignes, avant GROUP BY</li><li><span>C</span>les colonnes</li><li><span>D</span>les groupes, après GROUP BY</li></ul></div>
+
+    <div class="q"><div class="enonce">WHERE parcoursId = NULL rend…</div><ul>
+      <li><span>A</span>aucune ligne</li><li><span>B</span>toutes les lignes</li><li><span>C</span>les exercices sans parcours</li><li><span>D</span>une erreur</li></ul></div>
+
+    <div class="q"><div class="enonce">Pour garder les exercices hors du parcours « nombres », y compris sans parcours… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>parcoursId != 'nombres'</li><li><span>B</span>parcoursId = NULL</li><li><span>C</span>parcoursId IS NOT 'nombres'</li><li><span>D</span>parcoursId != 'nombres' OR parcoursId IS NULL</li></ul></div>
+
+    <div class="q"><div class="enonce">LOWER('Évaluer') rend, dans SQLite…</div><ul>
+      <li><span>A</span>NULL</li><li><span>B</span>'evaluer'</li><li><span>C</span>'évaluer'</li><li><span>D</span>'Évaluer'</li></ul></div>
+
+    <div class="q"><div class="enonce">SELECT p.title, e.title lu par node:sqlite donne…</div><ul>
+      <li><span>A</span>un tableau de tableaux</li><li><span>B</span>deux clés title</li><li><span>C</span>une erreur</li><li><span>D</span>un objet avec une seule clé title</li></ul></div>
+
+    <div class="q"><div class="enonce">loadParcoursForAdmin relie parcours et exercices…</div><ul>
+      <li><span>A</span>en JavaScript, par filter</li><li><span>B</span>par un JOIN SQL</li><li><span>C</span>par une vue</li><li><span>D</span>par une clé étrangère seule</li></ul></div>
+
+    <div class="q"><div class="enonce">Les pages admin et apprenant peuvent montrer deux ordres quand…</div><ul>
+      <li><span>A</span>la base est en mémoire</li><li><span>B</span>jamais</li><li><span>C</span>deux exercices partagent une position</li><li><span>D</span>le parcours est vide</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 98 · Lire avec SQL</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 98</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · B.</b> D'abord les tables.</div>
+    <div><b>02 · A.</b> Mesuré ; PostgreSQL le refuse.</div>
+    <div><b>03 · B.</b> Pas de partenaire, pas de ligne.</div>
+    <div><b>04 · B.</b> Une valeur inconnue.</div>
+    <div><b>05 · C.</b> COUNT(*) compterait 1.</div>
+    <div><b>06 · D.</b> WHERE, lui, filtre avant.</div>
+    <div><b>07 · A.</b> NULL n'est égal à rien.</div>
+    <div><b>08 · C et D.</b> IS NOT compare aussi NULL.</div>
+    <div><b>09 · D.</b> ASCII seulement.</div>
+    <div><b>10 · D.</b> D'où les alias.</div>
+    <div><b>11 · A.</b> compute-proxy.mjs:351.</div>
+    <div><b>12 · C.</b> Tri par titre d'un côté seulement.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 99, « Les index d'une base ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">a JOIN b ON b.fk = a.id</td><td>les paires qui se répondent</td><td>schéma 1, page 2</td></tr>
+      <tr><td class="c">a LEFT JOIN b ON …</td><td>toutes les lignes de a</td><td>schéma 1, page 2</td></tr>
+      <tr><td class="c">GROUP BY col</td><td>une ligne par valeur</td><td>schéma 2, page 3</td></tr>
+      <tr><td class="c">COUNT(col) AS n</td><td>compter les valeurs non nulles</td><td>authorize-components.mjs:47</td></tr>
+      <tr><td class="c">col IS NULL</td><td>tester l'absence de valeur</td><td>schéma 3, page 4</td></tr>
+      <tr><td class="c">ORDER BY a, b</td><td>trier, puis départager</td><td>compute-proxy.mjs:244</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Jointure</dt><dd>L'association des lignes de deux tables selon une condition.</dd>
+    <dt>Jointure externe</dt><dd>Une jointure qui garde les lignes sans partenaire, complétées par NULL.</dd>
+    <dt>Fonction d'agrégat</dt><dd>Une fonction qui résume un groupe de lignes en une valeur.</dd>
+    <dt>NULL</dt><dd>L'absence de valeur ; toute comparaison avec lui est inconnue.</dd>
+    <dt>Alias</dt><dd>Un nom donné à une colonne ou une table dans une requête, par AS.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 99</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 98 · Lire avec SQL</div>
+</section>
+
+</body>
+</html>

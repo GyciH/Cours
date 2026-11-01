@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>111 · Tests de propriétés</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-11">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 111</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Tests de propriétés</h1>
+  <p class="chapeau">Un test par exemple vérifie une réponse qu'on a calculée à la main. Un <b>test de propriété</b> énonce une règle qui doit tenir pour toute entrée, puis tire des centaines d'entrées au hasard pour essayer de la mettre en défaut. Quand il y arrive, il simplifie le cas jusqu'au plus petit qui échoue encore.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>109</b></span>
+    <span class="pastille">Exemples · <b>Magpie</b>, <b>SnapSet</b></span>
+  </div>
+
+  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+    <svg viewBox="0 0 600 206" width="100%">
+<rect x="10" y="14" width="284" height="128" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="22" y="34" font-size="9.6" fill="#6B7378" text-anchor="start" font-weight="700">par exemples</text>
+<text x="22" y="54" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">[InlineData("0,5", "fr-FR", "0.5")]</text>
+<text x="22" y="68" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">[InlineData("0.5", "fr-FR", "0.5")]</text>
+<text x="22" y="82" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">[InlineData(" -2.25 ", "en-US", "-2.25")]</text>
+<text x="22" y="96" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">[InlineData("7", "fr-FR", "7")]</text>
+<text x="22" y="120" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">SnapSet, CurseurTests.cs:271–274</text>
+<text x="22" y="134" font-size="7.6" fill="#2B2F33" text-anchor="start">quatre cas choisis, réponse écrite à la main</text>
+<rect x="306" y="14" width="284" height="128" rx="4" fill="#ECEBFA" stroke="#4F46B8" stroke-width="1.2"/>
+<text x="318" y="34" font-size="9.6" fill="#4F46B8" text-anchor="start" font-weight="700">par propriété</text>
+<text x="318" y="56" font-size="8" fill="#2B2F33" text-anchor="start">pour toute liste attendue,</text>
+<text x="318" y="70" font-size="8" fill="#2B2F33" text-anchor="start">tout élément décalé de plus que la</text>
+<text x="318" y="84" font-size="8" fill="#2B2F33" text-anchor="start">tolérance, dans un sens ou l'autre,</text>
+<text x="318" y="98" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">la réponse est refusée.</text>
+<text x="318" y="120" font-size="7.6" fill="#2B2F33" text-anchor="start">mille listes tirées au hasard</text>
+<text x="318" y="134" font-size="7.6" fill="#2B2F33" text-anchor="start">la règle sert d'oracle</text>
+<text x="10" y="166" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">Un exemple vérifie une réponse précise. Une propriété vérifie une règle, sur des cas qu'on n'a pas choisis :</text>
+<text x="10" y="182" font-size="8" fill="#2B2F33" text-anchor="start">le hasard trouve les combinaisons auxquelles personne n'a pensé, notamment les côtés oubliés (cours 109).</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>On décrit ce qui doit toujours être vrai, et la machine cherche un contre-exemple à notre place, sur bien plus de cas qu'on n'en écrirait.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Un essai de fatigue. On ne vérifie pas une pièce sous trois charges choisies : on la secoue des milliers de fois avec des charges variées, et si elle casse, on cherche la plus petite charge qui la casse encore.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>énoncer une propriété ;</li>
+        <li>lire un contre-exemple réduit ;</li>
+        <li>comparer deux implémentations ;</li>
+        <li>reconnaître les quatre formes classiques.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À retenir</span>
+    Les tests de propriétés ne remplacent pas les exemples : un exemple documente un cas qu'on veut voir écrit noir sur blanc ; une propriété garde la règle générale. Les deux se complètent.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 111 · Tests de propriétés</div>
+</section>
+
+<!-- ============ PAGE 2 · CHERCHER ET RÉDUIRE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 111</b></div>
+  <p class="rubrique">Schéma 1 · Chercher, puis réduire</p>
+  <h2>Un contre-exemple lisible</h2>
+  <p style="max-width:165mm">Un tirage au hasard trouve vite un cas qui casse, mais rarement un cas simple. La <b>réduction</b> (shrinking) essaie des variantes plus petites (moins d'éléments, valeurs plus proches de zéro, écart plus faible) et garde chacune tant que l'échec persiste.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#4F46B8" text-anchor="start" font-weight="700">La propriété de la tolérance, lancée sur validation.mjs (copie), puis sur le mutant sans Math.abs (mesuré)</text>
+<rect x="16" y="36" width="568" height="24" rx="3" fill="#ECEBFA"/>
+<text x="30" y="52" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700">code actuel</text>
+<text x="200" y="52" font-size="8" fill="#2B2F33" text-anchor="start">1 000 listes tirées, 1 000 refusées : propriété vraie</text>
+<rect x="16" y="64" width="568" height="24" rx="3" fill="#fff"/>
+<text x="30" y="80" font-size="8.4" fill="#C62828" text-anchor="start" font-weight="700">mutant sans Math.abs</text>
+<text x="200" y="80" font-size="8" fill="#2B2F33" text-anchor="start">contre-exemple au 2e tirage :</text>
+<text x="330" y="80" font-size="8" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">attendu [99.47], écart −4,98</text>
+<text x="30" y="112" font-size="8.2" fill="#4F46B8" text-anchor="start" font-weight="700">Réduction : garder l'échec en simplifiant le cas, tant que c'est possible</text>
+<rect x="20" y="122" width="53" height="22" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="46.5" y="136" font-size="6.2" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.2px">[99.47] −4,98</text>
+<rect x="77" y="122" width="53" height="22" rx="4" fill="#fff" stroke="#4F46B8" stroke-width="1.2"/>
+<text x="103.5" y="136" font-size="6.2" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.2px">[0] −4,98</text>
+<rect x="134" y="122" width="53" height="22" rx="4" fill="#fff" stroke="#4F46B8" stroke-width="1.2"/>
+<text x="160.5" y="136" font-size="6.2" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.2px">[0] −2,49</text>
+<rect x="191" y="122" width="53" height="22" rx="4" fill="#fff" stroke="#4F46B8" stroke-width="1.2"/>
+<text x="217.5" y="136" font-size="6.2" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.2px">[0] −1,25</text>
+<rect x="248" y="122" width="53" height="22" rx="4" fill="#fff" stroke="#4F46B8" stroke-width="1.2"/>
+<text x="274.5" y="136" font-size="6.2" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.2px">[0] −0,63</text>
+<rect x="305" y="122" width="53" height="22" rx="4" fill="#fff" stroke="#4F46B8" stroke-width="1.2"/>
+<text x="331.5" y="136" font-size="6.2" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.2px">[0] −0,32</text>
+<rect x="362" y="122" width="53" height="22" rx="4" fill="#fff" stroke="#4F46B8" stroke-width="1.2"/>
+<text x="388.5" y="136" font-size="6.2" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.2px">[0] −0,16</text>
+<rect x="419" y="122" width="53" height="22" rx="4" fill="#fff" stroke="#4F46B8" stroke-width="1.2"/>
+<text x="445.5" y="136" font-size="6.2" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.2px">[0] −0,08</text>
+<rect x="476" y="122" width="53" height="22" rx="4" fill="#fff" stroke="#4F46B8" stroke-width="1.2"/>
+<text x="502.5" y="136" font-size="6.2" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.2px">[0] −0,04</text>
+<rect x="533" y="122" width="53" height="22" rx="4" fill="#ECEBFA" stroke="#C62828" stroke-width="1.2"/>
+<text x="559.5" y="136" font-size="6.2" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.2px">[0] −0,02</text>
+<text x="16" y="168" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">9 pas plus tard : attendu [0], réponse [−0,02], acceptée à tort. Un cas qu'on lit d'un coup d'œil.</text>
+<text x="16" y="186" font-size="7.8" fill="#2B2F33" text-anchor="start">Les bibliothèques (fast-check en JavaScript, FsCheck en .NET) tirent, réduisent et donnent la graine pour rejouer.</text>
+<text x="16" y="204" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Le petit script de ce cours fait les deux à la main, en 22 lignes, avec une graine fixe.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript, la propriété tirée mille fois</span>let g = 42; const rnd = () =&gt; ((g = (g * 1103515245 + 12345) % 2147483648) / 2147483648);
+for (let k = 0; k &lt; 1000; k++) {
+  const att = tirerListe(), i = tirerIndice(att), d = (rnd() &lt; .5 ? -1 : 1) * (0.02 + rnd());
+  if (verdict(decaler(att, i, d), att)) return echec(k, att, i, d);   // devait refuser
+}</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>La graine</h3>
+      <p>Le hasard d'un test doit être rejouable : un générateur à graine fixe (ici 42) redonne la même suite. Une bibliothèque affiche la graine d'un échec pour qu'on le rejoue à l'identique.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Tirer des deux côtés</h3>
+      <p>Le signe de l'écart est tiré lui aussi. C'est ce qui a trouvé le défaut du mutant au 2e essai : un écart négatif, le côté que les tests par exemples n'essayaient pas.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Recopier l'implémentation dans la propriété. Si l'on vérifie la tolérance avec la même formule que le code, une erreur de formule passe des deux côtés. La propriété s'écrit à partir de la règle (« plus que la tolérance, dans un sens ou l'autre »).
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 111 · Tests de propriétés</div>
+</section>
+
+<!-- ============ PAGE 3 · LE DIFFÉRENTIEL ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 111</b></div>
+  <p class="rubrique">Schéma 2 · Deux correcteurs</p>
+  <h2>Le test différentiel</h2>
+  <p style="max-width:165mm">Quand deux programmes doivent faire la même chose, chacun sert d'oracle à l'autre. Magpie corrige les réponses deux fois : dans le plugin Grasshopper (C#) et sur le serveur web (JavaScript). Le commentaire de validation.mjs dit qu'il « reproduit » le plugin ; une propriété le vérifie.</p>
+
+  <svg viewBox="0 0 600 222" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="222" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#4F46B8" text-anchor="start" font-weight="700">Même réponse, deux correcteurs : le web (Number) et le plugin (TryParseDouble, Windows en fr-FR), mesurés</text>
+<text x="30" y="44" font-size="7.8" fill="#6B7378" text-anchor="start" font-weight="700">saisie</text>
+<text x="170" y="44" font-size="7.8" fill="#6B7378" text-anchor="start" font-weight="700">web (validation.mjs)</text>
+<text x="330" y="44" font-size="7.8" fill="#6B7378" text-anchor="start" font-weight="700">plugin (AnswerValues.cs)</text>
+<text x="470" y="44" font-size="7.8" fill="#6B7378" text-anchor="start" font-weight="700">accord</text>
+<rect x="16" y="52" width="568" height="17" rx="2" fill="#ECEBFA"/>
+<text x="30" y="64" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">""  (vide)</text>
+<text x="170" y="64" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">0</text>
+<text x="330" y="64" font-size="7.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.8px">refusé</text>
+<text x="470" y="64" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700">non</text>
+<rect x="16" y="72" width="568" height="17" rx="2" fill="#fff"/>
+<text x="30" y="84" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">" "  ou  "\n"</text>
+<text x="170" y="84" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">0</text>
+<text x="330" y="84" font-size="7.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.8px">refusé</text>
+<text x="470" y="84" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700">non</text>
+<rect x="16" y="92" width="568" height="17" rx="2" fill="#ECEBFA"/>
+<text x="30" y="104" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">null,  []</text>
+<text x="170" y="104" font-size="7.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.8px">0</text>
+<text x="330" y="104" font-size="7.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.8px">—</text>
+<text x="470" y="104" font-size="7.8" fill="#6B7378" text-anchor="start" font-weight="700">sans objet</text>
+<rect x="16" y="112" width="568" height="17" rx="2" fill="#fff"/>
+<text x="30" y="124" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">"0x10"</text>
+<text x="170" y="124" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">16</text>
+<text x="330" y="124" font-size="7.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.8px">refusé</text>
+<text x="470" y="124" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700">non</text>
+<rect x="16" y="132" width="568" height="17" rx="2" fill="#ECEBFA"/>
+<text x="30" y="144" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">"1,5"</text>
+<text x="170" y="144" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">refusé</text>
+<text x="330" y="144" font-size="7.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.8px">1,5</text>
+<text x="470" y="144" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700">non</text>
+<rect x="16" y="152" width="568" height="17" rx="2" fill="#fff"/>
+<text x="30" y="164" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">"1e3"</text>
+<text x="170" y="164" font-size="7.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.8px">1000</text>
+<text x="330" y="164" font-size="7.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.8px">1000</text>
+<text x="470" y="164" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700">oui</text>
+<rect x="16" y="172" width="568" height="17" rx="2" fill="#ECEBFA"/>
+<text x="30" y="184" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">"abc"</text>
+<text x="170" y="184" font-size="7.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.8px">refusé</text>
+<text x="330" y="184" font-size="7.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.8px">refusé</text>
+<text x="470" y="184" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700">oui</text>
+<text x="16" y="202" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Une seule propriété, « les deux correcteurs donnent le même verdict », trouve cinq désaccords sans les avoir cherchés.</text>
+<text x="16" y="216" font-size="7.2" fill="#6B7378" text-anchor="start" font-style="italic">null et [] ne viennent pas d'un panneau ; ils sont listés pour le web seul.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · les deux lectures d'un nombre, côte à côte</span>Number("")                                   // 0      (JavaScript)
+Number("0x10")                               // 16
+double.TryParse("", NumberStyles.Float, …)   // false  (C#)
+double.TryParse("1,5", …, fr-FR, out v)      // true, v = 1.5</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Pourquoi Number est trop gentil</h3>
+      <p><code>Number</code> convertit la chaîne vide et les blancs en 0, accepte l'hexadécimal, et refuse la virgule. Le plugin a fait le choix inverse sur chaque point, exprès (AnswerValues.cs:38, 40–41).</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Comment le mesurer</h3>
+      <p>La fonction C# a été recopiée dans un petit programme .NET 8, la culture réglée sur fr-FR, et les mêmes saisies passées des deux côtés. Rien n'a été modifié dans le plugin.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Croire qu'un portage est fidèle parce que ses tests reprennent ceux de l'original. Les deux suites testent les mêmes exemples choisis ; les désaccords se cachent dans les entrées que personne n'a choisies.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 111 · Tests de propriétés</div>
+</section>
+
+<!-- ============ PAGE 4 · LES FORMES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 111</b></div>
+  <p class="rubrique">Schéma 3 · Trouver la propriété</p>
+  <h2>Quatre formes qui reviennent</h2>
+  <p style="max-width:165mm">Le plus difficile est d'énoncer la règle sans calculer la réponse. Quatre formes couvrent la plupart des cas : l'aller-retour, l'invariance, le déterminisme, et la comparaison à un oracle.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">Quatre formes de propriétés, et où elles se trouvent déjà</text>
+<rect x="16" y="36" width="568" height="32" rx="3" fill="#ECEBFA"/>
+<text x="30" y="50" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">aller-retour</text>
+<text x="160" y="50" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">lire(écrire(x)) = x</text>
+<text x="30" y="63" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Magpie : generateGhx puis importGhx doivent rendre le même graphe</text>
+<rect x="16" y="74" width="568" height="32" rx="3" fill="#fff"/>
+<text x="30" y="88" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">invariance</text>
+<text x="160" y="88" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">f(x) ne dépend pas de y</text>
+<text x="30" y="101" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">SnapSet : LeTexteNeDependPasDeLaCultureDuPoste (GenerationDessinTests.cs:176)</text>
+<rect x="16" y="112" width="568" height="32" rx="3" fill="#ECEBFA"/>
+<text x="30" y="126" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">déterminisme</text>
+<text x="160" y="126" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">f(x) = f(x)</text>
+<text x="30" y="139" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">SnapSet : LeTexteEstDeterministe (ligne 164), sur deux dessins d'exemple</text>
+<rect x="16" y="150" width="568" height="32" rx="3" fill="#fff"/>
+<text x="30" y="164" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">oracle</text>
+<text x="160" y="164" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">f(x) = g(x)</text>
+<text x="30" y="177" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">deux implémentations comparées : le web et le plugin, ci-contre</text>
+<text x="16" y="200" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">Les tests de SnapSet énoncent déjà des propriétés ; ils les vérifient sur deux exemples au lieu de mille.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · xUnit, une propriété sur des données tirées</span>[Theory, MemberData(nameof(DessinsTires))]      // 200 dessins à graine fixe
+public void LeTexteEstDeterministe(DescriptionDessin d)
+    =&gt; Assert.Equal(GenerateurDessin.TexteDessin(d), GenerateurDessin.TexteDessin(d));</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Les générateurs</h3>
+      <p>Tirer des listes de nombres est simple ; tirer un dessin SnapSet valide (une racine, des enfants, des tags uniques) demande un générateur qui respecte les règles, sinon chaque essai est rejeté avant d'être testé.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Theory, déjà une table</h3>
+      <p>SnapSet compte 71 [Theory] et 353 [InlineData] : des tables d'exemples. Passer de la table au tirage, c'est remplacer la liste écrite par un générateur.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Tirer sans contrainte et filtrer après. Si neuf essais sur dix sont des entrées invalides écartées, la propriété ne voit presque rien. On construit des entrées valides dès le tirage.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 111 · Tests de propriétés</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 111</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Deux lectures d'un nombre dans Magpie</h2>
+  <p style="max-width:165mm">Le plugin et le serveur web lisent la réponse de l'apprenant chacun à leur façon. Le plugin écarte explicitement le vide ; le web confie tout à Number.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">magpie/plugin/Core/AnswerValues.cs</span></div>
+<div class="l k1"><span class="n">38</span>    if (string.IsNullOrWhiteSpace(text)) return false;<span class="rep r1">1</span></div>
+<div class="l k2"><span class="n">40</span>    return double.TryParse(text, …, InvariantCulture, …)<span class="rep r2">2</span></div>
+<div class="l"><span class="n">41</span>        || double.TryParse(text, …, CurrentCulture, …);</div>
+<div class="l"><span class="cm">magpie/web/validation.mjs</span></div>
+<div class="l k3"><span class="n">6</span>function toNumberArray(value) {<span class="rep r3">3</span></div>
+<div class="l k4"><span class="n">8</span>  const nums = value.map(Number);<span class="rep r4">4</span></div>
+<div class="l k5"><span class="n">9</span>  return nums.some(Number.isNaN) ? null : nums;<span class="rep r5">5</span></div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Vide refusé</b>Exprès.</li>
+      <li><span class="rep r2">2</span><b>Deux cultures</b>Point puis virgule.</li>
+      <li><span class="rep r3">3</span><b>Côté web</b>Listes.</li>
+      <li><span class="rep r4">4</span><b>Number</b>"" devient 0.</li>
+      <li><span class="rep r5">5</span><b>Seul filtre</b>NaN.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À surveiller · le web accepte une réponse vide comme un zéro</span>
+    Mesuré sur une copie : pour un exercice qui attend 0, le web accepte "", " ", null et [] ; "0x10" vaut 16 ; "1,5" est refusé. Le plugin refuse les quatre premiers et lit 1,5. Le même graphe peut donc être juste dans Grasshopper et faux sur le web, ou l'inverse. Déduit : écarter les blancs avant Number (comme la ligne 38 du plugin) et une propriété « même verdict des deux côtés » garderaient l'accord. Relevé sans rien modifier.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 111 · Tests de propriétés</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 111</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Un test de propriété vérifie…</div><ul>
+      <li><span>A</span>une réponse calculée à la main</li><li><span>B</span>la vitesse du code</li><li><span>C</span>la couverture</li><li><span>D</span>une règle sur des entrées tirées au hasard</li></ul></div>
+
+    <div class="q"><div class="enonce">La réduction (shrinking)…</div><ul>
+      <li><span>A</span>compresse les fichiers</li><li><span>B</span>supprime les tests lents</li><li><span>C</span>simplifie un contre-exemple tant qu'il échoue</li><li><span>D</span>réduit le nombre de tests</li></ul></div>
+
+    <div class="q"><div class="enonce">Le contre-exemple du mutant, une fois réduit…</div><ul>
+      <li><span>A</span>attendu [0], réponse [−0,02]</li><li><span>B</span>aucun</li><li><span>C</span>une liste de six éléments</li><li><span>D</span>attendu [99.47]</li></ul></div>
+
+    <div class="q"><div class="enonce">Une graine fixe sert à…</div><ul>
+      <li><span>A</span>chiffrer les données</li><li><span>B</span>accélérer le test</li><li><span>C</span>rejouer exactement les mêmes tirages</li><li><span>D</span>éviter les échecs</li></ul></div>
+
+    <div class="q"><div class="enonce">Sur le code actuel, la propriété de la tolérance…</div><ul>
+      <li><span>A</span>a tenu sur 1 000 tirages</li><li><span>B</span>a échoué au 2e</li><li><span>C</span>n'a pas pu tourner</li><li><span>D</span>a tenu sur 10 tirages</li></ul></div>
+
+    <div class="q"><div class="enonce">Un test différentiel compare…</div><ul>
+      <li><span>A</span>deux branches Git</li><li><span>B</span>deux fichiers de log</li><li><span>C</span>deux versions d'un test</li><li><span>D</span>deux implémentations censées faire la même chose</li></ul></div>
+
+    <div class="q"><div class="enonce">Pour la saisie "", le web Magpie lit…</div><ul>
+      <li><span>A</span>une erreur</li><li><span>B</span>null</li><li><span>C</span>NaN, donc refus</li><li><span>D</span>0</li></ul></div>
+
+    <div class="q"><div class="enonce">Points de désaccord mesurés entre web et plugin… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>"1e3"</li><li><span>B</span>"1,5"</li><li><span>C</span>"abc"</li><li><span>D</span>"0x10"</li></ul></div>
+
+    <div class="q"><div class="enonce">« Le texte généré ne dépend pas de la culture du poste » est une propriété…</div><ul>
+      <li><span>A</span>d'oracle</li><li><span>B</span>d'invariance</li><li><span>C</span>d'aller-retour</li><li><span>D</span>de vitesse</li></ul></div>
+
+    <div class="q"><div class="enonce">lire(écrire(x)) = x est une propriété…</div><ul>
+      <li><span>A</span>d'invariance</li><li><span>B</span>d'aller-retour</li><li><span>C</span>d'ordre</li><li><span>D</span>de déterminisme</li></ul></div>
+
+    <div class="q"><div class="enonce">Écrire la propriété avec la même formule que le code…</div><ul>
+      <li><span>A</span>laisse passer une erreur de formule</li><li><span>B</span>est la bonne méthode</li><li><span>C</span>augmente la couverture</li><li><span>D</span>accélère le test</li></ul></div>
+
+    <div class="q"><div class="enonce">Tirer au hasard puis écarter les entrées invalides…</div><ul>
+      <li><span>A</span>est idéal</li><li><span>B</span>est obligatoire</li><li><span>C</span>gaspille les essais : mieux vaut générer valide</li><li><span>D</span>augmente la réduction</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 111 · Tests de propriétés</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 111</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · D.</b> La règle sert d'oracle.</div>
+    <div><b>02 · C.</b> Le plus petit cas.</div>
+    <div><b>03 · A.</b> 9 pas de réduction.</div>
+    <div><b>04 · C.</b> Rejouable.</div>
+    <div><b>05 · A.</b> Code juste.</div>
+    <div><b>06 · D.</b> Chacun oracle de l'autre.</div>
+    <div><b>07 · D.</b> Number("") vaut 0.</div>
+    <div><b>08 · B et D.</b> 16 contre refus, refus contre 1,5.</div>
+    <div><b>09 · B.</b> La culture ne compte pas.</div>
+    <div><b>10 · B.</b> On retrouve x.</div>
+    <div><b>11 · A.</b> Même angle mort.</div>
+    <div><b>12 · C.</b> Construire valide.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 112, « La couverture ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">pour tout x, règle(x)</td><td>énoncer une propriété</td><td>page 1</td></tr>
+      <tr><td class="c">graine fixe</td><td>tirages rejouables</td><td>page 2</td></tr>
+      <tr><td class="c">réduction</td><td>contre-exemple minimal</td><td>schéma 1, page 2</td></tr>
+      <tr><td class="c">f(x) = g(x)</td><td>test différentiel</td><td>schéma 2, page 3</td></tr>
+      <tr><td class="c">fast-check, FsCheck</td><td>bibliothèques JS et .NET</td><td>page 2</td></tr>
+      <tr><td class="c">[Theory, MemberData]</td><td>données tirées en xUnit</td><td>page 4</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Propriété</dt><dd>Une règle qui doit tenir pour toute entrée valide.</dd>
+    <dt>Contre-exemple</dt><dd>Une entrée qui met la propriété en défaut.</dd>
+    <dt>Réduction (shrinking)</dt><dd>La simplification d'un contre-exemple qui garde l'échec.</dd>
+    <dt>Oracle</dt><dd>Ce qui dit la bonne réponse : une règle, ou une autre implémentation.</dd>
+    <dt>Générateur</dt><dd>Le code qui tire des entrées au hasard, valides par construction.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 112</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 111 · Tests de propriétés</div>
+</section>
+
+</body>
+</html>

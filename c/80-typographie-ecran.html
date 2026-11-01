@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>80 · La typographie à l'écran</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-6">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 80</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>La typographie à l'écran</h1>
+  <p class="chapeau">Dans une interface, presque tout est texte : noms, valeurs, menus, messages. La <b>typographie</b> décide s'il se lit sans effort à 8 points sur un canvas zoomé, ou s'il faut plisser les yeux. À l'écran s'ajoutent des contraintes propres : des pixels, des résolutions qui varient, et un texte qu'il faut <b>mesurer</b> avant de le peindre.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>19</b> et <b>79</b></span>
+    <span class="pastille">Exemples · <b>MesureurGdi</b>, <b>Metrique</b> (SnapSet), <b>styles.css</b> (Magpie web)</span>
+  </div>
+
+  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+    <svg viewBox="0 0 600 186" width="100%">
+<text x="70" y="112" font-family="Inter, sans-serif" font-size="96" fill="#2B2F33">Hxgpé</text>
+<line x1="40" y1="112" x2="400" y2="112" stroke="#2F6B3A" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="412" y="115" font-size="8.4" fill="#2F6B3A" text-anchor="start" font-weight="700">ligne de base</text>
+<line x1="40" y1="66" x2="400" y2="66" stroke="#1565C0" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="412" y="69" font-size="8.4" fill="#1565C0" text-anchor="start" font-weight="700">hauteur d'x</text>
+<line x1="40" y1="42" x2="400" y2="42" stroke="#7B1FA2" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="412" y="45" font-size="8.4" fill="#7B1FA2" text-anchor="start" font-weight="700">hauteur des capitales</text>
+<line x1="40" y1="134" x2="400" y2="134" stroke="#E65100" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="412" y="137" font-size="8.4" fill="#E65100" text-anchor="start" font-weight="700">jambage inférieur</text>
+<text x="300" y="168" font-size="7.8" fill="#6B7378" text-anchor="middle" font-style="italic">À taille égale, une police à grande hauteur d'x paraît plus grande et reste lisible plus petit.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Peu de tailles et peu de graisses, choisies dans une échelle ; une police système lisible à petite taille ; des chiffres de largeur fixe là où les valeurs bougent ; et un texte mesuré exactement comme il sera peint.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>La signalétique d'une gare. Trois tailles, une seule famille de lettres, des chiffres alignés dans les tableaux d'horaires : on lit de loin, en marchant, sans s'arrêter pour déchiffrer.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>lire l'anatomie d'une police ;</li>
+        <li>passer des points aux pixels ;</li>
+        <li>mesurer un texte sans le rogner ;</li>
+        <li>choisir des chiffres tabulaires.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:5mm">
+    <span class="titre">À retenir</span>
+    La hiérarchie d'une page passe d'abord par la taille, la graisse et l'espace, avant la couleur. Avec trois ou quatre tailles bien séparées, l'œil classe les textes sans les lire ; avec douze tailles voisines, il ne classe plus rien.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 80 · La typographie à l'écran</div>
+</section>
+
+<!-- ============ PAGE 2 · POINTS ET PIXELS ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 80</b></div>
+  <p class="rubrique">Schéma 1 · Points, pixels et résolution</p>
+  <h2>Une taille qui dépend de l'écran</h2>
+  <p style="max-width:165mm">Le <b>point</b> vient de l'imprimerie : 1/72 de pouce. L'écran, lui, compte en pixels, et Windows annonce une résolution (96 ppp à 100 %, 144 ppp à 150 %). La même police « 8 points » occupe donc un nombre de pixels qui change d'un poste à l'autre.</p>
+
+  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#2F6B3A" text-anchor="start" font-weight="700">Une police de 8 points, selon la résolution de l'écran (taille en pixels = points × ppp / 72)</text>
+<text x="28" y="46" font-size="8" fill="#6B7378" text-anchor="start" font-weight="700">réglage de Windows</text>
+<text x="210" y="46" font-size="8" fill="#6B7378" text-anchor="start" font-weight="700">ppp</text>
+<text x="320" y="46" font-size="8" fill="#6B7378" text-anchor="start" font-weight="700">8 pt en pixels</text>
+<rect x="16" y="54" width="568" height="26" rx="4" fill="#fff" stroke="#E2DACB" stroke-width="1.2"/>
+<text x="28" y="71" font-size="9" fill="#2B2F33" text-anchor="start" font-weight="700">100 %</text>
+<text x="210" y="71" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px">96</text>
+<text x="320" y="71" font-size="9" fill="#2F6B3A" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">10,67 px</text>
+<rect x="430" y="60" width="74.66666666666666" height="14" fill="#E7F0E8" stroke="#2F6B3A"/>
+<rect x="16" y="86" width="568" height="26" rx="4" fill="#fff" stroke="#E2DACB" stroke-width="1.2"/>
+<text x="28" y="103" font-size="9" fill="#2B2F33" text-anchor="start" font-weight="700">125 %</text>
+<text x="210" y="103" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px">120</text>
+<text x="320" y="103" font-size="9" fill="#2F6B3A" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">13,33 px</text>
+<rect x="430" y="92" width="93.33333333333334" height="14" fill="#E7F0E8" stroke="#2F6B3A"/>
+<rect x="16" y="118" width="568" height="26" rx="4" fill="#fff" stroke="#E2DACB" stroke-width="1.2"/>
+<text x="28" y="135" font-size="9" fill="#2B2F33" text-anchor="start" font-weight="700">150 %</text>
+<text x="210" y="135" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px">144</text>
+<text x="320" y="135" font-size="9" fill="#2F6B3A" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">16,00 px</text>
+<rect x="430" y="124" width="112.0" height="14" fill="#E7F0E8" stroke="#2F6B3A"/>
+<text x="16" y="172" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">Une police créée en points grandit avec l'écran ; mesurée sur une image à 96 ppp et peinte à 144, elle déborde.</text>
+<text x="16" y="190" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">SnapSet crée ses polices en pixels canvas (points × 96/72) : la taille ne dépend plus de l'écran.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">SnapSet/src/SnapSet.Constituants/MesureurGdi.cs · lignes 40, 119 et 125</span>public const float PixelsParPoint = 96f / 72f;
+float taille = Math.Max(1f, taillePoints) * PixelsParPoint;
+police = new Font(_famille, taille, style, GraphicsUnit.Pixel);</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Pourquoi des pixels</h3>
+      <p>L'en-tête de MesureurGdi.cs (lignes 18 à 22) l'explique : le canvas peint à la résolution de l'écran, la mesure se fait sur une petite image à 96 ppp. En points, la police serait plus grande à la peinture qu'à la mesure ; en pixels canvas, les deux concordent.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Le zoom du canvas</h3>
+      <p>Grasshopper zoome tout le canvas, texte compris. Un texte de 8 points à 50 % de zoom fait l'effet d'un texte de 4 points. D'où, dans les feuilles de SnapSet, des seuils de zoom en dessous desquels on ne propose plus la saisie.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Tester uniquement à 100 %. Beaucoup de portables sont réglés à 125 ou 150 % par défaut. Une interface jamais vue à ces réglages y montre des textes coupés, des boîtes trop petites ou des icônes floues.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 80 · La typographie à l'écran</div>
+</section>
+
+<!-- ============ PAGE 3 · MESURER ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 80</b></div>
+  <p class="rubrique">Schéma 2 · Mesurer ce qu'on peint</p>
+  <h2>Un texte n'est jamais rogné</h2>
+  <p style="max-width:165mm">Pour dessiner une boîte autour d'un texte, il faut connaître sa largeur avant de le peindre. Si la mesure et la peinture ne suivent pas exactement les mêmes règles, la boîte est trop étroite et le texte perd ses dernières lettres. SnapSet en a fait un contrat écrit (Metrique.cs:1218–1240).</p>
+
+  <svg viewBox="0 0 600 200" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="200" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#2F6B3A" text-anchor="start" font-weight="700">Une boîte taillée sur une mesure trop courte : le dernier caractère disparaît</text>
+<text x="28" y="50" font-size="8" fill="#C62828" text-anchor="start" font-weight="700">mesure arrondie vers le bas : 23 px</text>
+<rect x="28" y="58" width="138" height="26" fill="#fff" stroke="#C62828"/>
+<text x="34" y="76" font-size="10" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:10px">Rayon…</text>
+<text x="320" y="50" font-size="8" fill="#2E7D32" text-anchor="start" font-weight="700">mesure exigée par la peinture : 23,51 px → 24</text>
+<rect x="320" y="58" width="144" height="26" fill="#fff" stroke="#2E7D32"/>
+<text x="326" y="76" font-size="10" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:10px">Rayons</text>
+<text x="28" y="118" font-size="8" fill="#2B2F33" text-anchor="start">1 · mesurer avec le même StringFormat que la peinture (une ligne, points de suspension) ;</text>
+<text x="28" y="138" font-size="8" fill="#2B2F33" text-anchor="start">2 · garder la plus grande de deux mesures, en AntiAlias et en ClearType ;</text>
+<text x="28" y="158" font-size="8" fill="#2B2F33" text-anchor="start">3 · arrondir la largeur au supérieur (Math.Ceiling), à un seul endroit du dépôt.</text>
+<text x="28" y="184" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Valeurs 23 et 23,51 : l'exemple relevé dans le commentaire de Metrique.cs:1229–1230.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">SnapSet/src/SnapSet.Constituants/MesureurGdi.cs · lignes 147 à 151</span>g.TextRenderingHint = TextRenderingHint.AntiAlias;
+var a = g.MeasureString(chaine, police, int.MaxValue, _formatCentre);
+g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
+var b = g.MeasureString(chaine, police, int.MaxValue, _formatCentre);
+brute = new SizeF(Math.Max(a.Width, b.Width), Math.Max(a.Height, b.Height));</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Deux rendus, une mesure</h3>
+      <p>Le canvas peint en ClearType au zoom 1 exactement, et en AntiAlias ailleurs. Le calage sur la grille de ClearType peut élargir un texte de quelques dixièmes de pixel. Garder la plus grande des deux mesures couvre les deux cas.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Le texte vide</h3>
+      <p><code>MeasureString("")</code> rend 0 × 0 : une boîte de texte vide s'effondrerait. <code>Metrique.TexteAMesurer</code> (ligne 2463) mesure alors une espace, pour garder la hauteur d'une ligne, et la boîte ne saute pas quand on efface le dernier caractère.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Mesurer avec une fonction « pratique » qui arrondit vers le bas. <code>GH_FontServer.MeasureString</code> rend une taille entière arrondie à l'inférieur : le commentaire de Metrique.cs:1226–1230 l'interdit pour cette raison. Une largeur s'arrondit toujours au supérieur.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 80 · La typographie à l'écran</div>
+</section>
+
+<!-- ============ PAGE 4 · CHIFFRES ET ÉCHELLE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 80</b></div>
+  <p class="rubrique">Schéma 3 · Les chiffres et l'échelle</p>
+  <h2>Des valeurs qui ne dansent pas</h2>
+  <p style="max-width:165mm">Dans la plupart des polices de texte, le « 1 » est plus étroit que le « 8 » : ce sont des chiffres <b>proportionnels</b>, faits pour la lecture courante. Pour un tableau ou une valeur qui change sous les yeux, on préfère les chiffres <b>tabulaires</b>, tous de même largeur.</p>
+
+  <svg viewBox="0 0 600 196" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="196" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#2F6B3A" text-anchor="start" font-weight="700">Largeur de quatre chiffres en Inter, 100 px (mesuré avec Pillow)</text>
+<text x="16" y="50" font-size="8.2" fill="#E65100" text-anchor="start" font-weight="700">1111 proportionnels</text>
+<rect x="190" y="39" width="211.51" height="16" fill="#E65100"/>
+<text x="407.51" y="51" font-size="8" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">163 px</text>
+<text x="16" y="80" font-size="8.2" fill="#E65100" text-anchor="start" font-weight="700">8888 proportionnels</text>
+<rect x="190" y="69" width="321.62" height="16" fill="#E65100"/>
+<text x="517.62" y="81" font-size="8" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">247 px</text>
+<text x="16" y="110" font-size="8.2" fill="#2E7D32" text-anchor="start" font-weight="700">1111 tabulaires (tnum)</text>
+<rect x="190" y="99" width="337.21999999999997" height="16" fill="#2E7D32"/>
+<text x="533.22" y="111" font-size="8" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">259 px</text>
+<text x="16" y="140" font-size="8.2" fill="#2E7D32" text-anchor="start" font-weight="700">8888 tabulaires (tnum)</text>
+<rect x="190" y="129" width="337.21999999999997" height="16" fill="#2E7D32"/>
+<text x="533.22" y="141" font-size="8" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">259 px</text>
+<text x="16" y="172" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">Une valeur qui change en direct (curseur, chrono) avec des chiffres proportionnels fait danser le texte.</text>
+<text x="16" y="188" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">Les chiffres tabulaires ont tous la même largeur : les colonnes et les valeurs restent immobiles.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · CSS</span>:root { --t-petit: 11px; --t-texte: 13px; --t-titre: 17px; --t-grand: 22px; }
+.valeur, td.nombre { font-variant-numeric: tabular-nums; }
+body { font-family: "Segoe UI", system-ui, sans-serif; line-height: 1.4; }</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>La pile de polices</h3>
+      <p>Magpie web demande <code>"Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif</code> (styles.css:9) : la police système de Windows, puis celle du Mac, puis n'importe quelle linéale. Chaque utilisateur lit la police de son système, sans téléchargement.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Longueur et interlignage</h3>
+      <p>Un paragraphe se lit bien entre 45 et 75 caractères par ligne environ, avec un interligne de 1,3 à 1,5 fois la taille. Au-delà, l'œil se perd en revenant à la ligne ; en deçà, il saute trop souvent.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Des tailles voisines au demi-pixel près (12, 12,5, 13, 13,5 px). L'œil ne perçoit pas la différence comme une intention, seulement comme un désordre. Une échelle de quelques tailles nettement séparées, rangées dans des variables, se maintient mieux.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 80 · La typographie à l'écran</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 80</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Une mesure soignée, une échelle à resserrer</h2>
+  <p style="max-width:165mm">SnapSet traite la mesure du texte comme un contrat, avec une règle par fichier et un test qui la vérifie. Magpie web, plus jeune, a déjà mis ses couleurs en variables, mais pas encore ses tailles de texte.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">SnapSet/src/SnapSet.Constituants/MesureurGdi.cs</span></div>
+<div class="l k1"><span class="n">40</span><span class="kw">public const float</span> PixelsParPoint = 96f / 72f;<span class="rep r1">1</span></div>
+<div class="l k2"><span class="n">150</span><span class="kw">var</span> b = g.MeasureString(chaine, police, …);<span class="rep r2">2</span></div>
+<div class="l"><span class="cm">SnapSet/schema/Metrique.cs</span></div>
+<div class="l k3"><span class="n">2451</span><span class="kw">return</span> (<span class="kw">float</span>)Math.Ceiling(largeurMesuree);<span class="rep r3">3</span></div>
+<div class="l"><span class="cm">magpie/web/src/styles.css</span></div>
+<div class="l k4"><span class="n">9</span>font-family: <span class="st">"Segoe UI"</span>, -apple-system, …;<span class="rep r4">4</span></div>
+<div class="l k5"><span class="n">217</span>font-size: 12.5px;<span class="rep r5">5</span></div>
+<div class="l k5"><span class="n">558</span>font-size: 13.5px;</div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Points en pixels</b>Indépendant de l'écran.</li>
+      <li><span class="rep r2">2</span><b>Deux passes</b>La plus large des deux.</li>
+      <li><span class="rep r3">3</span><b>Au supérieur</b>Le seul arrondi du dépôt.</li>
+      <li><span class="rep r4">4</span><b>La police du système</b>Avec ses replis.</li>
+      <li><span class="rep r5">5</span><b>Des demi-pixels</b>Entre 12 et 13, puis 13 et 14.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À surveiller · treize tailles de texte</span>
+    <code>styles.css</code> déclare 66 fois une taille de texte, en <b>13 valeurs</b> différentes, de 9 à 22 px (compté), dont 12, 12,5, 13 et 13,5 px. Les couleurs de l'interface apprenant sont déjà des variables (<code>--mp-ink</code>, <code>--mp-sub</code>…, lignes 307 à 311) ; les tailles, non. Une échelle de quatre ou cinq variables de taille donnerait une hiérarchie plus nette, et une seule ligne à changer pour agrandir tout le texte.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 80 · La typographie à l'écran</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 80</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">La hauteur d'x, c'est…</div><ul>
+      <li><span>A</span>l'interligne</li><li><span>B</span>la hauteur des minuscules sans hampe</li><li><span>C</span>la hauteur des capitales</li><li><span>D</span>la largeur du x</li></ul></div>
+
+    <div class="q"><div class="enonce">Un point typographique vaut…</div><ul>
+      <li><span>A</span>1/72 de pouce</li><li><span>B</span>un pixel</li><li><span>C</span>1/96 de pouce</li><li><span>D</span>1 mm</li></ul></div>
+
+    <div class="q"><div class="enonce">8 points à 144 ppp font…</div><ul>
+      <li><span>A</span>16 px</li><li><span>B</span>12 px</li><li><span>C</span>10,67 px</li><li><span>D</span>8 px</li></ul></div>
+
+    <div class="q"><div class="enonce">SnapSet crée ses polices en pixels canvas pour…</div><ul>
+      <li><span>A</span>économiser la mémoire</li><li><span>B</span>aller plus vite</li><li><span>C</span>suivre le zoom de Windows</li><li><span>D</span>que la taille ne dépende pas de l'écran</li></ul></div>
+
+    <div class="q"><div class="enonce">Pour qu'un texte ne soit pas rogné, la mesure… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>s'arrondit à l'inférieur</li><li><span>B</span>suit le même StringFormat que la peinture</li><li><span>C</span>se fait en points sur un bitmap à 96 ppp</li><li><span>D</span>s'arrondit au supérieur</li></ul></div>
+
+    <div class="q"><div class="enonce">MesureurGdi mesure deux fois parce que…</div><ul>
+      <li><span>A</span>par sécurité</li><li><span>B</span>le canvas peint en ClearType ou en AntiAlias selon le zoom</li><li><span>C</span>il y a deux polices</li><li><span>D</span>la première mesure est fausse</li></ul></div>
+
+    <div class="q"><div class="enonce"><code>MeasureString("")</code> rend…</div><ul>
+      <li><span>A</span>0 × 0, d'où la mesure d'une espace</li><li><span>B</span>la hauteur d'une ligne</li><li><span>C</span>1 × 1</li><li><span>D</span>une exception</li></ul></div>
+
+    <div class="q"><div class="enonce">En Inter, « 1111 » et « 8888 » en chiffres proportionnels (mesuré) :</div><ul>
+      <li><span>A</span>identiques</li><li><span>B</span>247 et 163 px</li><li><span>C</span>163 et 247 px</li><li><span>D</span>259 et 259 px</li></ul></div>
+
+    <div class="q"><div class="enonce">Pour une valeur qui change sous les yeux :</div><ul>
+      <li><span>A</span>de l'italique</li><li><span>B</span>des chiffres tabulaires</li><li><span>C</span>des chiffres proportionnels</li><li><span>D</span>des capitales</li></ul></div>
+
+    <div class="q"><div class="enonce">Une ligne de paragraphe confortable compte environ…</div><ul>
+      <li><span>A</span>120 à 150 caractères</li><li><span>B</span>10 à 20 caractères</li><li><span>C</span>peu importe</li><li><span>D</span>45 à 75 caractères</li></ul></div>
+
+    <div class="q"><div class="enonce">La pile <code>"Segoe UI", -apple-system, …, sans-serif</code> sert à…</div><ul>
+      <li><span>A</span>mélanger trois polices</li><li><span>B</span>forcer l'empattement</li><li><span>C</span>télécharger Segoe UI</li><li><span>D</span>prendre la police du système, avec des replis</li></ul></div>
+
+    <div class="q"><div class="enonce">Combien de tailles de texte différentes dans styles.css (compté) ?</div><ul>
+      <li><span>A</span>1</li><li><span>B</span>66</li><li><span>C</span>13</li><li><span>D</span>4</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 80 · La typographie à l'écran</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 80</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · B.</b> Celle du x, du a, du o.</div>
+    <div><b>02 · A.</b> Une mesure d'imprimerie.</div>
+    <div><b>03 · A.</b> 8 × 144 / 72.</div>
+    <div><b>04 · D.</b> Mesure et peinture concordent.</div>
+    <div><b>05 · B et D.</b> Metrique.cs:1223–1235.</div>
+    <div><b>06 · B.</b> La plus large des deux est gardée.</div>
+    <div><b>07 · A.</b> Metrique.TexteAMesurer.</div>
+    <div><b>08 · C.</b> Le 1 est bien plus étroit.</div>
+    <div><b>09 · B.</b> Même largeur pour chaque chiffre.</div>
+    <div><b>10 · D.</b> L'œil ne se perd pas.</div>
+    <div><b>11 · D.</b> styles.css:9.</div>
+    <div><b>12 · C.</b> En 66 déclarations.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 81, « Les icônes à petite taille ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">taille × 96f / 72f</td><td>des points aux pixels à 96 ppp</td><td>MesureurGdi.cs:40, 119</td></tr>
+      <tr><td class="c">GraphicsUnit.Pixel</td><td>une police indépendante de l'écran</td><td>MesureurGdi.cs:125</td></tr>
+      <tr><td class="c">Math.Ceiling(largeur)</td><td>arrondir une largeur au supérieur</td><td>Metrique.cs:2451</td></tr>
+      <tr><td class="c">TextRenderingHint.ClearTypeGridFit</td><td>mesurer comme au zoom 1</td><td>MesureurGdi.cs:149</td></tr>
+      <tr><td class="c">font-variant-numeric: tabular-nums</td><td>chiffres de largeur fixe</td><td>exemple autonome, page 4</td></tr>
+      <tr><td class="c">font-family: "Segoe UI", …</td><td>la police du système</td><td>styles.css:9</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Hauteur d'x</dt><dd>La hauteur des minuscules sans hampe ; elle fait la lisibilité à petite taille.</dd>
+    <dt>Point</dt><dd>L'unité de taille typographique, 1/72 de pouce.</dd>
+    <dt>ppp (DPI)</dt><dd>Le nombre de pixels par pouce que l'écran annonce.</dd>
+    <dt>Chiffres tabulaires</dt><dd>Des chiffres de largeur égale, qui s'alignent en colonnes.</dd>
+    <dt>Échelle typographique</dt><dd>Le petit ensemble de tailles qu'une interface s'autorise.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 81</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 80 · La typographie à l'écran</div>
+</section>
+
+</body>
+</html>

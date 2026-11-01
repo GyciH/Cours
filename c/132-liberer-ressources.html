@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>132 · Libérer les ressources</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-1">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1B</b> · Les objets de près</span><b>Cours 132</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Libérer les ressources</h1>
+  <p class="chapeau">Le ramasse-miettes rend la mémoire, mais pas le reste : un fichier ouvert, une police GDI+, un document Rhino ouvert en arrière-plan. Pour ceux-là, c'est le code qui dit « j'ai fini », par <code>Dispose</code>. Le dire trop tard bloque les autres ; ne jamais le dire perd parfois des données.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>127</b>, <b>130</b></span>
+    <span class="pastille">Exemples · <b>SnapSet</b>, <b>Magpie</b> plugin</span>
+  </div>
+
+  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+    <svg viewBox="0 0 600 204" width="100%">
+<text x="10" y="22" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700">la mémoire</text>
+<text x="10" y="36" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">objets, tableaux, chaînes</text>
+<rect x="160" y="12" width="160" height="28" rx="4" fill="#EAF4EA" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="240.0" y="28.6" font-size="7.8" fill="#2E7D32" text-anchor="middle" font-weight="700">le GC la reprend seul</text>
+<text x="330" y="30" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">quand il veut, sans rien te demander</text>
+<text x="10" y="72" font-size="8.4" fill="#6B2C7A" text-anchor="start" font-weight="700">les ressources</text>
+<text x="10" y="86" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">fichiers, polices, pinceaux, documents</text>
+<rect x="160" y="62" width="160" height="28" rx="4" fill="#F1E9F3" stroke="#6B2C7A" stroke-width="1.2"/>
+<text x="240.0" y="78.6" font-size="7.8" fill="#6B2C7A" text-anchor="middle" font-weight="700">Dispose, au bon moment</text>
+<text x="330" y="80" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">c'est toi qui sais quand tu as fini</text>
+<text x="10" y="118" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">1 000 FileStream ouverts puis abandonnés</text>
+<text x="230" y="118" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">descripteurs</text>
+<text x="360" y="118" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">après un GC</text>
+<text x="490" y="118" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">avec using</text>
+<rect x="4" y="124" width="590" height="20" fill="#F1E9F3" opacity=".7"/>
+<text x="10" y="138" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">départ : 35 descripteurs</text>
+<text x="230" y="138" font-size="8" fill="#C62828" text-anchor="start" font-weight="700">1 035</text>
+<text x="360" y="138" font-size="8" fill="#E65100" text-anchor="start" font-weight="700">35</text>
+<text x="490" y="138" font-size="8" fill="#2E7D32" text-anchor="start" font-weight="700">35</text>
+<text x="10" y="168" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">Sans Dispose, chaque fichier reste ouvert jusqu'à un ramassage que rien ne garantit (mesuré, Linux).</text>
+<text x="10" y="186" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Le GC rend la mémoire ; il ne sait pas qu'un fichier, un document ou une police coûtent autre chose.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Tout objet qui tient quelque chose hors de la mémoire implémente IDisposable ; celui qui l'a créé l'appelle dès qu'il a fini, de préférence par un using.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Un livre emprunté. Le ménage finira par le retrouver sous le lit, mais d'ici là personne d'autre ne peut l'emprunter : on le rend en sortant.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>repérer ce qui doit être libéré ;</li>
+        <li>écrire un using qui tient ;</li>
+        <li>ne pas compter sur le finaliseur ;</li>
+        <li>garder en vie ce qui doit durer.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À retenir</span>
+    Qui crée libère, sauf s'il confie l'objet à un propriétaire qui s'en charge. Un objet tenu en cache pour toute la session ne se libère pas : c'est un choix, et il s'écrit en commentaire.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 132 · Libérer les ressources</div>
+</section>
+
+<!-- ============ PAGE 2 · USING ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1B</b> · Les objets de près</span><b>Cours 132</b></div>
+  <p class="rubrique">Schéma 1 · using</p>
+  <h2>Fermer même quand ça lève</h2>
+  <p style="max-width:165mm">using appelle Dispose à la sortie du bloc, quelle que soit la sortie. On a tracé chaque ouverture et chaque fermeture, avec une exception au milieu.</p>
+
+  <svg viewBox="0 0 600 196" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="196" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#6B2C7A" text-anchor="start" font-weight="700">Deux using emboîtés, une exception au milieu : ce qui s'est passé, dans l'ordre (mesuré)</text>
+<rect x="16" y="36" width="84" height="24" rx="4" fill="#fff" stroke="#6B2C7A" stroke-width="1.2"/>
+<text x="58.0" y="50.6" font-size="7.8" fill="#6B2C7A" text-anchor="middle" font-weight="700">ouvre A</text>
+<line x1="100" y1="48" x2="112" y2="48" stroke="#6B7378" stroke-width="1"/><polygon points="112,48 105.6,50.7 105.6,45.3" fill="#6B7378"/>
+<rect x="112" y="36" width="84" height="24" rx="4" fill="#fff" stroke="#6B2C7A" stroke-width="1.2"/>
+<text x="154.0" y="50.6" font-size="7.8" fill="#6B2C7A" text-anchor="middle" font-weight="700">ouvre B</text>
+<line x1="196" y1="48" x2="208" y2="48" stroke="#6B7378" stroke-width="1"/><polygon points="208,48 201.6,50.7 201.6,45.3" fill="#6B7378"/>
+<rect x="208" y="36" width="84" height="24" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="250.0" y="50.6" font-size="7.8" fill="#C62828" text-anchor="middle" font-weight="700">exception</text>
+<line x1="292" y1="48" x2="304" y2="48" stroke="#6B7378" stroke-width="1"/><polygon points="304,48 297.6,50.7 297.6,45.3" fill="#6B7378"/>
+<rect x="304" y="36" width="84" height="24" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="346.0" y="50.6" font-size="7.8" fill="#2E7D32" text-anchor="middle" font-weight="700">ferme B</text>
+<line x1="388" y1="48" x2="400" y2="48" stroke="#6B7378" stroke-width="1"/><polygon points="400,48 393.6,50.7 393.6,45.3" fill="#6B7378"/>
+<rect x="400" y="36" width="84" height="24" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="442.0" y="50.6" font-size="7.8" fill="#2E7D32" text-anchor="middle" font-weight="700">ferme A</text>
+<line x1="484" y1="48" x2="496" y2="48" stroke="#6B7378" stroke-width="1"/><polygon points="496,48 489.6,50.7 489.6,45.3" fill="#6B7378"/>
+<rect x="496" y="36" width="84" height="24" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="538.0" y="50.6" font-size="7.8" fill="#1565C0" text-anchor="middle" font-weight="700">catch</text>
+<text x="16" y="80" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Dispose passe AVANT le catch, et dans l'ordre inverse des ouvertures.</text>
+<rect x="10" y="92" width="580" height="20" fill="#fff" opacity=".55"/>
+<text x="16" y="106" font-size="7.6" fill="#2B2F33" text-anchor="start">using var c = …;  à la fin du bloc</text>
+<text x="584" y="106" font-size="7.6" fill="#2E7D32" text-anchor="end" font-weight="700">ferme C après « fin de Bloc »</text>
+<text x="16" y="126" font-size="7.6" fill="#2B2F33" text-anchor="start">Dispose appelé deux fois (MemoryStream)</text>
+<text x="584" y="126" font-size="7.6" fill="#2E7D32" text-anchor="end" font-weight="700">aucune exception</text>
+<rect x="10" y="132" width="580" height="20" fill="#fff" opacity=".55"/>
+<text x="16" y="146" font-size="7.6" fill="#2B2F33" text-anchor="start">WriteByte après Dispose</text>
+<text x="584" y="146" font-size="7.6" fill="#C62828" text-anchor="end" font-weight="700">ObjectDisposedException</text>
+<text x="16" y="166" font-size="7.6" fill="#2B2F33" text-anchor="start">10 millions de using sur un objet vide</text>
+<text x="584" y="166" font-size="7.6" fill="#1565C0" text-anchor="end" font-weight="700">9,6 à 11 ns contre 8,3 à 10</text>
+<text x="16" y="186" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">using n'est qu'un try / finally écrit pour toi : il ne coûte rien de mesurable et tient même si ça lève.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, la forme courte depuis C# 8</span>using var ecrivain = new StreamWriter(chemin);    // fermé à la fin de la méthode, quoi qu'il arrive
+ecrivain.WriteLine(ligne);</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Ce que using écrit pour toi</h3>
+      <p>Un try avec un finally qui appelle Dispose si la variable n'est pas null. C'est exactement ce que fait Magpie à la main autour du document Rhino du certificat.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Dispose doit tolérer</h3>
+      <p>D'être appelé deux fois sans rien casser ; c'est le contrat, et MemoryStream le tient. Après, toute autre méthode peut lever ObjectDisposedException.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Oublier de fermer un StreamWriter. Son tampon n'est jamais vidé : 100 caractères écrits, 0 octet sur le disque, et toujours 0 après un ramassage (mesuré).
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 132 · Libérer les ressources</div>
+</section>
+
+<!-- ============ PAGE 3 · LE FINALISEUR ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1B</b> · Les objets de près</span><b>Cours 132</b></div>
+  <p class="rubrique">Schéma 2 · Le finaliseur</p>
+  <h2>Un filet de sécurité, tardif et cher</h2>
+  <p style="max-width:165mm">Une classe peut déclarer un finaliseur, <code>~Classe()</code>, que le GC appelle avant de la ramasser. Certaines classes du framework s'en servent pour rattraper un oubli. On a mesuré quand, et combien.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#6B2C7A" text-anchor="start" font-weight="700">Ce que le finaliseur rattrape, et ce qu'il coûte (.NET 8, mesuré)</text>
+<rect x="16" y="34" width="568" height="22" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
+<text x="26" y="49" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">1 000 objets à finaliseur abandonnés</text>
+<text x="574" y="49" font-size="7.6" fill="#E65100" text-anchor="end" font-weight="700">0 finalisé avant le GC, 1 000 après</text>
+<rect x="16" y="60" width="568" height="22" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
+<text x="26" y="75" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">FileStream, 100 octets, jamais fermé</text>
+<text x="574" y="75" font-size="7.6" fill="#E65100" text-anchor="end" font-weight="700">0 octet sur disque, 100 après le GC</text>
+<rect x="16" y="86" width="568" height="22" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="26" y="101" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">StreamWriter, 100 caractères, jamais fermé</text>
+<text x="574" y="101" font-size="7.6" fill="#C62828" text-anchor="end" font-weight="700">0 octet, et 0 après le GC</text>
+<text x="16" y="128" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">Un million d'objets alloués puis ramassés :</text>
+<text x="16" y="147" font-size="7.4" fill="#6B7378" text-anchor="start">sans finaliseur</text>
+<rect x="190" y="138" width="17" height="11" fill="#2E7D32" opacity=".8"/>
+<text x="212.6225165562914" y="147" font-size="7.4" fill="#2E7D32" text-anchor="start" font-weight="700">1,0 à 25,1 ms</text>
+<text x="16" y="165" font-size="7.4" fill="#6B7378" text-anchor="start">avec finaliseur</text>
+<rect x="190" y="156" width="300" height="11" fill="#C62828" opacity=".8"/>
+<text x="496.0" y="165" font-size="7.4" fill="#C62828" text-anchor="start" font-weight="700">217 à 453 ms</text>
+<text x="16" y="183" font-size="7.4" fill="#6B7378" text-anchor="start">avec, Dispose + SuppressFinalize</text>
+<rect x="190" y="174" width="79" height="11" fill="#E65100" opacity=".8"/>
+<text x="275.4701986754967" y="183" font-size="7.4" fill="#E65100" text-anchor="start" font-weight="700">69 à 120 ms</text>
+<text x="16" y="206" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Le StreamWriter garde son tampon en mémoire et n'a pas de finaliseur : ce qui n'est pas vidé est perdu.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, une classe qui ne fait que posséder</span>public sealed class Rapport : IDisposable                // pas de finaliseur : rien de natif en direct
+{
+    private readonly StreamWriter _sortie;
+    public Rapport(string chemin) =&gt; _sortie = new StreamWriter(chemin);
+    public void Dispose() =&gt; _sortie.Dispose();               // libère ce qu'elle possède
+}</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Pourquoi c'est cher</h3>
+      <p>Un objet à finaliseur survit au premier ramassage, attend son tour sur un fil dédié, puis est ramassé au suivant. SuppressFinalize, appelé dans Dispose, lui évite ce détour.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Quand en écrire un</h3>
+      <p>Presque jamais. Un handle natif s'enveloppe dans un SafeHandle, qui a déjà le sien ; une classe qui ne possède que des objets .NET n'en a pas besoin.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Croire que « le GC finira par fermer ». Il ferme un FileStream, à une heure inconnue ; il ne vide pas le tampon d'un StreamWriter ; et rien ne dit qu'il passera avant la fin du programme.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 132 · Libérer les ressources</div>
+</section>
+
+<!-- ============ PAGE 4 · DURÉE DE VIE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1B</b> · Les objets de près</span><b>Cours 132</b></div>
+  <p class="rubrique">Schéma 3 · Qui garde quoi en vie</p>
+  <h2>Ni trop tôt, ni trop tard</h2>
+  <p style="max-width:165mm">Libérer, c'est choisir une fin de vie. Trop tard, une ressource reste bloquée ; trop tôt, ou sans personne pour la tenir, elle disparaît en plein travail.</p>
+
+  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#6B2C7A" text-anchor="start" font-weight="700">Un Timer qui tique toutes les 20 ms, avec ou sans référence gardée (System.Threading, mesuré)</text>
+<text x="16" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700"></text>
+<text x="260" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">300 ms avant GC</text>
+<text x="420" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">300 ms après GC</text>
+<rect x="10" y="48" width="580" height="20" fill="#fff" opacity=".55"/>
+<text x="16" y="62" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">créé sans être rangé dans un champ</text>
+<text x="260" y="62" font-size="7.6" fill="#2B2F33" text-anchor="start">15 ticks</text>
+<text x="420" y="62" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">0 tick</text>
+<text x="16" y="82" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">gardé dans une variable vivante</text>
+<text x="260" y="82" font-size="7.6" fill="#2B2F33" text-anchor="start">—</text>
+<text x="420" y="82" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">16 ticks</text>
+<rect x="10" y="88" width="580" height="20" fill="#fff" opacity=".55"/>
+<text x="16" y="102" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">gardé, puis Dispose</text>
+<text x="260" y="102" font-size="7.6" fill="#2B2F33" text-anchor="start">—</text>
+<text x="420" y="102" font-size="7.6" fill="#1565C0" text-anchor="start" font-weight="700">0 tick en 200 ms</text>
+<text x="16" y="128" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">Un fichier ouvert sans partage, puis rouvert en lecture :</text>
+<rect x="270" y="116" width="150" height="18" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="345.0" y="127.4" font-size="7.2" fill="#C62828" text-anchor="middle" font-weight="700">tant qu'il est tenu : IOException</text>
+<rect x="430" y="116" width="150" height="18" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="505.0" y="127.4" font-size="7.2" fill="#2E7D32" text-anchor="middle" font-weight="700">après Dispose : réussie</text>
+<text x="16" y="160" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Libérer trop tard bloque les autres ; perdre la seule référence arrête ce qui devait durer.</text>
+<text x="16" y="180" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Le Timer de WinForms, lui, est tenu par la boucle de messages tant qu'il tourne : il faut l'arrêter et le</text>
+<text x="16" y="194" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">libérer soi-même, comme MagpieDebugPanel.cs:67 à 69 (déduit de la documentation, non mesuré ici).</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, une vie calée sur celle du composant</span>public override void AddedToDocument(GH_Document d)  { _minuteur = new Timer(…); }   // tenu par un champ
+public override void RemovedFromDocument(GH_Document d) { _minuteur?.Dispose(); _minuteur = null; }</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Le Timer orphelin</h3>
+      <p>Rien ne retenait le Timer créé sans champ : le GC l'a ramassé, et il s'est arrêté sans erreur. C'est le bug qui n'apparaît qu'après quelques minutes d'usage.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Libérer après coup</h3>
+      <p>SnapSet ne libère pas la zone de saisie dans son propre gestionnaire : il repousse Dispose par BeginInvoke, une fois l'événement en cours terminé.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Garder un fichier ouvert « pour plus tard ». Tant qu'il est tenu sans partage, toute autre ouverture lève IOException (mesuré) : l'utilisateur ne peut plus le copier ni l'écraser.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 132 · Libérer les ressources</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1B</b> · Les objets de près</span><b>Cours 132</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Cinq façons de rendre ce qu'on tient</h2>
+  <p style="max-width:165mm">Un using à chaque pinceau, une libération repoussée, un cache gardé exprès, un finally à la main et un minuteur calé sur le composant.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">SnapSet/…/PeintreFeuilles.cs · SaisieMultiligne.cs</span></div>
+<div class="l k1"><span class="n">137</span>using (var capsule = GH_Capsule.CreateCapsule(…))<span class="rep r1">1</span></div>
+<div class="l k2"><span class="n">163</span>_canvas.BeginInvoke(new Action(() =&gt;<span class="rep r2">2</span></div>
+<div class="l"><span class="cm">SnapSet/src/SnapSet.Constituants/MesureurGdi.cs</span></div>
+<div class="l k3"><span class="n">125</span>police = new Font(_famille, taille, style, …);<span class="rep r3">3</span></div>
+<div class="l"><span class="cm">magpie/plugin/Core/MagpieCertificateGenerator.cs</span></div>
+<div class="l k4"><span class="n">95</span>doc.Dispose();<span class="rep r4">4</span></div>
+<div class="l"><span class="cm">magpie/plugin/Admin/MagpieDebugPanel.cs</span></div>
+<div class="l k5"><span class="n">68</span>_timer?.Dispose();<span class="rep r5">5</span></div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Au plus près</b>Une capsule par dessin.</li>
+      <li><span class="rep r2">2</span><b>Repoussé</b>Après l'événement.</li>
+      <li><span class="rep r3">3</span><b>Gardé exprès</b>Cache de session.</li>
+      <li><span class="rep r4">4</span><b>finally</b>Document caché.</li>
+      <li><span class="rep r5">5</span><b>Calé</b>Sur le retrait.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À surveiller · Les images d'icônes ne sont jamais libérées</span>
+    CapsuleExecution.cs:106 range en cache, par icône, deux Bitmap (normale et verrouillée), créés aux lignes 341 et 342. Rien ne les libère ni ne vide le cache : une icône remplacée à l'exécution y laisse ses images tant que la capsule vit, et leur finaliseur passe quand il peut (déduit, non mesuré : System.Drawing ne tourne pas ici). Relevé sans rien modifier.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 132 · Libérer les ressources</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1B</b> · Les objets de près</span><b>Cours 132</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Le GC rend…</div><ul>
+      <li><span>A</span>tout, à la fin du bloc</li><li><span>B</span>rien sans Dispose</li><li><span>C</span>la mémoire seulement</li><li><span>D</span>aussi les fichiers, aussitôt</li></ul></div>
+
+    <div class="q"><div class="enonce">1 000 FileStream jamais fermés ont laissé…</div><ul>
+      <li><span>A</span>aucun</li><li><span>B</span>une exception</li><li><span>C</span>1 000 descripteurs ouverts jusqu'au GC</li><li><span>D</span>un seul</li></ul></div>
+
+    <div class="q"><div class="enonce">Avec une exception dans deux using emboîtés…</div><ul>
+      <li><span>A</span>A puis B, après le catch</li><li><span>B</span>rien n'est fermé</li><li><span>C</span>seul B est fermé</li><li><span>D</span>B puis A sont fermés, avant le catch</li></ul></div>
+
+    <div class="q"><div class="enonce">using var ferme l'objet…</div><ul>
+      <li><span>A</span>à la ligne suivante</li><li><span>B</span>à la fin du bloc qui le déclare</li><li><span>C</span>au prochain GC</li><li><span>D</span>à la fin du programme</li></ul></div>
+
+    <div class="q"><div class="enonce">Un StreamWriter jamais fermé… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>lève une exception</li><li><span>B</span>a laissé 0 octet sur le disque</li><li><span>C</span>n'a rien écrit de plus après le GC</li><li><span>D</span>a tout écrit au GC</li></ul></div>
+
+    <div class="q"><div class="enonce">Un million d'objets à finaliseur, ramassés…</div><ul>
+      <li><span>A</span>217 à 453 ms, contre 1 à 25 sans</li><li><span>B</span>moins</li><li><span>C</span>une seconde par objet</li><li><span>D</span>autant que sans</li></ul></div>
+
+    <div class="q"><div class="enonce">GC.SuppressFinalize dans Dispose…</div><ul>
+      <li><span>A</span>empêche Dispose</li><li><span>B</span>force un GC</li><li><span>C</span>libère la mémoire</li><li><span>D</span>évite le détour par la file des finaliseurs</li></ul></div>
+
+    <div class="q"><div class="enonce">Un Timer créé sans être rangé dans un champ…</div><ul>
+      <li><span>A</span>ne démarre pas</li><li><span>B</span>tique pour toujours</li><li><span>C</span>s'est arrêté après un GC</li><li><span>D</span>lève une exception</li></ul></div>
+
+    <div class="q"><div class="enonce">Un fichier tenu sans partage, rouvert ailleurs…</div><ul>
+      <li><span>A</span>attend sa fermeture</li><li><span>B</span>IOException</li><li><span>C</span>s'ouvre vide</li><li><span>D</span>s'ouvre normalement</li></ul></div>
+
+    <div class="q"><div class="enonce">MesureurGdi ne libère pas ses polices parce que…</div><ul>
+      <li><span>A</span>Grasshopper le fait</li><li><span>B</span>c'est un oubli</li><li><span>C</span>une police ne se libère pas</li><li><span>D</span>c'est un cache gardé exprès</li></ul></div>
+
+    <div class="q"><div class="enonce">Magpie referme le document du certificat…</div><ul>
+      <li><span>A</span>dans un finally, même en cas d'erreur</li><li><span>B</span>jamais</li><li><span>C</span>à la fermeture de Rhino</li><li><span>D</span>au prochain GC</li></ul></div>
+
+    <div class="q"><div class="enonce">Un using sur un objet vide a coûté…</div><ul>
+      <li><span>A</span>une allocation</li><li><span>B</span>rien de mesurable</li><li><span>C</span>une microseconde</li><li><span>D</span>un GC</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 132 · Libérer les ressources</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1B</b> · Les objets de près</span><b>Cours 132</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · C.</b> Pas le reste.</div>
+    <div><b>02 · C.</b> 35, puis 1 035.</div>
+    <div><b>03 · D.</b> Ordre inverse.</div>
+    <div><b>04 · B.</b> Fin de portée.</div>
+    <div><b>05 · B et C.</b> Tampon perdu.</div>
+    <div><b>06 · A.</b> Survie d'un tour.</div>
+    <div><b>07 · D.</b> Ramassé d'un coup.</div>
+    <div><b>08 · C.</b> 15 ticks, puis 0.</div>
+    <div><b>09 · B.</b> FileShare.None.</div>
+    <div><b>10 · D.</b> MesureurGdi.cs:113.</div>
+    <div><b>11 · A.</b> finally, lignes 90 à 95.</div>
+    <div><b>12 · B.</b> try / finally.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 60, « Les patrons de conception ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">using (var x = …) { }</td><td>Dispose à la sortie du bloc</td><td>PeintreFeuilles.cs:137</td></tr>
+      <tr><td class="c">using var x = …;</td><td>Dispose à la fin de la portée</td><td>page 2</td></tr>
+      <tr><td class="c">try { … } finally { x.Dispose(); }</td><td>la même chose, à la main</td><td>MagpieCertificateGenerator.cs:90</td></tr>
+      <tr><td class="c">GC.SuppressFinalize(this)</td><td>épargner le finaliseur après Dispose</td><td>page 3</td></tr>
+      <tr><td class="c">BeginInvoke(new Action(x.Dispose))</td><td>libérer après l'événement en cours</td><td>Couleur.cs:198</td></tr>
+      <tr><td class="c">FileShare.Read</td><td>laisser les autres lire pendant qu'on tient</td><td>page 4</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Ressource</dt><dd>Ce qu'un objet tient hors de la mémoire gérée : fichier, handle, police, document.</dd>
+    <dt>IDisposable</dt><dd>L'interface d'un objet qui a quelque chose à rendre, par sa méthode Dispose.</dd>
+    <dt>Finaliseur</dt><dd>La méthode ~Classe() que le GC appelle avant de ramasser l'objet, quand il peut.</dd>
+    <dt>Descripteur</dt><dd>Le numéro qu'un système donne à un fichier ouvert ; leur nombre est limité.</dd>
+    <dt>Propriétaire</dt><dd>L'objet chargé de libérer une ressource qu'il a créée ou reçue.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 60</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 132 · Libérer les ressources</div>
+</section>
+
+</body>
+</html>

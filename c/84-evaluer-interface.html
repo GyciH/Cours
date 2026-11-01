@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>84 · Évaluer une interface</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-6">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 84</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Évaluer une interface</h1>
+  <p class="chapeau">Celui qui a conçu une interface est le plus mal placé pour la juger : il sait déjà où tout se trouve. <b>Évaluer</b>, c'est sortir de cette position, soit en passant l'interface au crible d'une grille, soit en regardant de vrais utilisateurs s'en servir, soit en mesurant ce qu'ils réussissent. Ce cours clôt la partie 6.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>79</b> à <b>83</b></span>
+    <span class="pastille">Exemples · <b>ui-review</b> (SnapSet), <b>TrainingManager</b>, <b>ExerciseResult</b> (Magpie)</span>
+  </div>
+
+  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+    <svg viewBox="0 0 600 196" width="100%">
+<rect x="8" y="10" width="186" height="150" rx="8" fill="#fff" stroke="#1565C0" stroke-width="1.4"/>
+<rect x="8" y="10" width="186" height="34" rx="8" fill="#1565C0"/>
+<rect x="8" y="34" width="186" height="10" fill="#1565C0"/>
+<text x="101" y="32" font-size="11" fill="#fff" text-anchor="middle" font-weight="700">Inspecter</text>
+<text x="101" y="64" font-size="8.4" fill="#2B2F33" text-anchor="middle" font-weight="700">des experts, une grille</text>
+<text x="101" y="92" font-size="8" fill="#6B7378" text-anchor="middle">rapide, sans utilisateur</text>
+<text x="101" y="112" font-size="8" fill="#6B7378" text-anchor="middle">trouve les écarts aux règles</text>
+<text x="101" y="132" font-size="8" fill="#C62828" text-anchor="middle" font-style="italic">rate les vrais usages</text>
+<line x1="196" y1="85" x2="204" y2="85" stroke="#6B7378" stroke-width="1"/><polygon points="204,85 197.6,87.7 197.6,82.3" fill="#6B7378"/>
+<rect x="206" y="10" width="186" height="150" rx="8" fill="#fff" stroke="#2E7D32" stroke-width="1.4"/>
+<rect x="206" y="10" width="186" height="34" rx="8" fill="#2E7D32"/>
+<rect x="206" y="34" width="186" height="10" fill="#2E7D32"/>
+<text x="299" y="32" font-size="11" fill="#fff" text-anchor="middle" font-weight="700">Observer</text>
+<text x="299" y="64" font-size="8.4" fill="#2B2F33" text-anchor="middle" font-weight="700">5 utilisateurs, des tâches</text>
+<text x="299" y="92" font-size="8" fill="#6B7378" text-anchor="middle">voit où l'on bloque</text>
+<text x="299" y="112" font-size="8" fill="#6B7378" text-anchor="middle">et pourquoi (voix haute)</text>
+<text x="299" y="132" font-size="8" fill="#C62828" text-anchor="middle" font-style="italic">peu de chiffres fiables</text>
+<line x1="394" y1="85" x2="402" y2="85" stroke="#6B7378" stroke-width="1"/><polygon points="402,85 395.6,87.7 395.6,82.3" fill="#6B7378"/>
+<rect x="404" y="10" width="186" height="150" rx="8" fill="#fff" stroke="#E65100" stroke-width="1.4"/>
+<rect x="404" y="10" width="186" height="34" rx="8" fill="#E65100"/>
+<rect x="404" y="34" width="186" height="10" fill="#E65100"/>
+<text x="497" y="32" font-size="11" fill="#fff" text-anchor="middle" font-weight="700">Mesurer</text>
+<text x="497" y="64" font-size="8.4" fill="#2B2F33" text-anchor="middle" font-weight="700">réussite, temps, satisfaction</text>
+<text x="497" y="92" font-size="8" fill="#6B7378" text-anchor="middle">compare deux versions</text>
+<text x="497" y="112" font-size="8" fill="#6B7378" text-anchor="middle">suit dans la durée</text>
+<text x="497" y="132" font-size="8" fill="#C62828" text-anchor="middle" font-style="italic">dit combien, pas pourquoi</text>
+<text x="300" y="182" font-size="7.8" fill="#2B2F33" text-anchor="middle" font-weight="700">Les trois se complètent : on inspecte d'abord (bon marché), on observe ensuite, on mesure pour comparer.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>On diagnostique avant de corriger, avec une grille, quelques utilisateurs et des mesures écrites pour chaque cas, puis on corrige par ordre de gravité.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Le contrôle technique d'une voiture. Une grille fixe de points, un essai sur route, quelques mesures chiffrées ; le contrôleur note les défauts par gravité, il ne répare rien lui-même.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>mener une inspection par heuristiques ;</li>
+        <li>organiser un petit test avec utilisateurs ;</li>
+        <li>choisir des mesures d'utilisabilité ;</li>
+        <li>repérer une mesure biaisée.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À retenir</span>
+    Le diagnostic et la correction sont deux étapes. Le skill ui-review de SnapSet le pose dès sa première ligne : ne pas modifier le code immédiatement, établir d'abord un diagnostic, puis proposer les modifications par priorité (SKILL.md:8–10).
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 84 · Évaluer une interface</div>
+</section>
+
+<!-- ============ PAGE 2 · INSPECTER ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 84</b></div>
+  <p class="rubrique">Schéma 1 · L'inspection par heuristiques</p>
+  <h2>Une grille, plusieurs regards</h2>
+  <p style="max-width:165mm">Une <b>heuristique</b> est une règle générale de bonne interface. Jakob Nielsen en a retenu dix, devenues la grille la plus utilisée. On parcourt l'interface écran par écran, on note chaque écart, où il se trouve et ce qu'il casse. SnapSet a sa propre grille de douze points, taillée pour le canvas.</p>
+
+  <svg viewBox="0 0 600 244" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="244" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#2F6B3A" text-anchor="start" font-weight="700">Les dix heuristiques de Nielsen (1994), et les points d'ui-review de SnapSet qui les recoupent</text>
+<rect x="16" y="34" width="276" height="32" rx="4" fill="#fff" stroke="#2F6B3A" stroke-width="1.2"/>
+<text x="32" y="54" font-size="10" fill="#2F6B3A" text-anchor="middle" font-weight="700">1</text>
+<text x="48" y="48" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">État du système visible</text>
+<text x="48" y="61" font-size="7.6" fill="#2E7D32" text-anchor="start">7 · Feedback</text>
+<rect x="304" y="34" width="276" height="32" rx="4" fill="#fff" stroke="#CFC6B8" stroke-width="1.2"/>
+<text x="320" y="54" font-size="10" fill="#2F6B3A" text-anchor="middle" font-weight="700">2</text>
+<text x="336" y="48" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">Langage de l'utilisateur</text>
+<text x="336" y="61" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">—</text>
+<rect x="16" y="72" width="276" height="32" rx="4" fill="#fff" stroke="#2F6B3A" stroke-width="1.2"/>
+<text x="32" y="92" font-size="10" fill="#2F6B3A" text-anchor="middle" font-weight="700">3</text>
+<text x="48" y="86" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">Contrôle et liberté (annuler)</text>
+<text x="48" y="99" font-size="7.6" fill="#2E7D32" text-anchor="start">Ctrl+Z natif</text>
+<rect x="304" y="72" width="276" height="32" rx="4" fill="#fff" stroke="#2F6B3A" stroke-width="1.2"/>
+<text x="320" y="92" font-size="10" fill="#2F6B3A" text-anchor="middle" font-weight="700">4</text>
+<text x="336" y="86" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">Cohérence et standards</text>
+<text x="336" y="99" font-size="7.6" fill="#2E7D32" text-anchor="start">9 · Grasshopper</text>
+<rect x="16" y="110" width="276" height="32" rx="4" fill="#fff" stroke="#2F6B3A" stroke-width="1.2"/>
+<text x="32" y="130" font-size="10" fill="#2F6B3A" text-anchor="middle" font-weight="700">5</text>
+<text x="48" y="124" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">Prévenir les erreurs</text>
+<text x="48" y="137" font-size="7.6" fill="#2E7D32" text-anchor="start">6 · Contrôles adaptés</text>
+<rect x="304" y="110" width="276" height="32" rx="4" fill="#fff" stroke="#2F6B3A" stroke-width="1.2"/>
+<text x="320" y="130" font-size="10" fill="#2F6B3A" text-anchor="middle" font-weight="700">6</text>
+<text x="336" y="124" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">Reconnaître plutôt que se rappeler</text>
+<text x="336" y="137" font-size="7.6" fill="#2E7D32" text-anchor="start">ux-design : reconnaissance</text>
+<rect x="16" y="148" width="276" height="32" rx="4" fill="#fff" stroke="#2F6B3A" stroke-width="1.2"/>
+<text x="32" y="168" font-size="10" fill="#2F6B3A" text-anchor="middle" font-weight="700">7</text>
+<text x="48" y="162" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">Souplesse pour les experts</text>
+<text x="48" y="175" font-size="7.6" fill="#2E7D32" text-anchor="start">ux-design : experts ; 5 · Densité</text>
+<rect x="304" y="148" width="276" height="32" rx="4" fill="#fff" stroke="#2F6B3A" stroke-width="1.2"/>
+<text x="320" y="168" font-size="10" fill="#2F6B3A" text-anchor="middle" font-weight="700">8</text>
+<text x="336" y="162" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">Design sobre et minimal</text>
+<text x="336" y="175" font-size="7.6" fill="#2E7D32" text-anchor="start">12 · Simplification</text>
+<rect x="16" y="186" width="276" height="32" rx="4" fill="#fff" stroke="#2F6B3A" stroke-width="1.2"/>
+<text x="32" y="206" font-size="10" fill="#2F6B3A" text-anchor="middle" font-weight="700">9</text>
+<text x="48" y="200" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">Aider à comprendre une erreur</text>
+<text x="48" y="213" font-size="7.6" fill="#2E7D32" text-anchor="start">motif de refus</text>
+<rect x="304" y="186" width="276" height="32" rx="4" fill="#fff" stroke="#CFC6B8" stroke-width="1.2"/>
+<text x="320" y="206" font-size="10" fill="#2F6B3A" text-anchor="middle" font-weight="700">10</text>
+<text x="336" y="200" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">Aide et documentation</text>
+<text x="336" y="213" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">—</text>
+<text x="16" y="236" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">En vert : le point de la grille ui-review (SKILL.md:15–51) ou la règle d'un skill qui couvre l'heuristique ; « — » : rien d'explicite.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">SnapSet/.claude/skills/ui-review/SKILL.md · lignes 62 à 65 (texte du skill, gras retiré)</span>- la preuve : fichier et ligne, chiffre mesuré, ou capture — et la
+  mention « lu dans le code, non constaté » quand c'est le cas ;
+- l'étape qui la prendrait, ou « non planifiée » s'il n'y en a pas :
+  un défaut sans destinataire est un défaut qui reste ;</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Plusieurs évaluateurs</h3>
+      <p>Seul, un évaluateur trouve environ un tiers des problèmes selon les études de Nielsen ; trois à cinq évaluateurs, chacun de son côté puis mis en commun, en trouvent l'essentiel. Chacun voit des défauts différents.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Noter la gravité</h3>
+      <p>Chaque défaut reçoit une gravité : cosmétique, mineur, majeur, bloquant. La grille de SnapSet ajoute une règle de tri : un défaut qui touche une décision du dépôt passe avant un défaut purement esthétique (SKILL.md:56–59).</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Corriger pendant l'inspection. On répare le premier défaut vu, on perd la vue d'ensemble, et l'utilisateur n'a plus le choix des priorités. Le skill le dit : « le diagnostic PROPOSE, l'utilisateur CHOISIT » (SKILL.md:69).
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 84 · Évaluer une interface</div>
+</section>
+
+<!-- ============ PAGE 3 · OBSERVER ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 84</b></div>
+  <p class="rubrique">Schéma 2 · Le test avec utilisateurs</p>
+  <h2>Cinq personnes, des tâches réelles</h2>
+  <p style="max-width:165mm">On donne à quelques utilisateurs des <b>tâches</b> réalistes, on les regarde faire sans aider, et on leur demande de <b>penser à voix haute</b>. Nielsen et Landauer (1993) ont estimé qu'un utilisateur révèle en moyenne 31 % des problèmes ; les suivants retrouvent surtout les mêmes.</p>
+
+  <svg viewBox="0 0 600 222" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="222" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#2F6B3A" text-anchor="start" font-weight="700">Part des problèmes trouvés selon le nombre d'utilisateurs : 1 − (1 − 0,31)ⁿ (calculé)</text>
+<line x1="70" y1="176" x2="510" y2="176" stroke="#6B7378"/>
+<line x1="70" y1="176" x2="70" y2="46" stroke="#6B7378"/>
+<text x="64" y="179.0" font-size="7.6" fill="#6B7378" text-anchor="end">0 %</text>
+<text x="64" y="114.0" font-size="7.6" fill="#6B7378" text-anchor="end">50 %</text>
+<line x1="70" y1="111.0" x2="510" y2="111.0" stroke="#E2DACB" stroke-dasharray="3 3"/>
+<text x="64" y="49.0" font-size="7.6" fill="#6B7378" text-anchor="end">100 %</text>
+<line x1="70" y1="46.0" x2="510" y2="46.0" stroke="#E2DACB" stroke-dasharray="3 3"/>
+<polyline points="70.0,176.0 99.3,135.7 128.7,107.9 158.0,88.7 187.3,75.5 216.7,66.3 246.0,60.0 275.3,55.7 304.7,52.7 334.0,50.6 363.3,49.2 392.7,48.2 422.0,47.5 451.3,47.0 480.7,46.7 510.0,46.5" fill="none" stroke="#2E7D32" stroke-width="2"/>
+<circle cx="99.33333333333333" cy="135.7" r="3.5" fill="#2E7D32"/>
+<text x="99.33333333333333" y="127.69999999999999" font-size="8" fill="#2B2F33" text-anchor="middle" font-weight="700">31 %</text>
+<text x="99.33333333333333" y="189" font-size="8" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">1</text>
+<circle cx="158.0" cy="88.70616999999999" r="3.5" fill="#2E7D32"/>
+<text x="158.0" y="80.70616999999999" font-size="8" fill="#2B2F33" text-anchor="middle" font-weight="700">67 %</text>
+<text x="158.0" y="189" font-size="8" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">3</text>
+<circle cx="216.66666666666666" cy="66.332407537" r="3.5" fill="#2F6B3A"/>
+<text x="216.66666666666666" y="58.332407536999995" font-size="8" fill="#2F6B3A" text-anchor="middle" font-weight="700">84 %</text>
+<text x="216.66666666666666" y="189" font-size="8" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">5</text>
+<circle cx="363.3333333333333" cy="49.18005227885119" r="3.5" fill="#2E7D32"/>
+<text x="363.3333333333333" y="41.18005227885119" font-size="8" fill="#2B2F33" text-anchor="middle" font-weight="700">98 %</text>
+<text x="363.3333333333333" y="189" font-size="8" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">10</text>
+<circle cx="510.0" cy="46.49737014555822" r="3.5" fill="#2E7D32"/>
+<text x="510.0" y="38.49737014555822" font-size="8" fill="#2B2F33" text-anchor="middle" font-weight="700">99,6 %</text>
+<text x="510.0" y="189" font-size="8" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">15</text>
+<text x="290.0" y="206" font-size="7.8" fill="#6B7378" text-anchor="middle" font-style="italic">nombre d'utilisateurs testés</text>
+<text x="530" y="90" font-size="8" fill="#C62828" text-anchor="middle" font-weight="700">Les 10 suivants</text>
+<text x="530" y="104" font-size="8" fill="#C62828" text-anchor="middle" font-weight="700">trouvent ce que</text>
+<text x="530" y="118" font-size="8" fill="#C62828" text-anchor="middle" font-weight="700">les 5 premiers</text>
+<text x="530" y="132" font-size="8" fill="#C62828" text-anchor="middle" font-weight="700">ont déjà vu.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · une fiche de séance Magpie</span>Tâche 2 : « Termine l'exercice B-03, puis passe au suivant. »
+Consigne : dis à voix haute ce que tu cherches et ce que tu penses.
+Observateur : ne réponds à aucune question pendant la tâche.
+Noter : où il hésite (minute), ce qu'il clique, s'il réussit seul.</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Petit et souvent</h3>
+      <p>Trois séances de cinq personnes, avec une correction entre chacune, valent mieux qu'une séance de quinze : la deuxième vérifie les corrections et découvre ce que les premiers défauts cachaient.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Les bons participants</h3>
+      <p>Des personnes du public visé : pour Magpie, des élèves qui débutent en Grasshopper, pas des collègues experts. Un expert contourne un défaut sans même le voir ; un débutant s'y arrête.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Lire « cinq utilisateurs suffisent » comme une règle générale. La courbe suppose un public homogène et des problèmes assez fréquents ; elle vaut pour trouver des défauts, pas pour chiffrer un temps moyen, qui demande bien plus de participants.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 84 · Évaluer une interface</div>
+</section>
+
+<!-- ============ PAGE 4 · MESURER ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 84</b></div>
+  <p class="rubrique">Schéma 3 · Mesurer l'utilisabilité</p>
+  <h2>Réussir, à quel coût, avec quel ressenti</h2>
+  <p style="max-width:165mm">La norme ISO 9241-11 définit l'utilisabilité par trois dimensions : l'<b>efficacité</b> (le but est atteint), l'<b>efficience</b> (les ressources dépensées pour l'atteindre) et la <b>satisfaction</b>. Magpie enregistre déjà les deux premières, exercice par exercice.</p>
+
+  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#2F6B3A" text-anchor="start" font-weight="700">Les trois dimensions de l'utilisabilité (ISO 9241-11) et ce que Magpie enregistre déjà</text>
+<rect x="16" y="36" width="180" height="36" rx="4" fill="#E7F0E8" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="106" y="52" font-size="10" fill="#2E7D32" text-anchor="middle" font-weight="700">Efficacité</text>
+<text x="106" y="66" font-size="7.8" fill="#2B2F33" text-anchor="middle" font-style="italic">le but est-il atteint ?</text>
+<text x="106" y="92" font-size="8.4" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">Success</text>
+<rect x="208" y="36" width="180" height="36" rx="4" fill="#E7F0E8" stroke="#1565C0" stroke-width="1.2"/>
+<text x="298" y="52" font-size="10" fill="#1565C0" text-anchor="middle" font-weight="700">Efficience</text>
+<text x="298" y="66" font-size="7.8" fill="#2B2F33" text-anchor="middle" font-style="italic">à quel coût ?</text>
+<text x="298" y="92" font-size="8.4" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">Attempts</text>
+<text x="298" y="108" font-size="8.4" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">DurationSeconds</text>
+<text x="298" y="124" font-size="8.4" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">ComponentsUsed</text>
+<rect x="400" y="36" width="180" height="36" rx="4" fill="#E7F0E8" stroke="#E65100" stroke-width="1.2"/>
+<text x="490" y="52" font-size="10" fill="#E65100" text-anchor="middle" font-weight="700">Satisfaction</text>
+<text x="490" y="66" font-size="7.8" fill="#2B2F33" text-anchor="middle" font-style="italic">qu'en pense-t-on ?</text>
+<text x="490" y="92" font-size="8.4" fill="#6B7378" text-anchor="middle" font-style="italic">rien d'enregistré</text>
+<text x="490" y="108" font-size="8.4" fill="#6B7378" text-anchor="middle" font-style="italic">(un SUS le mesurerait)</text>
+<text x="16" y="170" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">Champs de ExerciseResult.cs:8–11, écrits par TrainingManager.SubmitAnswer (lignes 322 à 330).</text>
+<text x="16" y="188" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Une mesure ne vaut que si elle est écrite pour chaque cas, réussi ou non : voir page 5.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/plugin/Core/ExerciseResult.cs · lignes 7 à 12</span>public string ExerciseId { get; set; }
+public bool Success { get; set; }
+public int? ComponentsUsed { get; set; }
+public int Attempts { get; set; }
+public double? DurationSeconds { get; set; }
+public DateTime Timestamp { get; set; }</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Le questionnaire SUS</h3>
+      <p>Dix phrases notées de 1 à 5, en alternance positives et négatives. Score : (note − 1) pour les impaires, (5 − note) pour les paires, somme × 2,5. Les réponses 4, 2, 4, 1, 5, 2, 4, 2, 4, 3 donnent 77,5 sur 100 (calculé) ; 68 est la moyenne souvent citée.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Mesurer n'est pas montrer</h3>
+      <p>Magpie garde tentatives et durée dans le fichier de résultats, mais ne les montre pas à l'élève : c'est « une décision pédagogique encore ouverte » (BilanParcours.cs:10–12). Une mesure sert d'abord à améliorer l'interface, pas à noter la personne.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Faire la moyenne de durées. Un élève parti déjeuner pendant un exercice pèse autant que dix élèves rapides. Pour des temps, la médiane résiste mieux ; et l'on note à part ceux qui ont abandonné, sinon ils disparaissent de la statistique.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 84 · Évaluer une interface</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 84</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Une grille écrite, des mesures à compléter</h2>
+  <p style="max-width:165mm">SnapSet possède une grille d'inspection complète et un format de diagnostic exigeant. Magpie, au contact d'élèves, possède déjà les données d'un test d'utilisabilité, mais avec deux angles morts.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">SnapSet/.claude/skills/ui-review/SKILL.md</span></div>
+<div class="l k1"><span class="n">69</span>Le diagnostic PROPOSE, l'utilisateur CHOISIT…<span class="rep r1">1</span></div>
+<div class="l"><span class="cm">magpie/plugin/Core/TrainingManager.cs</span></div>
+<div class="l k2"><span class="n">124</span>… <span class="kw">new</span> ExerciseProgress { StartedAt = DateTime.Now };<span class="rep r2">2</span></div>
+<div class="l k3"><span class="n">308</span>_current.Attempts++;<span class="rep r3">3</span></div>
+<div class="l k4"><span class="n">312</span><span class="kw">if</span> (ok)<span class="rep r4">4</span></div>
+<div class="l k4"><span class="n">322</span>_results[exerciseId] = <span class="kw">new</span> ExerciseResult</div>
+<div class="l k2"><span class="n">328</span>DurationSeconds = (DateTime.Now - …StartedAt)…,</div>
+<div class="l"><span class="cm">magpie/plugin/Core/BilanParcours.cs</span></div>
+<div class="l k5"><span class="n">10</span><span class="cm">/// Volontairement SANS tentatives, durée ni composants…</span><span class="rep r5">5</span></div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Deux étapes</b>Diagnostiquer, puis choisir.</li>
+      <li><span class="rep r2">2</span><b>Une horloge locale</b>Depuis la première visite.</li>
+      <li><span class="rep r3">3</span><b>Une tentative</b>Au clic sur « Soumettre ».</li>
+      <li><span class="rep r4">4</span><b>Seulement si réussi</b>Les échecs ne s'écrivent pas.</li>
+      <li><span class="rep r5">5</span><b>Mesuré, pas montré</b>Issue #24.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À surveiller · deux angles morts dans les mesures de Magpie</span>
+    Un résultat n'est écrit que si la réponse est juste (ligne 312) : un élève qui renonce après dix tentatives ne laisse aucune trace, et les exercices les plus difficiles paraissent mieux réussis qu'ils ne le sont. Ensuite, la durée court depuis la première visite (ligne 124) en <code>DateTime.Now</code>, heure locale : elle compte les pauses, et une nuit de changement d'heure l'allonge ou la raccourcit d'une heure (cours 72). <code>DateTime.UtcNow</code> et un temps actif mesuré à part rendraient ces chiffres exploitables.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 84 · Évaluer une interface</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 84</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Le concepteur juge mal son interface parce que…</div><ul>
+      <li><span>A</span>il manque de goût</li><li><span>B</span>il sait déjà où tout se trouve</li><li><span>C</span>il est trop pressé</li><li><span>D</span>il n'a pas les bons outils</li></ul></div>
+
+    <div class="q"><div class="enonce">Une heuristique d'interface est…</div><ul>
+      <li><span>A</span>une mesure chiffrée</li><li><span>B</span>un algorithme de tri</li><li><span>C</span>un test automatique</li><li><span>D</span>une règle générale de bonne conception</li></ul></div>
+
+    <div class="q"><div class="enonce">Combien de points compte la grille ui-review de SnapSet ?</div><ul>
+      <li><span>A</span>3</li><li><span>B</span>10</li><li><span>C</span>5</li><li><span>D</span>12</li></ul></div>
+
+    <div class="q"><div class="enonce">Dans un diagnostic SnapSet, chaque défaut porte… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>le nom de son auteur</li><li><span>B</span>sa preuve (fichier, ligne, mesure ou capture)</li><li><span>C</span>le correctif déjà appliqué</li><li><span>D</span>l'étape qui le prendrait</li></ul></div>
+
+    <div class="q"><div class="enonce">D'après la courbe de Nielsen et Landauer, 5 utilisateurs révèlent environ…</div><ul>
+      <li><span>A</span>84 % des problèmes</li><li><span>B</span>50 %</li><li><span>C</span>31 %</li><li><span>D</span>100 %</li></ul></div>
+
+    <div class="q"><div class="enonce">Pendant un test, l'observateur…</div><ul>
+      <li><span>A</span>corrige l'interface en direct</li><li><span>B</span>montre la solution si l'on bloque</li><li><span>C</span>n'aide pas et prend des notes</li><li><span>D</span>remplit le questionnaire</li></ul></div>
+
+    <div class="q"><div class="enonce">Les trois dimensions de l'ISO 9241-11 sont…</div><ul>
+      <li><span>A</span>efficacité, efficience, satisfaction</li><li><span>B</span>Fitts, Hick, Jakob</li><li><span>C</span>contraste, taille, couleur</li><li><span>D</span>vitesse, beauté, prix</li></ul></div>
+
+    <div class="q"><div class="enonce"><code>Attempts</code> et <code>DurationSeconds</code> mesurent…</div><ul>
+      <li><span>A</span>l'accessibilité</li><li><span>B</span>la satisfaction</li><li><span>C</span>l'efficience</li><li><span>D</span>l'efficacité</li></ul></div>
+
+    <div class="q"><div class="enonce">Un SUS avec les réponses 4, 2, 4, 1, 5, 2, 4, 2, 4, 3 vaut (calculé)…</div><ul>
+      <li><span>A</span>68</li><li><span>B</span>77,5</li><li><span>C</span>31</li><li><span>D</span>100</li></ul></div>
+
+    <div class="q"><div class="enonce">Pour résumer des durées où certains ont fait une pause, on préfère…</div><ul>
+      <li><span>A</span>la somme</li><li><span>B</span>la moyenne</li><li><span>C</span>la médiane</li><li><span>D</span>le maximum</li></ul></div>
+
+    <div class="q"><div class="enonce">Dans Magpie, un élève qui abandonne un exercice…</div><ul>
+      <li><span>A</span>ne laisse aucun résultat écrit</li><li><span>B</span>bloque le parcours</li><li><span>C</span>est compté deux fois</li><li><span>D</span>est noté en échec</li></ul></div>
+
+    <div class="q"><div class="enonce">Mesurer une durée avec <code>DateTime.Now</code> pose problème…</div><ul>
+      <li><span>A</span>jamais</li><li><span>B</span>au changement d'heure</li><li><span>C</span>le dimanche</li><li><span>D</span>sur un écran 4K</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 84 · Évaluer une interface</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 84</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · B.</b> Il ne cherche plus rien.</div>
+    <div><b>02 · D.</b> Les dix de Nielsen, par exemple.</div>
+    <div><b>03 · D.</b> ui-review, SKILL.md:15–51.</div>
+    <div><b>04 · B et D.</b> SKILL.md:62–65.</div>
+    <div><b>05 · A.</b> 1 − 0,69⁵ ≈ 0,84.</div>
+    <div><b>06 · C.</b> Sinon on teste l'observateur.</div>
+    <div><b>07 · A.</b> ISO 9241-11.</div>
+    <div><b>08 · C.</b> Le coût pour réussir.</div>
+    <div><b>09 · B.</b> (16 + 15) × 2,5.</div>
+    <div><b>10 · C.</b> Elle ignore les valeurs extrêmes.</div>
+    <div><b>11 · A.</b> TrainingManager.cs:312.</div>
+    <div><b>12 · B.</b> Heure locale ; voir le cours 72.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : la partie 6 est terminée ; passe à sa fiche récap.
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Outil</th><th>Ce qu'il donne</th><th>Où le voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">grille d'heuristiques</td><td>des écarts aux règles, sans utilisateur</td><td>ui-review, SKILL.md:15–51</td></tr>
+      <tr><td class="c">preuve + étape + ouvert</td><td>un diagnostic qu'on peut suivre</td><td>ui-review, SKILL.md:61–67</td></tr>
+      <tr><td class="c">1 − (1 − 0,31)ⁿ</td><td>part des problèmes trouvés avec n utilisateurs</td><td>page 3</td></tr>
+      <tr><td class="c">Success</td><td>l'efficacité</td><td>ExerciseResult.cs:8</td></tr>
+      <tr><td class="c">Attempts, DurationSeconds</td><td>l'efficience</td><td>ExerciseResult.cs:10–11</td></tr>
+      <tr><td class="c">SUS : (n−1) / (5−n) × 2,5</td><td>la satisfaction, sur 100</td><td>exemple calculé, page 4</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Heuristique</dt><dd>Une règle générale de bonne interface, qui sert de grille d'inspection.</dd>
+    <dt>Penser à voix haute</dt><dd>Faire dire à l'utilisateur ce qu'il cherche et pense pendant la tâche.</dd>
+    <dt>Efficience</dt><dd>Ce que coûte la réussite : temps, essais, effort.</dd>
+    <dt>SUS</dt><dd>System Usability Scale : dix questions, un score de satisfaction sur 100.</dd>
+    <dt>Biais du survivant</dt><dd>Ne compter que ce qui a réussi, et oublier ce qui a disparu en route.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : fiche récap de la partie 6</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 84 · Évaluer une interface</div>
+</section>
+
+</body>
+</html>

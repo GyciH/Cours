@@ -1,0 +1,737 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>18 · Graphes et parcours</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-2">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 18</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Graphes<br>et parcours</h1>
+  <p class="chapeau">Derrière un labyrinthe, un pavage de Truchet ou un tissage, il y a un graphe : des sommets reliés par des arêtes. Le motif devient alors une question de parcours.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>13</b> hasard reproductible · <b>14</b> grilles</span>
+    <span class="pastille">Exemples · <b>Maze</b>, <b>Truchet</b>, <b>Weave</b></span>
+  </div>
+
+  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+    <svg viewBox="0 0 560 222" width="100%">
+<line x1="20.0" y1="171.0" x2="44.0" y2="171.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="44.0" y1="147.0" x2="44.0" y2="123.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="44.0" y1="123.0" x2="44.0" y2="99.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="20.0" y1="75.0" x2="44.0" y2="75.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="44.0" y1="51.0" x2="44.0" y2="27.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="20.0" y1="27.0" x2="44.0" y2="27.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="44.0" y1="171.0" x2="68.0" y2="171.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="68.0" y1="171.0" x2="68.0" y2="147.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="44.0" y1="123.0" x2="68.0" y2="123.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="44.0" y1="99.0" x2="68.0" y2="99.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="44.0" y1="75.0" x2="68.0" y2="75.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="68.0" y1="75.0" x2="68.0" y2="51.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="44.0" y1="27.0" x2="68.0" y2="27.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="92.0" y1="195.0" x2="92.0" y2="171.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="92.0" y1="171.0" x2="92.0" y2="147.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="92.0" y1="147.0" x2="92.0" y2="123.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="68.0" y1="123.0" x2="92.0" y2="123.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="92.0" y1="99.0" x2="92.0" y2="75.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="68.0" y1="75.0" x2="92.0" y2="75.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="68.0" y1="27.0" x2="92.0" y2="27.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="116.0" y1="171.0" x2="116.0" y2="147.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="116.0" y1="147.0" x2="116.0" y2="123.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="92.0" y1="123.0" x2="116.0" y2="123.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="116.0" y1="123.0" x2="116.0" y2="99.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="92.0" y1="75.0" x2="116.0" y2="75.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="92.0" y1="51.0" x2="116.0" y2="51.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="116.0" y1="51.0" x2="116.0" y2="27.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="92.0" y1="27.0" x2="116.0" y2="27.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="116.0" y1="171.0" x2="140.0" y2="171.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="140.0" y1="123.0" x2="140.0" y2="99.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="116.0" y1="99.0" x2="140.0" y2="99.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="116.0" y1="75.0" x2="140.0" y2="75.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="116.0" y1="27.0" x2="140.0" y2="27.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="140.0" y1="171.0" x2="164.0" y2="171.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="140.0" y1="147.0" x2="164.0" y2="147.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="140.0" y1="123.0" x2="164.0" y2="123.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="164.0" y1="99.0" x2="164.0" y2="75.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="140.0" y1="75.0" x2="164.0" y2="75.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="164.0" y1="75.0" x2="164.0" y2="51.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="140.0" y1="51.0" x2="164.0" y2="51.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="140.0" y1="27.0" x2="164.0" y2="27.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="164.0" y1="171.0" x2="188.0" y2="171.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="164.0" y1="147.0" x2="188.0" y2="147.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="188.0" y1="147.0" x2="188.0" y2="123.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="188.0" y1="123.0" x2="188.0" y2="99.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="164.0" y1="99.0" x2="188.0" y2="99.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="188.0" y1="99.0" x2="188.0" y2="75.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="164.0" y1="27.0" x2="188.0" y2="27.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="188.0" y1="171.0" x2="212.0" y2="171.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="212.0" y1="171.0" x2="212.0" y2="147.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="188.0" y1="123.0" x2="212.0" y2="123.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="212.0" y1="99.0" x2="212.0" y2="75.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="212.0" y1="75.0" x2="212.0" y2="51.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="188.0" y1="51.0" x2="212.0" y2="51.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="188.0" y1="27.0" x2="212.0" y2="27.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="212.0" y1="147.0" x2="236.0" y2="147.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="236.0" y1="147.0" x2="236.0" y2="123.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="236.0" y1="123.0" x2="236.0" y2="99.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="212.0" y1="99.0" x2="236.0" y2="99.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="212.0" y1="75.0" x2="236.0" y2="75.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="236.0" y1="51.0" x2="236.0" y2="27.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="212.0" y1="27.0" x2="236.0" y2="27.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="260.0" y1="195.0" x2="260.0" y2="171.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="236.0" y1="171.0" x2="260.0" y2="171.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="260.0" y1="171.0" x2="260.0" y2="147.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="260.0" y1="147.0" x2="260.0" y2="123.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="260.0" y1="123.0" x2="260.0" y2="99.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="260.0" y1="99.0" x2="260.0" y2="75.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="260.0" y1="75.0" x2="260.0" y2="51.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="260.0" y1="51.0" x2="260.0" y2="27.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="20.0" y1="195.0" x2="20.0" y2="171.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="20.0" y1="171.0" x2="20.0" y2="147.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="20.0" y1="147.0" x2="20.0" y2="123.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="20.0" y1="123.0" x2="20.0" y2="99.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="20.0" y1="99.0" x2="20.0" y2="75.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="20.0" y1="75.0" x2="20.0" y2="51.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="20.0" y1="51.0" x2="20.0" y2="27.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="44.0" y1="195.0" x2="68.0" y2="195.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="68.0" y1="195.0" x2="92.0" y2="195.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="92.0" y1="195.0" x2="116.0" y2="195.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="116.0" y1="195.0" x2="140.0" y2="195.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="140.0" y1="195.0" x2="164.0" y2="195.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="164.0" y1="195.0" x2="188.0" y2="195.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="188.0" y1="195.0" x2="212.0" y2="195.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="212.0" y1="195.0" x2="236.0" y2="195.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="236.0" y1="195.0" x2="260.0" y2="195.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="322.0" y1="183.0" x2="346.0" y2="183.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="346.0" y1="183.0" x2="370.0" y2="183.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="370.0" y1="183.0" x2="370.0" y2="159.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="370.0" y1="159.0" x2="370.0" y2="135.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="370.0" y1="135.0" x2="346.0" y2="135.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="346.0" y1="135.0" x2="346.0" y2="159.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="346.0" y1="159.0" x2="322.0" y2="159.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="322.0" y1="159.0" x2="322.0" y2="135.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="322.0" y1="135.0" x2="322.0" y2="111.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="322.0" y1="111.0" x2="322.0" y2="87.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="322.0" y1="87.0" x2="346.0" y2="87.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="346.0" y1="87.0" x2="370.0" y2="87.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="370.0" y1="87.0" x2="370.0" y2="111.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="370.0" y1="111.0" x2="346.0" y2="111.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="370.0" y1="111.0" x2="394.0" y2="111.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="394.0" y1="111.0" x2="394.0" y2="87.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="394.0" y1="87.0" x2="418.0" y2="87.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="418.0" y1="87.0" x2="442.0" y2="87.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="442.0" y1="87.0" x2="442.0" y2="111.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="442.0" y1="111.0" x2="466.0" y2="111.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="466.0" y1="111.0" x2="466.0" y2="135.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="466.0" y1="135.0" x2="442.0" y2="135.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="442.0" y1="135.0" x2="418.0" y2="135.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="418.0" y1="135.0" x2="418.0" y2="159.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="418.0" y1="159.0" x2="442.0" y2="159.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="442.0" y1="159.0" x2="466.0" y2="159.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="466.0" y1="159.0" x2="490.0" y2="159.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="490.0" y1="159.0" x2="490.0" y2="135.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="490.0" y1="135.0" x2="514.0" y2="135.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="514.0" y1="135.0" x2="514.0" y2="111.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="514.0" y1="111.0" x2="490.0" y2="111.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="490.0" y1="111.0" x2="490.0" y2="87.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="490.0" y1="87.0" x2="490.0" y2="63.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="490.0" y1="63.0" x2="466.0" y2="63.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="466.0" y1="63.0" x2="466.0" y2="39.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="466.0" y1="39.0" x2="442.0" y2="39.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="442.0" y1="39.0" x2="418.0" y2="39.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="418.0" y1="39.0" x2="418.0" y2="63.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="418.0" y1="63.0" x2="442.0" y2="63.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="418.0" y1="63.0" x2="394.0" y2="63.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="394.0" y1="63.0" x2="370.0" y2="63.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="370.0" y1="63.0" x2="370.0" y2="39.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="370.0" y1="39.0" x2="394.0" y2="39.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="370.0" y1="39.0" x2="346.0" y2="39.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="346.0" y1="39.0" x2="346.0" y2="63.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="346.0" y1="63.0" x2="322.0" y2="63.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="322.0" y1="63.0" x2="322.0" y2="39.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="466.0" y1="39.0" x2="490.0" y2="39.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="490.0" y1="39.0" x2="514.0" y2="39.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="514.0" y1="39.0" x2="514.0" y2="63.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="514.0" y1="63.0" x2="538.0" y2="63.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="538.0" y1="63.0" x2="538.0" y2="87.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="538.0" y1="87.0" x2="514.0" y2="87.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="538.0" y1="87.0" x2="538.0" y2="111.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="538.0" y1="111.0" x2="538.0" y2="135.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="538.0" y1="135.0" x2="538.0" y2="159.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="538.0" y1="159.0" x2="514.0" y2="159.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="514.0" y1="159.0" x2="514.0" y2="183.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="514.0" y1="183.0" x2="490.0" y2="183.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="490.0" y1="183.0" x2="466.0" y2="183.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="466.0" y1="183.0" x2="442.0" y2="183.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="442.0" y1="183.0" x2="418.0" y2="183.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="418.0" y1="183.0" x2="394.0" y2="183.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="394.0" y1="183.0" x2="394.0" y2="159.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="394.0" y1="159.0" x2="394.0" y2="135.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="514.0" y1="183.0" x2="538.0" y2="183.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="538.0" y1="63.0" x2="538.0" y2="39.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="466.0" y1="63.0" x2="466.0" y2="87.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<line x1="418.0" y1="135.0" x2="418.0" y2="111.0" stroke="#5D4037" stroke-width="2" stroke-linecap="round" />
+<circle cx="322.0" cy="183.0" r="4" fill="#E65100"/>
+      <text x="140" y="216" text-anchor="middle" font-size="10.5" fill="#2B2F33"><tspan font-weight="700">Ce qu'on voit</tspan> · les murs restés debout</text>
+      <text x="430" y="216" text-anchor="middle" font-size="10.5" fill="#2B2F33"><tspan font-weight="700" fill="#5D4037">Ce qui a été calculé</tspan> · l'arbre des passages</text>
+    </svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Un <b>graphe</b> est un ensemble de sommets et d'arêtes qui les relient ; un <b>parcours</b> visite les sommets en suivant les arêtes. Maze calcule un parcours sur la grille des cases, et dessine ce qu'il n'a pas emprunté.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Le plan du métro. Il oublie la géométrie exacte des tunnels et ne garde que les stations et les liaisons. C'est tout ce qu'il faut pour trouver un trajet.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>voir le graphe caché derrière un motif : ses sommets, ses arêtes ;</li>
+        <li>dérouler un parcours en profondeur avec une pile, retours en arrière compris ;</li>
+        <li>expliquer pourquoi Maze n'a qu'un chemin entre deux cases, et comment Weave alterne dessus et dessous.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:5mm">
+    <span class="titre">À retenir</span>
+    Le point orange est le départ, la case (0, 0). Chaque trait violet est un mur abattu ; chaque mur debout est une arête de la grille que le parcours n'a pas prise. Le labyrinthe est le <b>négatif</b> de l'arbre.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 18 · Graphes et parcours</div>
+</section>
+
+<!-- ============ PAGE 2 · LA PILE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 18</b></div>
+  <p class="rubrique">Schéma 1 · Le parcours en profondeur</p>
+  <h2>Avancer tant qu'on peut, reculer quand on bute</h2>
+  <p style="max-width:165mm">Maze garde une <b>pile</b> des cases du chemin en cours. Il regarde la case du dessus : si elle a un voisin jamais vu, il en tire un au hasard, abat le mur et l'empile. Sinon, il la retire et recule d'une case.</p>
+
+  <svg viewBox="0 0 600 230" width="100%" style="margin-top:2mm">
+    <rect x="0" y="0" width="600" height="230" fill="#EFE9E1"/>
+    <text x="14" y="22" font-size="12" font-weight="800" fill="#5D4037">Ordre de visite, 4 × 3 cases</text>
+<line x1="30.0" y1="190.0" x2="30.0" y2="52.0" stroke="#D8D0C6" stroke-width="1" stroke-linecap="round" />
+<line x1="76.0" y1="190.0" x2="76.0" y2="52.0" stroke="#D8D0C6" stroke-width="1" stroke-linecap="round" />
+<line x1="122.0" y1="190.0" x2="122.0" y2="52.0" stroke="#D8D0C6" stroke-width="1" stroke-linecap="round" />
+<line x1="168.0" y1="190.0" x2="168.0" y2="52.0" stroke="#D8D0C6" stroke-width="1" stroke-linecap="round" />
+<line x1="214.0" y1="190.0" x2="214.0" y2="52.0" stroke="#D8D0C6" stroke-width="1" stroke-linecap="round" />
+<line x1="30.0" y1="190.0" x2="214.0" y2="190.0" stroke="#D8D0C6" stroke-width="1" stroke-linecap="round" />
+<line x1="30.0" y1="144.0" x2="214.0" y2="144.0" stroke="#D8D0C6" stroke-width="1" stroke-linecap="round" />
+<line x1="30.0" y1="98.0" x2="214.0" y2="98.0" stroke="#D8D0C6" stroke-width="1" stroke-linecap="round" />
+<line x1="30.0" y1="52.0" x2="214.0" y2="52.0" stroke="#D8D0C6" stroke-width="1" stroke-linecap="round" />
+<line x1="53.0" y1="167.0" x2="53.0" y2="121.0" stroke="#5D4037" stroke-width="2.4" stroke-linecap="round" />
+<line x1="53.0" y1="121.0" x2="53.0" y2="75.0" stroke="#5D4037" stroke-width="2.4" stroke-linecap="round" />
+<line x1="53.0" y1="75.0" x2="99.0" y2="75.0" stroke="#5D4037" stroke-width="2.4" stroke-linecap="round" />
+<line x1="99.0" y1="75.0" x2="99.0" y2="121.0" stroke="#5D4037" stroke-width="2.4" stroke-linecap="round" />
+<line x1="99.0" y1="121.0" x2="145.0" y2="121.0" stroke="#5D4037" stroke-width="2.4" stroke-linecap="round" />
+<line x1="145.0" y1="121.0" x2="145.0" y2="167.0" stroke="#5D4037" stroke-width="2.4" stroke-linecap="round" />
+<line x1="145.0" y1="167.0" x2="191.0" y2="167.0" stroke="#5D4037" stroke-width="2.4" stroke-linecap="round" />
+<line x1="191.0" y1="167.0" x2="191.0" y2="121.0" stroke="#5D4037" stroke-width="2.4" stroke-linecap="round" />
+<line x1="191.0" y1="121.0" x2="191.0" y2="75.0" stroke="#5D4037" stroke-width="2.4" stroke-linecap="round" />
+<line x1="191.0" y1="75.0" x2="145.0" y2="75.0" stroke="#5D4037" stroke-width="2.4" stroke-linecap="round" />
+<line x1="145.0" y1="167.0" x2="99.0" y2="167.0" stroke="#5D4037" stroke-width="2.4" stroke-linecap="round" />
+<circle cx="53.0" cy="167.0" r="9" fill="#E65100"/>
+<text x="53.0" y="170.0" text-anchor="middle" class="mono" style="font-size:9px" fill="#fff" font-weight="700">0</text>
+<circle cx="53.0" cy="121.0" r="9" fill="#fff"/>
+<text x="53.0" y="124.0" text-anchor="middle" class="mono" style="font-size:9px" fill="#2B2F33" font-weight="700">1</text>
+<circle cx="53.0" cy="75.0" r="9" fill="#fff"/>
+<text x="53.0" y="78.0" text-anchor="middle" class="mono" style="font-size:9px" fill="#2B2F33" font-weight="700">2</text>
+<circle cx="99.0" cy="75.0" r="9" fill="#fff"/>
+<text x="99.0" y="78.0" text-anchor="middle" class="mono" style="font-size:9px" fill="#2B2F33" font-weight="700">3</text>
+<circle cx="99.0" cy="121.0" r="9" fill="#fff"/>
+<text x="99.0" y="124.0" text-anchor="middle" class="mono" style="font-size:9px" fill="#2B2F33" font-weight="700">4</text>
+<circle cx="145.0" cy="121.0" r="9" fill="#fff"/>
+<text x="145.0" y="124.0" text-anchor="middle" class="mono" style="font-size:9px" fill="#2B2F33" font-weight="700">5</text>
+<circle cx="145.0" cy="167.0" r="9" fill="#fff"/>
+<text x="145.0" y="170.0" text-anchor="middle" class="mono" style="font-size:9px" fill="#2B2F33" font-weight="700">6</text>
+<circle cx="191.0" cy="167.0" r="9" fill="#fff"/>
+<text x="191.0" y="170.0" text-anchor="middle" class="mono" style="font-size:9px" fill="#2B2F33" font-weight="700">7</text>
+<circle cx="191.0" cy="121.0" r="9" fill="#fff"/>
+<text x="191.0" y="124.0" text-anchor="middle" class="mono" style="font-size:9px" fill="#2B2F33" font-weight="700">8</text>
+<circle cx="191.0" cy="75.0" r="9" fill="#fff"/>
+<text x="191.0" y="78.0" text-anchor="middle" class="mono" style="font-size:9px" fill="#2B2F33" font-weight="700">9</text>
+<circle cx="145.0" cy="75.0" r="9" fill="#fff"/>
+<text x="145.0" y="78.0" text-anchor="middle" class="mono" style="font-size:9px" fill="#2B2F33" font-weight="700">10</text>
+<circle cx="99.0" cy="167.0" r="9" fill="#fff"/>
+<text x="99.0" y="170.0" text-anchor="middle" class="mono" style="font-size:9px" fill="#2B2F33" font-weight="700">11</text>
+    <g class="mono" fill="#6B7378">
+      <text x="53" y="210" text-anchor="middle" class="mono" style="font-size:8.5px">i = 0</text>
+      <text x="191" y="210" text-anchor="middle" class="mono" style="font-size:8.5px">i = 3</text>
+    </g>
+    <text x="250" y="22" font-size="12" font-weight="800" fill="#5D4037">La pile, à la case 10</text>
+    <g font-size="9" class="mono">
+      <rect x="250" y="34" width="150" height="16" fill="#E65100"/><text x="258" y="46" class="mono" style="font-size:9px" fill="#fff">10 (2, 2)  ← sommet</text>
+      <rect x="250" y="51" width="150" height="16" fill="#fff"/><text x="258" y="63" class="mono" style="font-size:9px" fill="#2B2F33">9  (3, 2)</text>
+      <rect x="250" y="68" width="150" height="16" fill="#fff"/><text x="258" y="80" class="mono" style="font-size:9px" fill="#2B2F33">8  (3, 1)</text>
+      <rect x="250" y="85" width="150" height="16" fill="#fff"/><text x="258" y="97" class="mono" style="font-size:9px" fill="#2B2F33">7  (3, 0)</text>
+      <rect x="250" y="102" width="150" height="16" fill="#5D4037" fill-opacity=".18"/><text x="258" y="114" class="mono" style="font-size:9px" fill="#2B2F33">6  (2, 0)</text>
+      <rect x="250" y="119" width="150" height="16" fill="#fff"/><text x="258" y="131" class="mono" style="font-size:9px" fill="#2B2F33">5  (2, 1)</text>
+      <rect x="250" y="136" width="150" height="16" fill="#fff"/><text x="258" y="148" class="mono" style="font-size:9px" fill="#6B7378">…  jusqu'à 0 (0, 0)</text>
+    </g>
+    <g font-size="9.5" fill="#2B2F33">
+      <text x="420" y="46">Case 10 : ses voisins sont</text>
+      <text x="420" y="60">tous vus. On dépile 10, 9, 8, 7.</text>
+      <text x="420" y="86">Case 6 : (1, 0) n'a jamais été</text>
+      <text x="420" y="100">vue. On abat le mur entre</text>
+      <text x="420" y="114">elles ; (1, 0) devient la case 11.</text>
+      <text x="420" y="140">Plus aucune case libre :</text>
+      <text x="420" y="154">la pile se vide, c'est fini.</text>
+    </g>
+    <text x="250" y="190" font-size="9.5" fill="#2B2F33">Numéros : ordre d'empilement. Traits violets : murs abattus.</text>
+    <text x="250" y="206" font-size="9.5" fill="#2B2F33">Un autre Seed donne un autre ordre, donc un autre labyrinthe (cours 13).</text>
+  </svg>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Pile ou file</h3>
+      <p>Une <b>pile</b> (<code>Stack</code>) rend le dernier entré : on prolonge toujours le chemin le plus récent, d'où de longs couloirs. Une <b>file</b> (<code>Queue</code>) rendrait le premier entré : un parcours en largeur, qui avance par cercles autour du départ, avec des couloirs courts.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Tableau seen</h3>
+      <p>Sans <code>seen</code>, le parcours pourrait revenir sur une case déjà visitée et percer un second passage vers elle. Marquer une case au moment où on l'empile garantit qu'elle n'est atteinte qu'une fois.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Écrire le parcours en récursion. Une fonction qui s'appelle elle-même pour chaque case marche sur une petite grille, mais sur 200 × 200 cases le chemin peut compter des dizaines de milliers d'appels emboîtés : la pile d'appels de .NET déborde. La <code>Stack&lt;int[]&gt;</code> explicite de Maze n'a pas cette limite.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 18 · Graphes et parcours</div>
+</section>
+
+<!-- ============ PAGE 3 · L'ARBRE COUVRANT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 18</b></div>
+  <p class="rubrique">Schéma 2 · L'arbre couvrant</p>
+  <h2>Un seul chemin entre deux cases</h2>
+  <p style="max-width:165mm">Chaque case est atteinte une fois, par un seul mur abattu. Avec n cases, il y a donc n − 1 passages, et aucun cycle : c'est un <b>arbre couvrant</b>. Entre deux cases quelconques, il existe exactement un chemin.</p>
+
+  <svg viewBox="0 0 600 240" width="100%" style="margin-top:2mm">
+    <rect x="0" y="0" width="600" height="240" fill="#EFE9E1"/>
+<path d="M50.0 208.0 L50.0 180.0 L50.0 140.0 L50.0 100.0 L50.0 60.0 L90.0 60.0 L130.0 60.0 L130.0 100.0 L130.0 140.0 L130.0 180.0 L170.0 180.0 L210.0 180.0 L210.0 140.0 L170.0 140.0 L170.0 100.0 L210.0 100.0 L250.0 100.0 L250.0 60.0 L250.0 32.0" fill="none" stroke="#E65100" stroke-width="3" stroke-linejoin="round" opacity=".85"/>
+<line x1="70.0" y1="200.0" x2="70.0" y2="160.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="70.0" y1="160.0" x2="70.0" y2="120.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="70.0" y1="120.0" x2="70.0" y2="80.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="30.0" y1="40.0" x2="70.0" y2="40.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="110.0" y1="160.0" x2="110.0" y2="120.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="110.0" y1="120.0" x2="110.0" y2="80.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="70.0" y1="80.0" x2="110.0" y2="80.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="70.0" y1="40.0" x2="110.0" y2="40.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="150.0" y1="160.0" x2="150.0" y2="120.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="150.0" y1="120.0" x2="150.0" y2="80.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="150.0" y1="80.0" x2="150.0" y2="40.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="110.0" y1="40.0" x2="150.0" y2="40.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="150.0" y1="160.0" x2="190.0" y2="160.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="150.0" y1="80.0" x2="190.0" y2="80.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="150.0" y1="40.0" x2="190.0" y2="40.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="230.0" y1="200.0" x2="230.0" y2="160.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="230.0" y1="160.0" x2="230.0" y2="120.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="190.0" y1="120.0" x2="230.0" y2="120.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="190.0" y1="80.0" x2="230.0" y2="80.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="190.0" y1="40.0" x2="230.0" y2="40.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="270.0" y1="200.0" x2="270.0" y2="160.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="270.0" y1="160.0" x2="270.0" y2="120.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="270.0" y1="120.0" x2="270.0" y2="80.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="270.0" y1="80.0" x2="270.0" y2="40.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="30.0" y1="200.0" x2="30.0" y2="160.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="30.0" y1="160.0" x2="30.0" y2="120.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="30.0" y1="120.0" x2="30.0" y2="80.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="30.0" y1="80.0" x2="30.0" y2="40.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="70.0" y1="200.0" x2="110.0" y2="200.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="110.0" y1="200.0" x2="150.0" y2="200.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="150.0" y1="200.0" x2="190.0" y2="200.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="190.0" y1="200.0" x2="230.0" y2="200.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+<line x1="230.0" y1="200.0" x2="270.0" y2="200.0" stroke="#2B2F33" stroke-width="2.2" stroke-linecap="round" />
+    <g font-size="9.5" fill="#2B2F33">
+      <text x="30" y="226">entrée : bas de la case (0, 0)</text>
+      <text x="270" y="30" text-anchor="end">sortie : haut de la dernière case</text>
+    </g>
+    <g font-size="10" fill="#2B2F33">
+      <text x="300" y="56" font-weight="700" fill="#5D4037">6 × 4 = 24 cases, 23 passages</text>
+      <text x="300" y="76">Le chemin orange, de l'entrée à la sortie,</text>
+      <text x="300" y="90">traverse 17 des 24 cases. Il est unique : un</text>
+      <text x="300" y="104">second chemin formerait une boucle.</text>
+    </g>
+    <!-- petite case : right et up -->
+    <rect x="330" y="130" width="60" height="60" fill="#fff" stroke="#D8D0C6"/>
+    <line x1="390" y1="130" x2="390" y2="190" stroke="#5D4037" stroke-width="3"/>
+    <line x1="330" y1="130" x2="390" y2="130" stroke="#E65100" stroke-width="3"/>
+    <text x="360" y="164" text-anchor="middle" class="mono" style="font-size:9px" fill="#2B2F33">(i, j)</text>
+    <text x="396" y="164" class="mono" style="font-size:9px" fill="#5D4037">right[i, j]</text>
+    <text x="360" y="124" text-anchor="middle" class="mono" style="font-size:9px" fill="#E65100">up[i, j]</text>
+    <g font-size="9.5" fill="#2B2F33">
+      <text x="300" y="210">Deux murs par case suffisent : le mur gauche de (i, j)</text>
+      <text x="300" y="224">est le mur droit de (i − 1, j), le bas est le haut de (i, j − 1).</text>
+    </g>
+  </svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Maze.cs · 99–105</span>bool exit = i == nx - 1 &amp;&amp; j == ny - 1;
+if (right[i, j]) lines.Add(new LineCurve(rows[i + 1][j], rows[i + 1][j + 1]));
+if (up[i, j] &amp;&amp; !exit) lines.Add(new LineCurve(rows[i][j + 1], rows[i + 1][j + 1]));
+…
+for (int j = 0; j &lt; ny; j++) lines.Add(new LineCurve(rows[0][j], rows[0][j + 1]));
+for (int i = 1; i &lt; nx; i++) lines.Add(new LineCurve(rows[i][0], rows[i + 1][0]));</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Dessiner le contour</h3>
+      <p>Les tableaux couvrent les murs droits et hauts. Le contour gauche et bas n'y figure pas : les deux dernières boucles l'ajoutent. La seconde commence à <code>i = 1</code> : le bas de la case (0, 0) reste ouvert, c'est l'entrée.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Un labyrinthe parfait</h3>
+      <p>On appelle ainsi un labyrinthe sans boucle ni zone fermée. Toute case est accessible, et il n'y a jamais deux façons d'y aller. C'est exactement la définition d'un arbre couvrant.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Confondre les points et les cases. Une grille de 7 × 5 points donne 6 × 4 cases : <code>nx = rows.Count - 1</code> (ligne 59). Et comme Contour, Maze coupe toutes les rangées à la plus courte (ligne 60).
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 18 · Graphes et parcours</div>
+</section>
+
+<!-- ============ PAGE 4 · TRUCHET ET WEAVE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 18</b></div>
+  <p class="rubrique">Schéma 3 · D'autres graphes cachés</p>
+  <h2>Des arcs qui se suivent, des fils qui se croisent</h2>
+  <p style="max-width:165mm">Truchet et Weave ne font aucun parcours explicite. Pourtant leur résultat se comprend comme un graphe : les milieux d'arêtes reliés par des arcs, et les croisements de deux familles de fils.</p>
+
+  <svg viewBox="0 0 600 260" width="100%" style="margin-top:2mm">
+    <rect x="0" y="0" width="292" height="260" fill="#EFE9E1"/><rect x="308" y="0" width="292" height="260" fill="#EFE9E1"/>
+    <text x="14" y="24" font-size="12" font-weight="800" fill="#5D4037">Truchet : chaînes et boucles</text>
+    <text x="322" y="24" font-size="12" font-weight="800" fill="#5D4037">Weave : le damier</text>
+<rect x="34" y="40" width="224" height="160" fill="#fff" stroke="#D8D0C6"/>
+<line x1="34.0" y1="40.0" x2="34.0" y2="200.0" stroke="#EEE8E0" stroke-width="1" stroke-linecap="round" />
+<line x1="66.0" y1="40.0" x2="66.0" y2="200.0" stroke="#EEE8E0" stroke-width="1" stroke-linecap="round" />
+<line x1="98.0" y1="40.0" x2="98.0" y2="200.0" stroke="#EEE8E0" stroke-width="1" stroke-linecap="round" />
+<line x1="130.0" y1="40.0" x2="130.0" y2="200.0" stroke="#EEE8E0" stroke-width="1" stroke-linecap="round" />
+<line x1="162.0" y1="40.0" x2="162.0" y2="200.0" stroke="#EEE8E0" stroke-width="1" stroke-linecap="round" />
+<line x1="194.0" y1="40.0" x2="194.0" y2="200.0" stroke="#EEE8E0" stroke-width="1" stroke-linecap="round" />
+<line x1="226.0" y1="40.0" x2="226.0" y2="200.0" stroke="#EEE8E0" stroke-width="1" stroke-linecap="round" />
+<line x1="258.0" y1="40.0" x2="258.0" y2="200.0" stroke="#EEE8E0" stroke-width="1" stroke-linecap="round" />
+<line x1="34.0" y1="40.0" x2="258.0" y2="40.0" stroke="#EEE8E0" stroke-width="1" stroke-linecap="round" />
+<line x1="34.0" y1="72.0" x2="258.0" y2="72.0" stroke="#EEE8E0" stroke-width="1" stroke-linecap="round" />
+<line x1="34.0" y1="104.0" x2="258.0" y2="104.0" stroke="#EEE8E0" stroke-width="1" stroke-linecap="round" />
+<line x1="34.0" y1="136.0" x2="258.0" y2="136.0" stroke="#EEE8E0" stroke-width="1" stroke-linecap="round" />
+<line x1="34.0" y1="168.0" x2="258.0" y2="168.0" stroke="#EEE8E0" stroke-width="1" stroke-linecap="round" />
+<line x1="34.0" y1="200.0" x2="258.0" y2="200.0" stroke="#EEE8E0" stroke-width="1" stroke-linecap="round" />
+<path d="M34.0 184.0 A16.0 16.0 0 0 1 50.0 200.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M66.0 184.0 A16.0 16.0 0 0 1 50.0 168.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M50.0 168.0 A16.0 16.0 0 0 1 66.0 152.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M50.0 136.0 A16.0 16.0 0 0 1 34.0 152.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M50.0 136.0 A16.0 16.0 0 0 1 66.0 120.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M50.0 104.0 A16.0 16.0 0 0 1 34.0 120.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M34.0 88.0 A16.0 16.0 0 0 1 50.0 104.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M66.0 88.0 A16.0 16.0 0 0 1 50.0 72.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M34.0 56.0 A16.0 16.0 0 0 1 50.0 72.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M66.0 56.0 A16.0 16.0 0 0 1 50.0 40.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M66.0 184.0 A16.0 16.0 0 0 1 82.0 200.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M98.0 184.0 A16.0 16.0 0 0 1 82.0 168.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M66.0 152.0 A16.0 16.0 0 0 1 82.0 168.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M98.0 152.0 A16.0 16.0 0 0 1 82.0 136.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M66.0 120.0 A16.0 16.0 0 0 1 82.0 136.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M98.0 120.0 A16.0 16.0 0 0 1 82.0 104.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M66.0 88.0 A16.0 16.0 0 0 1 82.0 104.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M98.0 88.0 A16.0 16.0 0 0 1 82.0 72.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M66.0 56.0 A16.0 16.0 0 0 1 82.0 72.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M98.0 56.0 A16.0 16.0 0 0 1 82.0 40.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M114.0 200.0 A16.0 16.0 0 0 1 130.0 184.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M114.0 168.0 A16.0 16.0 0 0 1 98.0 184.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M98.0 152.0 A16.0 16.0 0 0 1 114.0 168.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M130.0 152.0 A16.0 16.0 0 0 1 114.0 136.0" fill="none" stroke="#5D4037" stroke-width="2.6"/>
+<path d="M114.0 136.0 A16.0 16.0 0 0 1 130.0 120.0" fill="none" stroke="#5D4037" stroke-width="2.6"/>
+<path d="M114.0 104.0 A16.0 16.0 0 0 1 98.0 120.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M114.0 104.0 A16.0 16.0 0 0 1 130.0 88.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M114.0 72.0 A16.0 16.0 0 0 1 98.0 88.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M114.0 72.0 A16.0 16.0 0 0 1 130.0 56.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M114.0 40.0 A16.0 16.0 0 0 1 98.0 56.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M146.0 200.0 A16.0 16.0 0 0 1 162.0 184.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M146.0 168.0 A16.0 16.0 0 0 1 130.0 184.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M146.0 168.0 A16.0 16.0 0 0 1 162.0 152.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M146.0 136.0 A16.0 16.0 0 0 1 130.0 152.0" fill="none" stroke="#5D4037" stroke-width="2.6"/>
+<path d="M130.0 120.0 A16.0 16.0 0 0 1 146.0 136.0" fill="none" stroke="#5D4037" stroke-width="2.6"/>
+<path d="M162.0 120.0 A16.0 16.0 0 0 1 146.0 104.0" fill="none" stroke="#5D4037" stroke-width="2.6"/>
+<path d="M146.0 104.0 A16.0 16.0 0 0 1 162.0 88.0" fill="none" stroke="#5D4037" stroke-width="2.6"/>
+<path d="M146.0 72.0 A16.0 16.0 0 0 1 130.0 88.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M130.0 56.0 A16.0 16.0 0 0 1 146.0 72.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M162.0 56.0 A16.0 16.0 0 0 1 146.0 40.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M178.0 200.0 A16.0 16.0 0 0 1 194.0 184.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M178.0 168.0 A16.0 16.0 0 0 1 162.0 184.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M162.0 152.0 A16.0 16.0 0 0 1 178.0 168.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M194.0 152.0 A16.0 16.0 0 0 1 178.0 136.0" fill="none" stroke="#5D4037" stroke-width="2.6"/>
+<path d="M162.0 120.0 A16.0 16.0 0 0 1 178.0 136.0" fill="none" stroke="#5D4037" stroke-width="2.6"/>
+<path d="M194.0 120.0 A16.0 16.0 0 0 1 178.0 104.0" fill="none" stroke="#5D4037" stroke-width="2.6"/>
+<path d="M178.0 104.0 A16.0 16.0 0 0 1 194.0 88.0" fill="none" stroke="#5D4037" stroke-width="2.6"/>
+<path d="M178.0 72.0 A16.0 16.0 0 0 1 162.0 88.0" fill="none" stroke="#5D4037" stroke-width="2.6"/>
+<path d="M178.0 72.0 A16.0 16.0 0 0 1 194.0 56.0" fill="none" stroke="#5D4037" stroke-width="2.6"/>
+<path d="M178.0 40.0 A16.0 16.0 0 0 1 162.0 56.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M210.0 200.0 A16.0 16.0 0 0 1 226.0 184.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M210.0 168.0 A16.0 16.0 0 0 1 194.0 184.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M210.0 168.0 A16.0 16.0 0 0 1 226.0 152.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M210.0 136.0 A16.0 16.0 0 0 1 194.0 152.0" fill="none" stroke="#5D4037" stroke-width="2.6"/>
+<path d="M194.0 120.0 A16.0 16.0 0 0 1 210.0 136.0" fill="none" stroke="#5D4037" stroke-width="2.6"/>
+<path d="M226.0 120.0 A16.0 16.0 0 0 1 210.0 104.0" fill="none" stroke="#5D4037" stroke-width="2.6"/>
+<path d="M210.0 104.0 A16.0 16.0 0 0 1 226.0 88.0" fill="none" stroke="#5D4037" stroke-width="2.6"/>
+<path d="M210.0 72.0 A16.0 16.0 0 0 1 194.0 88.0" fill="none" stroke="#5D4037" stroke-width="2.6"/>
+<path d="M194.0 56.0 A16.0 16.0 0 0 1 210.0 72.0" fill="none" stroke="#5D4037" stroke-width="2.6"/>
+<path d="M226.0 56.0 A16.0 16.0 0 0 1 210.0 40.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M226.0 184.0 A16.0 16.0 0 0 1 242.0 200.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M258.0 184.0 A16.0 16.0 0 0 1 242.0 168.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M242.0 168.0 A16.0 16.0 0 0 1 258.0 152.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M242.0 136.0 A16.0 16.0 0 0 1 226.0 152.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M242.0 136.0 A16.0 16.0 0 0 1 258.0 120.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M242.0 104.0 A16.0 16.0 0 0 1 226.0 120.0" fill="none" stroke="#5D4037" stroke-width="2.6"/>
+<path d="M226.0 88.0 A16.0 16.0 0 0 1 242.0 104.0" fill="none" stroke="#5D4037" stroke-width="2.6"/>
+<path d="M258.0 88.0 A16.0 16.0 0 0 1 242.0 72.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M226.0 56.0 A16.0 16.0 0 0 1 242.0 72.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<path d="M258.0 56.0 A16.0 16.0 0 0 1 242.0 40.0" fill="none" stroke="#E65100" stroke-width="2"/>
+<line x1="350.0" y1="78.0" x2="412.0" y2="78.0" stroke="#5D4037" stroke-width="5" stroke-linecap="round" stroke-linecap="butt"/>
+<line x1="426.0" y1="78.0" x2="504.0" y2="78.0" stroke="#5D4037" stroke-width="5" stroke-linecap="round" stroke-linecap="butt"/>
+<line x1="518.0" y1="78.0" x2="534.0" y2="78.0" stroke="#5D4037" stroke-width="5" stroke-linecap="round" stroke-linecap="butt"/>
+<line x1="350.0" y1="124.0" x2="366.0" y2="124.0" stroke="#5D4037" stroke-width="5" stroke-linecap="round" stroke-linecap="butt"/>
+<line x1="380.0" y1="124.0" x2="458.0" y2="124.0" stroke="#5D4037" stroke-width="5" stroke-linecap="round" stroke-linecap="butt"/>
+<line x1="472.0" y1="124.0" x2="534.0" y2="124.0" stroke="#5D4037" stroke-width="5" stroke-linecap="round" stroke-linecap="butt"/>
+<line x1="350.0" y1="170.0" x2="412.0" y2="170.0" stroke="#5D4037" stroke-width="5" stroke-linecap="round" stroke-linecap="butt"/>
+<line x1="426.0" y1="170.0" x2="504.0" y2="170.0" stroke="#5D4037" stroke-width="5" stroke-linecap="round" stroke-linecap="butt"/>
+<line x1="518.0" y1="170.0" x2="534.0" y2="170.0" stroke="#5D4037" stroke-width="5" stroke-linecap="round" stroke-linecap="butt"/>
+<line x1="350.0" y1="216.0" x2="366.0" y2="216.0" stroke="#5D4037" stroke-width="5" stroke-linecap="round" stroke-linecap="butt"/>
+<line x1="380.0" y1="216.0" x2="458.0" y2="216.0" stroke="#5D4037" stroke-width="5" stroke-linecap="round" stroke-linecap="butt"/>
+<line x1="472.0" y1="216.0" x2="534.0" y2="216.0" stroke="#5D4037" stroke-width="5" stroke-linecap="round" stroke-linecap="butt"/>
+<line x1="373.0" y1="55.0" x2="373.0" y2="71.0" stroke="#E65100" stroke-width="5" stroke-linecap="round" stroke-linecap="butt"/>
+<line x1="373.0" y1="85.0" x2="373.0" y2="163.0" stroke="#E65100" stroke-width="5" stroke-linecap="round" stroke-linecap="butt"/>
+<line x1="373.0" y1="177.0" x2="373.0" y2="239.0" stroke="#E65100" stroke-width="5" stroke-linecap="round" stroke-linecap="butt"/>
+<line x1="419.0" y1="55.0" x2="419.0" y2="117.0" stroke="#E65100" stroke-width="5" stroke-linecap="round" stroke-linecap="butt"/>
+<line x1="419.0" y1="131.0" x2="419.0" y2="209.0" stroke="#E65100" stroke-width="5" stroke-linecap="round" stroke-linecap="butt"/>
+<line x1="419.0" y1="223.0" x2="419.0" y2="239.0" stroke="#E65100" stroke-width="5" stroke-linecap="round" stroke-linecap="butt"/>
+<line x1="465.0" y1="55.0" x2="465.0" y2="71.0" stroke="#E65100" stroke-width="5" stroke-linecap="round" stroke-linecap="butt"/>
+<line x1="465.0" y1="85.0" x2="465.0" y2="163.0" stroke="#E65100" stroke-width="5" stroke-linecap="round" stroke-linecap="butt"/>
+<line x1="465.0" y1="177.0" x2="465.0" y2="239.0" stroke="#E65100" stroke-width="5" stroke-linecap="round" stroke-linecap="butt"/>
+<line x1="511.0" y1="55.0" x2="511.0" y2="117.0" stroke="#E65100" stroke-width="5" stroke-linecap="round" stroke-linecap="butt"/>
+<line x1="511.0" y1="131.0" x2="511.0" y2="209.0" stroke="#E65100" stroke-width="5" stroke-linecap="round" stroke-linecap="butt"/>
+<line x1="511.0" y1="223.0" x2="511.0" y2="239.0" stroke="#E65100" stroke-width="5" stroke-linecap="round" stroke-linecap="butt"/>
+<text x="344" y="81.0" text-anchor="end" class="mono" style="font-size:9px" fill="#5D4037">A0</text>
+<text x="344" y="127.0" text-anchor="end" class="mono" style="font-size:9px" fill="#5D4037">A1</text>
+<text x="344" y="173.0" text-anchor="end" class="mono" style="font-size:9px" fill="#5D4037">A2</text>
+<text x="344" y="219.0" text-anchor="end" class="mono" style="font-size:9px" fill="#5D4037">A3</text>
+<text x="373.0" y="47" text-anchor="middle" class="mono" style="font-size:9px" fill="#E65100">B0</text>
+<text x="419.0" y="47" text-anchor="middle" class="mono" style="font-size:9px" fill="#E65100">B1</text>
+<text x="465.0" y="47" text-anchor="middle" class="mono" style="font-size:9px" fill="#E65100">B2</text>
+<text x="511.0" y="47" text-anchor="middle" class="mono" style="font-size:9px" fill="#E65100">B3</text>
+    <g font-size="9.5" fill="#2B2F33">
+      <text x="14" y="222"><tspan fill="#5D4037" font-weight="700">—</tspan> boucle fermée (3 ici)</text>
+      <text x="14" y="238"><tspan fill="#E65100" font-weight="700">—</tspan> chaîne qui finit au bord</text>
+      <text x="322" y="252">A passe dessus quand i + j est pair.</text>
+    </g>
+  </svg>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Pourquoi jamais de fourche</h3>
+      <p>Les deux tirages d'une case Truchet touchent chacun ses quatre milieux, une fois chacun. Un milieu intérieur appartient à deux cases : il est touché par exactement deux arcs. Au bord, par un seul. Dans un graphe où chaque sommet a au plus deux arêtes, les morceaux sont forcément des chaînes ou des boucles. <code>Curve.JoinCurves</code> (ligne 93) les retrouve.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Le damier de Weave</h3>
+      <p>Pour chaque paire (A[i], B[j]), Weave cherche les croisements avec <code>Intersection.CurveCurve</code>. Le fil qui passe dessous perd un morceau de longueur Gap autour du croisement. La règle de parité colore les croisements comme un damier : le long d'un fil, dessus et dessous alternent.</p>
+    </div>
+  </div>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Weave.cs · 77–81</span>// Damier : A passe dessus quand i + j est pair, dessous sinon.
+if ((i + j) % 2 == 0)
+    underB[j].Add(b[j].GetLength(new Interval(b[j].Domain.Min, e.ParameterB)));
+else
+    underA[i].Add(a[i].GetLength(new Interval(a[i].Domain.Min, e.ParameterA)));</div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Attendre une alternance parfaite avec des fils courbes. La parité dépend de la paire (i, j), pas du croisement : si A[2] croise B[1] deux fois, A passe dessous les deux fois. Le damier n'alterne bien que si chaque paire se croise une seule fois.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 18 · Graphes et parcours</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 18</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Maze.cs : la boucle du parcours</h2>
+  <p style="max-width:165mm">Les tableaux <code>right</code>, <code>up</code> et <code>seen</code> sont prêts, tous les murs debout (lignes 64–68). Une case est un <code>int[]</code> : {i, j}.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l k1"><span class="n">71</span><span class="kw">var</span> stack = <span class="kw">new</span> <span class="ty">Stack</span>&lt;<span class="kw">int</span>[]&gt;();<span class="rep r1">1</span></div>
+<div class="l k1"><span class="n">72</span>stack.Push(<span class="kw">new</span>[] { 0, 0 });</div>
+<div class="l k1"><span class="n">73</span>seen[0, 0] = <span class="kw">true</span>;</div>
+<div class="l k2"><span class="n">74</span><span class="kw">int</span>[][] moves = { <span class="kw">new</span>[] { 1, 0 }, <span class="kw">new</span>[] { -1, 0 },<span class="rep r2">2</span></div>
+<div class="l k2"><span class="n"> </span>    <span class="kw">new</span>[] { 0, 1 }, <span class="kw">new</span>[] { 0, -1 } };</div>
+<div class="l"><span class="n">75</span><span class="kw">while</span> (stack.Count &gt; 0)</div>
+<div class="l"><span class="n">76</span>{</div>
+<div class="l k3"><span class="n">77</span>  <span class="kw">int</span>[] cell = stack.Peek();<span class="rep r3">3</span></div>
+<div class="l k4"><span class="n">78</span>  <span class="kw">var</span> next = moves<span class="rep r4">4</span></div>
+<div class="l k4"><span class="n">79</span>    .Select(m =&gt; <span class="kw">new</span>[] { cell[0] + m[0],</div>
+<div class="l k4"><span class="n"> </span>        cell[1] + m[1], m[0], m[1] })</div>
+<div class="l k4"><span class="n">80</span>    .Where(c =&gt; c[0] &gt;= 0 &amp;&amp; c[1] &gt;= 0</div>
+<div class="l k4"><span class="n"> </span>        &amp;&amp; c[0] &lt; nx &amp;&amp; c[1] &lt; ny</div>
+<div class="l k4"><span class="n"> </span>        &amp;&amp; !seen[c[0], c[1]])</div>
+<div class="l k4"><span class="n">81</span>    .ToList();</div>
+<div class="l k5"><span class="n">82</span>  <span class="kw">if</span> (next.Count == 0) { stack.Pop(); <span class="kw">continue</span>; }<span class="rep r5">5</span></div>
+<div class="l k6"><span class="n">84</span>  <span class="kw">int</span>[] n = next[rand.Next(next.Count)];<span class="rep r6">6</span></div>
+<div class="l k7"><span class="n">85</span>  <span class="kw">if</span> (n[2] == 1) right[cell[0], cell[1]] = <span class="kw">false</span>;<span class="rep r7">7</span></div>
+<div class="l k7"><span class="n">86</span>  <span class="kw">if</span> (n[2] == -1) right[n[0], n[1]] = <span class="kw">false</span>;</div>
+<div class="l k7"><span class="n">87</span>  <span class="kw">if</span> (n[3] == 1) up[cell[0], cell[1]] = <span class="kw">false</span>;</div>
+<div class="l k7"><span class="n">88</span>  <span class="kw">if</span> (n[3] == -1) up[n[0], n[1]] = <span class="kw">false</span>;</div>
+<div class="l k6"><span class="n">89</span>  seen[n[0], n[1]] = <span class="kw">true</span>;</div>
+<div class="l k6"><span class="n">90</span>  stack.Push(<span class="kw">new</span>[] { n[0], n[1] });</div>
+<div class="l"><span class="n">91</span>}</div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Le départ</b>La case (0, 0), empilée et marquée vue.</li>
+      <li><span class="rep r2">2</span><b>Quatre directions</b>Droite, gauche, haut, bas, en (di, dj).</li>
+      <li><span class="rep r3">3</span><b>Regarder sans retirer</b><code>Peek</code> lit le sommet de la pile ; la case y reste tant qu'elle a des voisins libres.</li>
+      <li><span class="rep r4">4</span><b>Les voisins libres</b>Chaque candidat garde aussi sa direction : {i, j, di, dj}. On écarte les sorties de grille et les cases vues.</li>
+      <li><span class="rep r5">5</span><b>Cul-de-sac</b>Aucun voisin libre : on dépile, c'est le retour en arrière.</li>
+      <li><span class="rep r6">6</span><b>Le hasard du Seed</b>Un voisin libre au hasard, marqué vu, puis empilé.</li>
+      <li><span class="rep r7">7</span><b>Abattre le bon mur</b>Vers la droite ou le haut : le mur de la case courante. Vers la gauche ou le bas : celui du voisin.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">LINQ pour les voisins</span>
+    Les lignes 78 à 81 remplacent une boucle sur quatre directions et un <code>if</code> par une chaîne <code>Select</code>, <code>Where</code>, <code>ToList</code> (cours 03). Le résultat est une liste, prête pour le tirage de la ligne 84.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 18 · Graphes et parcours</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 18</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Dans Maze, les sommets du graphe sont…</div><ul>
+      <li><span>A</span>les points de la grille</li><li><span>B</span>les cases</li><li><span>C</span>les murs</li><li><span>D</span>les courbes de sortie</li></ul></div>
+
+    <div class="q"><div class="enonce">Un parcours en profondeur s'appuie sur…</div><ul>
+      <li><span>A</span>une pile : dernier entré, premier sorti</li><li><span>B</span>une file : premier entré, premier sorti</li><li><span>C</span>un tri</li><li><span>D</span>un R-tree</li></ul></div>
+
+    <div class="q"><div class="enonce">Pourquoi Peek et non Pop, ligne 77 ?</div><ul>
+      <li><span>A</span>c'est plus rapide</li><li><span>B</span>Pop n'existe pas</li><li><span>C</span>la case doit rester tant qu'elle a des voisins libres</li><li><span>D</span>pour vider la pile</li></ul></div>
+
+    <div class="q"><div class="enonce">Que fait la ligne 82 quand next est vide ?</div><ul>
+      <li><span>A</span>elle arrête tout</li><li><span>B</span>elle dépile : retour en arrière</li><li><span>C</span>elle abat un mur au hasard</li><li><span>D</span>elle recommence en (0, 0)</li></ul></div>
+
+    <div class="q"><div class="enonce">Un labyrinthe de 6 × 4 cases compte combien de passages ?</div><ul>
+      <li><span>A</span>23</li><li><span>B</span>24</li><li><span>C</span>48</li><li><span>D</span>ça dépend du Seed</li></ul></div>
+
+    <div class="q"><div class="enonce">Pourquoi un seul chemin entre deux cases ?</div><ul>
+      <li><span>A</span>grâce au Seed</li><li><span>B</span>les passages forment un arbre, sans cycle</li><li><span>C</span>JoinCurves l'impose</li><li><span>D</span>ce n'est pas vrai</li></ul></div>
+
+    <div class="q"><div class="enonce">On va de (2, 1) vers (1, 1). Quel mur tombe ?</div><ul>
+      <li><span>A</span>right[2, 1]</li><li><span>B</span>up[1, 1]</li><li><span>C</span>right[1, 1]</li><li><span>D</span>up[2, 1]</li></ul></div>
+
+    <div class="q"><div class="enonce">Pourquoi deux tableaux, right et up, suffisent-ils ?</div><ul>
+      <li><span>A</span>le mur gauche d'une case est le mur droit de sa voisine</li><li><span>B</span>les murs gauches ne comptent pas</li><li><span>C</span>la grille est carrée</li><li><span>D</span>par économie de mémoire seulement</li></ul></div>
+
+    <div class="q"><div class="enonce">Truchet : un milieu d'arête intérieur est touché par…</div><ul>
+      <li><span>A</span>aucun arc</li><li><span>B</span>un arc</li><li><span>C</span>exactement deux arcs</li><li><span>D</span>quatre arcs</li></ul></div>
+
+    <div class="q"><div class="enonce">Les courbes jointes de Truchet sont… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>des boucles fermées</li><li><span>B</span>des chaînes qui finissent au bord</li><li><span>C</span>des courbes qui se ramifient</li><li><span>D</span>toujours une seule courbe</li></ul></div>
+
+    <div class="q"><div class="enonce">Weave : A[i] passe dessus B[j] quand…</div><ul>
+      <li><span>A</span>i &lt; j</li><li><span>B</span>i + j est pair</li><li><span>C</span>au hasard</li><li><span>D</span>A est plus long</li></ul></div>
+
+    <div class="q"><div class="enonce">A[2] croise B[1] deux fois. A[2] passe…</div><ul>
+      <li><span>A</span>dessus, puis dessous</li><li><span>B</span>dessous les deux fois</li><li><span>C</span>dessus les deux fois</li><li><span>D</span>on ne peut pas savoir</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 18 · Graphes et parcours</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 18</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · B.</b> Les cases ; deux cases voisines sont reliées par une arête possible.</div>
+    <div><b>02 · A.</b> <code>Stack</code> : on prolonge toujours le chemin le plus récent.</div>
+    <div><b>03 · C.</b> Elle n'est retirée qu'en cul-de-sac, ligne 82.</div>
+    <div><b>04 · B.</b> On revient à la case précédente du chemin.</div>
+    <div><b>05 · A.</b> n − 1 = 23, quel que soit le Seed.</div>
+    <div><b>06 · B.</b> Un arbre couvrant : n − 1 arêtes, aucune boucle.</div>
+    <div><b>07 · C.</b> Vers la gauche (n[2] = −1) : le mur droit du voisin, ligne 86.</div>
+    <div><b>08 · A.</b> Chaque mur intérieur n'est stocké qu'une fois.</div>
+    <div><b>09 · C.</b> Un arc de chacune des deux cases qui partagent l'arête.</div>
+    <div><b>10 · A et B.</b> Au plus deux arcs par sommet : ni fourche ni ramification.</div>
+    <div><b>11 · B.</b> Ligne 78 : <code>(i + j) % 2 == 0</code>.</div>
+    <div><b>12 · B.</b> 2 + 1 = 3, impair : dessous, à chaque croisement de la paire.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : refais à la main le parcours de la page 2 sur une grille 3 × 3. <b>7 à 9</b> : relis la page 3, les murs et l'arbre. <b>10 à 12</b> : passe au cours 49, « Les nombres à virgule flottante ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">stack.Push / Peek / Pop</td><td>empiler, lire le sommet, dépiler</td><td>Maze:72–90</td></tr>
+      <tr><td class="c">next[rand.Next(next.Count)]</td><td>un voisin libre au hasard</td><td>Maze:84</td></tr>
+      <tr><td class="c">bool[,] seen</td><td>les cases déjà atteintes</td><td>Maze:66</td></tr>
+      <tr><td class="c">Curve.JoinCurves(tiles, tolerance)</td><td>chaînes et boucles d'arcs</td><td>Truchet:93</td></tr>
+      <tr><td class="c">Intersection.CurveCurve(a, b, tol, tol)</td><td>les croisements de deux fils</td><td>Weave:73</td></tr>
+      <tr><td class="c">(i + j) % 2 == 0</td><td>le damier dessus / dessous</td><td>Weave:78</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Graphe</dt><dd>Des sommets et des arêtes qui relient certains d'entre eux.</dd>
+    <dt>Parcours en profondeur</dt><dd>Avancer tant qu'on peut, reculer en cul-de-sac.</dd>
+    <dt>Pile</dt><dd>Une liste où l'on retire toujours le dernier ajouté.</dd>
+    <dt>Arbre couvrant</dt><dd>n − 1 arêtes qui relient n sommets sans boucle.</dd>
+    <dt>Composante</dt><dd>Un morceau du graphe dont tous les sommets sont reliés entre eux.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 49</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 18 · Graphes et parcours</div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>134 · Piles et files</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-2">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 134</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Piles et files</h1>
+  <p class="chapeau">Beaucoup d'algorithmes ont la même boucle : prendre un élément à traiter, en découvrir d'autres, les mettre de côté. Tout se joue dans « de côté ». Une <b>pile</b> reprend le dernier rangé, une <b>file</b> le premier. La boucle est identique ; le parcours, le résultat et la mémoire ne le sont pas.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>18</b>, <b>133</b></span>
+    <span class="pastille">Exemples · <b>Cuttlefish</b>, <b>SnapSet</b></span>
+  </div>
+
+  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+    <svg viewBox="0 0 600 204" width="100%">
+<text x="70" y="14" font-size="8.4" fill="#5D4037" text-anchor="middle" font-weight="700">pile : Stack&lt;T&gt;</text>
+<rect x="30" y="26" width="80" height="22" rx="4" fill="#EFEBE9" stroke="#5D4037" stroke-width="1.2"/>
+<text x="70.0" y="39.666666666666664" font-size="8" fill="#5D4037" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">c</text>
+<rect x="30" y="52" width="80" height="22" rx="4" fill="#fff" stroke="#5D4037" stroke-width="1.2"/>
+<text x="70.0" y="65.66666666666667" font-size="8" fill="#5D4037" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">b</text>
+<rect x="30" y="78" width="80" height="22" rx="4" fill="#fff" stroke="#5D4037" stroke-width="1.2"/>
+<text x="70.0" y="91.66666666666667" font-size="8" fill="#5D4037" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">a</text>
+<line x1="150" y1="34" x2="114" y2="34" stroke="#2E7D32" stroke-width="1.2"/><polygon points="114,34 120.4,31.3 120.4,36.7" fill="#2E7D32"/>
+<text x="154" y="31" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">Push</text>
+<line x1="114" y1="42" x2="150" y2="46" stroke="#C62828" stroke-width="1.2"/><polygon points="150,46 143.3,48.0 143.9,42.6" fill="#C62828"/>
+<text x="154" y="52" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">Pop, Peek</text>
+<text x="70" y="118" font-size="7.4" fill="#6B7378" text-anchor="middle" font-style="italic">dernier entré, premier sorti</text>
+<text x="420" y="14" font-size="8.4" fill="#1565C0" text-anchor="middle" font-weight="700">file : Queue&lt;T&gt;</text>
+<rect x="300" y="34" width="54" height="26" rx="4" fill="#EAF0FA" stroke="#1565C0" stroke-width="1.2"/>
+<text x="327.0" y="49.666666666666664" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">a</text>
+<rect x="362" y="34" width="54" height="26" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="389.0" y="49.666666666666664" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">b</text>
+<rect x="424" y="34" width="54" height="26" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="451.0" y="49.666666666666664" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">c</text>
+<rect x="486" y="34" width="54" height="26" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="513.0" y="49.666666666666664" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">d</text>
+<line x1="296" y1="47" x2="258" y2="47" stroke="#C62828" stroke-width="1.2"/><polygon points="258,47 264.4,44.3 264.4,49.7" fill="#C62828"/>
+<text x="232" y="72" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">Dequeue</text>
+<line x1="590" y1="47" x2="552" y2="47" stroke="#2E7D32" stroke-width="1.2"/><polygon points="552,47 558.4,44.3 558.4,49.7" fill="#2E7D32"/>
+<text x="548" y="72" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">Enqueue</text>
+<text x="420" y="92" font-size="7.4" fill="#6B7378" text-anchor="middle" font-style="italic">premier entré, premier sorti</text>
+<text x="10" y="146" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">Deux structures, une seule différence : le bout par lequel on reprend. Tout le reste en découle.</text>
+<text x="10" y="164" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Une pile explore à fond avant de revenir ; une file avance par vagues, du plus proche au plus lointain.</text>
+<text x="10" y="180" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Les deux reposent sur un tableau qui double (cours 133) : chaque opération coûte une constante.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Une pile sert à revenir en arrière, une file à avancer dans l'ordre ; et une pile explicite remplace sans risque une récursion trop profonde.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Une pile d'assiettes : on prend celle du dessus. Une file au guichet : on sert celui qui attend depuis le plus longtemps.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>choisir pile ou file ;</li>
+        <li>dérécursiver un parcours ;</li>
+        <li>lire une file circulaire ;</li>
+        <li>garder l'ordre en empilant.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À retenir</span>
+    Pour le chemin le plus court, une file. Pour explorer à fond ou revenir sur ses pas, une pile. Pour une profondeur qu'on ne maîtrise pas, une pile à soi plutôt que la pile d'appels.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 134 · Piles et files</div>
+</section>
+
+<!-- ============ PAGE 2 · LA PILE D'APPELS ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 134</b></div>
+  <p class="rubrique">Schéma 1 · La pile d'appels</p>
+  <h2>La récursion a une limite, la Stack non</h2>
+  <p style="max-width:165mm">Chaque appel de fonction ajoute un étage sur la pile d'appels du fil. Cette pile a une taille fixe. On a cherché, par dichotomie, à quelle profondeur elle cède.</p>
+
+  <svg viewBox="0 0 600 204" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="204" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#5D4037" text-anchor="start" font-weight="700">Parcourir en profondeur : récursion ou pile explicite (.NET 8, fil de 1 Mio de pile, mesuré)</text>
+<rect x="16" y="36" width="276" height="70" rx="4" fill="#FBEAEA" stroke="#C62828" stroke-width="1.2"/>
+<text x="28" y="54" font-size="8" fill="#C62828" text-anchor="start" font-weight="700">récursion : la pile d'appels</text>
+<text x="28" y="72" font-size="7.6" fill="#2B2F33" text-anchor="start">tient à 32 234 appels emboîtés</text>
+<text x="28" y="88" font-size="7.6" fill="#2B2F33" text-anchor="start">tombe vers 33 210 : StackOverflow,</text>
+<text x="28" y="100" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">processus tué, aucun catch possible</text>
+<rect x="308" y="36" width="276" height="70" rx="4" fill="#EAF4EA" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="320" y="54" font-size="8" fill="#2E7D32" text-anchor="start" font-weight="700">Stack&lt;int&gt; : la pile dans le tas</text>
+<text x="320" y="72" font-size="7.6" fill="#2B2F33" text-anchor="start">grille 1 000 × 1 000 en profondeur</text>
+<text x="320" y="88" font-size="7.6" fill="#2B2F33" text-anchor="start">pile montée à 1 000 000 d'éléments</text>
+<text x="320" y="100" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">19 à 40 ms, sans incident</text>
+<text x="16" y="130" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">La récursion range chaque niveau sur la pile d'appels, petite et fixée au départ du fil.</text>
+<text x="16" y="146" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Une Stack&lt;T&gt; range ses niveaux dans le tas, qui grandit à la demande.</text>
+<text x="16" y="170" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Fonction d'essai à trois paramètres ; une fonction aux variables plus nombreuses tient moins de niveaux (déduit).</text>
+<text x="16" y="186" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">1 Mio est la taille par défaut du fil principal d'un programme Windows, donc de Rhino (documentation).</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, la même exploration sans récursion</span>var pile = new Stack&lt;Case&gt;();   pile.Push(depart);
+while (pile.Count &gt; 0)
+{
+    var c = pile.Pop();
+    foreach (var v in VoisinsLibres(c)) { Marquer(v); pile.Push(v); }   // marquer à l'entrée
+}</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Pourquoi on ne rattrape rien</h3>
+      <p>Quand la pile d'appels déborde, il n'y a plus de place pour exécuter le moindre catch. .NET arrête le processus entier : dans Rhino, c'est Rhino qui se ferme.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Marquer à l'entrée</h3>
+      <p>Marquer une case quand on l'empile, pas quand on la sort, évite de l'empiler plusieurs fois. Sinon la pile peut contenir bien plus que le nombre de cases.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Écrire un parcours récursif d'une grille ou d'un graphe fourni par l'utilisateur. Sur une petite grille, tout va bien ; à 33 000 cases en enfilade, le programme disparaît sans message (mesuré).
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 134 · Piles et files</div>
+</section>
+
+<!-- ============ PAGE 3 · LA FILE CIRCULAIRE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 134</b></div>
+  <p class="rubrique">Schéma 2 · La file circulaire</p>
+  <h2>Deux index qui tournent</h2>
+  <p style="max-width:165mm">Retirer en tête d'une List décale tout (cours 133). Queue&lt;T&gt; évite le décalage : elle garde deux index, la tête et la queue, qui font le tour de son tableau.</p>
+
+  <svg viewBox="0 0 600 200" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="200" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#5D4037" text-anchor="start" font-weight="700">L'intérieur d'une Queue&lt;int&gt;(4), relu par réflexion (mesuré)</text>
+<rect x="150" y="36" width="34" height="22" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="167.0" y="49.666666666666664" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">4</text>
+<rect x="190" y="36" width="34" height="22" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="207.0" y="49.666666666666664" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">5</text>
+<rect x="230" y="36" width="34" height="22" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="247.0" y="49.666666666666664" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">2</text>
+<rect x="270" y="36" width="34" height="22" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="287.0" y="49.666666666666664" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">3</text>
+<text x="16" y="51" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">0 à 3 entrés, 2 sortis, 4 et 5 entrés</text>
+<text x="247" y="70" font-size="7" fill="#C62828" text-anchor="middle" font-weight="700">tête</text>
+<text x="247" y="80" font-size="7" fill="#2E7D32" text-anchor="middle" font-weight="700">queue</text>
+<rect x="150" y="96" width="34" height="22" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="167.0" y="109.66666666666667" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">2</text>
+<rect x="190" y="96" width="34" height="22" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="207.0" y="109.66666666666667" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">3</text>
+<rect x="230" y="96" width="34" height="22" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="247.0" y="109.66666666666667" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">4</text>
+<rect x="270" y="96" width="34" height="22" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="287.0" y="109.66666666666667" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">5</text>
+<rect x="310" y="96" width="34" height="22" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="327.0" y="109.66666666666667" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">6</text>
+<rect x="350" y="96" width="34" height="22" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<rect x="390" y="96" width="34" height="22" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<rect x="430" y="96" width="34" height="22" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="16" y="111" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">puis 6 : plein, double</text>
+<text x="167" y="130" font-size="7" fill="#C62828" text-anchor="middle" font-weight="700">tête</text>
+<text x="367" y="140" font-size="7" fill="#2E7D32" text-anchor="middle" font-weight="700">queue</text>
+<text x="16" y="172" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Dequeue avance la tête, Enqueue avance la queue, et les deux reviennent au début : rien n'est jamais décalé.</text>
+<text x="16" y="188" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Au doublement, le contenu est remis dans l'ordre au début du nouveau tableau.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, un parcours en largeur qui mesure les distances</span>var d = new int[n]; Array.Fill(d, -1); d[depart] = 0;
+var file = new Queue&lt;int&gt;(); file.Enqueue(depart);
+while (file.Count &gt; 0)
+{
+    int c = file.Dequeue();
+    foreach (int v in Voisins(c)) if (d[v] &lt; 0) { d[v] = d[c] + 1; file.Enqueue(v); }
+}</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Par vagues</h3>
+      <p>La file sort toutes les cases à distance 1, puis toutes celles à distance 2, et ainsi de suite. La première fois qu'on atteint une case, c'est par le chemin le plus court.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Ce que dit le tableau</h3>
+      <p>Dans le premier état, la tête et la queue sont toutes deux à 2 : le tableau est plein, et le contenu se lit de la tête, en faisant le tour, 2, 3, 4, 5.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Prendre une List et RemoveAt(0) comme file d'attente. À 100 000 éléments, la vider ainsi a pris des secondes ; Dequeue, moins d'une milliseconde (mesuré au cours 133).
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 134 · Piles et files</div>
+</section>
+
+<!-- ============ PAGE 4 · AUTRE FORME ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 134</b></div>
+  <p class="rubrique">Schéma 3 · Même boucle, autre forme</p>
+  <h2>Ce que la structure décide à ta place</h2>
+  <p style="max-width:165mm">On a gardé la même boucle et changé seulement l'endroit où l'on reprend : chercher un chemin, creuser un labyrinthe, parcourir un arbre.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#5D4037" text-anchor="start" font-weight="700">Changer la structure de la boucle change le résultat (moyennes de 20 tirages, mesuré)</text>
+<text x="16" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700"></text>
+<text x="250" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">avec une pile</text>
+<text x="400" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">file ou tirage au hasard</text>
+<rect x="10" y="48" width="580" height="20" fill="#fff" opacity=".55"/>
+<text x="16" y="62" font-size="7.6" fill="#2B2F33" text-anchor="start">grille ouverte 100 × 100, coin à coin</text>
+<text x="250" y="62" font-size="7.6" fill="#5D4037" text-anchor="start" font-weight="700">4 950 pas</text>
+<text x="400" y="62" font-size="7.6" fill="#1565C0" text-anchor="start" font-weight="700">198 pas (le plus court)</text>
+<text x="16" y="82" font-size="7.6" fill="#2B2F33" text-anchor="start">labyrinthe 50 × 50 : impasses</text>
+<text x="250" y="82" font-size="7.6" fill="#5D4037" text-anchor="start" font-weight="700">10,1 % des cases</text>
+<text x="400" y="82" font-size="7.6" fill="#1565C0" text-anchor="start" font-weight="700">32,1 % (Prim)</text>
+<rect x="10" y="88" width="580" height="20" fill="#fff" opacity=".55"/>
+<text x="16" y="102" font-size="7.6" fill="#2B2F33" text-anchor="start">labyrinthe 50 × 50 : chemin entrée-sortie</text>
+<text x="250" y="102" font-size="7.6" fill="#5D4037" text-anchor="start" font-weight="700">812 cases</text>
+<text x="400" y="102" font-size="7.6" fill="#1565C0" text-anchor="start" font-weight="700">106 cases (Prim)</text>
+<text x="16" y="130" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">En largeur, la file trouve le chemin le plus court ; en profondeur, la pile trouve un chemin, souvent long.</text>
+<text x="16" y="146" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Pour un labyrinthe, la pile donne de longs couloirs et peu d'impasses ; un tirage au hasard, l'inverse.</text>
+<text x="16" y="170" font-size="7.6" fill="#2B2F33" text-anchor="start">Ordre de sortie d'une pile sur l'arbre R → (A → a1, a2), B → b1 :</text>
+<text x="16" y="186" font-size="7.6" fill="#5D4037" text-anchor="start" font-weight="700">en empilant les enfants à l'envers : R A a1 a2 B b1 ; à l'endroit : R B b1 A a2 a1 (mesuré).</text>
+<text x="16" y="204" font-size="7.2" fill="#6B7378" text-anchor="start" font-style="italic">« Prim » : on ouvre à chaque tour un passage tiré au hasard parmi tous ceux du front ; exemple autonome.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, garder l'ordre d'origine avec une pile</span>foreach (var enfant in Enfants(noeud).Reverse()) pile.Push(enfant);   // le premier sortira en premier</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Le goût d'un labyrinthe</h3>
+      <p>Le parcours en profondeur de Maze avance jusqu'à buter : il trace de longs couloirs. C'est un choix esthétique autant qu'algorithmique, et il tient à une Stack.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Pile et ordre</h3>
+      <p>Une pile rend ses éléments à l'envers de leur arrivée. Pour sortir les enfants dans l'ordre du dessin, on les empile du dernier au premier.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Chercher le plus court chemin en profondeur. Le parcours trouve bien un chemin, mais sur une grille ouverte il en a pris un de 4 950 pas au lieu de 198 (mesuré).
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 134 · Piles et files</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 134</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Des piles dans Cuttlefish et SnapSet</h2>
+  <p style="max-width:165mm">Un labyrinthe creusé avec une Stack, des Prises cherchées sans récursion, et une liste tenue comme une pile.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">cuttlefish/Maze.cs</span></div>
+<div class="l k1"><span class="n">71</span>var stack = new Stack&lt;int[]&gt;();<span class="rep r1">1</span></div>
+<div class="l k2"><span class="n">78</span>var next = moves.Select(m =&gt; new[] { … })…ToList();<span class="rep r2">2</span></div>
+<div class="l"><span class="cm">SnapSet/…/Conteneurs/ConteneurAttributs.cs</span></div>
+<div class="l k3"><span class="n">95</span>var pile = new Stack&lt;Constituant&gt;();<span class="rep r3">3</span></div>
+<div class="l k4"><span class="n">108</span>foreach (var membre in ….Reverse()) pile.Push(membre);<span class="rep r4">4</span></div>
+<div class="l"><span class="cm">SnapSet/…/Pur/PlacementPrises.cs</span></div>
+<div class="l k5"><span class="n">142</span>chemin.Add(…); Visiter(…); chemin.RemoveAt(…);<span class="rep r5">5</span></div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Profondeur</b>Longs couloirs.</li>
+      <li><span class="rep r2">2</span><b>Voisins libres</b>Recalculés.</li>
+      <li><span class="rep r3">3</span><b>Sans récursion</b>Itérateur.</li>
+      <li><span class="rep r4">4</span><b>À l'envers</b>Ordre du dessin.</li>
+      <li><span class="rep r5">5</span><b>Pile en liste</b>Le chemin.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À surveiller · Maze alloue à chaque pas</span>
+    Maze.cs:78 à 81 construit à chaque tour quatre tableaux de candidats, deux itérateurs et une liste pour choisir le voisin suivant. Boucle recopiée (murs simplifiés), grille 200 × 200 : 33,0 Mio alloués et 37 à 42 ms, contre 0,37 Mio et 2,4 à 2,5 ms avec des tuples et un petit tampon. Aux grilles de quelques dizaines de cases, l'écart ne se voit pas (déduit). Relevé sans rien modifier.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 134 · Piles et files</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 134</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Une pile rend d'abord…</div><ul>
+      <li><span>A</span>le dernier élément rangé</li><li><span>B</span>le premier</li><li><span>C</span>le plus petit</li><li><span>D</span>un élément au hasard</li></ul></div>
+
+    <div class="q"><div class="enonce">Sur un fil de 1 Mio, la récursion d'essai a cédé…</div><ul>
+      <li><span>A</span>jamais</li><li><span>B</span>vers 1 000</li><li><span>C</span>vers 1 million</li><li><span>D</span>vers 33 000 appels emboîtés</li></ul></div>
+
+    <div class="q"><div class="enonce">Un StackOverflow dans un plugin…</div><ul>
+      <li><span>A</span>ferme tout le processus</li><li><span>B</span>annule le composant seul</li><li><span>C</span>affiche un avertissement</li><li><span>D</span>se rattrape par catch</li></ul></div>
+
+    <div class="q"><div class="enonce">Une Stack&lt;int&gt; de 1 000 000 d'éléments…</div><ul>
+      <li><span>A</span>a pris une minute</li><li><span>B</span>a débordé</li><li><span>C</span>a tenu sans incident</li><li><span>D</span>est interdite</li></ul></div>
+
+    <div class="q"><div class="enonce">Une Queue&lt;T&gt; évite le décalage parce que… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>ses index font le tour du tableau</li><li><span>B</span>elle trie ses éléments</li><li><span>C</span>elle est chaînée</li><li><span>D</span>sa tête avance au lieu de tout déplacer</li></ul></div>
+
+    <div class="q"><div class="enonce">Quand une Queue pleine double…</div><ul>
+      <li><span>A</span>la file est vidée</li><li><span>B</span>le contenu reste où il est</li><li><span>C</span>une exception est levée</li><li><span>D</span>le contenu est remis dans l'ordre au début</li></ul></div>
+
+    <div class="q"><div class="enonce">Le parcours en largeur trouve d'abord…</div><ul>
+      <li><span>A</span>aucun chemin</li><li><span>B</span>le chemin le plus court</li><li><span>C</span>le plus long</li><li><span>D</span>un chemin au hasard</li></ul></div>
+
+    <div class="q"><div class="enonce">Sur la grille ouverte, la pile a trouvé un chemin de…</div><ul>
+      <li><span>A</span>aucun</li><li><span>B</span>4 950 pas</li><li><span>C</span>198 pas</li><li><span>D</span>100 pas</li></ul></div>
+
+    <div class="q"><div class="enonce">Un labyrinthe creusé avec une pile a…</div><ul>
+      <li><span>A</span>beaucoup d'impasses</li><li><span>B</span>des cases isolées</li><li><span>C</span>peu d'impasses et de longs couloirs</li><li><span>D</span>plusieurs chemins entre deux cases</li></ul></div>
+
+    <div class="q"><div class="enonce">SnapSet empile les membres avec Reverse() pour…</div><ul>
+      <li><span>A</span>éviter les doublons</li><li><span>B</span>trier par nom</li><li><span>C</span>aller plus vite</li><li><span>D</span>les sortir dans l'ordre du dessin</li></ul></div>
+
+    <div class="q"><div class="enonce">Marquer une case quand on l'empile évite…</div><ul>
+      <li><span>A</span>le doublement</li><li><span>B</span>le GC</li><li><span>C</span>de l'empiler plusieurs fois</li><li><span>D</span>la récursion</li></ul></div>
+
+    <div class="q"><div class="enonce">La boucle recopiée de Maze, à 200 × 200, a alloué…</div><ul>
+      <li><span>A</span>autant que la version sans allocation</li><li><span>B</span>33,0 Mio, contre 0,37 sans allocation</li><li><span>C</span>1 Gio</li><li><span>D</span>rien</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 134 · Piles et files</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 134</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · A.</b> Dernier entré.</div>
+    <div><b>02 · D.</b> 32 234 tenus.</div>
+    <div><b>03 · A.</b> Pas de catch possible.</div>
+    <div><b>04 · C.</b> Dans le tas.</div>
+    <div><b>05 · A et D.</b> Tableau circulaire.</div>
+    <div><b>06 · D.</b> 2, 3, 4, 5, 6 au début.</div>
+    <div><b>07 · B.</b> Par vagues.</div>
+    <div><b>08 · B.</b> Contre 198.</div>
+    <div><b>09 · C.</b> 10,1 % d'impasses.</div>
+    <div><b>10 · D.</b> ConteneurAttributs.cs:108.</div>
+    <div><b>11 · C.</b> Une seule entrée par case.</div>
+    <div><b>12 · B.</b> Maze.cs:78.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 135, « Les listes chaînées ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">stack.Push(x) / Pop() / Peek()</td><td>poser, retirer, regarder le dessus</td><td>Maze.cs:71</td></tr>
+      <tr><td class="c">queue.Enqueue(x) / Dequeue()</td><td>entrer derrière, sortir devant</td><td>page 3</td></tr>
+      <tr><td class="c">….Reverse() puis Push</td><td>garder l'ordre d'origine en sortie</td><td>ConteneurAttributs.cs:108</td></tr>
+      <tr><td class="c">list.Add / RemoveAt(Count - 1)</td><td>une liste tenue comme une pile</td><td>PlacementPrises.cs:142</td></tr>
+      <tr><td class="c">new Thread(…, maxStackSize)</td><td>fixer la taille de la pile d'appels</td><td>page 2</td></tr>
+      <tr><td class="c">stackalloc T[n]</td><td>un petit tampon sans allocation</td><td>page 5</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Pile</dt><dd>Une structure où l'on reprend toujours le dernier élément rangé.</dd>
+    <dt>File</dt><dd>Une structure où l'on reprend toujours le plus ancien.</dd>
+    <dt>Pile d'appels</dt><dd>La zone où chaque appel de fonction range ses variables ; sa taille est fixe.</dd>
+    <dt>Parcours en largeur</dt><dd>Une exploration par distances croissantes, menée avec une file.</dd>
+    <dt>Tampon circulaire</dt><dd>Un tableau dont les index de début et de fin font le tour.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 135</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 134 · Piles et files</div>
+</section>
+
+</body>
+</html>

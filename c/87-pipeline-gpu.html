@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>87 · Le pipeline du GPU</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-7">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 87</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Le pipeline du GPU</h1>
+  <p class="chapeau">Entre un tableau de sommets en JavaScript et une image à l'écran, il y a une chaîne d'étapes, le <b>pipeline</b> de rendu. Le processeur ne dessine rien lui-même : il envoie des données et des ordres à la carte graphique, qui traite des milliers de sommets et des millions de pixels en parallèle. Savoir où se trouve le goulot évite bien des lenteurs.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>51</b>, <b>85</b> et <b>86</b></span>
+    <span class="pastille">Exemples · <b>Viewer3D.jsx</b>, <b>apercu.mjs</b> (Magpie web)</span>
+  </div>
+
+  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+    <svg viewBox="0 0 600 200" width="100%">
+<rect x="6" y="30" width="108" height="84" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="60" y="50" font-size="8.8" fill="#6B7378" text-anchor="middle" font-weight="700">JavaScript</text>
+<text x="60" y="72" font-size="7.8" fill="#2B2F33" text-anchor="middle">tableaux, matrices,</text>
+<text x="60" y="85" font-size="7.8" fill="#2B2F33" text-anchor="middle">appel de dessin</text>
+<text x="60" y="130" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">processeur</text>
+<line x1="115" y1="72" x2="124" y2="72" stroke="#6B7378" stroke-width="1.2"/><polygon points="124,72 117.6,74.7 117.6,69.3" fill="#6B7378"/>
+<rect x="125" y="30" width="108" height="84" rx="4" fill="#E6F0FA" stroke="#1D6FB8" stroke-width="1.2"/>
+<text x="179" y="50" font-size="8.8" fill="#1D6FB8" text-anchor="middle" font-weight="700">Vertex shader</text>
+<text x="179" y="72" font-size="7.8" fill="#2B2F33" text-anchor="middle">chaque sommet :</text>
+<text x="179" y="85" font-size="7.8" fill="#2B2F33" text-anchor="middle">position à l'écran</text>
+<text x="179" y="130" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">programmable</text>
+<line x1="234" y1="72" x2="243" y2="72" stroke="#6B7378" stroke-width="1.2"/><polygon points="243,72 236.6,74.7 236.6,69.3" fill="#6B7378"/>
+<rect x="244" y="30" width="108" height="84" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="298" y="50" font-size="8.8" fill="#1565C0" text-anchor="middle" font-weight="700">Rastérisation</text>
+<text x="298" y="72" font-size="7.8" fill="#2B2F33" text-anchor="middle">triangle → pixels</text>
+<text x="298" y="85" font-size="7.8" fill="#2B2F33" text-anchor="middle">couverts (fragments)</text>
+<text x="298" y="130" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">fixe</text>
+<line x1="353" y1="72" x2="362" y2="72" stroke="#6B7378" stroke-width="1.2"/><polygon points="362,72 355.6,74.7 355.6,69.3" fill="#6B7378"/>
+<rect x="363" y="30" width="108" height="84" rx="4" fill="#E6F0FA" stroke="#1D6FB8" stroke-width="1.2"/>
+<text x="417" y="50" font-size="8.8" fill="#1D6FB8" text-anchor="middle" font-weight="700">Fragment shader</text>
+<text x="417" y="72" font-size="7.8" fill="#2B2F33" text-anchor="middle">chaque pixel :</text>
+<text x="417" y="85" font-size="7.8" fill="#2B2F33" text-anchor="middle">couleur, lumière</text>
+<text x="417" y="130" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">programmable</text>
+<line x1="472" y1="72" x2="481" y2="72" stroke="#6B7378" stroke-width="1.2"/><polygon points="481,72 474.6,74.7 474.6,69.3" fill="#6B7378"/>
+<rect x="482" y="30" width="108" height="84" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
+<text x="536" y="50" font-size="8.8" fill="#E65100" text-anchor="middle" font-weight="700">Test de profondeur</text>
+<text x="536" y="72" font-size="7.8" fill="#2B2F33" text-anchor="middle">garder le plus</text>
+<text x="536" y="85" font-size="7.8" fill="#2B2F33" text-anchor="middle">proche (cours 90)</text>
+<text x="536" y="130" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">fixe</text>
+<line x1="6" y1="146" x2="114" y2="146" stroke="#6B7378" stroke-width="2"/>
+<line x1="125" y1="146" x2="589" y2="146" stroke="#1D6FB8" stroke-width="2"/>
+<text x="60" y="162" font-size="9" fill="#6B7378" text-anchor="middle" font-weight="700">CPU</text>
+<text x="357" y="162" font-size="9" fill="#1D6FB8" text-anchor="middle" font-weight="700">GPU : des milliers de cœurs en parallèle</text>
+<text x="300" y="188" font-size="7.8" fill="#2B2F33" text-anchor="middle" font-weight="700">Le processeur prépare et commande ; la carte graphique traite tous les sommets puis tous les pixels à la fois.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Le processeur prépare les données et lance des appels de dessin ; la carte graphique transforme les sommets, remplit les triangles et colore les pixels.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Une imprimerie. Le client (le processeur) envoie des commandes ; chaque commande a un coût fixe de mise en route. Mieux vaut une grosse commande de 400 affiches que 400 commandes d'une affiche.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>nommer les étapes du pipeline ;</li>
+        <li>dire ce que fait un shader ;</li>
+        <li>compter les appels de dessin ;</li>
+        <li>dessiner seulement quand il le faut.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À retenir</span>
+    Deux goulots possibles. Trop d'<b>appels de dessin</b> : le processeur s'essouffle à commander. Trop de <b>pixels</b> à colorer : la carte s'essouffle à peindre. On ne corrige pas l'un par un remède à l'autre.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 87 · Le pipeline du GPU</div>
+</section>
+
+<!-- ============ PAGE 2 · LES SHADERS ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 87</b></div>
+  <p class="rubrique">Schéma 1 · Les shaders</p>
+  <h2>Deux petits programmes, exécutés des millions de fois</h2>
+  <p style="max-width:165mm">Un <b>shader</b> est un petit programme qui tourne sur la carte graphique. Le <b>vertex shader</b> reçoit un sommet et rend sa position à l'écran, en le multipliant par les matrices de la caméra (cours 51 et 53). Le <b>fragment shader</b> reçoit un pixel couvert par un triangle et rend sa couleur.</p>
+
+  <svg viewBox="0 0 600 200" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="200" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.4" fill="#1D6FB8" text-anchor="start" font-weight="700">Trois sommets passent par le vertex shader ; le triangle couvre des pixels, chacun passe par le fragment shader</text>
+<rect x="40" y="40" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="40" y="52" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="40" y="64" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="40" y="76" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="40" y="88" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="40" y="100" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="40" y="112" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="40" y="124" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="40" y="136" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="40" y="148" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="52" y="40" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="52" y="52" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="52" y="64" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="52" y="76" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="52" y="88" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="52" y="100" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="52" y="112" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="52" y="124" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="52" y="136" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="52" y="148" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="64" y="40" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="64" y="52" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="64" y="64" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="64" y="76" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="64" y="88" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="64" y="100" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="64" y="112" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="64" y="124" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="64" y="136" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="64" y="148" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="76" y="40" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="76" y="52" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="76" y="64" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="76" y="76" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="76" y="88" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="76" y="100" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="76" y="112" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="76" y="124" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="76" y="136" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="76" y="148" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="88" y="40" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="88" y="52" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="88" y="64" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="88" y="76" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="88" y="88" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="88" y="100" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="88" y="112" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="88" y="124" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="88" y="136" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="88" y="148" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="100" y="40" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="100" y="52" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="100" y="64" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="100" y="76" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="100" y="88" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="100" y="100" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="100" y="112" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="100" y="124" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="100" y="136" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="100" y="148" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="112" y="40" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="112" y="52" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="112" y="64" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="112" y="76" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="112" y="88" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="112" y="100" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="112" y="112" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="112" y="124" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="112" y="136" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="112" y="148" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="124" y="40" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="124" y="52" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="124" y="64" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="124" y="76" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="124" y="88" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="124" y="100" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="124" y="112" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="124" y="124" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="124" y="136" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="124" y="148" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="136" y="40" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="136" y="52" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="136" y="64" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="136" y="76" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="136" y="88" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="136" y="100" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="136" y="112" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="136" y="124" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="136" y="136" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="136" y="148" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="148" y="40" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="148" y="52" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="148" y="64" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="148" y="76" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="148" y="88" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="148" y="100" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="148" y="112" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="148" y="124" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="148" y="136" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="148" y="148" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="160" y="40" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="160" y="52" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="160" y="64" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="160" y="76" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="160" y="88" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="160" y="100" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="160" y="112" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="160" y="124" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="160" y="136" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="160" y="148" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="172" y="40" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="172" y="52" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="172" y="64" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="172" y="76" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="172" y="88" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="172" y="100" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="172" y="112" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="172" y="124" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="172" y="136" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="172" y="148" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="184" y="40" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="184" y="52" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="184" y="64" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="184" y="76" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="184" y="88" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="184" y="100" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="184" y="112" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="184" y="124" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="184" y="136" width="12" height="12" fill="#E6F0FA" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="184" y="148" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="196" y="40" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="196" y="52" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="196" y="64" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="196" y="76" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="196" y="88" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="196" y="100" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="196" y="112" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="196" y="124" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="196" y="136" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<rect x="196" y="148" width="12" height="12" fill="#fff" stroke="#E2DACB" stroke-width=".5"/>
+<polygon points="52,142.0 190.0,142.0 112,52" fill="none" stroke="#1D6FB8" stroke-width="1.6"/>
+<circle cx="52" cy="142.0" r="4" fill="#1D6FB8"/>
+<circle cx="190.0" cy="142.0" r="4" fill="#1D6FB8"/>
+<circle cx="112" cy="52" r="4" fill="#1D6FB8"/>
+<text x="124" y="178" font-size="8" fill="#2B2F33" text-anchor="middle" font-weight="700">3 sommets → 49 fragments (comptés)</text>
+<text x="260" y="44" font-size="9" fill="#1D6FB8" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">attribute</text>
+<text x="340" y="44" font-size="8.2" fill="#2B2F33" text-anchor="start">par sommet : position, normale</text>
+<text x="340" y="58" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">les tableaux du maillage</text>
+<text x="260" y="86" font-size="9" fill="#1D6FB8" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">uniform</text>
+<text x="340" y="86" font-size="8.2" fill="#2B2F33" text-anchor="start">pour tout l'appel : matrices, couleur</text>
+<text x="340" y="100" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">la lumière, la caméra</text>
+<text x="260" y="128" font-size="9" fill="#1D6FB8" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">varying</text>
+<text x="340" y="128" font-size="8.2" fill="#2B2F33" text-anchor="start">du sommet au pixel, interpolé</text>
+<text x="340" y="142" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">la normale entre trois sommets</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · GLSL, un ShaderMaterial minimal de Three.js</span>// vertex shader
+void main() {
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}
+// fragment shader
+uniform vec3 couleur;
+void main() { gl_FragColor = vec4(couleur, 1.0); }</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Three.js écrit les shaders</h3>
+      <p>Avec <code>MeshLambertMaterial</code>, on n'écrit aucun shader : Three.js assemble le programme selon le matériau et les lumières de la scène, le compile une fois, puis le réutilise pour tous les objets qui partagent ce réglage.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Partager les matériaux</h3>
+      <p>Magpie crée deux jeux de matériaux, « normal » et « sélectionné » (Viewer3D.jsx:122), et les échange sur les objets sans rien reconstruire (lignes 57 à 61 et 189) : changer la sélection ne recompile aucun programme.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Créer un matériau neuf par objet, ou changer en cours de route un réglage qui modifie le programme (activer la transparence, ajouter une lumière). Chaque variante se compile, et la première image qui en a besoin saccade.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 87 · Le pipeline du GPU</div>
+</section>
+
+<!-- ============ PAGE 3 · APPELS DE DESSIN ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 87</b></div>
+  <p class="rubrique">Schéma 2 · Les appels de dessin</p>
+  <h2>Compter les commandes, pas les triangles</h2>
+  <p style="max-width:165mm">Chaque objet Three.js visible (<code>Mesh</code>, <code>Line</code>, <code>Points</code>) coûte au moins un <b>appel de dessin</b> : choisir le programme, lier ses tableaux, régler ses uniforms, puis dessiner. Cette préparation coûte au processeur bien plus que les triangles eux-mêmes.</p>
+
+  <svg viewBox="0 0 600 222" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="222" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.4" fill="#1D6FB8" text-anchor="start" font-weight="700">400 boîtes avec le matériau de Magpie (transparent, DoubleSide), mesurées dans Chromium (WebGL 2, SwiftShader)</text>
+<text x="30" y="44" font-size="8" fill="#6B7378" text-anchor="start" font-weight="700">scène</text>
+<text x="300" y="44" font-size="8" fill="#6B7378" text-anchor="start" font-weight="700">appels de dessin</text>
+<text x="430" y="44" font-size="8" fill="#6B7378" text-anchor="start" font-weight="700">temps par image (médiane de 5)</text>
+<text x="30" y="67" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">400 maillages séparés</text>
+<text x="300" y="67" font-size="9" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">800</text>
+<rect x="430" y="56" width="38" height="14" fill="#E65100"/>
+<text x="472" y="67" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">19 ms</text>
+<text x="30" y="97" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">les mêmes, fusionnés en un seul</text>
+<text x="300" y="97" font-size="9" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">2</text>
+<rect x="430" y="86" width="2" height="14" fill="#2E7D32"/>
+<text x="436" y="97" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">0,08 ms</text>
+<text x="30" y="127" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">400 maillages + 4 800 arêtes en Line séparées</text>
+<text x="300" y="127" font-size="9" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">5 600</text>
+<rect x="430" y="116" width="106" height="14" fill="#C62828"/>
+<text x="540" y="127" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">53 ms</text>
+<text x="30" y="157" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">400 maillages + arêtes en un LineSegments</text>
+<text x="300" y="157" font-size="9" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">801</text>
+<rect x="430" y="146" width="40" height="14" fill="#E65100"/>
+<text x="474" y="157" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">20 ms</text>
+<line x1="463.4" y1="50" x2="463.4" y2="172" stroke="#C62828" stroke-dasharray="3 3"/>
+<text x="467.4" y="182" font-size="7.4" fill="#C62828" text-anchor="start" font-weight="700">16,7 ms = 60 images/s</text>
+<text x="16" y="200" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Appels exacts (renderer.info) : 2 par maillage, car Three.js dessine en deux passes une face transparente DoubleSide (cours 88).</text>
+<text x="16" y="213" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Temps d'un rendu logiciel, sans carte graphique : seul l'ordre de grandeur compte.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/src/Viewer3D.jsx · lignes 44 à 48 (ligne coupée)</span>for (const c of entry.curves) {
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.BufferAttribute(…, 3));
+  group.add(Object.assign(new THREE.Line(geometry, materials.line), …));
+}</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Fusionner</h3>
+      <p>Des segments séparés peuvent tenir dans un seul <code>LineSegments</code> : chaque paire de sommets y est un segment. Des maillages de même matériau peuvent se fusionner en une géométrie. Pour 400 copies d'une même forme, <code>InstancedMesh</code> dessine tout en un appel.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Lire renderer.info</h3>
+      <p>Three.js compte pour chaque image les appels, les triangles et les lignes : <code>renderer.info.render.calls</code>. C'est le premier chiffre à regarder quand une vue rame, avant de réduire le nombre de triangles.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Réduire les triangles pour accélérer une scène qui souffre d'appels. Les 400 boîtes ne comptent que 4 800 triangles : les diviser par deux ne changerait presque rien ; passer de 400 objets à 1 fait passer l'image de 19 ms à 0,08 ms (mesure ci-dessus).
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 87 · Le pipeline du GPU</div>
+</section>
+
+<!-- ============ PAGE 4 · À LA DEMANDE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 87</b></div>
+  <p class="rubrique">Schéma 3 · Dessiner quand il le faut</p>
+  <h2>Une image immobile ne se redessine pas</h2>
+  <p style="max-width:165mm">Un jeu redessine 60 fois par seconde, parce que tout bouge. Une vue de travail est immobile la plupart du temps : la redessiner en boucle consomme le processeur, la carte et la batterie pour rien. Magpie ne dessine qu'à un changement de caméra, de taille ou de contenu.</p>
+
+  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#1D6FB8" text-anchor="start" font-weight="700">Deux façons de dessiner, et le prix des pixels</text>
+<text x="30" y="50" font-size="8.6" fill="#C62828" text-anchor="start" font-weight="700">boucle continue</text>
+<text x="30" y="64" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">requestAnimationFrame : 60 images/s, même immobile</text>
+<rect x="300" y="40" width="8" height="24" rx="1.5" fill="#C62828"/>
+<rect x="311" y="40" width="8" height="24" rx="1.5" fill="#C62828"/>
+<rect x="322" y="40" width="8" height="24" rx="1.5" fill="#C62828"/>
+<rect x="333" y="40" width="8" height="24" rx="1.5" fill="#C62828"/>
+<rect x="344" y="40" width="8" height="24" rx="1.5" fill="#C62828"/>
+<rect x="355" y="40" width="8" height="24" rx="1.5" fill="#C62828"/>
+<rect x="366" y="40" width="8" height="24" rx="1.5" fill="#C62828"/>
+<rect x="377" y="40" width="8" height="24" rx="1.5" fill="#C62828"/>
+<rect x="388" y="40" width="8" height="24" rx="1.5" fill="#C62828"/>
+<rect x="399" y="40" width="8" height="24" rx="1.5" fill="#C62828"/>
+<rect x="410" y="40" width="8" height="24" rx="1.5" fill="#C62828"/>
+<rect x="421" y="40" width="8" height="24" rx="1.5" fill="#C62828"/>
+<rect x="432" y="40" width="8" height="24" rx="1.5" fill="#C62828"/>
+<rect x="443" y="40" width="8" height="24" rx="1.5" fill="#C62828"/>
+<rect x="454" y="40" width="8" height="24" rx="1.5" fill="#C62828"/>
+<rect x="465" y="40" width="8" height="24" rx="1.5" fill="#C62828"/>
+<rect x="476" y="40" width="8" height="24" rx="1.5" fill="#C62828"/>
+<rect x="487" y="40" width="8" height="24" rx="1.5" fill="#C62828"/>
+<rect x="498" y="40" width="8" height="24" rx="1.5" fill="#C62828"/>
+<rect x="509" y="40" width="8" height="24" rx="1.5" fill="#C62828"/>
+<rect x="520" y="40" width="8" height="24" rx="1.5" fill="#C62828"/>
+<rect x="531" y="40" width="8" height="24" rx="1.5" fill="#C62828"/>
+<rect x="542" y="40" width="8" height="24" rx="1.5" fill="#C62828"/>
+<rect x="553" y="40" width="8" height="24" rx="1.5" fill="#C62828"/>
+<text x="30" y="96" font-size="8.6" fill="#2E7D32" text-anchor="start" font-weight="700">à la demande</text>
+<text x="30" y="110" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">une image quand la caméra ou la scène change</text>
+<rect x="300" y="86" width="8" height="24" rx="1.5" fill="#EEE9E0"/>
+<rect x="311" y="86" width="8" height="24" rx="1.5" fill="#EEE9E0"/>
+<rect x="322" y="86" width="8" height="24" rx="1.5" fill="#EEE9E0"/>
+<rect x="333" y="86" width="8" height="24" rx="1.5" fill="#2E7D32"/>
+<rect x="344" y="86" width="8" height="24" rx="1.5" fill="#2E7D32"/>
+<rect x="355" y="86" width="8" height="24" rx="1.5" fill="#2E7D32"/>
+<rect x="366" y="86" width="8" height="24" rx="1.5" fill="#EEE9E0"/>
+<rect x="377" y="86" width="8" height="24" rx="1.5" fill="#EEE9E0"/>
+<rect x="388" y="86" width="8" height="24" rx="1.5" fill="#EEE9E0"/>
+<rect x="399" y="86" width="8" height="24" rx="1.5" fill="#EEE9E0"/>
+<rect x="410" y="86" width="8" height="24" rx="1.5" fill="#EEE9E0"/>
+<rect x="421" y="86" width="8" height="24" rx="1.5" fill="#2E7D32"/>
+<rect x="432" y="86" width="8" height="24" rx="1.5" fill="#EEE9E0"/>
+<rect x="443" y="86" width="8" height="24" rx="1.5" fill="#EEE9E0"/>
+<rect x="454" y="86" width="8" height="24" rx="1.5" fill="#EEE9E0"/>
+<rect x="465" y="86" width="8" height="24" rx="1.5" fill="#EEE9E0"/>
+<rect x="476" y="86" width="8" height="24" rx="1.5" fill="#EEE9E0"/>
+<rect x="487" y="86" width="8" height="24" rx="1.5" fill="#2E7D32"/>
+<rect x="498" y="86" width="8" height="24" rx="1.5" fill="#2E7D32"/>
+<rect x="509" y="86" width="8" height="24" rx="1.5" fill="#EEE9E0"/>
+<rect x="520" y="86" width="8" height="24" rx="1.5" fill="#EEE9E0"/>
+<rect x="531" y="86" width="8" height="24" rx="1.5" fill="#EEE9E0"/>
+<rect x="542" y="86" width="8" height="24" rx="1.5" fill="#EEE9E0"/>
+<rect x="553" y="86" width="8" height="24" rx="1.5" fill="#EEE9E0"/>
+<text x="300" y="142" font-size="7.4" fill="#6B7378" text-anchor="start">← une seconde, en images dessinées →</text>
+<rect x="20" y="156" width="14.0" height="14.0" fill="#E6F0FA" stroke="#1D6FB8"/>
+<text x="54" y="166" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">ratio 1</text>
+<text x="54" y="178" font-size="7.4" fill="#6B7378" text-anchor="start">1 pixel par point</text>
+<rect x="132" y="156" width="21.0" height="21.0" fill="#E6F0FA" stroke="#1D6FB8"/>
+<text x="166" y="166" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">ratio 1,5</text>
+<text x="166" y="178" font-size="7.4" fill="#6B7378" text-anchor="start">2,25 pixels par point</text>
+<rect x="244" y="156" width="28.0" height="28.0" fill="#E6F0FA" stroke="#1D6FB8"/>
+<text x="278" y="166" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">ratio 2</text>
+<text x="278" y="178" font-size="7.4" fill="#6B7378" text-anchor="start">4 pixels par point</text>
+<text x="372" y="172" font-size="7.8" fill="#2B2F33" text-anchor="start">setPixelRatio(devicePixelRatio) : net en haute densité,</text>
+<text x="372" y="186" font-size="7.8" fill="#2B2F33" text-anchor="start">mais les fragments croissent comme le carré du ratio.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/src/Viewer3D.jsx · lignes 74 à 75, 105 à 106 et 128 à 134 (extrait)</span>const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(window.devicePixelRatio);
+const render = () =&gt; renderer.render(scene, camera);
+controls.addEventListener("change", render);
+return () =&gt; { … for (const group of …) disposeGroup(group);
+  … m.dispose(); renderer.dispose(); … };</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Libérer la carte</h3>
+      <p>La mémoire de la carte graphique n'est pas ramassée par JavaScript. Chaque géométrie, matériau ou rendu se libère par <code>dispose()</code>. Magpie le fait à chaque nouveau « Tester » (lignes 166 à 169) et à la fermeture de la vue.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Charger à la demande</h3>
+      <p>Three.js pèse lourd. La vue 3D est chargée par <code>React.lazy</code> (commentaire de la ligne 9) : l'élève qui n'ouvre jamais l'aperçu ne télécharge pas la bibliothèque.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Le ratio de pixels sans limite. Sur un écran à ratio 3, chaque image compte neuf fois plus de fragments qu'à ratio 1. Beaucoup de visionneuses plafonnent à 2 (<code>Math.min(devicePixelRatio, 2)</code>) : la différence se voit à peine.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 87 · Le pipeline du GPU</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 87</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Une vue sobre, des arêtes coûteuses</h2>
+  <p style="max-width:165mm">La visionneuse de Magpie fait l'essentiel juste : dessin à la demande, matériaux partagés, mémoire libérée, chargement différé. Un seul choix pèse lourd quand la géométrie se multiplie : une ligne par arête.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">magpie/web/src/Viewer3D.jsx</span></div>
+<div class="l k1"><span class="n">106</span>controls.addEventListener(<span class="st">"change"</span>, render);<span class="rep r1">1</span></div>
+<div class="l k2"><span class="n">122</span>materials: { normal: makeMaterials(…), selected: … },<span class="rep r2">2</span></div>
+<div class="l k3"><span class="n">168</span>disposeGroup(group);<span class="rep r3">3</span></div>
+<div class="l k4"><span class="n">47</span>group.add(…<span class="kw">new</span> THREE.Line(geometry, materials.line)…);<span class="rep r4">4</span></div>
+<div class="l"><span class="cm">magpie/web/apercu.mjs</span></div>
+<div class="l k5"><span class="n">144</span><span class="cm">// Les 12 arêtes de la boîte (…)</span><span class="rep r5">5</span></div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>À la demande</b>Pas de boucle.</li>
+      <li><span class="rep r2">2</span><b>Deux jeux</b>Partagés par tous.</li>
+      <li><span class="rep r3">3</span><b>Libérer</b>À chaque « Tester ».</li>
+      <li><span class="rep r4">4</span><b>Une Line par courbe</b>Un appel chacune.</li>
+      <li><span class="rep r5">5</span><b>12 arêtes</b>Douze courbes par boîte.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À surveiller · une boîte, quatorze appels de dessin</span>
+    Pour une boîte ou un Brep, le serveur envoie chaque arête comme une courbe séparée (apercu.mjs:143–156 et 169–177), et la vue en fait une <code>Line</code> chacune (Viewer3D.jsx:44–48). Avec les deux passes du maillage transparent, un graphe qui produit 400 boîtes donne 5 600 appels : 53 ms par image dans la mesure de la page 3, au-delà des 16,7 ms d'une image fluide. Regrouper les arêtes d'un composant dans un seul <code>LineSegments</code> ramènerait à trois appels par composant.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 87 · Le pipeline du GPU</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 87</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Le vertex shader calcule…</div><ul>
+      <li><span>A</span>la position à l'écran de chaque sommet</li><li><span>B</span>la couleur de chaque pixel</li><li><span>C</span>le nombre d'appels</li><li><span>D</span>la liste des triangles</li></ul></div>
+
+    <div class="q"><div class="enonce">La rastérisation…</div><ul>
+      <li><span>A</span>compile les shaders</li><li><span>B</span>trouve les pixels couverts par un triangle</li><li><span>C</span>libère la mémoire</li><li><span>D</span>trie les objets</li></ul></div>
+
+    <div class="q"><div class="enonce">Une valeur commune à tout un appel de dessin (une matrice, une couleur) est…</div><ul>
+      <li><span>A</span>un fragment</li><li><span>B</span>un varying</li><li><span>C</span>un uniform</li><li><span>D</span>un attribute</li></ul></div>
+
+    <div class="q"><div class="enonce">400 maillages transparents en DoubleSide coûtent (mesuré)…</div><ul>
+      <li><span>A</span>4 800 appels</li><li><span>B</span>1 appel</li><li><span>C</span>400 appels</li><li><span>D</span>800 appels de dessin</li></ul></div>
+
+    <div class="q"><div class="enonce">Pour réduire les appels de dessin… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>fusionner les géométries de même matériau</li><li><span>B</span>diviser les triangles par deux</li><li><span>C</span>regrouper des segments dans un LineSegments</li><li><span>D</span>créer un matériau par objet</li></ul></div>
+
+    <div class="q"><div class="enonce">Une image fluide à 60 images/s dispose de…</div><ul>
+      <li><span>A</span>1 ms</li><li><span>B</span>100 ms</li><li><span>C</span>60 ms</li><li><span>D</span>16,7 ms</li></ul></div>
+
+    <div class="q"><div class="enonce">Magpie redessine la vue 3D…</div><ul>
+      <li><span>A</span>quand la caméra, la taille ou le contenu change</li><li><span>B</span>une fois par minute</li><li><span>C</span>60 fois par seconde</li><li><span>D</span>jamais</li></ul></div>
+
+    <div class="q"><div class="enonce">À ratio de pixels 2, une image compte combien de fragments par rapport au ratio 1 ?</div><ul>
+      <li><span>A</span>4 fois plus</li><li><span>B</span>autant</li><li><span>C</span>8 fois plus</li><li><span>D</span>2 fois plus</li></ul></div>
+
+    <div class="q"><div class="enonce">La mémoire de la carte graphique se libère…</div><ul>
+      <li><span>A</span>par le ramasse-miettes</li><li><span>B</span>par dispose()</li><li><span>C</span>toute seule</li><li><span>D</span>au rechargement de la page seulement</li></ul></div>
+
+    <div class="q"><div class="enonce">Changer la sélection dans l'aperçu Magpie…</div><ul>
+      <li><span>A</span>relance Compute</li><li><span>B</span>recompile les shaders</li><li><span>C</span>reconstruit la géométrie</li><li><span>D</span>échange des matériaux existants</li></ul></div>
+
+    <div class="q"><div class="enonce">Une boîte dans l'aperçu Magpie coûte combien d'appels ?</div><ul>
+      <li><span>A</span>12</li><li><span>B</span>14</li><li><span>C</span>2</li><li><span>D</span>1</li></ul></div>
+
+    <div class="q"><div class="enonce">Où lire le nombre d'appels d'une image Three.js ?</div><ul>
+      <li><span>A</span>window.devicePixelRatio</li><li><span>B</span>camera.fov</li><li><span>C</span>renderer.info.render.calls</li><li><span>D</span>scene.children.length</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 87 · Le pipeline du GPU</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 87</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · A.</b> Par les matrices de la caméra.</div>
+    <div><b>02 · B.</b> Elle produit les fragments.</div>
+    <div><b>03 · C.</b> L'attribute varie par sommet.</div>
+    <div><b>04 · D.</b> Deux passes par maillage.</div>
+    <div><b>05 · A et C.</b> Les triangles comptent peu.</div>
+    <div><b>06 · D.</b> 1000 / 60.</div>
+    <div><b>07 · A.</b> Viewer3D.jsx:106 et 115.</div>
+    <div><b>08 · A.</b> Le carré du ratio.</div>
+    <div><b>09 · B.</b> Viewer3D.jsx:131–133.</div>
+    <div><b>10 · D.</b> Lignes 57 à 61.</div>
+    <div><b>11 · B.</b> Deux passes et douze lignes.</div>
+    <div><b>12 · C.</b> Compté pour chaque image.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 88, « La transparence ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">new WebGLRenderer({ antialias: true })</td><td>un rendu WebGL lissé</td><td>Viewer3D.jsx:74</td></tr>
+      <tr><td class="c">setPixelRatio(devicePixelRatio)</td><td>net sur écran haute densité</td><td>Viewer3D.jsx:75</td></tr>
+      <tr><td class="c">addEventListener("change", render)</td><td>dessiner à la demande</td><td>Viewer3D.jsx:106</td></tr>
+      <tr><td class="c">geometry.dispose()</td><td>libérer la mémoire de la carte</td><td>Viewer3D.jsx:64</td></tr>
+      <tr><td class="c">LineSegments, InstancedMesh</td><td>moins d'appels de dessin</td><td>page 3</td></tr>
+      <tr><td class="c">renderer.info.render.calls</td><td>compter les appels d'une image</td><td>mesure, page 3</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Pipeline</dt><dd>La suite d'étapes qui mène des sommets aux pixels.</dd>
+    <dt>Shader</dt><dd>Un petit programme exécuté par la carte graphique, par sommet ou par pixel.</dd>
+    <dt>Fragment</dt><dd>Un pixel candidat, produit par la rastérisation d'un triangle.</dd>
+    <dt>Appel de dessin</dt><dd>Un ordre du processeur à la carte : dessiner un objet avec un programme.</dd>
+    <dt>Ratio de pixels</dt><dd>Le nombre de pixels physiques par point CSS de l'écran.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 88</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 87 · Le pipeline du GPU</div>
+</section>
+
+</body>
+</html>

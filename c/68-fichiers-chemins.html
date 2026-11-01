@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>68 · Fichiers, chemins et système de fichiers</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-9">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 68</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Fichiers, chemins et système de fichiers</h1>
+  <p class="chapeau">Le <b>système de fichiers</b> range les octets du disque en un arbre de dossiers et de fichiers. Un <b>chemin</b> est l'adresse d'un nœud de cet arbre. Rien de plus simple en apparence, mais chaque système a ses règles, les dossiers ont des rôles, et une écriture interrompue peut tout abîmer.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>56</b> et <b>64</b></span>
+    <span class="pastille">Exemples · <b>EcrivainGeneration</b>, <b>CheminCible</b> (SnapSet), <b>ImportParcours</b> (Magpie)</span>
+  </div>
+
+  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+    <svg viewBox="0 0 600 200" width="100%">
+<text x="16" y="18" font-size="8.6" fill="#6B7378" text-anchor="start" class="mono" style="font-size:8.6px">D:\</text>
+<path d="M24 24 V35 H35" fill="none" stroke="#CFC6B8"/>
+<text x="38" y="39" font-size="8.6" fill="#6B7378" text-anchor="start" class="mono" style="font-size:8.6px">Projets</text>
+<path d="M46 45 V56 H57" fill="none" stroke="#CFC6B8"/>
+<text x="60" y="60" font-size="8.6" fill="#6B7378" text-anchor="start" class="mono" style="font-size:8.6px">MaCapsule</text>
+<path d="M68 66 V77 H79" fill="none" stroke="#CFC6B8"/>
+<text x="82" y="81" font-size="8.6" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">dessin</text>
+<path d="M90 87 V98 H101" fill="none" stroke="#CFC6B8"/>
+<text x="104" y="102" font-size="8.6" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">capsule.gh</text>
+<path d="M68 108 V119 H79" fill="none" stroke="#CFC6B8"/>
+<text x="82" y="123" font-size="8.6" fill="#A03A2C" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">src</text>
+<path d="M90 129 V140 H101" fill="none" stroke="#CFC6B8"/>
+<text x="104" y="144" font-size="8.6" fill="#A03A2C" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">Capsule.Dessin.g.cs</text>
+<path d="M90 150 V161 H101" fill="none" stroke="#CFC6B8"/>
+<text x="104" y="165" font-size="8.6" fill="#A03A2C" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">Capsule.cs</text>
+<text x="330" y="30" font-size="8.6" fill="#A03A2C" text-anchor="start" font-weight="700">Absolu : depuis la racine du lecteur</text>
+<text x="330" y="48" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px">D:\Projets\MaCapsule\src</text>
+<text x="330" y="84" font-size="8.6" fill="#1565C0" text-anchor="start" font-weight="700">Relatif : depuis le dossier du .gh</text>
+<text x="330" y="102" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px">..\src</text>
+<text x="330" y="120" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">« .. » remonte d'un niveau, « . » reste sur place</text>
+<text x="330" y="156" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">Déplace MaCapsule ailleurs : le chemin absolu</text>
+<text x="330" y="168" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">est cassé, le relatif marche toujours.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>On construit les chemins avec les fonctions du langage (jamais à la main), on range chaque donnée dans le dossier fait pour elle, et on écrit de façon qu'une coupure laisse toujours un fichier entier.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Une adresse postale : « 3 rue des Lilas, Lyon » est absolue ; « la maison d'à côté » est relative, et reste juste si tout le quartier déménage ensemble.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>manier chemins absolus et relatifs ;</li>
+        <li>écrire du code valable sur tout système ;</li>
+        <li>choisir le bon dossier pour une donnée ;</li>
+        <li>écrire un fichier de façon atomique.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:5mm">
+    <span class="titre">À retenir</span>
+    Un nom de fichier est du texte, mais un texte contraint : caractères interdits, noms réservés, casse plus ou moins comptée selon le système. Toute donnée qui devient un nom de fichier (un identifiant d'exercice, un titre) se vérifie avant usage.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 68 · Fichiers, chemins et système de fichiers</div>
+</section>
+
+<!-- ============ PAGE 2 · LES CHEMINS ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 68</b></div>
+  <p class="rubrique">Schéma 1 · Les règles de chaque système</p>
+  <h2>Un même chemin, deux mondes</h2>
+  <p style="max-width:165mm">Rhino et Grasshopper vivent sous Windows ; le site de Magpie tourne sous Linux. Les deux systèmes ne s'accordent ni sur le séparateur, ni sur la casse, ni sur les caractères permis. Les fonctions <code>Path</code> de .NET et <code>path</code> de Node connaissent ces règles à ta place.</p>
+
+  <svg viewBox="0 0 600 232" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="232" fill="#EFE9E1"/>
+<text x="230" y="22" font-size="9" fill="#1565C0" text-anchor="middle" font-weight="700">Windows</text>
+<text x="470" y="22" font-size="9" fill="#2E7D32" text-anchor="middle" font-weight="700">Linux, macOS</text>
+<rect x="16" y="34" width="568" height="26" rx="3" fill="#fff" stroke="#E2DACB"/>
+<text x="26" y="51" font-size="8.4" fill="#A03A2C" text-anchor="start" font-weight="700">racine</text>
+<text x="230" y="51" font-size="8.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.4px">C:\  D:\  \\serveur\partage</text>
+<text x="470" y="51" font-size="8.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.4px">/</text>
+<rect x="16" y="65" width="568" height="26" rx="3" fill="#fff" stroke="#E2DACB"/>
+<text x="26" y="82" font-size="8.4" fill="#A03A2C" text-anchor="start" font-weight="700">séparateur</text>
+<text x="230" y="82" font-size="8.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.4px">\  (et / accepté)</text>
+<text x="470" y="82" font-size="8.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.4px">/</text>
+<rect x="16" y="96" width="568" height="26" rx="3" fill="#fff" stroke="#E2DACB"/>
+<text x="26" y="113" font-size="8.4" fill="#A03A2C" text-anchor="start" font-weight="700">casse</text>
+<text x="230" y="113" font-size="8.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.4px">ignorée : A.txt = a.txt</text>
+<text x="470" y="113" font-size="8.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.4px">comptée sous Linux</text>
+<rect x="16" y="127" width="568" height="26" rx="3" fill="#fff" stroke="#E2DACB"/>
+<text x="26" y="144" font-size="8.4" fill="#A03A2C" text-anchor="start" font-weight="700">interdits</text>
+<text x="230" y="144" font-size="8.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.4px">&lt; &gt; : " / \ | ? *</text>
+<text x="470" y="144" font-size="8.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.4px">/ et le caractère nul</text>
+<rect x="16" y="158" width="568" height="26" rx="3" fill="#fff" stroke="#E2DACB"/>
+<text x="26" y="175" font-size="8.4" fill="#A03A2C" text-anchor="start" font-weight="700">noms réservés</text>
+<text x="230" y="175" font-size="8.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.4px">CON, PRN, AUX, NUL, COM1…</text>
+<text x="470" y="175" font-size="8.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.4px">aucun</text>
+<rect x="16" y="189" width="568" height="26" rx="3" fill="#fff" stroke="#E2DACB"/>
+<text x="26" y="206" font-size="8.4" fill="#A03A2C" text-anchor="start" font-weight="700">longueur</text>
+<text x="230" y="206" font-size="8.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.4px">260 caractères, par défaut</text>
+<text x="470" y="206" font-size="8.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.4px">4096 en général</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#</span>Path.Combine(dossier, "src", "Capsule.cs");        // le bon séparateur
+Path.GetFullPath(@"D:\Projets\gh\..\src");          // D:\Projets\src
+Path.GetRelativePath(@"D:\Projets\gh", @"D:\Projets\src"); // ..\src
+Path.IsPathFullyQualified(@"..\src");                // false
+Path.GetInvalidFileNameChars();                      // les caractères interdits</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>En Node</h3>
+      <p><code>path.join</code>, <code>path.resolve</code>, <code>path.relative</code> et <code>path.sep</code> font la même chose. Le cours 64 a montré <code>normalize(join(…))</code> qui garde un chemin dans son dossier.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Les fins de ligne</h3>
+      <p>Autre écart entre systèmes : Windows termine les lignes par CR LF, Linux par LF. Le <code>.gitattributes</code> de SnapSet impose LF partout, parce que des tests comparent le texte au caractère près.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    <code>Path.Combine(dossier, nom)</code> jette <code>dossier</code> si <code>nom</code> est lui-même absolu, ou commence par <code>\</code>. Un nom venu de l'extérieur peut ainsi faire écrire n'importe où. On valide le nom d'abord, ou on vérifie le résultat comme au cours 64.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 68 · Fichiers, chemins et système de fichiers</div>
+</section>
+
+<!-- ============ PAGE 3 · LES DOSSIERS ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 68</b></div>
+  <p class="rubrique">Schéma 2 · Où ranger quoi</p>
+  <h2>Chaque dossier a son rôle</h2>
+  <p style="max-width:165mm">Windows prévoit un dossier par usage. Un programme qui écrit à côté de son propre exécutable échoue dès qu'il est installé dans Program Files ; un cache rangé dans Documents encombre l'utilisateur. On ne code jamais ces chemins en dur : on les demande au système.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<rect x="16" y="10" width="568" height="34" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="28" y="31" font-size="8.8" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:8.8px">Program Files</text>
+<text x="230" y="31" font-size="8.4" fill="#2B2F33" text-anchor="start">le programme lui-même</text>
+<text x="574" y="31" font-size="7.6" fill="#6B7378" text-anchor="end" font-style="italic">lecture seule pour l'utilisateur</text>
+<rect x="16" y="50" width="568" height="34" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="28" y="71" font-size="8.8" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8.8px">%APPDATA%  (Roaming)</text>
+<text x="230" y="71" font-size="8.4" fill="#2B2F33" text-anchor="start">réglages, données à garder</text>
+<text x="574" y="71" font-size="7.6" fill="#6B7378" text-anchor="end" font-style="italic">suit l'utilisateur sur le réseau</text>
+<rect x="16" y="90" width="568" height="34" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
+<text x="28" y="111" font-size="8.8" fill="#7B1FA2" text-anchor="start" font-weight="700" class="mono" style="font-size:8.8px">%LOCALAPPDATA%</text>
+<text x="230" y="111" font-size="8.4" fill="#2B2F33" text-anchor="start">caches, gros fichiers recréables</text>
+<text x="574" y="111" font-size="7.6" fill="#6B7378" text-anchor="end" font-style="italic">reste sur ce poste</text>
+<rect x="16" y="130" width="568" height="34" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
+<text x="28" y="151" font-size="8.8" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:8.8px">%TEMP%</text>
+<text x="230" y="151" font-size="8.4" fill="#2B2F33" text-anchor="start">travail en cours, jetable</text>
+<text x="574" y="151" font-size="7.6" fill="#6B7378" text-anchor="end" font-style="italic">peut être vidé à tout moment</text>
+<rect x="16" y="170" width="568" height="34" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="28" y="191" font-size="8.8" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:8.8px">Documents</text>
+<text x="230" y="191" font-size="8.4" fill="#2B2F33" text-anchor="start">ce que l'utilisateur a créé</text>
+<text x="574" y="191" font-size="7.6" fill="#6B7378" text-anchor="end" font-style="italic">il le voit, il le range</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C# et Node</span>Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);  // %APPDATA%
+Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+Path.GetTempPath();                                   // %TEMP%
+os.homedir();  os.tmpdir();  process.env.APPDATA      // Node</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Et le dossier du plugin ?</h3>
+      <p>Un .gha s'installe souvent dans un dossier de Grasshopper ou du gestionnaire de paquets de Rhino : rien ne garantit qu'on puisse y écrire. Il lit ses ressources depuis lui-même (ressources embarquées) et écrit ailleurs.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Un nom unique pour un temporaire</h3>
+      <p>Deux instances qui écrivent le même <code>temp.txt</code> s'écrasent. Un <code>Guid.NewGuid()</code> dans le nom rend chaque temporaire unique, et un <code>finally</code> le supprime quoi qu'il arrive.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Écrire <code>"C:\\Users\\" + nom + "\\AppData"</code>. Le profil peut être sur un autre lecteur, redirigé sur le réseau, ou porter un nom avec des accents. <code>GetFolderPath</code> donne le vrai chemin, sur chaque poste.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 68 · Fichiers, chemins et système de fichiers</div>
+</section>
+
+<!-- ============ PAGE 4 · ÉCRIRE SANS RISQUE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 68</b></div>
+  <p class="rubrique">Schéma 3 · L'écriture atomique</p>
+  <h2>Jamais un fichier à moitié écrit</h2>
+  <p style="max-width:165mm">Écrire un fichier prend du temps. Si le programme plante, si Rhino est fermé, si le courant coupe pendant l'écriture, le fichier reste tronqué. La parade : écrire à côté, dans un temporaire, puis <b>remplacer d'un seul geste</b>. Un renommage dans un même dossier est une opération que le système fait entièrement ou pas du tout.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<text x="150" y="22" font-size="9" fill="#C62828" text-anchor="middle" font-weight="700">Écriture directe</text>
+<text x="450" y="22" font-size="9" fill="#2E7D32" text-anchor="middle" font-weight="700">Écriture atomique</text>
+<line x1="300" y1="12" x2="300" y2="204" stroke="#CFC6B8" stroke-dasharray="3 3"/>
+<rect x="40" y="38" width="220" height="28" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="150.0" y="54.666666666666664" font-size="8" fill="#C62828" text-anchor="middle" font-weight="700">ouvrir Capsule.cs, le vider</text>
+<line x1="150" y1="68" x2="150" y2="84" stroke="#6B7378" stroke-width="1.1"/><polygon points="150,84 147.3,77.6 152.7,77.6" fill="#6B7378"/>
+<rect x="40" y="86" width="220" height="28" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="150.0" y="102.66666666666667" font-size="8" fill="#C62828" text-anchor="middle" font-weight="700">écrire… coupure de courant</text>
+<line x1="150" y1="116" x2="150" y2="132" stroke="#6B7378" stroke-width="1.1"/><polygon points="150,132 147.3,125.6 152.7,125.6" fill="#6B7378"/>
+<rect x="40" y="134" width="220" height="28" rx="4" fill="#FBEDEA" stroke="#C62828" stroke-width="1.2"/>
+<text x="150.0" y="150.66666666666666" font-size="8" fill="#C62828" text-anchor="middle" font-weight="700">fichier à moitié écrit</text>
+<text x="150" y="186" font-size="7.6" fill="#C62828" text-anchor="middle" font-style="italic">l'ancien contenu est perdu, le nouveau incomplet</text>
+<rect x="340" y="38" width="220" height="28" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="450.0" y="54.666666666666664" font-size="8" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">écrire .snapset-1a2b.tmp</text>
+<line x1="450" y1="68" x2="450" y2="84" stroke="#6B7378" stroke-width="1.1"/><polygon points="450,84 447.3,77.6 452.7,77.6" fill="#6B7378"/>
+<rect x="340" y="86" width="220" height="28" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="450.0" y="102.66666666666667" font-size="8" fill="#2E7D32" text-anchor="middle" font-weight="700">Flush : forcer sur le disque</text>
+<line x1="450" y1="116" x2="450" y2="132" stroke="#6B7378" stroke-width="1.1"/><polygon points="450,132 447.3,125.6 452.7,125.6" fill="#6B7378"/>
+<rect x="340" y="134" width="220" height="28" rx="4" fill="#EAF3EA" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="450.0" y="150.66666666666666" font-size="8" fill="#2E7D32" text-anchor="middle" font-weight="700">Replace : échange d'un coup</text>
+<text x="450" y="186" font-size="7.6" fill="#2E7D32" text-anchor="middle" font-style="italic">à tout instant : l'ancien fichier entier, ou le nouveau</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C# (.NET 6 et plus)</span>string tmp = Path.Combine(dossier, ".x-" + Guid.NewGuid().ToString("N") + ".tmp");
+File.WriteAllBytes(tmp, octets);
+File.Move(tmp, chemin, overwrite: true);   // remplacement d'un coup, même volume
+// Node : writeFileSync(tmp, data); renameSync(tmp, chemin);</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Le même volume</h3>
+      <p>Le renommage n'est atomique que sur un même disque. Entre deux volumes, « déplacer » devient « copier puis supprimer », ce qui peut s'interrompre au milieu. D'où le temporaire dans le <b>même dossier</b> que la cible.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Le partage sous Windows</h3>
+      <p>Sous Windows, un fichier ouvert par un programme peut refuser les autres (<code>FileShare</code>). Visual Studio qui garde un fichier ouvert peut ainsi bloquer une écriture : on attrape <code>IOException</code> et on l'explique.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Supprimer l'ancien fichier, puis écrire le nouveau. Entre les deux, il n'y a plus rien : une coupure à cet instant perd tout. Le remplacement doit être la <b>dernière</b> étape, et la seule qui touche au fichier existant.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 68 · Fichiers, chemins et système de fichiers</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 68</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Écrire atomiquement, stocker relatif</h2>
+  <p style="max-width:165mm">« Générer » de SnapSet écrit le code de la capsule de façon atomique, et retient son dossier cible en relatif au .gh. Magpie range ses réglages dans AppData et vérifie qu'un identifiant peut servir de nom de fichier.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">SnapSet/src/SnapSet.Conception/Generation/EcrivainGeneration.cs</span></div>
+<div class="l k1"><span class="n">428</span>Path.Combine(Path.GetDirectoryName(chemin), Prefixe…<span class="rep r1">1</span></div>
+<div class="l k1"><span class="n">440</span><span class="kw">new</span> FileStream(temporaire, FileMode.CreateNew, …)</div>
+<div class="l k1"><span class="n">443</span>  flux.Flush(<span class="kw">true</span>);</div>
+<div class="l k1"><span class="n">448</span>File.Replace(temporaire, chemin, <span class="kw">null</span>, …);</div>
+<div class="l k1"><span class="n">457</span><span class="kw">if</span> (File.Exists(temporaire)) File.Delete(temporaire);</div>
+<div class="l"><span class="cm">SnapSet/src/SnapSet.Conception/Generation/CheminCible.cs</span></div>
+<div class="l k2"><span class="n">35</span><span class="kw">string</span> relatif = Path.GetRelativePath(dossierGh, absolu);<span class="rep r2">2</span></div>
+<div class="l k2"><span class="n">36</span><span class="kw">return</span> Path.IsPathFullyQualified(relatif) ? absolu : …;</div>
+<div class="l"><span class="cm">magpie/plugin · MagpieReglages.cs, MagpieExerciseEditor.cs</span></div>
+<div class="l k3"><span class="n">27</span>GetFolderPath(SpecialFolder.ApplicationData), <span class="st">"Magpie"</span><span class="rep r3">3</span></div>
+<div class="l k3"><span class="n">585</span><span class="kw">if</span> (Id.IndexOfAny(Path.GetInvalidFileNameChars()) &gt;= 0)</div>
+<div class="l"><span class="cm">magpie/plugin/Core/ImportParcours.cs</span></div>
+<div class="l k4"><span class="n">57</span>Path.Combine(Path.GetTempPath(), <span class="st">"magpie-import-"</span> + Guid…);<span class="rep r4">4</span></div>
+<div class="l k4"><span class="n">71</span>  Directory.Delete(cible, <span class="kw">true</span>);</div>
+<div class="l k4"><span class="n">73</span>CopierDossier(temporaire, cible);</div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Atomique</b>Temporaire dans le même dossier, forcé sur disque, puis échangé ; supprimé en cas d'échec.</li>
+      <li><span class="rep r2">2</span><b>Relatif si possible</b>Sur un autre lecteur, il reste absolu.</li>
+      <li><span class="rep r3">3</span><b>Le bon dossier</b>Réglages dans AppData ; nom vérifié.</li>
+      <li><span class="rep r4">4</span><b>Préparé à part</b>Un import raté ne touche pas le cache.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À surveiller · la dernière étape de l'import (ImportParcours.cs:68–73)</span>
+    La préparation dans <code>%TEMP%</code> protège bien le cache d'un paquet invalide. Mais pour remplacer un parcours déjà présent, l'ancien dossier est supprimé (ligne 71), puis le nouveau copié (ligne 73) : une coupure entre les deux laisse un parcours absent ou à moitié copié. Copier d'abord dans un dossier voisin, sur le même volume, puis échanger par renommage, fermerait cette fenêtre.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 68 · Fichiers, chemins et système de fichiers</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 68</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce"><code>..\src</code> est un chemin…</div><ul>
+      <li><span>A</span>invalide</li><li><span>B</span>relatif</li><li><span>C</span>absolu</li><li><span>D</span>réseau</li></ul></div>
+
+    <div class="q"><div class="enonce">Un chemin relatif au .gh survit…</div><ul>
+      <li><span>A</span>au déplacement du projet entier</li><li><span>B</span>au changement de lecteur du seul .gh</li><li><span>C</span>toujours</li><li><span>D</span>jamais</li></ul></div>
+
+    <div class="q"><div class="enonce">Pour assembler un chemin en C#…</div><ul>
+      <li><span>A</span>dossier + "\\" + nom</li><li><span>B</span>string.Join(",")</li><li><span>C</span>Path.Combine</li><li><span>D</span>Uri</li></ul></div>
+
+    <div class="q"><div class="enonce">Sous Windows, <code>Rapport.txt</code> et <code>rapport.txt</code>…</div><ul>
+      <li><span>A</span>sont deux fichiers</li><li><span>B</span>sont interdits</li><li><span>C</span>désignent le même fichier</li><li><span>D</span>dépend du disque</li></ul></div>
+
+    <div class="q"><div class="enonce">Sont interdits dans un nom Windows : <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>?</li><li><span>B</span>CON comme nom</li><li><span>C</span>:</li><li><span>D</span>-</li></ul></div>
+
+    <div class="q"><div class="enonce">Des réglages à garder se rangent dans…</div><ul>
+      <li><span>A</span>%APPDATA%</li><li><span>B</span>%TEMP%</li><li><span>C</span>Program Files</li><li><span>D</span>le Bureau</li></ul></div>
+
+    <div class="q"><div class="enonce">Un cache recréable se range de préférence dans…</div><ul>
+      <li><span>A</span>%LOCALAPPDATA%</li><li><span>B</span>le dossier du .gha</li><li><span>C</span>Documents</li><li><span>D</span>C:\</li></ul></div>
+
+    <div class="q"><div class="enonce">Écrire atomiquement, c'est…</div><ul>
+      <li><span>A</span>supprimer puis écrire</li><li><span>B</span>écrire à côté puis remplacer d'un coup</li><li><span>C</span>écrire vite</li><li><span>D</span>écrire en binaire</li></ul></div>
+
+    <div class="q"><div class="enonce">Le temporaire est dans le même dossier parce que…</div><ul>
+      <li><span>A</span>Windows l'impose toujours</li><li><span>B</span>c'est plus joli</li><li><span>C</span>%TEMP% est plein</li><li><span>D</span>le renommage n'est atomique que sur un même volume</li></ul></div>
+
+    <div class="q"><div class="enonce"><code>Path.Combine(@"C:\a", @"D:\b")</code> donne…</div><ul>
+      <li><span>A</span>C:\a</li><li><span>B</span>D:\b</li><li><span>C</span>C:\a\D:\b</li><li><span>D</span>une exception</li></ul></div>
+
+    <div class="q"><div class="enonce">CheminCible stocke un chemin absolu quand…</div><ul>
+      <li><span>A</span>toujours</li><li><span>B</span>jamais</li><li><span>C</span>le .gh est en lecture seule</li><li><span>D</span>la cible est sur un autre lecteur</li></ul></div>
+
+    <div class="q"><div class="enonce">Dans l'import de Magpie, le point à surveiller est…</div><ul>
+      <li><span>A</span>le zip</li><li><span>B</span>le dossier %TEMP%</li><li><span>C</span>le Guid</li><li><span>D</span>supprimer l'ancien avant d'avoir copié le nouveau</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 68 · Fichiers, chemins et système de fichiers</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 68</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · B.</b> Rapporté à un dossier de départ.</div>
+    <div><b>02 · A.</b> Tout bouge ensemble.</div>
+    <div><b>03 · C.</b> Le bon séparateur, sans doublon.</div>
+    <div><b>04 · C.</b> Casse ignorée.</div>
+    <div><b>05 · A, B et C.</b> Le tiret est permis.</div>
+    <div><b>06 · A.</b> MagpieReglages.cs:27.</div>
+    <div><b>07 · A.</b> Reste sur le poste.</div>
+    <div><b>08 · B.</b> EcrivainGeneration.cs:440–452.</div>
+    <div><b>09 · D.</b> Sinon copie puis suppression.</div>
+    <div><b>10 · B.</b> Le second est absolu.</div>
+    <div><b>11 · D.</b> CheminCible.cs:35–36.</div>
+    <div><b>12 · D.</b> ImportParcours.cs:71–73.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 69, « La ligne de commande ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">Path.GetRelativePath(base, cible)</td><td>chemin relatif entre deux dossiers</td><td>CheminCible.cs:35</td></tr>
+      <tr><td class="c">Path.IsPathFullyQualified(p)</td><td>absolu ou non</td><td>CheminCible.cs:36</td></tr>
+      <tr><td class="c">GetFolderPath(ApplicationData)</td><td>le dossier des réglages</td><td>MagpieReglages.cs:27</td></tr>
+      <tr><td class="c">Path.GetInvalidFileNameChars()</td><td>valider un nom de fichier</td><td>MagpieExerciseEditor.cs:585</td></tr>
+      <tr><td class="c">temporaire + Flush + File.Replace</td><td>écriture atomique</td><td>EcrivainGeneration.cs:440–452</td></tr>
+      <tr><td class="c">Path.GetTempPath() + Guid</td><td>temporaire unique</td><td>ImportParcours.cs:57</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Chemin absolu</dt><dd>Un chemin qui part de la racine d'un lecteur ou du système.</dd>
+    <dt>Chemin relatif</dt><dd>Un chemin rapporté à un dossier de départ, avec « .. » pour remonter.</dd>
+    <dt>Séparateur</dt><dd>Le caractère entre deux noms d'un chemin : \ sous Windows, / ailleurs.</dd>
+    <dt>Écriture atomique</dt><dd>Une écriture dont on voit l'avant ou l'après, jamais un état intermédiaire.</dd>
+    <dt>Volume</dt><dd>Un disque ou une partition, désigné sous Windows par une lettre.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 69</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 68 · Fichiers, chemins et système de fichiers</div>
+</section>
+
+</body>
+</html>

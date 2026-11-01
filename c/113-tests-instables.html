@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>113 · Tests instables</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-11">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 113</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Tests instables</h1>
+  <p class="chapeau">Un test <b>instable</b> (flaky) donne tantôt vert, tantôt rouge, sur le même code. Il ne signale pas un défaut du programme mais une dépendance cachée du test : l'heure, la machine, l'ordre d'exécution. Ce cours reproduit quatre de ces dépendances et mesure leur effet.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>109</b>, <b>72</b> dates et fuseaux</span>
+    <span class="pastille">Exemples · <b>SnapSet</b>, dépôts d'essai</span>
+  </div>
+
+  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+    <svg viewBox="0 0 600 204" width="100%">
+<text x="10" y="16" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">Un test instable passe ou échoue sans que le code ait changé. Il dépend de quelque chose d'autre que son entrée :</text>
+<rect x="10" y="30" width="108" height="60" rx="4" fill="#ECEBFA" stroke="#4F46B8" stroke-width="1.2"/>
+<text x="64" y="54" font-size="9.2" fill="#4F46B8" text-anchor="middle" font-weight="700">le temps</text>
+<text x="64" y="72" font-size="7" fill="#2B2F33" text-anchor="middle">durée, attente, horloge</text>
+<rect x="127" y="30" width="108" height="60" rx="4" fill="#fff" stroke="#4F46B8" stroke-width="1.2"/>
+<text x="181" y="54" font-size="9.2" fill="#4F46B8" text-anchor="middle" font-weight="700">le lieu</text>
+<text x="181" y="72" font-size="7" fill="#2B2F33" text-anchor="middle">fuseau, culture, chemin</text>
+<rect x="244" y="30" width="108" height="60" rx="4" fill="#ECEBFA" stroke="#4F46B8" stroke-width="1.2"/>
+<text x="298" y="54" font-size="9.2" fill="#4F46B8" text-anchor="middle" font-weight="700">l'ordre</text>
+<text x="298" y="72" font-size="7" fill="#2B2F33" text-anchor="middle">état partagé entre tests</text>
+<rect x="361" y="30" width="108" height="60" rx="4" fill="#fff" stroke="#4F46B8" stroke-width="1.2"/>
+<text x="415" y="54" font-size="9.2" fill="#4F46B8" text-anchor="middle" font-weight="700">l'asynchrone</text>
+<text x="415" y="72" font-size="7" fill="#2B2F33" text-anchor="middle">vérifier trop tôt ou trop tard</text>
+<rect x="478" y="30" width="108" height="60" rx="4" fill="#ECEBFA" stroke="#4F46B8" stroke-width="1.2"/>
+<text x="532" y="54" font-size="9.2" fill="#4F46B8" text-anchor="middle" font-weight="700">le hasard</text>
+<text x="532" y="72" font-size="7" fill="#2B2F33" text-anchor="middle">graine non fixée, GUID</text>
+<text x="10" y="118" font-size="8" fill="#2B2F33" text-anchor="start">Le coût n'est pas l'échec lui-même, c'est la confiance : après trois fausses alertes, on relance sans lire,</text>
+<text x="10" y="134" font-size="8" fill="#2B2F33" text-anchor="start">et le jour où l'échec est vrai, on le relance aussi.</text>
+<text x="10" y="160" font-size="8" fill="#4F46B8" text-anchor="start" font-weight="700">Chacune des quatre premières sources est reproduite page suivante, dans un dépôt d'essai, et mesurée.</text>
+<text x="10" y="178" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">La cinquième a été vue au cours 109 : un générateur sans graine ne permet pas de rejouer un échec.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Un test doit être une fonction : mêmes entrées, même verdict ; tout ce qu'il lit d'autre (l'horloge, le disque, le voisin) doit être fixé par lui.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Un détecteur de fumée qui sonne quand on fait griller du pain. Au bout d'une semaine on retire la pile. Le jour de l'incendie, il ne sonne plus : la fausse alerte a coûté plus cher que l'alerte manquée.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>reconnaître les cinq sources d'instabilité ;</li>
+        <li>remplacer une attente par une valeur fixée ;</li>
+        <li>isoler un test de ses voisins ;</li>
+        <li>attendre correctement l'asynchrone.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À retenir</span>
+    Relancer un test rouge jusqu'à ce qu'il passe n'est pas une correction. Un test qui échoue une fois sur cinquante a un défaut, à traiter comme un défaut du programme : on le reproduit, on trouve la dépendance, on la fixe.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 113 · Tests instables</div>
+</section>
+
+<!-- ============ PAGE 2 · LE TEMPS ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 113</b></div>
+  <p class="rubrique">Schéma 1 · Le temps</p>
+  <h2>Un chronomètre dans un test</h2>
+  <p style="max-width:165mm">Vérifier qu'une opération « prend moins de N ms » paraît raisonnable. Mais la durée dépend de tout ce que fait la machine à ce moment : autres processus, compilation à la volée, mémoire. Le test mesure la machine autant que le code.</p>
+
+  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#4F46B8" text-anchor="start" font-weight="700">« le calcul prend moins de 6 ms » : 100 lancements, machine calme puis chargée (Node 22, 4 cœurs, mesuré)</text>
+<text x="16" y="40" font-size="7.8" fill="#2B2F33" text-anchor="start">durée du calcul sur 30 lancements : minimum 3,39 ms, médiane 4,02 ms, maximum 5,80 ms</text>
+<text x="16" y="72" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">machine calme</text>
+<rect x="220" y="58" width="294" height="22" fill="#2E7D32"/>
+<rect x="514" y="58" width="6" height="22" fill="#C62828"/>
+<text x="226" y="73" font-size="8" fill="#fff" text-anchor="start" font-weight="700">98 verts</text>
+<text x="528" y="73" font-size="8" fill="#C62828" text-anchor="start" font-weight="700">2 rouges</text>
+<text x="16" y="116" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">6 boucles actives sur 4 cœurs</text>
+<rect x="220" y="102" width="15" height="22" fill="#2E7D32"/>
+<rect x="235" y="102" width="285" height="22" fill="#C62828"/>
+<text x="241" y="117" font-size="8" fill="#fff" text-anchor="start" font-weight="700">95 rouges</text>
+<text x="16" y="166" font-size="7.8" fill="#2B2F33" text-anchor="start">Le seuil était 1,5 fois la médiane. Même au calme, 2 % d'échecs : une fausse alerte tous les 50 lancements.</text>
+<text x="16" y="182" font-size="7.8" fill="#2B2F33" text-anchor="start">Le même code, la même entrée : seule la charge de la machine a changé (un autre build, un antivirus…).</text>
+<text x="16" y="198" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700">La performance se mesure (cours 91), elle ne s'affirme pas dans un test qui doit passer ou échouer.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · node:test, le test qui chronomètre</span>test("le calcul prend moins de 6 ms", () =&gt; {
+  const t0 = performance.now(); travail(); const ms = performance.now() - t0;
+  assert.ok(ms &lt; 6, `${ms.toFixed(2)} ms`);       // vert ou rouge selon la machine
+});</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>L'attente, même piège</h3>
+      <p>« Attendre 100 ms puis vérifier » échoue quand la machine est lente, et ralentit tout quand elle est rapide. On attend un événement (une promesse, un signal), pas une durée.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>L'horloge, une entrée</h3>
+      <p>Un code qui appelle <code>DateTime.Now</code> donne un résultat différent à chaque lancement. On lui passe l'heure en paramètre, ou une horloge (<code>TimeProvider</code> en .NET 8, <code>mock.timers</code> en Node).</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Augmenter le seuil à chaque fausse alerte. Le test finit par accepter 10 fois la durée normale : il ne détecte plus rien, et il échoue encore les jours de forte charge.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 113 · Tests instables</div>
+</section>
+
+<!-- ============ PAGE 3 · LIEU, ORDRE, ASYNCHRONE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 113</b></div>
+  <p class="rubrique">Schéma 2 · Lieu, ordre, asynchrone</p>
+  <h2>Ce que le test lit sans le dire</h2>
+  <p style="max-width:165mm">Le fuseau de la machine, l'état laissé par le test précédent, une promesse qu'on n'attend pas : trois dépendances invisibles dans le code du test, qui ne se manifestent que dans certaines conditions.</p>
+
+  <svg viewBox="0 0 600 222" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="222" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">Trois autres sources, chacune reproduite en quelques lignes avec node:test (mesuré)</text>
+<rect x="16" y="34" width="568" height="54" rx="3" fill="#ECEBFA"/>
+<text x="28" y="52" font-size="9" fill="#4F46B8" text-anchor="start" font-weight="700">le lieu</text>
+<text x="130" y="52" font-size="7.8" fill="#2B2F33" text-anchor="start">date du 2026-10-25T23:30Z, attendue « 25/10/2026 »</text>
+<text x="130" y="74" font-size="7.4" fill="#6B7378" text-anchor="start" class="mono" style="font-size:7.4px">TZ=UTC</text>
+<text x="130" y="84" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">ok</text>
+<text x="280" y="74" font-size="7.4" fill="#6B7378" text-anchor="start" class="mono" style="font-size:7.4px">TZ=America/New_York</text>
+<text x="280" y="84" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">ok</text>
+<text x="430" y="74" font-size="7.4" fill="#6B7378" text-anchor="start" class="mono" style="font-size:7.4px">TZ=Europe/Paris</text>
+<text x="430" y="84" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">26/10 : échec</text>
+<rect x="16" y="94" width="568" height="54" rx="3" fill="#fff"/>
+<text x="28" y="112" font-size="9" fill="#4F46B8" text-anchor="start" font-weight="700">l'ordre</text>
+<text x="130" y="112" font-size="7.8" fill="#2B2F33" text-anchor="start">test 2 lit le tableau rempli par le test 1</text>
+<text x="130" y="134" font-size="7.4" fill="#6B7378" text-anchor="start" class="mono" style="font-size:7.4px">fichier entier</text>
+<text x="130" y="144" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">ok, ok</text>
+<text x="280" y="134" font-size="7.4" fill="#6B7378" text-anchor="start" class="mono" style="font-size:7.4px">test 2 seul</text>
+<text x="280" y="144" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">échec</text>
+<rect x="16" y="154" width="568" height="54" rx="3" fill="#ECEBFA"/>
+<text x="28" y="172" font-size="9" fill="#4F46B8" text-anchor="start" font-weight="700">l'asynchrone</text>
+<text x="130" y="172" font-size="7.8" fill="#2B2F33" text-anchor="start">assertion dans un .then() sans await</text>
+<text x="130" y="194" font-size="7.4" fill="#6B7378" text-anchor="start" class="mono" style="font-size:7.4px">le test</text>
+<text x="130" y="204" font-size="7.6" fill="#E65100" text-anchor="start" font-weight="700">« ok »</text>
+<text x="280" y="194" font-size="7.4" fill="#6B7378" text-anchor="start" class="mono" style="font-size:7.4px">le fichier</text>
+<text x="280" y="204" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">échec signalé à côté</text>
+<text x="16" y="216" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Le fichier asynchrone compte « 1 réussi, 1 échoué » : l'erreur arrive après la fin du test, et Node l'attribue au fichier.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · node:test, les trois corrections</span>new Date(…).toLocaleDateString("fr-FR", { timeZone: "Europe/Paris" })  // lieu explicite
+beforeEach(() =&gt; { panier = []; });                                    // état neuf par test
+test("…", async () =&gt; { assert.equal(await charge(), 42); });          // attendre</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Le fuseau de qui ?</h3>
+      <p>Le serveur de Magpie, le poste de Jérémy et un runner de CI n'ont pas forcément le même fuseau. Un test de date qui passe sur l'un peut échouer sur l'autre, seulement entre 22 h et minuit (cours 72).</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Lancer un test seul</h3>
+      <p><code>--test-name-pattern</code> (Node) ou <code>--filter</code> (dotnet test) lancent un test isolé. S'il échoue seul et passe avec les autres, il dépend d'un voisin.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Croire que l'ordre des tests est garanti. xUnit lance les classes de test en parallèle, et beaucoup d'outils peuvent mélanger l'ordre exprès ; un test qui a besoin d'un voisin pour passer finira par le perdre.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 113 · Tests instables</div>
+</section>
+
+<!-- ============ PAGE 4 · LES PARADES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 113</b></div>
+  <p class="rubrique">Schéma 3 · Les parades</p>
+  <h2>Tout ce qui varie devient une entrée</h2>
+  <p style="max-width:165mm">Les tests de SnapSet appliquent les parades une à une : GUID fixé, date posée plutôt qu'attendue, dossier temporaire neuf pour chaque test, culture remise en place quoi qu'il arrive. Une seule dépendance reste, vers la machine elle-même.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">Les parades, telles que les tests de SnapSet les appliquent déjà</text>
+<rect x="16" y="34" width="568" height="30" rx="3" fill="#ECEBFA"/>
+<rect x="16" y="34" width="4" height="30" fill="#2E7D32"/>
+<text x="28" y="47" font-size="8.2" fill="#2E7D32" text-anchor="start" font-weight="700">le hasard</text>
+<text x="150" y="47" font-size="7.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">GuidFixe = new Guid("0b9e0030-…-000000000002")</text>
+<text x="150" y="59" font-size="7" fill="#6B7378" text-anchor="start" font-style="italic">EcrivainGenerationTests.cs:21</text>
+<rect x="16" y="68" width="568" height="30" rx="3" fill="#fff"/>
+<rect x="16" y="68" width="4" height="30" fill="#2E7D32"/>
+<text x="28" y="81" font-size="8.2" fill="#2E7D32" text-anchor="start" font-weight="700">le temps</text>
+<text x="150" y="81" font-size="7.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">Autrefois = new DateTime(2020, 1, 2, …, Utc)</text>
+<text x="150" y="93" font-size="7" fill="#6B7378" text-anchor="start" font-style="italic">ligne 22 : une date posée, pas une attente</text>
+<rect x="16" y="102" width="568" height="30" rx="3" fill="#ECEBFA"/>
+<rect x="16" y="102" width="4" height="30" fill="#2E7D32"/>
+<text x="28" y="115" font-size="8.2" fill="#2E7D32" text-anchor="start" font-weight="700">l'ordre, le disque</text>
+<text x="150" y="115" font-size="7.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">_dossier = …"ecrivain-" + Guid.NewGuid()…</text>
+<text x="150" y="127" font-size="7" fill="#6B7378" text-anchor="start" font-style="italic">ligne 28 : un dossier neuf par test, effacé ligne 36</text>
+<rect x="16" y="136" width="568" height="30" rx="3" fill="#fff"/>
+<rect x="16" y="136" width="4" height="30" fill="#2E7D32"/>
+<text x="28" y="149" font-size="8.2" fill="#2E7D32" text-anchor="start" font-weight="700">le lieu</text>
+<text x="150" y="149" font-size="7.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">try { CurrentCulture = fr-FR … } finally { … = avant; }</text>
+<text x="150" y="161" font-size="7" fill="#6B7378" text-anchor="start" font-style="italic">GenerationDessinTests.cs:178–190</text>
+<rect x="16" y="170" width="568" height="30" rx="3" fill="#ECEBFA"/>
+<rect x="16" y="170" width="4" height="30" fill="#C62828"/>
+<text x="28" y="183" font-size="8.2" fill="#C62828" text-anchor="start" font-weight="700">la machine</text>
+<text x="150" y="183" font-size="7.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">RacineRhino = @"D:\programme\Rhino"</text>
+<text x="150" y="195" font-size="7" fill="#6B7378" text-anchor="start" font-style="italic">CoupleCompileTests.cs:37 : le contre-exemple</text>
+<text x="16" y="210" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">Principe commun : tout ce qui varie d'un lancement à l'autre devient une entrée fixée par le test.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Code réel · SnapSet, EcrivainGenerationTests.cs, lignes 88 et 98</span>File.SetLastWriteTimeUtc(chemin, Autrefois);            // date posée dans le passé
+…
+Assert.Equal(Autrefois, File.GetLastWriteTimeUtc(chemin)); // donc pas réécrit</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Pourquoi une date de 2020</h3>
+      <p>Pour vérifier qu'un fichier n'a pas été réécrit, on pourrait attendre une seconde et comparer les dates. Poser une date ancienne rend la preuve instantanée et certaine : une réécriture la remplacerait par aujourd'hui.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>try / finally</h3>
+      <p>Si l'assertion échoue, l'exception saute la fin du test. Sans <code>finally</code>, la culture fr-FR resterait en place pour la suite : un échec en provoquerait d'autres, ailleurs.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Écrire dans un dossier fixe (« C:\temp\essai »). Deux tests qui tournent en même temps s'écrasent mutuellement, et un reste d'un lancement interrompu fausse le suivant. Un nom unique par test, effacé à la fin.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 113 · Tests instables</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 113</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Des tests isolés, sauf de la machine</h2>
+  <p style="max-width:165mm">EcrivainGenerationTests est un modèle d'isolement. CoupleCompileTests, lui, lit Rhino à un chemin écrit en dur.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">snapset/tests/ResolutionTests/EcrivainGenerationTests.cs</span></div>
+<div class="l k1"><span class="n">21</span>static readonly Guid GuidFixe = new Guid("0b9e0030-…02");<span class="rep r1">1</span></div>
+<div class="l k2"><span class="n">22</span>static readonly DateTime Autrefois = new DateTime(2020, …);<span class="rep r2">2</span></div>
+<div class="l k3"><span class="n">28</span>_dossier = Path.Combine(Path.GetTempPath(), "ecrivain-" …);<span class="rep r3">3</span></div>
+<div class="l"><span class="n">36</span>    Directory.Delete(_dossier, true);</div>
+<div class="l"><span class="cm">snapset/tests/ResolutionTests/CoupleCompileTests.cs</span></div>
+<div class="l k4"><span class="n">37</span>private const string RacineRhino = @"D:\programme\Rhino";<span class="rep r4">4</span></div>
+<div class="l k5"><span class="n">788</span>  Path.Combine(RacineRhino, @"Plug-ins\…\Grasshopper.dll"),<span class="rep r5">5</span></div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Hasard fixé</b>Même GUID.</li>
+      <li><span class="rep r2">2</span><b>Temps posé</b>Pas d'attente.</li>
+      <li><span class="rep r3">3</span><b>Dossier neuf</b>Effacé ligne 36.</li>
+      <li><span class="rep r4">4</span><b>En dur</b>Ce poste-là.</li>
+      <li><span class="rep r5">5</span><b>Lu ici</b>Et RhinoCommon.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À surveiller · quinze tests liés à un chemin de poste</span>
+    Les 15 tests de CoupleCompileTests lisent Grasshopper.dll, GH_IO.dll et RhinoCommon.dll sous D:\programme\Rhino (lignes 37, 788–790), alors que le build accepte un autre chemin par -p:RhinoRoot (README.md:24–28, déjà vu au cours 74). Sur un autre poste ou un runner de CI, ils échoueraient tous, sans défaut du code. Déduit : lire RhinoRoot depuis le build, ou marquer ces tests ignorés quand le dossier manque, les rendrait portables. Relevé sans rien modifier.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 113 · Tests instables</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 113</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Un test instable…</div><ul>
+      <li><span>A</span>est lent</li><li><span>B</span>change de verdict sans que le code change</li><li><span>C</span>n'a pas d'assertion</li><li><span>D</span>échoue toujours</li></ul></div>
+
+    <div class="q"><div class="enonce">Le test chronométré à 6 ms, machine chargée…</div><ul>
+      <li><span>A</span>100 rouges</li><li><span>B</span>2 rouges sur 100</li><li><span>C</span>95 rouges sur 100</li><li><span>D</span>aucun rouge</li></ul></div>
+
+    <div class="q"><div class="enonce">Même au calme, ce test a donné…</div><ul>
+      <li><span>A</span>50 %</li><li><span>B</span>95 %</li><li><span>C</span>0 %</li><li><span>D</span>2 % d'échecs</li></ul></div>
+
+    <div class="q"><div class="enonce">La date de 23 h 30 UTC, lue à Paris…</div><ul>
+      <li><span>A</span>donne le 26/10</li><li><span>B</span>donne une erreur</li><li><span>C</span>dépend du processeur</li><li><span>D</span>donne le 25/10</li></ul></div>
+
+    <div class="q"><div class="enonce">Un test qui échoue seul mais passe avec les autres…</div><ul>
+      <li><span>A</span>est correct</li><li><span>B</span>est trop rapide</li><li><span>C</span>dépend de l'état laissé par un voisin</li><li><span>D</span>teste le réseau</li></ul></div>
+
+    <div class="q"><div class="enonce">Une assertion dans un .then() sans await…</div><ul>
+      <li><span>A</span>bloque le test</li><li><span>B</span>est vérifiée avant</li><li><span>C</span>est ignorée sans trace</li><li><span>D</span>arrive après la fin du test</li></ul></div>
+
+    <div class="q"><div class="enonce">Pour vérifier qu'un fichier n'est pas réécrit, SnapSet…</div><ul>
+      <li><span>A</span>attend une seconde</li><li><span>B</span>regarde l'heure système</li><li><span>C</span>compte les fichiers</li><li><span>D</span>pose une date de 2020 et la relit</li></ul></div>
+
+    <div class="q"><div class="enonce">Les parades d'EcrivainGenerationTests… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>un Thread.Sleep</li><li><span>B</span>un chemin en dur</li><li><span>C</span>un GUID fixé</li><li><span>D</span>un dossier temporaire neuf par test</li></ul></div>
+
+    <div class="q"><div class="enonce">Le finally de LeTexteNeDependPasDeLaCultureDuPoste sert à…</div><ul>
+      <li><span>A</span>accélérer le test</li><li><span>B</span>changer de fuseau</li><li><span>C</span>rétablir la culture même si le test échoue</li><li><span>D</span>attendre la fin</li></ul></div>
+
+    <div class="q"><div class="enonce">CoupleCompileTests dépend…</div><ul>
+      <li><span>A</span>de l'ordre des tests</li><li><span>B</span>du chemin D:\programme\Rhino</li><li><span>C</span>de l'heure</li><li><span>D</span>du réseau</li></ul></div>
+
+    <div class="q"><div class="enonce">On attend plutôt…</div><ul>
+      <li><span>A</span>un événement</li><li><span>B</span>le prochain test</li><li><span>C</span>une relance</li><li><span>D</span>une durée fixe</li></ul></div>
+
+    <div class="q"><div class="enonce">Face à un test rouge une fois sur cinquante…</div><ul>
+      <li><span>A</span>monter le seuil</li><li><span>B</span>le reproduire et fixer la dépendance</li><li><span>C</span>le relancer</li><li><span>D</span>le supprimer</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 113 · Tests instables</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 113</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · B.</b> Dépendance cachée.</div>
+    <div><b>02 · C.</b> Mesuré, 6 boucles.</div>
+    <div><b>03 · D.</b> Une fois sur 50.</div>
+    <div><b>04 · A.</b> UTC+1, déjà demain.</div>
+    <div><b>05 · C.</b> Lancer seul le révèle.</div>
+    <div><b>06 · D.</b> Le test est déjà « ok ».</div>
+    <div><b>07 · D.</b> Lignes 88 et 98.</div>
+    <div><b>08 · C et D.</b> Lignes 21 et 28.</div>
+    <div><b>09 · C.</b> Pas d'effet sur la suite.</div>
+    <div><b>10 · B.</b> Ligne 37.</div>
+    <div><b>11 · A.</b> Ni trop tôt, ni trop lent.</div>
+    <div><b>12 · B.</b> C'est un défaut.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 114, « Tests d'instantané ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">TZ=Europe/Paris node --test</td><td>fixer le fuseau d'un lancement</td><td>schéma 2, page 3</td></tr>
+      <tr><td class="c">--test-name-pattern="…"</td><td>lancer un test seul</td><td>page 3</td></tr>
+      <tr><td class="c">beforeEach(() =&gt; …)</td><td>état neuf avant chaque test</td><td>page 3</td></tr>
+      <tr><td class="c">TimeProvider, mock.timers</td><td>une horloge qu'on contrôle</td><td>page 2</td></tr>
+      <tr><td class="c">Path.GetTempPath() + Guid</td><td>un dossier unique par test</td><td>schéma 3, page 4</td></tr>
+      <tr><td class="c">try { … } finally { … }</td><td>remettre en place quoi qu'il arrive</td><td>page 4</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Test instable (flaky)</dt><dd>Un test au verdict variable sur un code inchangé.</dd>
+    <dt>Isolement</dt><dd>L'indépendance d'un test vis-à-vis des autres et de la machine.</dd>
+    <dt>État partagé</dt><dd>Une donnée qu'un test modifie et qu'un autre lit.</dd>
+    <dt>Horloge injectée</dt><dd>Une source de temps passée au code, que le test fixe.</dd>
+    <dt>Fausse alerte</dt><dd>Un échec qui ne correspond à aucun défaut du programme.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 114</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 113 · Tests instables</div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Hors série · Magpie, à quoi ça sert et où ça va</title>
+<link rel="stylesheet" href="trame.css">
+<style>
+  body.hors-serie { --accent: #C2410C; --accent-pale: #FCEDE5; }
+  .puce-etat { display:inline-block; font-size:7pt; font-weight:700; padding:.3mm 1.6mm; border-radius:1mm; color:#fff; vertical-align:middle; }
+  .fait { background:#2E7D32; } .ouvert { background:#E65100; }
+</style>
+</head>
+<body class="partie-12">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Magpie</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Magpie, la formation<br>qui se corrige seule</h1>
+  <p class="chapeau">Un formateur écrit des exercices Grasshopper et les range en parcours. L'apprenant répond en construisant un graphe. Magpie calcule ce graphe, compare le résultat à l'attendu et délivre un certificat en fin de parcours, sans correcteur humain.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>aucun</b>, le cours 07 aide</span>
+    <span class="pastille">Sources · <b>README, feuille de route, 26 issues</b>, état au 23/10/2026</span>
+  </div>
+
+  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+    <svg viewBox="0 0 600 220" width="100%">
+      <defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2B2F33"/></marker></defs>
+      <!-- Auteur -->
+      <text x="0" y="14" font-size="10" font-weight="700" fill="#6D4C41" letter-spacing="1.2">1 · L'AUTEUR</text>
+      <rect x="0" y="24" width="170" height="92" rx="6" fill="#fff" stroke="#6D4C41" stroke-width="1.5"/>
+      <text x="12" y="46" font-size="11" font-weight="700" fill="#6D4C41">écrit des exercices</text>
+      <text x="12" y="64" font-size="10" fill="#2B2F33">une consigne, un graphe</text>
+      <text x="12" y="78" font-size="10" fill="#2B2F33">de départ, un résultat attendu</text>
+      <text x="12" y="98" font-size="10" fill="#2B2F33">et les range en <tspan font-weight="700">parcours</tspan></text>
+      <path d="M174 70 H 210" stroke="#2B2F33" stroke-width="1.5" marker-end="url(#a1)"/>
+      <!-- Apprenant -->
+      <text x="215" y="14" font-size="10" font-weight="700" fill="#1565C0" letter-spacing="1.2">2 · L'APPRENANT</text>
+      <rect x="215" y="24" width="170" height="92" rx="6" fill="#fff" stroke="#1565C0" stroke-width="1.5"/>
+      <text x="227" y="46" font-size="11" font-weight="700" fill="#1565C0">construit sa réponse</text>
+      <text x="227" y="64" font-size="10" fill="#2B2F33">un graphe Grasshopper,</text>
+      <text x="227" y="78" font-size="10" fill="#2B2F33">câblé sur le marqueur</text>
+      <text x="227" y="92" font-size="10" fill="#2B2F33"><tspan font-weight="700">Réponse</tspan>, puis il envoie</text>
+      <path d="M389 70 H 425" stroke="#2B2F33" stroke-width="1.5" marker-end="url(#a1)"/>
+      <!-- Magpie -->
+      <text x="430" y="14" font-size="10" font-weight="700" fill="#C2410C" letter-spacing="1.2">3 · MAGPIE</text>
+      <rect x="430" y="24" width="170" height="92" rx="6" fill="#C2410C"/>
+      <text x="442" y="46" font-size="11" font-weight="700" fill="#fff">vérifie tout seul</text>
+      <text x="442" y="64" font-size="10" fill="#fff">calcule le graphe, compare</text>
+      <text x="442" y="78" font-size="10" fill="#fff">au résultat attendu,</text>
+      <text x="442" y="92" font-size="10" fill="#fff">note pour le bilan final</text>
+      <!-- Certificat -->
+      <path d="M515 120 V 150" stroke="#2B2F33" stroke-width="1.5" marker-end="url(#a1)"/>
+      <rect x="430" y="154" width="170" height="40" rx="20" fill="#fff" stroke="#C2410C" stroke-width="1.5"/>
+      <text x="515" y="178" text-anchor="middle" font-size="11" font-weight="700" fill="#C2410C">certificat vérifiable</text>
+      <!-- Retour -->
+      <path d="M300 120 V 172 H 424" stroke="#6B7378" stroke-width="1.2" stroke-dasharray="4 3" fill="none"/>
+      <text x="0" y="168" font-size="10" fill="#6B7378">Pendant le parcours, l'apprenant</text>
+      <text x="0" y="182" font-size="10" fill="#6B7378"><tspan font-weight="700">ne voit pas</tspan> s'il a juste : il enchaîne.</text>
+      <text x="0" y="196" font-size="10" fill="#6B7378">Le verdict n'apparaît qu'au bilan.</text>
+    </svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Magpie automatise ce que fait un formateur Grasshopper penché sur l'écran d'un élève : regarder <b>ce que produit</b> le graphe, pas la façon dont il est câblé, et dire si c'est juste.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Un examen de code de la route sur tablette. Les questions sont fixées à l'avance, la correction est automatique, le résultat n'apparaît qu'à la fin, et le certificat porte un numéro que n'importe qui peut vérifier.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>dire à quoi sert Magpie et pour qui : auteur, apprenant, serveur ;</li>
+        <li>distinguer ses deux volets, le plugin <code>.gha</code> et l'application web, et ce qu'ils partagent ;</li>
+        <li>situer le projet sur sa feuille de route : ce qui est fait, ce qui reste avant la V1.0 de mai 2027.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:5mm">
+    <span class="titre">À retenir</span>
+    Magpie ne juge jamais la méthode, seulement le <b>résultat</b> câblé sur le marqueur Réponse. Deux graphes différents qui donnent la même valeur sont tous les deux justes.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Hors série · Magpie, à quoi ça sert et où ça va</div>
+</section>
+
+<!-- ============ PAGE 2 · DEUX VOLETS ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Magpie</b></div>
+  <p class="rubrique">Schéma 1 · L'architecture</p>
+  <h2>Un format d'exercice, deux volets</h2>
+  <p style="max-width:165mm">Le dépôt contient deux façons de vivre la même expérience. Elles partagent le même fichier d'exercice : un exercice créé d'un côté s'importe tel quel de l'autre. Le web n'est pas un portage du plugin, c'est une reconstruction qui confie le calcul à Rhino Compute.</p>
+
+  <svg viewBox="0 0 600 470" width="100%" style="margin-top:3mm">
+    <defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2B2F33"/></marker></defs>
+    <rect x="0" y="0" width="600" height="470" fill="#EFE9E1"/>
+
+    <!-- Colonne plugin -->
+    <text x="20" y="28" font-size="10" font-weight="700" fill="#C2410C" letter-spacing="1.2">LE PLUGIN · plugin/</text>
+    <text x="20" y="43" font-size="9.5" fill="#6B7378">C# · .NET 7 · Rhino 8 · calcul en local</text>
+    <g font-size="10">
+      <rect x="20" y="56" width="230" height="34" rx="5" fill="#fff" stroke="#1565C0" stroke-width="1.4"/>
+      <text x="32" y="77"><tspan font-weight="700" fill="#1565C0">MagpieApprenant.gha</tspan> démarrer, À propos</text>
+      <rect x="20" y="96" width="230" height="34" rx="5" fill="#fff" stroke="#6D4C41" stroke-width="1.4"/>
+      <text x="32" y="117"><tspan font-weight="700" fill="#6D4C41">MagpieAuteur.gha</tspan> éditeurs</text>
+      <rect x="20" y="136" width="230" height="34" rx="5" fill="#fff" stroke="#00838F" stroke-width="1.4"/>
+      <text x="32" y="157"><tspan font-weight="700" fill="#00838F">MagpieServeur.gha</tspan> comparer géométrie</text>
+      <rect x="20" y="176" width="230" height="34" rx="5" fill="#fff" stroke="#7B1FA2" stroke-width="1.4" stroke-dasharray="4 3"/>
+      <text x="32" y="197"><tspan font-weight="700" fill="#7B1FA2">MagpieDev.gha</tspan> debug, non diffusé</text>
+    </g>
+    <rect x="20" y="222" width="230" height="46" rx="5" fill="#C2410C"/>
+    <text x="32" y="241" font-size="10" font-weight="700" fill="#fff">Magpie.Core embarqué dans chacun</text>
+    <text x="32" y="257" font-size="9.5" fill="#fff">le plus récent est chargé, une seule fois</text>
+
+    <!-- Colonne web -->
+    <text x="350" y="28" font-size="10" font-weight="700" fill="#C2410C" letter-spacing="1.2">LE WEB · web/</text>
+    <text x="350" y="43" font-size="9.5" fill="#6B7378">React · Vite · React Flow · Node 22</text>
+    <rect x="350" y="56" width="230" height="46" rx="5" fill="#fff" stroke="#1565C0" stroke-width="1.4"/>
+    <text x="362" y="75" font-size="10" font-weight="700" fill="#1565C0">Navigateur : le canvas</text>
+    <text x="362" y="91" font-size="9.5" fill="#2B2F33">nœuds, câbles, ruban, aperçu 3D</text>
+    <path d="M465 104 V 124" stroke="#2B2F33" stroke-width="1.4" marker-end="url(#a2)"/>
+    <rect x="350" y="128" width="230" height="46" rx="5" fill="#fff" stroke="#E65100" stroke-width="1.4"/>
+    <text x="362" y="147" font-size="10" font-weight="700" fill="#E65100">Backend Node (compute-proxy)</text>
+    <text x="362" y="163" font-size="9.5" fill="#2B2F33">sérialise en .ghx, compare, SQLite</text>
+    <path d="M465 176 V 196" stroke="#2B2F33" stroke-width="1.4" marker-end="url(#a2)"/>
+    <rect x="350" y="200" width="230" height="46" rx="5" fill="#fff" stroke="#00838F" stroke-width="1.4"/>
+    <text x="362" y="219" font-size="10" font-weight="700" fill="#00838F">Rhino Compute</text>
+    <text x="362" y="235" font-size="9.5" fill="#2B2F33">un vrai Grasshopper, sans écran</text>
+
+    <!-- Lien Serveur -> Compute -->
+    <path d="M252 153 C 300 153, 300 223, 344 223" stroke="#00838F" stroke-width="1.4" stroke-dasharray="5 3" fill="none" marker-end="url(#a2)"/>
+    <text x="262" y="196" font-size="9" fill="#00838F">installé sur</text>
+
+    <!-- Format commun -->
+    <rect x="130" y="300" width="340" height="56" rx="8" fill="#fff" stroke="#C2410C" stroke-width="2"/>
+    <text x="300" y="324" text-anchor="middle" font-size="11.5" font-weight="700" fill="#C2410C">Le format d'exercice JSON : le contrat</text>
+    <text x="300" y="342" text-anchor="middle" font-size="9.5" fill="#2B2F33">consigne, graphe de départ, mode de validation, attendu</text>
+    <path d="M135 272 L 200 296" stroke="#C2410C" stroke-width="1.4" marker-end="url(#a2)"/>
+    <path d="M465 250 L 400 296" stroke="#C2410C" stroke-width="1.4" marker-end="url(#a2)"/>
+
+    <!-- Repères -->
+    <g font-size="9.5">
+      <circle cx="28" cy="392" r="8" fill="#1565C0"/><text x="28" y="395.5" text-anchor="middle" fill="#fff" font-weight="700">1</text>
+      <text x="44" y="388" font-weight="700">Une version par public.</text>
+      <text x="44" y="402" fill="#2B2F33">On installe un seul fichier ; les quatre coexistent sur le poste de dev.</text>
+      <circle cx="28" cy="422" r="8" fill="#00838F"/><text x="28" y="425.5" text-anchor="middle" fill="#fff" font-weight="700">2</text>
+      <text x="44" y="418" font-weight="700">Le pont entre les volets.</text>
+      <text x="44" y="432" fill="#2B2F33">Le web corrige une géométrie avec le composant du plugin Serveur, chargé dans Compute.</text>
+      <circle cx="28" cy="452" r="8" fill="#C2410C"/><text x="28" y="455.5" text-anchor="middle" fill="#fff" font-weight="700">3</text>
+      <text x="44" y="448" font-weight="700">Un seul contrat.</text>
+      <text x="44" y="462" fill="#2B2F33">Changer le JSON, c'est changer les deux volets à la fois (§12 du journal plugin, §18 du web).</text>
+    </g>
+  </svg>
+
+  <div class="folio">2</div>
+  <div class="pied">Hors série · Magpie, à quoi ça sert et où ça va</div>
+</section>
+
+<!-- ============ PAGE 3 · LA CORRECTION ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Magpie</b></div>
+  <p class="rubrique">Schéma 2 · Le trajet d'une réponse</p>
+  <h2>Le corrigé ne quitte jamais le serveur</h2>
+  <p style="max-width:165mm">C'est le principe de conception du volet web. Le navigateur n'envoie qu'une description abstraite du graphe ; tout le reste se passe côté serveur, et seul un « réussi » ou « refusé » revient, rangé pour le bilan.</p>
+
+  <svg viewBox="0 0 600 330" width="100%" style="margin-top:2mm">
+    <defs><marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2B2F33"/></marker></defs>
+    <!-- couloirs -->
+    <rect x="0" y="0" width="140" height="330" fill="#E5EEF9"/>
+    <rect x="146" y="0" width="300" height="330" fill="#FCEDE2"/>
+    <rect x="452" y="0" width="148" height="330" fill="#E0F2F3"/>
+    <g font-size="9.5" font-weight="700" letter-spacing="1">
+      <text x="70" y="18" text-anchor="middle" fill="#1565C0">NAVIGATEUR</text>
+      <text x="296" y="18" text-anchor="middle" fill="#E65100">BACKEND NODE</text>
+      <text x="526" y="18" text-anchor="middle" fill="#00838F">RHINO COMPUTE</text>
+    </g>
+
+    <!-- 1 envoi -->
+    <rect x="12" y="34" width="116" height="48" rx="5" fill="#fff" stroke="#1565C0" stroke-width="1.3"/>
+    <text x="70" y="54" text-anchor="middle" font-size="10" font-weight="700">« Envoyer »</text>
+    <text x="70" y="70" text-anchor="middle" class="mono" style="font-size:8.4px">{nodes, edges}</text>
+    <path d="M130 58 H 158" stroke="#2B2F33" stroke-width="1.4" marker-end="url(#a3)"/>
+
+    <!-- 2 contrôle -->
+    <rect x="162" y="34" width="268" height="40" rx="5" fill="#fff" stroke="#E65100" stroke-width="1.3"/>
+    <text x="174" y="51" font-size="10" font-weight="700">vérifie les composants</text>
+    <text x="174" y="66" font-size="9.5" fill="#2B2F33">seuls ceux du catalogue autorisé passent</text>
+    <path d="M296 76 V 92" stroke="#2B2F33" stroke-width="1.4" marker-end="url(#a3)"/>
+    <!-- 3 sérialise -->
+    <rect x="162" y="96" width="268" height="40" rx="5" fill="#fff" stroke="#E65100" stroke-width="1.3"/>
+    <text x="174" y="113" font-size="10" font-weight="700">écrit le fichier .ghx</text>
+    <text x="174" y="128" font-size="9.5" fill="#2B2F33">le format Grasshopper, généré en JS pur</text>
+    <path d="M432 116 H 466" stroke="#2B2F33" stroke-width="1.4" marker-end="url(#a3)"/>
+    <!-- 4 calcul -->
+    <rect x="470" y="96" width="118" height="56" rx="5" fill="#fff" stroke="#00838F" stroke-width="1.3"/>
+    <text x="529" y="118" text-anchor="middle" font-size="10" font-weight="700">calcule</text>
+    <text x="529" y="134" text-anchor="middle" font-size="9.5">le graphe, rend</text>
+    <text x="529" y="147" text-anchor="middle" font-size="9.5">la sortie Réponse</text>
+    <path d="M466 170 H 432" stroke="#2B2F33" stroke-width="1.4" marker-end="url(#a3)"/>
+    <path d="M529 154 V 170 H 468" stroke="#2B2F33" stroke-width="1.4" fill="none"/>
+    <!-- 5 compare -->
+    <rect x="162" y="150" width="268" height="56" rx="5" fill="#C2410C"/>
+    <text x="174" y="170" font-size="10" font-weight="700" fill="#fff">compare à l'attendu</text>
+    <text x="174" y="186" font-size="9.5" fill="#fff">selon le mode de l'exercice (7 modes) ;</text>
+    <text x="174" y="199" font-size="9.5" fill="#fff">une géométrie est comparée par Compute</text>
+    <path d="M296 208 V 224" stroke="#2B2F33" stroke-width="1.4" marker-end="url(#a3)"/>
+    <!-- 6 verdict -->
+    <rect x="162" y="228" width="268" height="40" rx="5" fill="#fff" stroke="#C62828" stroke-width="1.3"/>
+    <text x="174" y="245" font-size="10" font-weight="700">le motif reste au journal serveur</text>
+    <text x="174" y="260" font-size="9.5" fill="#2B2F33">« attendu 7 » ne sort jamais</text>
+    <path d="M160 288 H 132" stroke="#2B2F33" stroke-width="1.4" marker-end="url(#a3)"/>
+    <path d="M296 270 V 288 H 160" stroke="#2B2F33" stroke-width="1.4" fill="none"/>
+    <!-- 7 retour -->
+    <rect x="12" y="266" width="116" height="48" rx="5" fill="#fff" stroke="#1565C0" stroke-width="1.3"/>
+    <text x="70" y="286" text-anchor="middle" class="mono" style="font-size:8.4px">{status, pass}</text>
+    <text x="70" y="302" text-anchor="middle" font-size="9.5" fill="#2B2F33">gardé pour le bilan</text>
+  </svg>
+
+  <div class="deuxcol" style="margin-top:4mm; gap:6mm">
+    <div>
+      <h3>Les modes de validation</h3>
+      <table class="aide" style="margin-top:1mm">
+        <thead><tr><th>Mode</th><th>Ce qu'il accepte</th></tr></thead>
+        <tbody>
+          <tr><td class="c">ExactOrderedList</td><td>nombres, dans cet ordre</td></tr>
+          <tr><td class="c">SetEquality</td><td>mêmes valeurs, ordre libre</td></tr>
+          <tr><td class="c">SingleValue</td><td>une seule valeur</td></tr>
+          <tr><td class="c">NumericTolerance</td><td>nombres, à une marge près</td></tr>
+          <tr><td class="c">GeometryTolerance</td><td>géométrie, écart max ≤ tolérance</td></tr>
+          <tr><td class="c">…Text (×2)</td><td>textes, ordonnés ou non</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <div class="encadre piege" style="margin-top:0">
+        <span class="titre">Piège courant</span>
+        Le mode choisi par l'auteur décide de tout. <code>SingleValue</code> ignore la tolérance ; <code>SetEquality</code> ne compte pas les doublons ; un attendu non entier impose <code>NumericTolerance</code>. La règle qui a coûté le plus cher au corpus : la valeur rendue doit <b>bouger</b> quand la compétence manque.
+      </div>
+      <div class="encadre" style="margin-top:3mm">
+        <span class="titre">Et dans le plugin ?</span>
+        Même logique, calculée en local par le <code>GenericChecker</code>. Le web l'a rejoint le 21/10 : aucun verdict montré en cours de parcours.
+      </div>
+    </div>
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Hors série · Magpie, à quoi ça sert et où ça va</div>
+</section>
+
+<!-- ============ PAGE 4 · LA FEUILLE DE ROUTE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Magpie</b></div>
+  <p class="rubrique">Schéma 3 · Où va le développement</p>
+  <h2>Trois jalons, et de l'avance sur le deuxième</h2>
+  <p style="max-width:165mm">La feuille de route (<code>docs/magpie_chantiers.md</code>) répartit les chantiers en trois jalons datés, chacun suivi par ses issues GitHub. Pastille verte : issue fermée ; orange : ouverte, au 23/10/2026.</p>
+
+  <svg viewBox="0 0 600 300" width="100%" style="margin-top:2mm">
+    <rect x="0" y="0" width="600" height="300" fill="#EFE9E1"/>
+    <!-- axe -->
+    <line x1="30" y1="70" x2="580" y2="70" stroke="#2B2F33" stroke-width="1.6"/>
+    <g font-size="9" fill="#6B7378" text-anchor="middle">
+      <text x="40" y="88">août</text><text x="94" y="88">sept.</text><text x="148" y="88">oct.</text><text x="202" y="88">nov.</text><text x="256" y="88">déc.</text>
+      <text x="310" y="88">janv.</text><text x="364" y="88">févr.</text><text x="418" y="88">mars</text><text x="472" y="88">avr.</text><text x="526" y="88">mai</text>
+    </g>
+    <text x="40" y="104" font-size="8.5" fill="#6B7378">2026</text><text x="310" y="104" font-size="8.5" fill="#6B7378" text-anchor="middle">2027</text>
+    <!-- activité -->
+    <g>
+      <rect x="28" y="44" width="24" height="12" fill="#C2410C" opacity=".55"/>
+      <rect x="82" y="32" width="24" height="24" fill="#C2410C" opacity=".75"/>
+      <rect x="136" y="23" width="24" height="33" fill="#C2410C"/>
+      <text x="40" y="40" font-size="8.5" text-anchor="middle">23</text>
+      <text x="94" y="28" font-size="8.5" text-anchor="middle">47</text>
+      <text x="148" y="19" font-size="8.5" text-anchor="middle" font-weight="700">64</text>
+      <text x="172" y="40" font-size="8.5" fill="#6B7378">commits par mois</text>
+    </g>
+    <!-- aujourd'hui -->
+    <line x1="186" y1="58" x2="186" y2="290" stroke="#C62828" stroke-width="1.2" stroke-dasharray="3 3"/>
+    <text x="190" y="290" font-size="8.5" fill="#C62828" font-weight="700">23/10</text>
+    <!-- jalons -->
+    <g>
+      <path d="M148 64 l6 6 l-6 6 l-6 -6 z" fill="#2E7D32"/>
+      <path d="M364 64 l6 6 l-6 6 l-6 -6 z" fill="#E65100"/>
+      <path d="M576 64 l6 6 l-6 6 l-6 -6 z" fill="#C62828"/>
+    </g>
+    <!-- V0.1 -->
+    <rect x="20" y="118" width="150" height="160" rx="6" fill="#fff" stroke="#2E7D32" stroke-width="1.4"/>
+    <text x="30" y="137" font-size="10.5" font-weight="700" fill="#2E7D32">V0.1 · 01/10/2026</text>
+    <text x="30" y="152" font-size="9" fill="#6B7378">publication pour test</text>
+    <text x="30" y="172" font-size="9.5">parcours G2V jouable,</text>
+    <text x="30" y="186" font-size="9.5">outil auteur fiable,</text>
+    <text x="30" y="200" font-size="9.5">apprenant séparé</text>
+    <text x="30" y="214" font-size="9.5">de l'admin</text>
+    <rect x="30" y="236" width="128" height="24" rx="4" fill="#2E7D32"/>
+    <text x="94" y="252" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff">toutes fermées</text>
+
+    <!-- V0.2 -->
+    <rect x="200" y="118" width="190" height="160" rx="6" fill="#fff" stroke="#E65100" stroke-width="1.4"/>
+    <text x="210" y="137" font-size="10.5" font-weight="700" fill="#E65100">V0.2 · 31/01/2027</text>
+    <text x="210" y="152" font-size="9" fill="#6B7378">expérience complète, arbres</text>
+    <g font-size="9">
+      <rect x="210" y="162" width="32" height="15" rx="3" fill="#2E7D32"/><text x="226" y="173" text-anchor="middle" fill="#fff" font-weight="700">#10</text>
+      <rect x="246" y="162" width="32" height="15" rx="3" fill="#2E7D32"/><text x="262" y="173" text-anchor="middle" fill="#fff" font-weight="700">#22</text>
+      <rect x="282" y="162" width="26" height="15" rx="3" fill="#2E7D32"/><text x="295" y="173" text-anchor="middle" fill="#fff" font-weight="700">#5</text>
+      <rect x="312" y="162" width="26" height="15" rx="3" fill="#2E7D32"/><text x="325" y="173" text-anchor="middle" fill="#fff" font-weight="700">#4</text>
+      <rect x="342" y="162" width="38" height="15" rx="3" fill="#2E7D32"/><text x="361" y="173" text-anchor="middle" fill="#fff" font-weight="700">+3</text>
+      <rect x="210" y="183" width="26" height="15" rx="3" fill="#E65100"/><text x="223" y="194" text-anchor="middle" fill="#fff" font-weight="700">#8</text>
+      <rect x="240" y="183" width="32" height="15" rx="3" fill="#E65100"/><text x="256" y="194" text-anchor="middle" fill="#fff" font-weight="700">#23</text>
+      <rect x="276" y="183" width="32" height="15" rx="3" fill="#E65100"/><text x="292" y="194" text-anchor="middle" fill="#fff" font-weight="700">#24</text>
+    </g>
+    <text x="210" y="218" font-size="9.5">restent : dossier de travail,</text>
+    <text x="210" y="232" font-size="9.5">index spatial des formes,</text>
+    <text x="210" y="246" font-size="9.5">métriques au certificat</text>
+    <text x="210" y="266" font-size="9" fill="#2E7D32" font-weight="700">arbres et géométrie web : faits</text>
+
+    <!-- V1.0 -->
+    <rect x="410" y="118" width="170" height="160" rx="6" fill="#fff" stroke="#C62828" stroke-width="1.4"/>
+    <text x="420" y="137" font-size="10.5" font-weight="700" fill="#C62828">V1.0 · 31/05/2027</text>
+    <text x="420" y="152" font-size="9" fill="#6B7378">mise en ligne, distribution</text>
+    <g font-size="9">
+      <rect x="420" y="162" width="32" height="15" rx="3" fill="#E65100"/><text x="436" y="173" text-anchor="middle" fill="#fff" font-weight="700">#18</text>
+      <rect x="456" y="162" width="32" height="15" rx="3" fill="#E65100"/><text x="472" y="173" text-anchor="middle" fill="#fff" font-weight="700">#25</text>
+      <rect x="492" y="162" width="32" height="15" rx="3" fill="#E65100"/><text x="508" y="173" text-anchor="middle" fill="#fff" font-weight="700">#26</text>
+      <rect x="528" y="162" width="32" height="15" rx="3" fill="#E65100"/><text x="544" y="173" text-anchor="middle" fill="#fff" font-weight="700">#27</text>
+    </g>
+    <text x="420" y="196" font-size="9.5">authentification web,</text>
+    <text x="420" y="210" font-size="9.5">appli déployable, serveur</text>
+    <text x="420" y="224" font-size="9.5">et tunnel, macOS</text>
+    <text x="420" y="246" font-size="9" fill="#E65100" font-weight="700">#25 déjà entamée :</text>
+    <text x="420" y="260" font-size="9" fill="#E65100">Passenger, envoi SSH (21/10)</text>
+  </svg>
+
+  <div class="deuxcol" style="margin-top:4mm; gap:6mm">
+    <div>
+      <h3>Décidé, pas encore codé</h3>
+      <p style="font-size:8.8pt">Le <b>modèle de diffusion</b> du 22/09/2026 : un parcours de base embarqué dans le <code>.gha</code>, les suivants téléchargés depuis le site en paquet <code>.mgp</code> et importés par un composant. <b>Grasshopper ne parle jamais au réseau</b> : le navigateur est le seul pont. Le certificat est émis par le site, avec un numéro vérifiable.</p>
+    </div>
+    <div>
+      <div class="encadre piege" style="margin-top:0">
+        <span class="titre">Point de vigilance</span>
+        La feuille de route place le déploiement (#26) <b>après</b> l'authentification (#18) : publier avant exposerait le Rhino Compute de la machine de dev. Les 21-22/10, des verrous ont été posés (admin en HTTP Basic, clé d'API sur Compute, relais coupé), mais #18 reste ouverte.
+      </div>
+    </div>
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Hors série · Magpie, à quoi ça sert et où ça va</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Magpie</b></div>
+  <p class="rubrique">Dans le projet</p>
+  <h2>La correction web, en trente lignes</h2>
+  <p style="max-width:165mm">Le schéma de la page 3, tel qu'il est écrit dans <code>web/compute-proxy.mjs</code>, puis la liste des modes côté plugin. C'est du JavaScript : la partie 8 t'apprendra à l'écrire, ici il suffit de suivre les repères.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="n"> </span><span class="cm">// web/compute-proxy.mjs</span></div>
+<div class="l k5"><span class="n">360</span><span class="kw">function</span> sendVerdict(res, { pass, reason }) {<span class="rep r5">5</span></div>
+<div class="l k5"><span class="n">361</span>  console.log(<span class="st">`Soumission … — ${reason}`</span>);</div>
+<div class="l k5"><span class="n">363</span>  res.end(JSON.stringify({ status, pass }));</div>
+<div class="l"><span class="n">364</span>}</div>
+<div class="l"><span class="n"> </span> </div>
+<div class="l k2"><span class="n">369</span><span class="kw">async function</span> handleSubmit(body, res) {<span class="rep r2">1</span></div>
+<div class="l k2"><span class="n">370</span>  <span class="kw">const</span> { exerciseId, nodes, edges, … }</div>
+<div class="l k2"><span class="n"> </span>    = parseJsonBody(body);</div>
+<div class="l k4"><span class="n">372</span>  assertAuthorizedGraph(nodes);<span class="rep r4">2</span></div>
+<div class="l"><span class="n">374</span>  <span class="kw">const</span> exerciseRow = db.prepare(…).get(exerciseId);</div>
+<div class="l"><span class="n">376</span>  <span class="kw">const</span> config = JSON.parse(…validationConfig);</div>
+<div class="l k6"><span class="n">379</span>  <span class="kw">if</span> (config.Mode === <span class="st">"GeometryTolerance"</span> …) {<span class="rep r6">G</span></div>
+<div class="l k6"><span class="n">380</span>    <span class="kw">await</span> handleGeometrySubmit(…); <span class="kw">return</span>;</div>
+<div class="l k6"><span class="n">382</span>  }</div>
+<div class="l k3"><span class="n">384</span>  <span class="kw">const</span> xml = generateGhx(nodes, edges, …);<span class="rep r3">3</span></div>
+<div class="l k3"><span class="n">385</span>  <span class="kw">const</span> { ok, json } = <span class="kw">await</span> callCompute(xml);</div>
+<div class="l"><span class="n">393</span>  <span class="kw">const</span> output = extractOutputTree(json, …);</div>
+<div class="l k1"><span class="n">399</span>  sendVerdict(res,<span class="rep r1">4</span></div>
+<div class="l k1"><span class="n"> </span>    validateSubmission(flattenTree(output.tree), config));</div>
+<div class="l"><span class="n">400</span>}</div>
+<div class="l"><span class="n"> </span> </div>
+<div class="l"><span class="n"> </span><span class="cm">// plugin/Core/ValidationMode.cs</span></div>
+<div class="l k7"><span class="n">5</span><span class="kw">public enum</span> <span class="ty">ValidationMode</span><span class="rep r7">F</span></div>
+<div class="l k7"><span class="n">7</span>  <span class="cm">// Ce type est un format de fichier…</span></div>
+<div class="l k7"><span class="n">14</span>  <span class="cm">// Tout nouveau membre s'ajoute À LA FIN.</span></div>
+<div class="l"><span class="n">16</span>  ExactOrderedList,  SetEquality,</div>
+<div class="l"><span class="n">18</span>  SingleValue,  NumericTolerance,</div>
+<div class="l k6"><span class="n">20</span>  GeometryTolerance,</div>
+<div class="l"><span class="n">21</span>  ExactOrderedListText,  SetEqualityText</div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r2">1</span><b>L'entrée</b>Le navigateur envoie l'identifiant de l'exercice et le graphe abstrait : des nœuds et des câbles, jamais un fichier .ghx.</li>
+      <li><span class="rep r4">2</span><b>La garde</b>Un composant hors du catalogue autorisé arrête tout. C'est ce qui empêche d'exécuter n'importe quoi sur le serveur.</li>
+      <li><span class="rep r3">3</span><b>Sérialiser puis calculer</b>Le serveur écrit le .ghx et le confie à Rhino Compute, qui renvoie les sorties du graphe.</li>
+      <li><span class="rep r1">4</span><b>Comparer</b>La valeur câblée sur Réponse passe par le mode de l'exercice (validation.mjs, sept fonctions).</li>
+      <li><span class="rep r5">5</span><b>Le verdict muet</b>Le motif part au journal serveur ; l'apprenant ne reçoit que <em>pass</em>, gardé pour le bilan.</li>
+      <li><span class="rep r6">G</span><b>La géométrie à part</b>Une forme se compare dans Compute, avec le composant de MagpieServeur.gha (issue #22).</li>
+      <li><span class="rep r7">F</span><b>Un enum qui est un format</b>Le nom de chaque mode est écrit dans le JSON des exercices. Renommer ou insérer au milieu casserait les fichiers existants.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À retenir</span>
+    Les deux volets ne partagent pas de code (C# d'un côté, JavaScript de l'autre), mais ils partagent les <b>noms des modes</b> et le format JSON. C'est pourquoi la ligne 14 de <code>ValidationMode.cs</code> est un commentaire en majuscules.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Hors série · Magpie, à quoi ça sert et où ça va</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Magpie</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Qu'est-ce que Magpie vérifie ?</div><ul>
+      <li><span>A</span>la façon dont le graphe est câblé</li><li><span>B</span>la valeur câblée sur le marqueur Réponse</li><li><span>C</span>le nombre de composants utilisés</li><li><span>D</span>le temps passé</li></ul></div>
+
+    <div class="q"><div class="enonce">Pendant le parcours, l'apprenant…</div><ul>
+      <li><span>A</span>voit tout de suite s'il a juste</li><li><span>B</span>voit la valeur attendue en cas d'erreur</li><li><span>C</span>enchaîne sans verdict ; tout apparaît au bilan</li><li><span>D</span>doit corriger avant de passer</li></ul></div>
+
+    <div class="q"><div class="enonce">Qu'ont en commun le plugin et le web ?</div><ul>
+      <li><span>A</span>le même code C#</li><li><span>B</span>le format d'exercice JSON</li><li><span>C</span>la même base SQLite</li><li><span>D</span>rien</li></ul></div>
+
+    <div class="q"><div class="enonce">Combien de .gha produit le plugin ? <span class="tag" style="color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>quatre, un par public</li><li><span>B</span>un seul, avec des options</li><li><span>C</span>chacun embarque Magpie.Core</li><li><span>D</span>Dev est diffusé aux apprenants</li></ul></div>
+
+    <div class="q"><div class="enonce">Qui calcule le graphe d'un apprenant sur le web ?</div><ul>
+      <li><span>A</span>le navigateur</li><li><span>B</span>Rhino Compute, côté serveur</li><li><span>C</span>le Rhino de l'apprenant</li><li><span>D</span>React Flow</li></ul></div>
+
+    <div class="q"><div class="enonce">Qu'envoie le navigateur au serveur ?</div><ul>
+      <li><span>A</span>un fichier .ghx</li><li><span>B</span>une capture d'écran</li><li><span>C</span>une description abstraite {nodes, edges}</li><li><span>D</span>la valeur attendue</li></ul></div>
+
+    <div class="q"><div class="enonce">Pourquoi ajouter un mode de validation <b>à la fin</b> de l'enum ?</div><ul>
+      <li><span>A</span>par convention de style</li><li><span>B</span>les anciens exercices lisent le mode comme un numéro de position</li><li><span>C</span>le compilateur l'exige</li><li><span>D</span>pour l'ordre alphabétique</li></ul></div>
+
+    <div class="q"><div class="enonce">Comment le web corrige-t-il une géométrie ?</div><ul>
+      <li><span>A</span>en JavaScript, dans validation.mjs</li><li><span>B</span>il ne la corrige pas</li><li><span>C</span>dans Compute, avec le composant du plugin Serveur</li><li><span>D</span>par l'apprenant lui-même</li></ul></div>
+
+    <div class="q"><div class="enonce">Où en est le jalon V0.1 ?</div><ul>
+      <li><span>A</span>pas commencé</li><li><span>B</span>toutes ses issues sont fermées</li><li><span>C</span>repoussé en 2027</li><li><span>D</span>abandonné</li></ul></div>
+
+    <div class="q"><div class="enonce">Que reste-t-il avant la V1.0 ? <span class="tag" style="color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>l'authentification du web (#18)</li><li><span>B</span>le déploiement serveur (#26)</li><li><span>C</span>la compatibilité macOS (#27)</li><li><span>D</span>la séparation apprenant / auteur</li></ul></div>
+
+    <div class="q"><div class="enonce">Dans le modèle de diffusion, Grasshopper…</div><ul>
+      <li><span>A</span>télécharge les parcours lui-même</li><li><span>B</span>ne parle jamais au réseau</li><li><span>C</span>envoie le certificat au site</li><li><span>D</span>se connecte avec un jeton</li></ul></div>
+
+    <div class="q"><div class="enonce">Pourquoi déployer après l'authentification ?</div><ul>
+      <li><span>A</span>pour des raisons de coût</li><li><span>B</span>sinon le Rhino Compute de dev serait exposé sur Internet</li><li><span>C</span>Passenger l'impose</li><li><span>D</span>pour macOS</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Hors série · Magpie, à quoi ça sert et où ça va</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET AIDE-MÉMOIRE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Magpie</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · B.</b> Seul le résultat compte ; deux montages différents qui rendent la même valeur sont justes.</div>
+    <div><b>02 · C.</b> Plugin et web s'alignent : le verdict ne sert qu'au bilan de fin de parcours.</div>
+    <div><b>03 · B.</b> Le JSON est le contrat. Le code, lui, est en C# d'un côté et en JS de l'autre.</div>
+    <div><b>04 · A et C.</b> Apprenant, Auteur, Serveur, Dev ; chacun autonome. Dev n'est pas diffusé.</div>
+    <div><b>05 · B.</b> Le web ne réimplémente pas Grasshopper : il confie le calcul à Compute.</div>
+    <div><b>06 · C.</b> Le .ghx est écrit côté serveur, ce qui garde le contrôle du contenu.</div>
+    <div><b>07 · B.</b> Un ancien fichier « Mode: 0 » lit la position ; insérer au milieu la décale.</div>
+    <div><b>08 · C.</b> MagpieServeur.gha est installé sur Compute, d'où le pont entre les volets.</div>
+    <div><b>09 · B.</b> V0.1 est bouclée ; V0.2 a même de l'avance (#10, #22, #4, #5 fermées).</div>
+    <div><b>10 · A, B et C.</b> La séparation apprenant / auteur (#7) est faite depuis le 20/10.</div>
+    <div><b>11 · B.</b> Le navigateur est le seul pont : pas de jeton ni d'API dans Rhino.</div>
+    <div><b>12 · B.</b> Le backend relayait vers Compute ; sans authentification, n'importe qui l'utiliserait.</div>
+  </div>
+
+  <div class="panneau" style="padding:3.5mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:30mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.3pt; line-height:1.45"><b>0 à 6</b> : relis les pages 1 et 2. <b>7 à 9</b> : refais à la main le trajet de la page 3. <b>10 à 12</b> : ouvre <code>docs/magpie_chantiers.md</code> et compare avec la page 4.</div>
+  </div>
+
+  <p class="rubrique" style="margin-top:6mm">Aide-mémoire · les pièces de Magpie</p>
+  <table class="aide">
+    <thead><tr><th>Pièce</th><th>Rôle</th><th>Techno</th><th>Où</th></tr></thead>
+    <tbody>
+      <tr><td class="c">MagpieApprenant.gha</td><td>suivre un parcours</td><td>C#, Rhino 8</td><td class="c">plugin/Student</td></tr>
+      <tr><td class="c">MagpieAuteur.gha</td><td>créer exercices et parcours</td><td>C#, Rhino 8</td><td class="c">plugin/Admin</td></tr>
+      <tr><td class="c">MagpieServeur.gha</td><td>comparer une géométrie</td><td>C#, sur Compute</td><td class="c">plugin/Serveur</td></tr>
+      <tr><td class="c">Magpie.Core</td><td>moteur : session, checker, certificat</td><td>C#, embarqué</td><td class="c">plugin/Core</td></tr>
+      <tr><td class="c">canvas web</td><td>construire et envoyer</td><td>React, React Flow</td><td class="c">web/src</td></tr>
+      <tr><td class="c">compute-proxy</td><td>sérialiser, calculer, comparer</td><td>Node 22, SQLite</td><td class="c">web/</td></tr>
+      <tr><td class="c">pedagogie/</td><td>méthode, banc d'essai, parcours G2V</td><td>Markdown, agents</td><td class="c">pedagogie/</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:6mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Parcours</dt><dd>Suite ordonnée d'exercices, conclue par un bilan et un certificat.</dd>
+    <dt>Marqueur Réponse</dt><dd>Le groupe sur lequel l'apprenant câble ce qui sera corrigé.</dd>
+    <dt>Rhino Compute</dt><dd>Rhino et Grasshopper sans écran, appelés par HTTP depuis un serveur.</dd>
+    <dt>.mgp</dt><dd>Paquet zip d'un parcours téléchargé depuis le site (décidé, pas encore codé).</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Lu le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 37</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Hors série · Magpie, à quoi ça sert et où ça va</div>
+</section>
+
+</body>
+</html>

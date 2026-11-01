@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>57 · Les expressions régulières</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-2">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2B</b> · Le texte et les nombres</span><b>Cours 57</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Les expressions régulières</h1>
+  <p class="chapeau">Une <b>expression régulière</b> (regex) est un petit langage pour décrire une famille de textes : « un dièse puis six chiffres hexadécimaux », « le mot partial suivi d'un nom qui commence par Sur ». Le moteur dit si un texte en fait partie, où, et ce qu'il contient.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>25</b> et <b>56</b></span>
+    <span class="pastille">Exemples · <b>Convertisseurs</b>, <b>EcrivainGeneration</b>, <b>generer-modele.js</b> (SnapSet)</span>
+  </div>
+
+  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+    <svg viewBox="0 0 600 170" width="100%">
+<rect x="46" y="14" width="28" height="30" rx="4" fill="#fff" stroke="#6D4C41" stroke-width="1.3"/>
+<text x="60.0" y="34" font-size="11" fill="#6D4C41" text-anchor="middle" font-weight="700" class="mono" style="font-size:11px">^</text>
+<text x="60.0" y="60" font-size="7.8" fill="#6B7378" text-anchor="middle">début</text>
+<rect x="84" y="14" width="28" height="30" rx="4" fill="#fff" stroke="#2B2F33" stroke-width="1.3"/>
+<text x="98.0" y="34" font-size="11" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:11px">#</text>
+<text x="98.0" y="60" font-size="7.8" fill="#6B7378" text-anchor="middle">un « # »</text>
+<rect x="122" y="14" width="119.60000000000001" height="30" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.3"/>
+<text x="181.8" y="34" font-size="11" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:11px">[0-9A-Fa-f]{6}</text>
+<text x="181.8" y="60" font-size="7.8" fill="#6B7378" text-anchor="middle">6 chiffres hexa</text>
+<rect x="251.60000000000002" y="14" width="141.8" height="30" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.3"/>
+<text x="322.5" y="34" font-size="11" fill="#7B1FA2" text-anchor="middle" font-weight="700" class="mono" style="font-size:11px">([0-9A-Fa-f]{2})?</text>
+<text x="322.5" y="60" font-size="7.8" fill="#6B7378" text-anchor="middle">2 de plus, facultatifs</text>
+<rect x="403.40000000000003" y="14" width="30.8" height="30" rx="4" fill="#fff" stroke="#6D4C41" stroke-width="1.3"/>
+<text x="418.8" y="34" font-size="11" fill="#6D4C41" text-anchor="middle" font-weight="700" class="mono" style="font-size:11px">\z</text>
+<text x="418.8" y="60" font-size="7.8" fill="#6B7378" text-anchor="middle">vraie fin</text>
+<rect x="22" y="88" width="132" height="34" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.1"/>
+<text x="34" y="110" font-size="10" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:10px;white-space:pre">#FF8800</text>
+<text x="140" y="111" font-size="13" fill="#2E7D32" text-anchor="middle" font-weight="700">✓</text>
+<rect x="164" y="88" width="132" height="34" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.1"/>
+<text x="176" y="110" font-size="10" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:10px;white-space:pre">#FF880080</text>
+<text x="282" y="111" font-size="13" fill="#2E7D32" text-anchor="middle" font-weight="700">✓</text>
+<rect x="306" y="88" width="132" height="34" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.1"/>
+<text x="318" y="110" font-size="10" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:10px;white-space:pre">#FF88</text>
+<text x="424" y="111" font-size="13" fill="#C62828" text-anchor="middle" font-weight="700">✗</text>
+<rect x="448" y="88" width="132" height="34" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.1"/>
+<text x="460" y="110" font-size="10" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:10px;white-space:pre">#FF000080\n</text>
+<text x="566" y="111" font-size="13" fill="#C62828" text-anchor="middle" font-weight="700">✗</text>
+<text x="300" y="150" font-size="8" fill="#6B7378" text-anchor="middle" font-style="italic">Le motif décrit une famille de chaînes ; le moteur dit si un texte en fait partie, et où.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>On écrit un <b>motif</b> avec des briques (classes de caractères, répétitions, ancres, groupes) ; le moteur le compare au texte caractère par caractère et revient en arrière quand une piste échoue.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Un gabarit de découpe posé sur une planche. Le gabarit ne connaît pas la planche, il décrit seulement une forme ; on le fait glisser jusqu'à ce qu'il tombe juste, et on garde les morceaux découpés (les groupes).</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>lire un motif brique par brique ;</li>
+        <li>choisir <code>$</code> ou <code>\z</code>, gourmand ou paresseux ;</li>
+        <li>capturer des morceaux et remplacer avec <code>$1</code> ;</li>
+        <li>reconnaître ce qu'une regex ne sait pas faire.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:5mm">
+    <span class="titre">À retenir</span>
+    Une regex vérifie une <b>forme</b>, pas un sens. Elle dit « six chiffres hexadécimaux », pas « une couleur que GH_Skin connaît ». Pour un format plat (code couleur, numéro de version, nom de méthode) elle est parfaite ; pour un langage imbriqué (JSON, C#), il faut un vrai analyseur.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 57 · Les expressions régulières</div>
+</section>
+
+<!-- ============ PAGE 2 · LES BRIQUES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2B</b> · Le texte et les nombres</span><b>Cours 57</b></div>
+  <p class="rubrique">Schéma 1 · Les briques</p>
+  <h2>Quatre familles suffisent</h2>
+  <p style="max-width:165mm">Une <b>classe</b> dit quel caractère est accepté, un <b>quantificateur</b> combien de fois, une <b>ancre</b> où (sans consommer de caractère), un <b>groupe</b> rassemble un morceau pour le répéter ou le récupérer. Tout le reste se combine à partir de là.</p>
+
+  <svg viewBox="0 0 600 222" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="222" fill="#EFE9E1"/>
+<rect x="16" y="10" width="136" height="202" rx="5" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="26" y="28" font-size="9" fill="#1565C0" text-anchor="start" font-weight="700">Classes</text>
+<text x="26" y="50" font-size="10" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:10px;white-space:pre">.</text>
+<text x="26" y="62" font-size="7.4" fill="#2B2F33" text-anchor="start">n'importe quel caractère</text>
+<text x="26" y="77" font-size="10" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:10px;white-space:pre">\d</text>
+<text x="26" y="89" font-size="7.4" fill="#2B2F33" text-anchor="start">un chiffre</text>
+<text x="26" y="104" font-size="10" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:10px;white-space:pre">\w</text>
+<text x="26" y="116" font-size="7.4" fill="#2B2F33" text-anchor="start">lettre, chiffre ou _</text>
+<text x="26" y="131" font-size="10" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:10px;white-space:pre">\s</text>
+<text x="26" y="143" font-size="7.4" fill="#2B2F33" text-anchor="start">un blanc</text>
+<text x="26" y="158" font-size="10" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:10px;white-space:pre">[A-F]</text>
+<text x="26" y="170" font-size="7.4" fill="#2B2F33" text-anchor="start">un caractère parmi</text>
+<text x="26" y="185" font-size="10" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:10px;white-space:pre">[^"]</text>
+<text x="26" y="197" font-size="7.4" fill="#2B2F33" text-anchor="start">tout sauf « " »</text>
+<rect x="160" y="10" width="136" height="202" rx="5" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
+<text x="170" y="28" font-size="9" fill="#7B1FA2" text-anchor="start" font-weight="700">Quantificateurs</text>
+<text x="170" y="50" font-size="10" fill="#7B1FA2" text-anchor="start" font-weight="700" class="mono" style="font-size:10px;white-space:pre">*</text>
+<text x="170" y="62" font-size="7.4" fill="#2B2F33" text-anchor="start">0 fois ou plus</text>
+<text x="170" y="77" font-size="10" fill="#7B1FA2" text-anchor="start" font-weight="700" class="mono" style="font-size:10px;white-space:pre">+</text>
+<text x="170" y="89" font-size="7.4" fill="#2B2F33" text-anchor="start">1 fois ou plus</text>
+<text x="170" y="104" font-size="10" fill="#7B1FA2" text-anchor="start" font-weight="700" class="mono" style="font-size:10px;white-space:pre">?</text>
+<text x="170" y="116" font-size="7.4" fill="#2B2F33" text-anchor="start">0 ou 1 fois</text>
+<text x="170" y="131" font-size="10" fill="#7B1FA2" text-anchor="start" font-weight="700" class="mono" style="font-size:10px;white-space:pre">{6}</text>
+<text x="170" y="143" font-size="7.4" fill="#2B2F33" text-anchor="start">exactement 6 fois</text>
+<text x="170" y="158" font-size="10" fill="#7B1FA2" text-anchor="start" font-weight="700" class="mono" style="font-size:10px;white-space:pre">{1,3}</text>
+<text x="170" y="170" font-size="7.4" fill="#2B2F33" text-anchor="start">de 1 à 3 fois</text>
+<text x="170" y="185" font-size="10" fill="#7B1FA2" text-anchor="start" font-weight="700" class="mono" style="font-size:10px;white-space:pre">*?</text>
+<text x="170" y="197" font-size="7.4" fill="#2B2F33" text-anchor="start">le moins possible</text>
+<rect x="304" y="10" width="136" height="202" rx="5" fill="#fff" stroke="#6D4C41" stroke-width="1.2"/>
+<text x="314" y="28" font-size="9" fill="#6D4C41" text-anchor="start" font-weight="700">Ancres</text>
+<text x="314" y="50" font-size="10" fill="#6D4C41" text-anchor="start" font-weight="700" class="mono" style="font-size:10px;white-space:pre">^</text>
+<text x="314" y="62" font-size="7.4" fill="#2B2F33" text-anchor="start">début du texte</text>
+<text x="314" y="77" font-size="10" fill="#6D4C41" text-anchor="start" font-weight="700" class="mono" style="font-size:10px;white-space:pre">$</text>
+<text x="314" y="89" font-size="7.4" fill="#2B2F33" text-anchor="start">fin, ou avant un \n final</text>
+<text x="314" y="104" font-size="10" fill="#6D4C41" text-anchor="start" font-weight="700" class="mono" style="font-size:10px;white-space:pre">\z</text>
+<text x="314" y="116" font-size="7.4" fill="#2B2F33" text-anchor="start">fin, vraiment</text>
+<text x="314" y="131" font-size="10" fill="#6D4C41" text-anchor="start" font-weight="700" class="mono" style="font-size:10px;white-space:pre">\b</text>
+<text x="314" y="143" font-size="7.4" fill="#2B2F33" text-anchor="start">frontière de mot</text>
+<text x="314" y="158" font-size="10" fill="#6D4C41" text-anchor="start" font-weight="700" class="mono" style="font-size:10px;white-space:pre">\A</text>
+<text x="314" y="170" font-size="7.4" fill="#2B2F33" text-anchor="start">début, vraiment</text>
+<rect x="448" y="10" width="136" height="202" rx="5" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="458" y="28" font-size="9" fill="#2E7D32" text-anchor="start" font-weight="700">Groupes</text>
+<text x="458" y="50" font-size="10" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:10px;white-space:pre">( )</text>
+<text x="458" y="62" font-size="7.4" fill="#2B2F33" text-anchor="start">capture, numérotée</text>
+<text x="458" y="77" font-size="10" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:10px;white-space:pre">(?: )</text>
+<text x="458" y="89" font-size="7.4" fill="#2B2F33" text-anchor="start">regroupe sans capturer</text>
+<text x="458" y="104" font-size="10" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:10px;white-space:pre">(?&lt;nom&gt; )</text>
+<text x="458" y="116" font-size="7.4" fill="#2B2F33" text-anchor="start">capture nommée</text>
+<text x="458" y="131" font-size="10" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:10px;white-space:pre">a|b</text>
+<text x="458" y="143" font-size="7.4" fill="#2B2F33" text-anchor="start">l'un ou l'autre</text>
+<text x="458" y="158" font-size="10" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:10px;white-space:pre">\.</text>
+<text x="458" y="170" font-size="7.4" fill="#2B2F33" text-anchor="start">un vrai point</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#</span>bool ok = Regex.IsMatch("#FF8800", @"^#[0-9A-F]{6}\z");   // true
+Match m = Regex.Match("version 2.13", @"(\d+)\.(\d+)");
+string majeure = m.Groups[1].Value;                       // "2"
+string mineure = m.Groups[2].Value;                       // "13"
+int n = Regex.Matches("a1 b22 c333", @"\d+").Count;        // 3</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Les quatre verbes</h3>
+      <p><code>IsMatch</code> répond oui ou non, <code>Match</code> rend le premier résultat et ses groupes, <code>Matches</code> les rend tous, <code>Replace</code> réécrit chaque résultat. <code>Groups[0]</code> est toujours le texte trouvé en entier.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Le @ devant la chaîne</h3>
+      <p>En C#, <code>"\d"</code> serait une séquence d'échappement de chaîne. La chaîne verbatim <code>@"\d"</code> garde l'antislash tel quel pour le moteur. En JavaScript, on écrit le motif entre barres : <code>/\d+/g</code>.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Le point est une brique, pas un point. <code>1.5</code> accepte « 105 ». Pour un vrai point on écrit <code>\.</code>, et pour insérer un texte venu d'ailleurs dans un motif on passe par <code>Regex.Escape</code>, qui neutralise tous les caractères spéciaux.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 57 · Les expressions régulières</div>
+</section>
+
+<!-- ============ PAGE 3 · GOURMAND ET RETOUR ARRIÈRE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2B</b> · Le texte et les nombres</span><b>Cours 57</b></div>
+  <p class="rubrique">Schéma 2 · Comment le moteur cherche</p>
+  <h2>Gourmand, paresseux, retour arrière</h2>
+  <p style="max-width:165mm">Par défaut, <code>*</code> et <code>+</code> sont <b>gourmands</b> : ils prennent le plus possible, puis rendent des caractères un à un si la suite du motif échoue. Ajouter <code>?</code> les rend <b>paresseux</b> : le moins possible d'abord. Ce va-et-vient s'appelle le <b>retour arrière</b>.</p>
+
+  <svg viewBox="0 0 600 236" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="236" fill="#EFE9E1"/>
+<text x="16" y="24" font-size="8.6" fill="#5D4037" text-anchor="start" font-weight="700">Texte</text>
+<rect x="170" y="10" width="16" height="22" rx="2" fill="#fff" stroke="#CFC6B8"/>
+<text x="178.0" y="25" font-size="10" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:10px">/</text>
+<rect x="188" y="10" width="16" height="22" rx="2" fill="#fff" stroke="#CFC6B8"/>
+<text x="196.0" y="25" font-size="10" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:10px">*</text>
+<rect x="206" y="10" width="16" height="22" rx="2" fill="#fff" stroke="#CFC6B8"/>
+<rect x="224" y="10" width="16" height="22" rx="2" fill="#fff" stroke="#CFC6B8"/>
+<text x="232.0" y="25" font-size="10" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:10px">a</text>
+<rect x="242" y="10" width="16" height="22" rx="2" fill="#fff" stroke="#CFC6B8"/>
+<rect x="260" y="10" width="16" height="22" rx="2" fill="#fff" stroke="#CFC6B8"/>
+<text x="268.0" y="25" font-size="10" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:10px">*</text>
+<rect x="278" y="10" width="16" height="22" rx="2" fill="#fff" stroke="#CFC6B8"/>
+<text x="286.0" y="25" font-size="10" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:10px">/</text>
+<rect x="296" y="10" width="16" height="22" rx="2" fill="#fff" stroke="#CFC6B8"/>
+<rect x="314" y="10" width="16" height="22" rx="2" fill="#fff" stroke="#CFC6B8"/>
+<text x="322.0" y="25" font-size="10" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:10px">x</text>
+<rect x="332" y="10" width="16" height="22" rx="2" fill="#fff" stroke="#CFC6B8"/>
+<rect x="350" y="10" width="16" height="22" rx="2" fill="#fff" stroke="#CFC6B8"/>
+<text x="358.0" y="25" font-size="10" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:10px">/</text>
+<rect x="368" y="10" width="16" height="22" rx="2" fill="#fff" stroke="#CFC6B8"/>
+<text x="376.0" y="25" font-size="10" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:10px">*</text>
+<rect x="386" y="10" width="16" height="22" rx="2" fill="#fff" stroke="#CFC6B8"/>
+<rect x="404" y="10" width="16" height="22" rx="2" fill="#fff" stroke="#CFC6B8"/>
+<text x="412.0" y="25" font-size="10" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:10px">b</text>
+<rect x="422" y="10" width="16" height="22" rx="2" fill="#fff" stroke="#CFC6B8"/>
+<rect x="440" y="10" width="16" height="22" rx="2" fill="#fff" stroke="#CFC6B8"/>
+<text x="448.0" y="25" font-size="10" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:10px">*</text>
+<rect x="458" y="10" width="16" height="22" rx="2" fill="#fff" stroke="#CFC6B8"/>
+<text x="466.0" y="25" font-size="10" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:10px">/</text>
+<text x="16" y="52" font-size="9.4" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:9.4px">/\*.*\*/</text>
+<text x="16" y="64" font-size="7.4" fill="#6B7378" text-anchor="start">gourmand : 1 résultat</text>
+<rect x="170" y="46" width="304" height="12" rx="3" fill="#C62828" fill-opacity=".85"/>
+<text x="16" y="88" font-size="9.4" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:9.4px">/\*.*?\*/</text>
+<text x="16" y="100" font-size="7.4" fill="#6B7378" text-anchor="start">paresseux : 2 résultats</text>
+<rect x="170" y="82" width="124" height="12" rx="3" fill="#2E7D32" fill-opacity=".85"/>
+<rect x="350" y="82" width="124" height="12" rx="3" fill="#2E7D32" fill-opacity=".85"/>
+<line x1="16" y1="118" x2="584" y2="118" stroke="#CFC6B8" stroke-dasharray="3 3"/>
+<text x="16" y="138" font-size="8.6" fill="#5D4037" text-anchor="start" font-weight="700">Retour arrière : ^(a+)+b$ essayé sur « aaa…ac » (n fois a, puis c)</text>
+<text x="70" y="164" font-size="8.4" fill="#2B2F33" text-anchor="end" class="mono" style="font-size:8.4px">n = 16</text>
+<rect x="80" y="154" width="7.2" height="13" rx="2" fill="#E65100"/>
+<text x="93.2" y="164" font-size="8.4" fill="#E65100" text-anchor="start" font-weight="700">2 ms</text>
+<text x="70" y="186" font-size="8.4" fill="#2B2F33" text-anchor="end" class="mono" style="font-size:8.4px">n = 20</text>
+<rect x="80" y="176" width="21.6" height="13" rx="2" fill="#E65100"/>
+<text x="107.6" y="186" font-size="8.4" fill="#E65100" text-anchor="start" font-weight="700">6 ms</text>
+<text x="70" y="208" font-size="8.4" fill="#2B2F33" text-anchor="end" class="mono" style="font-size:8.4px">n = 24</text>
+<rect x="80" y="198" width="356.40000000000003" height="13" rx="2" fill="#E65100"/>
+<text x="442.40000000000003" y="208" font-size="8.4" fill="#E65100" text-anchor="start" font-weight="700">99 ms</text>
+<text x="16" y="226" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Mesuré avec Node sur la machine de rédaction : chaque « a » de plus double à peu près le temps. Trente « a » se comptent en secondes.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#</span>var bloc = new Regex(@"/\*.*?\*/", RegexOptions.Singleline);   // . traverse aussi les \n
+var sur = new Regex(@"^[\w ]+\z", RegexOptions.None,
+                    TimeSpan.FromMilliseconds(200));        // au-delà : RegexMatchTimeoutException
+var lineaire = new Regex(@"^(a+)+b\z", RegexOptions.NonBacktracking);   // .NET 7 et suivants</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Singleline et Multiline</h3>
+      <p>Deux options indépendantes aux noms trompeurs. <code>Singleline</code> laisse le point accepter <code>\n</code>. <code>Multiline</code> fait de <code>^</code> et <code>$</code> des débuts et fins de <b>ligne</b>. On peut avoir les deux, ou aucune.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Pourquoi ça explose</h3>
+      <p>Dans <code>(a+)+</code>, une suite de « a » peut se découper de 2<sup>n−1</sup> façons, et le moteur les essaie toutes avant d'admettre l'échec. Un motif sans quantificateurs imbriqués ne connaît pas ce problème.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Appliquer un motif à quantificateurs imbriqués sur un texte saisi par l'utilisateur. Rhino se fige pendant que le moteur explore des milliards de pistes. Un délai maximal, ou l'option <code>NonBacktracking</code>, garantit que la recherche s'arrête.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 57 · Les expressions régulières</div>
+</section>
+
+<!-- ============ PAGE 4 · CAPTURER ET REMPLACER ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2B</b> · Le texte et les nombres</span><b>Cours 57</b></div>
+  <p class="rubrique">Schéma 3 · Capturer et remplacer</p>
+  <h2>Les groupes servent deux fois</h2>
+  <p style="max-width:165mm">Les parenthèses <b>capturent</b> : chaque groupe reçoit un numéro, de gauche à droite, et le remplacement peut les réutiliser avec <code>$1</code>, <code>$2</code>. Voici la fonction <code>displayName</code> de SnapSet qui fabrique un libellé lisible à partir d'une clé du schéma.</p>
+
+  <svg viewBox="0 0 600 222" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="222" fill="#EFE9E1"/>
+<rect x="16" y="14" width="190" height="32" rx="4" fill="#fff" stroke="#CFC6B8" stroke-width="1"/>
+<rect x="70.2" y="23" width="9.2" height="18" rx="2" fill="#1565C0" fill-opacity=".18" stroke="#1565C0" stroke-width=".9"/>
+<rect x="77.4" y="23" width="9.2" height="18" rx="2" fill="#7B1FA2" fill-opacity=".18" stroke="#7B1FA2" stroke-width=".9"/>
+<text x="31.6" y="35" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">c</text>
+<text x="38.800000000000004" y="35" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">o</text>
+<text x="46.0" y="35" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">u</text>
+<text x="53.2" y="35" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">l</text>
+<text x="60.4" y="35" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">e</text>
+<text x="67.6" y="35" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">u</text>
+<text x="74.8" y="35" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">r</text>
+<text x="82.0" y="35" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">R</text>
+<text x="89.19999999999999" y="35" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">V</text>
+<text x="96.39999999999999" y="35" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">B</text>
+<text x="103.6" y="35" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">F</text>
+<text x="110.8" y="35" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">o</text>
+<text x="118.0" y="35" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">n</text>
+<text x="125.2" y="35" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">d</text>
+<line x1="111" y1="48" x2="111" y2="64" stroke="#5D4037" stroke-width="1.2"/><polygon points="111,64 108.3,57.6 113.7,57.6" fill="#5D4037"/>
+<text x="232" y="30" font-size="9.4" fill="#5D4037" text-anchor="start" font-weight="700" class="mono" style="font-size:9.4px;white-space:pre">([a-z0-9])([A-Z])  →  '$1 $2'</text>
+<text x="232" y="44" font-size="8" fill="#6B7378" text-anchor="start" class="mono" style="font-size:8px">$1 = r, $2 = R</text>
+<rect x="16" y="66" width="190" height="32" rx="4" fill="#fff" stroke="#CFC6B8" stroke-width="1"/>
+<rect x="84.6" y="75" width="23.6" height="18" rx="2" fill="#1565C0" fill-opacity=".18" stroke="#1565C0" stroke-width=".9"/>
+<rect x="106.2" y="75" width="16.4" height="18" rx="2" fill="#7B1FA2" fill-opacity=".18" stroke="#7B1FA2" stroke-width=".9"/>
+<text x="31.6" y="87" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">c</text>
+<text x="38.800000000000004" y="87" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">o</text>
+<text x="46.0" y="87" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">u</text>
+<text x="53.2" y="87" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">l</text>
+<text x="60.4" y="87" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">e</text>
+<text x="67.6" y="87" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">u</text>
+<text x="74.8" y="87" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">r</text>
+<text x="89.19999999999999" y="87" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">R</text>
+<text x="96.39999999999999" y="87" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">V</text>
+<text x="103.6" y="87" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">B</text>
+<text x="110.8" y="87" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">F</text>
+<text x="118.0" y="87" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">o</text>
+<text x="125.2" y="87" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">n</text>
+<text x="132.4" y="87" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">d</text>
+<line x1="111" y1="100" x2="111" y2="116" stroke="#5D4037" stroke-width="1.2"/><polygon points="111,116 108.3,109.6 113.7,109.6" fill="#5D4037"/>
+<text x="232" y="82" font-size="9.4" fill="#5D4037" text-anchor="start" font-weight="700" class="mono" style="font-size:9.4px;white-space:pre">([A-Z]+)([A-Z][a-z])  →  '$1 $2'</text>
+<text x="232" y="96" font-size="8" fill="#6B7378" text-anchor="start" class="mono" style="font-size:8px">$1 = RVB, $2 = Fo</text>
+<rect x="16" y="118" width="190" height="32" rx="4" fill="#fff" stroke="#CFC6B8" stroke-width="1"/>
+<rect x="27.0" y="127" width="9.2" height="18" rx="2" fill="#E65100" fill-opacity=".18" stroke="#E65100" stroke-width=".9"/>
+<text x="31.6" y="139" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">c</text>
+<text x="38.800000000000004" y="139" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">o</text>
+<text x="46.0" y="139" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">u</text>
+<text x="53.2" y="139" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">l</text>
+<text x="60.4" y="139" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">e</text>
+<text x="67.6" y="139" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">u</text>
+<text x="74.8" y="139" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">r</text>
+<text x="89.19999999999999" y="139" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">R</text>
+<text x="96.39999999999999" y="139" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">V</text>
+<text x="103.6" y="139" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">B</text>
+<text x="118.0" y="139" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">F</text>
+<text x="125.2" y="139" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">o</text>
+<text x="132.4" y="139" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">n</text>
+<text x="139.6" y="139" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">d</text>
+<line x1="111" y1="152" x2="111" y2="168" stroke="#5D4037" stroke-width="1.2"/><polygon points="111,168 108.3,161.6 113.7,161.6" fill="#5D4037"/>
+<text x="232" y="134" font-size="9.4" fill="#5D4037" text-anchor="start" font-weight="700" class="mono" style="font-size:9.4px;white-space:pre">charAt(0).toUpperCase()</text>
+<text x="232" y="148" font-size="8" fill="#6B7378" text-anchor="start" class="mono" style="font-size:8px">pas une regex</text>
+<rect x="16" y="170" width="190" height="32" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.4"/>
+<text x="31.6" y="191" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">C</text>
+<text x="38.800000000000004" y="191" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">o</text>
+<text x="46.0" y="191" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">u</text>
+<text x="53.2" y="191" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">l</text>
+<text x="60.4" y="191" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">e</text>
+<text x="67.6" y="191" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">u</text>
+<text x="74.8" y="191" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">r</text>
+<text x="89.19999999999999" y="191" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">R</text>
+<text x="96.39999999999999" y="191" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">V</text>
+<text x="103.6" y="191" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">B</text>
+<text x="118.0" y="191" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">F</text>
+<text x="125.2" y="191" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">o</text>
+<text x="132.4" y="191" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">n</text>
+<text x="139.6" y="191" font-size="12" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:12px">d</text>
+<text x="232" y="186" font-size="8" fill="#E65100" text-anchor="start" font-weight="700">Étape 2 : [A-Z]+ prend d'abord RVBF, puis rend le F</text>
+<text x="232" y="199" font-size="8" fill="#E65100" text-anchor="start">pour que [A-Z][a-z] trouve « Fo » : c'est le retour arrière.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#</span>var d = Regex.Match("2026-10-24", @"(?&lt;a&gt;\d{4})-(?&lt;m&gt;\d\d)-(?&lt;j&gt;\d\d)");
+string jour = d.Groups["j"].Value;                                   // "24"
+string fr = Regex.Replace("2026-10-24", @"(\d{4})-(\d\d)-(\d\d)", "$3/$2/$1");   // "24/10/2026"
+string net = Regex.Replace(texte, @"\s+", " ");                        // blancs multiples → un seul
+string dbl = Regex.Replace("a1 b2", @"\d", x => (int.Parse(x.Value) * 2).ToString());  // "a2 b4"</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Nommer ses groupes</h3>
+      <p><code>(?&lt;jour&gt;…)</code> se lit <code>Groups["jour"]</code> : le code survit à l'ajout d'un groupe en tête, ce que <code>Groups[1]</code> ne fait pas. <code>(?:…)</code> regroupe sans numéroter, pour ne pas décaler les autres.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Quand ne pas en écrire</h3>
+      <p>Pour « commence par », <code>StartsWith</code> est plus clair. Pour un langage imbriqué (accolades, chaînes, commentaires), un analyseur est nécessaire : Roslyn pour le C#, <code>JSON.parse</code> pour le JSON.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    En JavaScript, <code>"aa".replace(/a/, "b")</code> donne « ba » : sans le drapeau <code>g</code>, seul le premier résultat est remplacé. En C#, <code>Regex.Replace</code> remplace tout par défaut. Même idée, deux comportements.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 57 · Les expressions régulières</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2B</b> · Le texte et les nombres</span><b>Cours 57</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Valider une couleur, repérer une méthode</h2>
+  <p style="max-width:165mm">SnapSet emploie les regex à deux endroits : valider une valeur du schéma, et lire le <code>Xxx.cs</code> du développeur avant de régénérer, pour savoir ce qu'il a déjà écrit.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">SnapSet/schema/Convertisseurs.cs</span></div>
+<div class="l k1"><span class="n">96</span><span class="kw">private static readonly</span> <span class="ty">Regex</span> MotifHex =<span class="rep r1">1</span></div>
+<div class="l k1"><span class="n">97</span>  <span class="st">@"^#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?\z"</span>,</div>
+<div class="l k1"><span class="n"> </span>  <span class="ty">RegexOptions</span>.Compiled);</div>
+<div class="l"><span class="cm">SnapSet/…/Generation/EcrivainGeneration.cs</span></div>
+<div class="l k2"><span class="n">116</span><span class="st">@"\bpartial\s+void\s+(Sur(?:Clic|Changement)</span><span class="rep r2">2</span></div>
+<div class="l k2"><span class="n"> </span><span class="st">  [A-Za-z0-9_]*)\s*\(\s*\)\s*(?:\{|=&gt;)"</span>,</div>
+<div class="l k2"><span class="n">322</span><span class="kw">string</span> nom = m.Groups[<span class="nb">1</span>].Value;</div>
+<div class="l k3"><span class="n">131</span><span class="st">@"//[^\n]*|/\*.*?\*/"</span>,<span class="rep r3">3</span></div>
+<div class="l k3"><span class="n">132</span><span class="ty">RegexOptions</span>.CultureInvariant | <span class="ty">RegexOptions</span>.Singleline</div>
+<div class="l k4"><span class="n">355</span><span class="kw">new</span> <span class="ty">Regex</span>(<span class="st">@"\b"</span> + <span class="ty">Regex</span>.Escape(nomEnum)<span class="rep r4">4</span></div>
+<div class="l k4"><span class="n"> </span>  + <span class="st">@"\s*\.\s*([A-Za-z_][A-Za-z0-9_]*)"</span>, …)</div>
+<div class="l"><span class="cm">SnapSet/schema/generer-modele.js</span></div>
+<div class="l k5"><span class="n">182</span>.replace(<span class="st">/([a-z0-9])([A-Z])/g</span>, <span class="st">'$1 $2'</span>)<span class="rep r5">5</span></div>
+<div class="l k5"><span class="n">183</span>.replace(<span class="st">/([A-Z]+)([A-Z][a-z])/g</span>, <span class="st">'$1 $2'</span>);</div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>\z et non $</b>Le commentaire des lignes 94–95 le dit : avec $, « #FF000080\n » passerait.</li>
+      <li><span class="rep r2">2</span><b>\b et (?:…)</b>« partial » en mot entier ; le groupe sans capture laisse Groups[1] au nom de la méthode.</li>
+      <li><span class="rep r3">3</span><b>Paresseux, Singleline</b>.*? s'arrête au premier */, même plusieurs lignes plus bas.</li>
+      <li><span class="rep r4">4</span><b>Escape</b>Le nom vient du dessin : on l'échappe avant de l'insérer.</li>
+      <li><span class="rep r5">5</span><b>Côté JavaScript</b>Mêmes groupes, même $1 ; le g remplace partout.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À surveiller · une regex ne lit pas le C#</span>
+    <code>Commentaires</code> ne connaît pas les chaînes : dans <code>"http://…"</code>, le <code>//</code> est pris pour un commentaire, et la ligne 279 efface la fin de la ligne. L'effet reste limité (une surcharge écrite sur la même ligne serait manquée) et la documentation de <code>SurchargesDuCode</code> annonce un « repérage textuel ». Le remède complet serait de passer par Roslyn.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 57 · Les expressions régulières</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2B</b> · Le texte et les nombres</span><b>Cours 57</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce"><code>\d{3}</code> accepte…</div><ul>
+      <li><span>A</span>trois chiffres</li><li><span>B</span>le nombre 3</li><li><span>C</span>un chiffre ou trois</li><li><span>D</span>« d d d »</li></ul></div>
+
+    <div class="q"><div class="enonce"><code>1.5</code> accepte « 105 » ?</div><ul>
+      <li><span>A</span>oui, le point accepte tout caractère</li><li><span>B</span>non</li><li><span>C</span>seulement avec Singleline</li><li><span>D</span>seulement en JavaScript</li></ul></div>
+
+    <div class="q"><div class="enonce">En .NET, <code>^abc$</code> sur « abc\n »…</div><ul>
+      <li><span>A</span>dépend de la culture</li><li><span>B</span>échoue</li><li><span>C</span>lève une exception</li><li><span>D</span>réussit</li></ul></div>
+
+    <div class="q"><div class="enonce"><code>(?:Clic|Changement)</code>…</div><ul>
+      <li><span>A</span>est une erreur</li><li><span>B</span>regroupe sans capturer</li><li><span>C</span>capture le mot</li><li><span>D</span>rend le groupe facultatif</li></ul></div>
+
+    <div class="q"><div class="enonce"><code>/\*.*\*/</code> sur « /* a */ x /* b */ » trouve…</div><ul>
+      <li><span>A</span>« /* a */ » seulement</li><li><span>B</span>rien</li><li><span>C</span>tout le texte en un résultat</li><li><span>D</span>deux résultats</li></ul></div>
+
+    <div class="q"><div class="enonce"><code>Singleline</code> change…</div><ul>
+      <li><span>A</span>le sens de ^ et $</li><li><span>B</span>le point, qui accepte \n</li><li><span>C</span>la casse</li><li><span>D</span>le nombre de résultats</li></ul></div>
+
+    <div class="q"><div class="enonce">Contre l'explosion du retour arrière : <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>NonBacktracking</li><li><span>B</span>Compiled</li><li><span>C</span>éviter (a+)+</li><li><span>D</span>un délai maximal</li></ul></div>
+
+    <div class="q"><div class="enonce"><code>Groups[0]</code> contient…</div><ul>
+      <li><span>A</span>rien</li><li><span>B</span>le motif</li><li><span>C</span>tout le texte trouvé</li><li><span>D</span>le premier groupe</li></ul></div>
+
+    <div class="q"><div class="enonce"><code>"aa".replace(/a/, "b")</code> en JS donne…</div><ul>
+      <li><span>A</span>« ba »</li><li><span>B</span>« aa »</li><li><span>C</span>« bb »</li><li><span>D</span>« ab »</li></ul></div>
+
+    <div class="q"><div class="enonce">Pourquoi <code>Regex.Escape(nomEnum)</code> ?</div><ul>
+      <li><span>A</span>passer en minuscules</li><li><span>B</span>pour la vitesse</li><li><span>C</span>neutraliser les caractères spéciaux</li><li><span>D</span>retirer les accents</li></ul></div>
+
+    <div class="q"><div class="enonce">displayName("couleurRVBFond") donne…</div><ul>
+      <li><span>A</span>« Couleur RVBFond »</li><li><span>B</span>« Couleur R V B Fond »</li><li><span>C</span>« CouleurRVBFond »</li><li><span>D</span>« Couleur RVB Fond »</li></ul></div>
+
+    <div class="q"><div class="enonce">MotifHex finit par <code>\z</code> parce que…</div><ul>
+      <li><span>A</span>pour ignorer la casse</li><li><span>B</span>$ accepterait un \n final</li><li><span>C</span>$ n'existe pas en .NET</li><li><span>D</span>\z est plus rapide</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 57 · Les expressions régulières</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2B</b> · Le texte et les nombres</span><b>Cours 57</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · A.</b> \d un chiffre, {3} trois fois.</div>
+    <div><b>02 · A.</b> D'où \. et Regex.Escape.</div>
+    <div><b>03 · D.</b> $ s'arrête avant le \n final.</div>
+    <div><b>04 · B.</b> Groups[1] reste le nom entier.</div>
+    <div><b>05 · C.</b> Gourmand : jusqu'au dernier */.</div>
+    <div><b>06 · B.</b> Multiline change ^ et $.</div>
+    <div><b>07 · A, C et D.</b> Compiled accélère, sans borner.</div>
+    <div><b>08 · C.</b> Les groupes commencent à 1.</div>
+    <div><b>09 · A.</b> Sans g, un seul remplacement.</div>
+    <div><b>10 · C.</b> EcrivainGeneration.cs:355.</div>
+    <div><b>11 · D.</b> Deux remplacements, schéma 3.</div>
+    <div><b>12 · B.</b> Convertisseurs.cs:94–95.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 et 2. <b>7 à 9</b> : relis les pages 3 et 4. <b>10 à 12</b> : la partie 2 est terminée ; passe à sa fiche récap.
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">^…\z</td><td>tout le texte, rien de plus</td><td>Convertisseurs.cs:97</td></tr>
+      <tr><td class="c">\b … (?:a|b)</td><td>mot entier, alternative sans capture</td><td>EcrivainGeneration.cs:116</td></tr>
+      <tr><td class="c">.*? + Singleline</td><td>le plus court, à travers les lignes</td><td>EcrivainGeneration.cs:131–132</td></tr>
+      <tr><td class="c">Regex.Escape(texte)</td><td>insérer un texte sans surprise</td><td>EcrivainGeneration.cs:355</td></tr>
+      <tr><td class="c">.replace(/(…)(…)/g, '$1 $2')</td><td>réécrire avec les groupes</td><td>generer-modele.js:182–183</td></tr>
+      <tr><td class="c">TimeSpan / NonBacktracking</td><td>borner la recherche</td><td>exemple page 3</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Motif</dt><dd>L'expression qui décrit la famille de textes cherchée.</dd>
+    <dt>Ancre</dt><dd>Une position (début, fin, frontière de mot) qui ne consomme aucun caractère.</dd>
+    <dt>Groupe capturant</dt><dd>Une partie entre parenthèses dont le texte trouvé est conservé et numéroté.</dd>
+    <dt>Gourmand</dt><dd>Un quantificateur qui prend le plus possible avant de rendre ; paresseux : l'inverse.</dd>
+    <dt>Retour arrière</dt><dd>Le moteur défait un choix pour essayer le suivant quand la suite échoue.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : fiche récap de la partie 2</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 57 · Les expressions régulières</div>
+</section>
+
+</body>
+</html>

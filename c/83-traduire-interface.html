@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>83 · Traduire une interface</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-6">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 83</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Traduire une interface</h1>
+  <p class="chapeau">Traduire une interface, ce n'est pas remplacer des mots. Il faut d'abord la <b>préparer</b> (internationalisation, « i18n ») : sortir les textes du code, lire et écrire les nombres selon la culture, laisser de la place. Ensuite seulement vient l'<b>adaptation</b> à une langue (localisation, « l10n »). Un code qui n'a pas été préparé se traduit mal, ou pas du tout.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>56</b> et <b>80</b></span>
+    <span class="pastille">Exemples · <b>LectureCurseur</b> (SnapSet), <b>ModesCorrection</b>, <b>nodeEditors.jsx</b> (Magpie)</span>
+  </div>
+
+  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+    <svg viewBox="0 0 600 200" width="100%">
+<text x="16" y="18" font-size="8.6" fill="#2F6B3A" text-anchor="start" font-weight="700">1234567,5 et le 3 octobre 2026, formatés par Intl (Node 22) selon la culture</text>
+<text x="110" y="40" font-size="8" fill="#6B7378" text-anchor="start" font-weight="700">nombre</text>
+<text x="260" y="40" font-size="8" fill="#6B7378" text-anchor="start" font-weight="700">date courte</text>
+<text x="390" y="40" font-size="8" fill="#6B7378" text-anchor="start" font-weight="700">ce qui change</text>
+<rect x="16" y="48" width="568" height="20" rx="3" fill="#E7F0E8"/>
+<text x="28" y="62" font-size="8.6" fill="#2F6B3A" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">fr-FR</text>
+<text x="110" y="62" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px">1 234 567,5</text>
+<text x="260" y="62" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px">03/10/2026</text>
+<text x="390" y="62" font-size="8" fill="#6B7378" text-anchor="start" font-style="italic">espace fine insécable</text>
+<rect x="16" y="71" width="568" height="20" rx="3" fill="#fff"/>
+<text x="28" y="85" font-size="8.6" fill="#2F6B3A" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">en-US</text>
+<text x="110" y="85" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px">1,234,567.5</text>
+<text x="260" y="85" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px">10/3/26</text>
+<text x="390" y="85" font-size="8" fill="#6B7378" text-anchor="start" font-style="italic">mois avant jour</text>
+<rect x="16" y="94" width="568" height="20" rx="3" fill="#E7F0E8"/>
+<text x="28" y="108" font-size="8.6" fill="#2F6B3A" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">de-DE</text>
+<text x="110" y="108" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px">1.234.567,5</text>
+<text x="260" y="108" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px">03.10.26</text>
+<text x="390" y="108" font-size="8" fill="#6B7378" text-anchor="start" font-style="italic">le point groupe</text>
+<rect x="16" y="117" width="568" height="20" rx="3" fill="#fff"/>
+<text x="28" y="131" font-size="8.6" fill="#2F6B3A" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">de-CH</text>
+<text x="110" y="131" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px">1’234’567.5</text>
+<text x="260" y="131" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px">—</text>
+<text x="390" y="131" font-size="8" fill="#6B7378" text-anchor="start" font-style="italic">apostrophe</text>
+<rect x="16" y="140" width="568" height="20" rx="3" fill="#E7F0E8"/>
+<text x="28" y="154" font-size="8.6" fill="#2F6B3A" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">hi-IN</text>
+<text x="110" y="154" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px">12,34,567.5</text>
+<text x="260" y="154" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px">—</text>
+<text x="390" y="154" font-size="8" fill="#6B7378" text-anchor="start" font-style="italic">groupes de 2 après 3</text>
+<rect x="16" y="163" width="568" height="20" rx="3" fill="#fff"/>
+<text x="28" y="177" font-size="8.6" fill="#2F6B3A" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">ja-JP</text>
+<text x="110" y="177" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px">—</text>
+<text x="260" y="177" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px">2026/10/03</text>
+<text x="390" y="177" font-size="8" fill="#6B7378" text-anchor="start" font-style="italic">année d'abord</text>
+<text x="300" y="196" font-size="7.8" fill="#2B2F33" text-anchor="middle" font-weight="700">Le séparateur, l'ordre, les groupes : rien n'est universel. Une interface ne colle jamais un nombre à la main.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Le code manipule des identifiants et des nombres neutres ; ce que voit l'utilisateur (libellés, nombres, dates, pluriels) se fabrique au dernier moment, selon sa culture.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Un plan d'architecte. Les cotes sont en mètres pour tout le monde ; les légendes, elles, se traduisent, et le cartouche a été dessiné assez grand pour l'allemand.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>distinguer culture invariante et culture du poste ;</li>
+        <li>séparer un identifiant de son libellé ;</li>
+        <li>écrire un pluriel traduisible ;</li>
+        <li>prévoir la place d'une traduction.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À retenir</span>
+    Deux cultures, deux usages. Ce qui est stocké ou échangé (fichier, .gh, JSON, code généré) s'écrit en culture <b>invariante</b>. Ce qui est montré à l'utilisateur ou tapé par lui passe par la culture <b>du poste</b>. Les mélanger, c'est un fichier illisible sur un autre ordinateur.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 83 · Traduire une interface</div>
+</section>
+
+<!-- ============ PAGE 2 · LES NOMBRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 83</b></div>
+  <p class="rubrique">Schéma 1 · Lire un nombre tapé</p>
+  <h2>Une virgule n'est pas un point</h2>
+  <p style="max-width:165mm">Un utilisateur français tape « 0,5 », un collègue américain « 0.5 ». Un champ numérique doit accepter les deux sans se tromper, et refuser franchement ce qu'il ne comprend pas. Le plus dangereux n'est pas l'erreur affichée : c'est le nombre lu de travers sans rien dire.</p>
+
+  <svg viewBox="0 0 600 220" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="220" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#2F6B3A" text-anchor="start" font-weight="700">Quatre saisies, deux lecteurs (poste en français)</text>
+<text x="150" y="44" font-size="8" fill="#6B7378" text-anchor="middle" font-weight="700">saisie</text>
+<text x="310" y="44" font-size="8" fill="#6B7378" text-anchor="middle" font-weight="700">SnapSet · LectureCurseur</text>
+<text x="480" y="44" font-size="8" fill="#6B7378" text-anchor="middle" font-weight="700">Magpie web · parseGhNumber</text>
+<rect x="100" y="52" width="100" height="22" rx="4" fill="#fff" stroke="#2B2F33" stroke-width="1.2"/>
+<text x="150.0" y="66.0" font-size="9" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">0,5</text>
+<rect x="240" y="52" width="140" height="22" rx="4" fill="#E7F0E8" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="310.0" y="65.8" font-size="8.4" fill="#2E7D32" text-anchor="middle" font-weight="700">0,5</text>
+<rect x="400" y="52" width="160" height="22" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="480.0" y="65.8" font-size="8.4" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">0.5</text>
+<rect x="100" y="80" width="100" height="22" rx="4" fill="#fff" stroke="#2B2F33" stroke-width="1.2"/>
+<text x="150.0" y="94.0" font-size="9" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">0.5</text>
+<rect x="240" y="80" width="140" height="22" rx="4" fill="#E7F0E8" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="310.0" y="93.8" font-size="8.4" fill="#2E7D32" text-anchor="middle" font-weight="700">0,5</text>
+<rect x="400" y="80" width="160" height="22" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="480.0" y="93.8" font-size="8.4" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">0.5</text>
+<rect x="100" y="108" width="100" height="22" rx="4" fill="#fff" stroke="#2B2F33" stroke-width="1.2"/>
+<text x="150.0" y="122.0" font-size="9" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">1 234,5</text>
+<rect x="240" y="108" width="140" height="22" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
+<text x="310.0" y="121.8" font-size="8.4" fill="#7B1FA2" text-anchor="middle" font-weight="700">refusée, motif</text>
+<rect x="400" y="108" width="160" height="22" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="480.0" y="121.8" font-size="8.4" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">1  (sans erreur)</text>
+<rect x="100" y="136" width="100" height="22" rx="4" fill="#fff" stroke="#2B2F33" stroke-width="1.2"/>
+<text x="150.0" y="150.0" font-size="9" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">1,234.5</text>
+<rect x="240" y="136" width="140" height="22" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
+<text x="310.0" y="149.8" font-size="8.4" fill="#7B1FA2" text-anchor="middle" font-weight="700">refusée, motif</text>
+<rect x="400" y="136" width="160" height="22" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="480.0" y="149.8" font-size="8.4" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">1.234  (sans erreur)</text>
+<text x="16" y="184" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">Mieux vaut refuser en le disant que deviner faux en silence : 1 au lieu de 1234,5 passe inaperçu.</text>
+<text x="16" y="200" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Colonne Magpie : exécuté avec Node. Colonne SnapSet : déduit de ModeleCurseur.cs:131–133 (invariante puis culture, sans</text>
+<text x="16" y="212" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">séparateur de milliers), le .NET n'étant pas disponible ici pour l'exécuter.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">SnapSet/src/SnapSet.Constituants/Pur/ModeleCurseur.cs · lignes 132 et 133 (ligne coupée)</span>const NumberStyles style = NumberStyles.Float;
+if (decimal.TryParse(s, style, CultureInfo.InvariantCulture, out decimal d)
+    || decimal.TryParse(s, style, poste, out d))</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Pourquoi pas de milliers</h3>
+      <p>Le commentaire des lignes 110 et 111 l'explique : avec le séparateur de milliers autorisé, « 0,5 » serait lu 5 en culture invariante, où la virgule groupe les milliers. <code>NumberStyles.Float</code> accepte blancs, signe, point décimal et exposant, rien d'autre.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Écrire pour la machine</h3>
+      <p>Ce que SnapSet écrit dans un message ou un fichier passe par <code>InvariantCulture</code> : 26 fichiers .cs l'emploient (compté). Ainsi <code>BornesCurseur</code> écrit « le minimum (0.5) » (ModeleCurseur.cs:163), identique sur tous les postes.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    <code>double.Parse(texte)</code> sans culture. Il prend la culture du poste : le même fichier se lit 0,5 sur un Windows français et 5 sur un Windows américain (la virgule y groupe des milliers). En JavaScript, <code>parseFloat</code> s'arrête au premier caractère inconnu, sans erreur.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 83 · Traduire une interface</div>
+</section>
+
+<!-- ============ PAGE 3 · LES TEXTES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 83</b></div>
+  <p class="rubrique">Schéma 2 · Les textes et leurs règles</p>
+  <h2>Un identifiant ne se traduit pas</h2>
+  <p style="max-width:165mm">Un mode de correction a un <b>nom interne</b>, stable, enregistré dans les fichiers, et un <b>libellé</b> qu'on montre. Traduire le libellé ne doit jamais toucher au nom interne, sinon les anciens fichiers ne se relisent plus. Les pluriels, eux, montrent qu'une phrase ne se traduit pas mot à mot.</p>
+
+  <svg viewBox="0 0 600 212" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="212" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#2F6B3A" text-anchor="start" font-weight="700">Catégorie de pluriel choisie pour 0, 1, 2, 5 et 21 (Intl.PluralRules, mesuré)</text>
+<text x="170" y="44" font-size="9" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">0</text>
+<text x="254" y="44" font-size="9" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">1</text>
+<text x="338" y="44" font-size="9" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">2</text>
+<text x="422" y="44" font-size="9" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">5</text>
+<text x="506" y="44" font-size="9" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">21</text>
+<text x="110" y="67" font-size="8.6" fill="#2B2F33" text-anchor="end" font-weight="700">français</text>
+<rect x="132" y="52" width="76" height="22" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="170.0" y="65.8" font-size="8.4" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">one</text>
+<rect x="216" y="52" width="76" height="22" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="254.0" y="65.8" font-size="8.4" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">one</text>
+<rect x="300" y="52" width="76" height="22" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="338.0" y="65.8" font-size="8.4" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">other</text>
+<rect x="384" y="52" width="76" height="22" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="422.0" y="65.8" font-size="8.4" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">other</text>
+<rect x="468" y="52" width="76" height="22" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="506.0" y="65.8" font-size="8.4" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">other</text>
+<text x="110" y="95" font-size="8.6" fill="#2B2F33" text-anchor="end" font-weight="700">anglais</text>
+<rect x="132" y="80" width="76" height="22" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="170.0" y="93.8" font-size="8.4" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">other</text>
+<rect x="216" y="80" width="76" height="22" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="254.0" y="93.8" font-size="8.4" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">one</text>
+<rect x="300" y="80" width="76" height="22" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="338.0" y="93.8" font-size="8.4" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">other</text>
+<rect x="384" y="80" width="76" height="22" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="422.0" y="93.8" font-size="8.4" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">other</text>
+<rect x="468" y="80" width="76" height="22" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="506.0" y="93.8" font-size="8.4" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">other</text>
+<text x="110" y="123" font-size="8.6" fill="#2B2F33" text-anchor="end" font-weight="700">russe</text>
+<rect x="132" y="108" width="76" height="22" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
+<text x="170.0" y="121.8" font-size="8.4" fill="#E65100" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">many</text>
+<rect x="216" y="108" width="76" height="22" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="254.0" y="121.8" font-size="8.4" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">one</text>
+<rect x="300" y="108" width="76" height="22" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="338.0" y="121.8" font-size="8.4" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">few</text>
+<rect x="384" y="108" width="76" height="22" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
+<text x="422.0" y="121.8" font-size="8.4" fill="#E65100" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">many</text>
+<rect x="468" y="108" width="76" height="22" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="506.0" y="121.8" font-size="8.4" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">one</text>
+<text x="110" y="151" font-size="8.6" fill="#2B2F33" text-anchor="end" font-weight="700">arabe</text>
+<rect x="132" y="136" width="76" height="22" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
+<text x="170.0" y="149.8" font-size="8.4" fill="#7B1FA2" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">zero</text>
+<rect x="216" y="136" width="76" height="22" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="254.0" y="149.8" font-size="8.4" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">one</text>
+<rect x="300" y="136" width="76" height="22" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="338.0" y="149.8" font-size="8.4" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">two</text>
+<rect x="384" y="136" width="76" height="22" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="422.0" y="149.8" font-size="8.4" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">few</text>
+<rect x="468" y="136" width="76" height="22" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
+<text x="506.0" y="149.8" font-size="8.4" fill="#E65100" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">many</text>
+<text x="16" y="180" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">« 0 fichier » en français, « 0 files » en anglais : la règle change avec la langue, pas seulement le mot.</text>
+<text x="16" y="198" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Un message s'écrit donc en entier par catégorie ; « n + " fichier" + (n > 1 ? "s" : "") » ne se traduit pas.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/plugin/Admin/ModesCorrection.cs · lignes 28 à 30 et MagpieExerciseEditor.cs · ligne 922 (extraits)</span>Libelles = new Dictionary&lt;ValidationMode, string&gt; {
+  { ValidationMode.ExactOrderedList, "Liste ordonnée (nombres)" },
+…
+writer.SetString("Mode", Mode.ToString());</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Le bon découpage</h3>
+      <p>Le .gh enregistre <code>ExactOrderedList</code> (ligne 922) et le relit par <code>Enum.TryParse</code> (ligne 939). Le menu montre « Liste ordonnée (nombres) ». Traduire la table des libellés (lignes 28 à 37) ne casse aucun fichier existant.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Des phrases entières</h3>
+      <p>On ne colle pas des morceaux : l'ordre des mots change d'une langue à l'autre. On écrit une phrase complète avec des emplacements nommés (« {n} fichiers modifiés »), une par catégorie de pluriel, et la bibliothèque choisit la bonne.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Comparer ou trier des textes sans culture. Trié par codes, « Zoé » passe avant « eau » et « Été » après « zèbre » ; avec <code>Intl.Collator("fr")</code> : eau, école, Été, zèbre, Zoé (mesuré). Magpie trie ses parcours avec <code>StringComparer.CurrentCultureIgnoreCase</code> (MagpieParcoursLauncher.cs:119).
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 83 · Traduire une interface</div>
+</section>
+
+<!-- ============ PAGE 4 · LA PLACE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 83</b></div>
+  <p class="rubrique">Schéma 3 · La place et la casse</p>
+  <h2>Une traduction prend de la place</h2>
+  <p style="max-width:165mm">L'anglais est souvent plus court que le français, l'allemand et le russe souvent plus longs. Une interface dont les boîtes sont taillées pour une langue déborde dans une autre. La seule défense durable : des boîtes qui se mesurent sur leur texte.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#2F6B3A" text-anchor="start" font-weight="700">Un libellé de bouton dans quatre langues (traductions proposées, longueurs comptées)</text>
+<text x="90" y="51" font-size="8.4" fill="#2B2F33" text-anchor="end" font-weight="700">français</text>
+<rect x="100" y="38" width="144" height="18" fill="#E7F0E8" stroke="#2F6B3A"/>
+<text x="106" y="51" font-size="9" fill="#2F6B3A" text-anchor="start" font-weight="700">Recharger</text>
+<text x="252" y="51" font-size="7.8" fill="#6B7378" text-anchor="start" class="mono" style="font-size:7.8px">9 car.</text>
+<text x="90" y="77" font-size="8.4" fill="#2B2F33" text-anchor="end" font-weight="700">anglais</text>
+<rect x="100" y="64" width="96" height="18" fill="#E7F0E8" stroke="#2F6B3A"/>
+<text x="106" y="77" font-size="9" fill="#2F6B3A" text-anchor="start" font-weight="700">Reload</text>
+<text x="204" y="77" font-size="7.8" fill="#6B7378" text-anchor="start" class="mono" style="font-size:7.8px">6 car.</text>
+<text x="90" y="103" font-size="8.4" fill="#2B2F33" text-anchor="end" font-weight="700">allemand</text>
+<rect x="100" y="90" width="144" height="18" fill="#E7F0E8" stroke="#2F6B3A"/>
+<text x="106" y="103" font-size="9" fill="#2F6B3A" text-anchor="start" font-weight="700">Neu laden</text>
+<text x="252" y="103" font-size="7.8" fill="#6B7378" text-anchor="start" class="mono" style="font-size:7.8px">9 car.</text>
+<text x="90" y="129" font-size="8.4" fill="#2B2F33" text-anchor="end" font-weight="700">russe</text>
+<rect x="100" y="116" width="208" height="18" fill="#E7F0E8" stroke="#2F6B3A"/>
+<text x="106" y="129" font-size="9" fill="#2F6B3A" text-anchor="start" font-weight="700">Перезагрузить</text>
+<text x="316" y="129" font-size="7.8" fill="#6B7378" text-anchor="start" class="mono" style="font-size:7.8px">13 car.</text>
+<line x1="244" y1="32" x2="244" y2="142" stroke="#C62828" stroke-width="1.2" stroke-dasharray="4 3"/>
+<text x="248" y="150" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">place prévue pour le français</text>
+<text x="400" y="54" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700">SnapSet : la boîte suit le texte</text>
+<text x="400" y="68" font-size="8" fill="#2B2F33" text-anchor="start">mesuré, jamais rogné (décision 5).</text>
+<text x="400" y="94" font-size="8.4" fill="#C62828" text-anchor="start" font-weight="700">Magpie : largeur fixe (176 px),</text>
+<text x="400" y="108" font-size="8" fill="#2B2F33" text-anchor="start">partagée par poids ; le texte n'est</text>
+<text x="400" y="122" font-size="8" fill="#2B2F33" text-anchor="start">mesuré que pour être centré.</text>
+<text x="16" y="180" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">Repère courant : prévoir 30 % de plus pour un texte long, jusqu'au double ou plus pour un mot court.</text>
+<text x="16" y="198" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Ordre de grandeur cité par les guides de localisation, à vérifier sur ses propres textes.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/plugin/Core/PeintreBoutons.cs · lignes 165 à 167</span>SizeF texte = graphics.MeasureString(bouton.Libelle, GH_FontServer.Standard);
+float largeurBloc = texte.Width + (bouton.Icone != null ? …);
+float x = rect.X + (rect.Width - largeurBloc) / 2f;</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Mesurer pour centrer, pas pour élargir</h3>
+      <p>Le peintre de boutons de Magpie mesure le libellé, mais seulement pour le centrer. La largeur du bouton vient de la barre (176 px) et des poids. Un libellé plus large que le bouton déborderait de part et d'autre, sans être coupé.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>La casse dépend de la langue</h3>
+      <p>Mesuré avec Node : <code>"Straße".toUpperCase()</code> donne « STRASSE », six lettres devenues sept. En turc, la minuscule de « I » est « ı » (sans point), et la majuscule de « i » est « İ ». Pour un identifiant, on compare en invariante ou en ordinal.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Écrire les libellés dans le code de peinture. Ils sont alors éparpillés dans des dizaines de fichiers, et la traduction devient une chasse au trésor. Une table de textes par langue (fichiers .resx en .NET, JSON côté web) les rassemble et laisse le code intact.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 83 · Traduire une interface</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 83</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Des interfaces françaises, plus ou moins prêtes</h2>
+  <p style="max-width:165mm">Les trois dépôts parlent une langue : le français pour SnapSet et Magpie, l'anglais pour les composants de Cuttlefish (Bubble.cs:18–20). Aucun n'est traduit. Mais certains choix rendent une future traduction facile, d'autres la rendront coûteuse.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">SnapSet/src/SnapSet.Constituants/Pur/ModeleCurseur.cs</span></div>
+<div class="l k1"><span class="n">133</span><span class="kw">if</span> (decimal.TryParse(s, style, Invariant…) || …poste…)<span class="rep r1">1</span></div>
+<div class="l"><span class="cm">magpie/plugin/Admin/MagpieExerciseEditor.cs</span></div>
+<div class="l k2"><span class="n">922</span>writer.SetString(<span class="st">"Mode"</span>, Mode.ToString());<span class="rep r2">2</span></div>
+<div class="l"><span class="cm">magpie/web/index.html</span></div>
+<div class="l k3"><span class="n">2</span>&lt;html lang=<span class="st">"fr"</span>&gt;<span class="rep r3">3</span></div>
+<div class="l"><span class="cm">magpie/web/src/nodeEditors.jsx</span></div>
+<div class="l k4"><span class="n">9</span>n.toFixed(digits).replace(<span class="st">"."</span>, <span class="st">","</span>);<span class="rep r4">4</span></div>
+<div class="l k4"><span class="n">10</span>parseFloat(String(text).replace(<span class="st">","</span>, <span class="st">"."</span>));</div>
+<div class="l"><span class="cm">magpie/plugin/Student/MagpieParcoursLauncherAttributes.cs</span></div>
+<div class="l k5"><span class="n">187</span>….ToString(<span class="st">"0.#"</span>, CultureInfo.CurrentCulture) + <span class="st">" %"</span>;<span class="rep r5">5</span></div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Deux cultures</b>Point ou virgule.</li>
+      <li><span class="rep r2">2</span><b>Nom interne</b>Le libellé, à part.</li>
+      <li><span class="rep r3">3</span><b>La langue déclarée</b>Césure, lecteurs d'écran.</li>
+      <li><span class="rep r4">4</span><b>Virgule en dur</b>Le système supposé français.</li>
+      <li><span class="rep r5">5</span><b>Unité collée</b>« 50 % » ou « 50% ».</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À surveiller · la virgule en dur de l'éditeur web</span>
+    <code>ghNumber</code> et <code>parseGhNumber</code> (nodeEditors.jsx:9–10) supposent un Grasshopper réglé en français : le commentaire de la ligne 8 le dit. La lecture est indulgente en silence : « 1 234,5 » donne 1, « 1,234.5 » donne 1,234 (mesuré). Un <code>Number()</code> après nettoyage, avec un refus visible pour <code>NaN</code>, suivrait la règle de SnapSet. Plus mineur : <code>Pourcent</code> (ligne 187) colle « % » avec une espace ordinaire, qui peut passer à la ligne ; l'anglais n'en met pas.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 83 · Traduire une interface</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 83</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">L'internationalisation (i18n), c'est…</div><ul>
+      <li><span>A</span>choisir une police</li><li><span>B</span>préparer le code à être traduit</li><li><span>C</span>héberger dans plusieurs pays</li><li><span>D</span>traduire les textes</li></ul></div>
+
+    <div class="q"><div class="enonce">1234567,5 formaté en de-DE (mesuré) :</div><ul>
+      <li><span>A</span>1,234,567.5</li><li><span>B</span>1.234.567,5</li><li><span>C</span>1’234’567.5</li><li><span>D</span>1 234 567,5</li></ul></div>
+
+    <div class="q"><div class="enonce">Un fichier échangé entre postes s'écrit en culture…</div><ul>
+      <li><span>A</span>invariante</li><li><span>B</span>du poste</li><li><span>C</span>de l'utilisateur connecté</li><li><span>D</span>française</li></ul></div>
+
+    <div class="q"><div class="enonce">LectureCurseur exclut le séparateur de milliers pour que…</div><ul>
+      <li><span>A</span>les grands nombres soient refusés</li><li><span>B</span>l'exposant marche</li><li><span>C</span>la lecture soit plus rapide</li><li><span>D</span>« 0,5 » ne soit pas lu 5</li></ul></div>
+
+    <div class="q"><div class="enonce">parseGhNumber("1 234,5") rend (mesuré)…</div><ul>
+      <li><span>A</span>une exception</li><li><span>B</span>NaN</li><li><span>C</span>1234,5</li><li><span>D</span>1, sans erreur</li></ul></div>
+
+    <div class="q"><div class="enonce">Pourquoi le .gh enregistre-t-il <code>ExactOrderedList</code> et non « Liste ordonnée (nombres) » ?</div><ul>
+      <li><span>A</span>pour que traduire le libellé ne casse pas les fichiers</li><li><span>B</span>c'est plus court</li><li><span>C</span>par hasard</li><li><span>D</span>le français est interdit dans un .gh</li></ul></div>
+
+    <div class="q"><div class="enonce">En français, 0 prend la catégorie de pluriel… (mesuré)</div><ul>
+      <li><span>A</span>zero</li><li><span>B</span>other</li><li><span>C</span>few</li><li><span>D</span>one, comme 1</li></ul></div>
+
+    <div class="q"><div class="enonce">Un message traduisible s'écrit… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>en phrase entière avec des emplacements nommés</li><li><span>B</span>une forme par catégorie de pluriel</li><li><span>C</span>avec n &gt; 1 ? "s" : ""</li><li><span>D</span>en collant des morceaux</li></ul></div>
+
+    <div class="q"><div class="enonce">Trier « eau, Été, zèbre, Zoé » correctement en français demande…</div><ul>
+      <li><span>A</span>retirer les accents</li><li><span>B</span>un tri par codes de caractères</li><li><span>C</span>une comparaison selon la culture</li><li><span>D</span>tout mettre en majuscules</li></ul></div>
+
+    <div class="q"><div class="enonce"><code>"Straße".toUpperCase()</code> donne (mesuré)…</div><ul>
+      <li><span>A</span>STRAßE</li><li><span>B</span>une erreur</li><li><span>C</span>STRASSE</li><li><span>D</span>STRASE</li></ul></div>
+
+    <div class="q"><div class="enonce">Dans la barre de Magpie, un libellé traduit trop long…</div><ul>
+      <li><span>A</span>déborde du bouton, sans être coupé</li><li><span>B</span>élargit la barre</li><li><span>C</span>est remplacé par « … »</li><li><span>D</span>passe à la ligne</li></ul></div>
+
+    <div class="q"><div class="enonce">Pour garder un texte à traduire hors du code, on utilise…</div><ul>
+      <li><span>A</span>des commentaires</li><li><span>B</span>des noms de variables</li><li><span>C</span>une table de textes par langue</li><li><span>D</span>des images</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 83 · Traduire une interface</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 83</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · B.</b> La traduction, c'est la l10n.</div>
+    <div><b>02 · B.</b> Le point y groupe les milliers.</div>
+    <div><b>03 · A.</b> Identique sur tous les postes.</div>
+    <div><b>04 · D.</b> ModeleCurseur.cs:110–111.</div>
+    <div><b>05 · D.</b> parseFloat s'arrête à l'espace.</div>
+    <div><b>06 · A.</b> MagpieExerciseEditor.cs:922 et 939.</div>
+    <div><b>07 · D.</b> En anglais, 0 est other.</div>
+    <div><b>08 · A et B.</b> La bibliothèque choisit la forme.</div>
+    <div><b>09 · C.</b> Intl.Collator, CurrentCulture.</div>
+    <div><b>10 · C.</b> Six lettres en donnent sept.</div>
+    <div><b>11 · A.</b> PeintreBoutons.cs:165–167.</div>
+    <div><b>12 · C.</b> .resx, JSON par langue.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 84, « Évaluer une interface ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">CultureInfo.InvariantCulture</td><td>écrire ou lire pour la machine</td><td>ModeleCurseur.cs:133, 163</td></tr>
+      <tr><td class="c">NumberStyles.Float</td><td>décimales, signe, exposant, sans milliers</td><td>ModeleCurseur.cs:132</td></tr>
+      <tr><td class="c">Mode.ToString() / Enum.TryParse</td><td>un nom interne stable</td><td>MagpieExerciseEditor.cs:922, 939</td></tr>
+      <tr><td class="c">StringComparer.CurrentCultureIgnoreCase</td><td>trier des titres comme un lecteur</td><td>MagpieParcoursLauncher.cs:119</td></tr>
+      <tr><td class="c">Intl.NumberFormat, Intl.PluralRules</td><td>nombres et pluriels selon la langue</td><td>exemples mesurés, pages 1 et 3</td></tr>
+      <tr><td class="c">&lt;html lang="fr"&gt;</td><td>déclarer la langue de la page</td><td>magpie/web/index.html:2</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>i18n</dt><dd>Internationalisation : préparer le code pour toutes les langues (18 lettres entre le i et le n).</dd>
+    <dt>l10n</dt><dd>Localisation : adapter textes, formats et images à une langue donnée.</dd>
+    <dt>Culture</dt><dd>L'ensemble des conventions d'une langue et d'un pays : séparateurs, dates, tri.</dd>
+    <dt>Culture invariante</dt><dd>Une culture fixe, indépendante du poste, pour les données.</dd>
+    <dt>Catégorie de pluriel</dt><dd>La forme qu'une langue emploie pour un nombre : one, few, many, other…</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 84</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 83 · Traduire une interface</div>
+</section>
+
+</body>
+</html>

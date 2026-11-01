@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>62 · Origines : CORS et CSRF</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-9">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 62</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Origines : CORS et CSRF</h1>
+  <p class="chapeau">Un navigateur ouvre en même temps des onglets de ta banque, de ton webmail et de n'importe quel site. Pour qu'une page ne lise pas les données d'une autre, il applique la <b>règle de même origine</b>. <b>CORS</b> permet à un serveur d'ouvrir une exception ; <b>CSRF</b> est l'attaque qui passe à côté.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>61</b></span>
+    <span class="pastille">Exemples · <b>compute-proxy.mjs</b>, <b>vite.config.js</b> (Magpie web)</span>
+  </div>
+
+  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+    <svg viewBox="0 0 600 200" width="100%">
+<rect x="68.0" y="12" width="56.800000000000004" height="26" rx="3" fill="#1565C0" fill-opacity=".14" stroke="#1565C0"/>
+<text x="96.4" y="54" font-size="7.8" fill="#1565C0" text-anchor="middle" font-weight="700">schéma</text>
+<rect x="152.48000000000002" y="12" width="151.84" height="26" rx="3" fill="#2E7D32" fill-opacity=".14" stroke="#2E7D32"/>
+<text x="228.4" y="54" font-size="7.8" fill="#2E7D32" text-anchor="middle" font-weight="700">hôte</text>
+<rect x="310.88" y="12" width="35.67999999999999" height="26" rx="3" fill="#7B1FA2" fill-opacity=".14" stroke="#7B1FA2"/>
+<text x="328.71999999999997" y="54" font-size="7.8" fill="#7B1FA2" text-anchor="middle" font-weight="700">port</text>
+<rect x="342.56" y="12" width="120.16" height="26" rx="3" fill="#6B7378" fill-opacity=".14" stroke="#6B7378"/>
+<text x="402.64" y="54" font-size="7.8" fill="#6B7378" text-anchor="middle" font-weight="700">chemin (hors origine)</text>
+<text x="75.28" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">h</text>
+<text x="85.84" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">t</text>
+<text x="96.4" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">t</text>
+<text x="106.96" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">p</text>
+<text x="117.52000000000001" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">s</text>
+<text x="128.08" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">:</text>
+<text x="138.64" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">/</text>
+<text x="149.20000000000002" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">/</text>
+<text x="159.76000000000002" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">m</text>
+<text x="170.32000000000002" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">a</text>
+<text x="180.88000000000002" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">g</text>
+<text x="191.44" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">p</text>
+<text x="201.99999999999997" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">i</text>
+<text x="212.56" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">e</text>
+<text x="223.12" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">.</text>
+<text x="233.68" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">e</text>
+<text x="244.24" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">x</text>
+<text x="254.79999999999998" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">a</text>
+<text x="265.36" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">m</text>
+<text x="275.91999999999996" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">p</text>
+<text x="286.48" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">l</text>
+<text x="297.03999999999996" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">e</text>
+<text x="307.59999999999997" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">:</text>
+<text x="318.15999999999997" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">4</text>
+<text x="328.7199999999999" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">4</text>
+<text x="339.28" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">3</text>
+<text x="349.84" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">/</text>
+<text x="360.4" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">a</text>
+<text x="370.96" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">p</text>
+<text x="381.5199999999999" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">i</text>
+<text x="392.08" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">/</text>
+<text x="402.64" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">s</text>
+<text x="413.2" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">u</text>
+<text x="423.76" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">b</text>
+<text x="434.31999999999994" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">m</text>
+<text x="444.88" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">i</text>
+<text x="455.44" y="31" font-size="13" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:13px">t</text>
+<rect x="8" y="76" width="280" height="30" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="18" y="95" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px">https://magpie.example/admin</text>
+<text x="278" y="95" font-size="8" fill="#2E7D32" text-anchor="end" font-weight="700">même origine</text>
+<rect x="300" y="76" width="280" height="30" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="310" y="95" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px">http://magpie.example/api</text>
+<text x="570" y="95" font-size="8" fill="#C62828" text-anchor="end" font-weight="700">autre schéma</text>
+<rect x="8" y="116" width="280" height="30" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="18" y="135" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px">https://www.magpie.example/api</text>
+<text x="278" y="135" font-size="8" fill="#C62828" text-anchor="end" font-weight="700">autre hôte</text>
+<rect x="300" y="116" width="280" height="30" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="310" y="135" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px">http://localhost:5173 → :5175</text>
+<text x="570" y="135" font-size="8" fill="#C62828" text-anchor="end" font-weight="700">autre port</text>
+<text x="296" y="172" font-size="8" fill="#6B7378" text-anchor="middle" font-style="italic">Origine = schéma + hôte + port. Une seule différence, et ce sont deux origines.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Le script d'une page peut <b>envoyer</b> des requêtes partout, mais ne peut <b>lire</b> la réponse d'une autre origine que si ce serveur l'y autorise par un en-tête <code>Access-Control-Allow-Origin</code>.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Une boîte aux lettres d'immeuble. N'importe qui peut glisser une lettre dans n'importe quelle boîte (envoyer), mais seul le résident ouvre la sienne (lire). CORS, c'est le résident qui confie un double de sa clé à un voisin nommé.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>dire si deux adresses ont la même origine ;</li>
+        <li>lire une erreur CORS et la corriger ;</li>
+        <li>prévoir quand le navigateur envoie OPTIONS ;</li>
+        <li>expliquer une attaque CSRF et ses parades.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:5mm">
+    <span class="titre">À retenir</span>
+    CORS est une <b>protection du navigateur</b>, pas du serveur. Un script Node, curl ou Postman l'ignorent complètement. Il ne remplace donc jamais l'authentification : il empêche seulement une page étrangère de lire ce que ton navigateur reçoit.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 62 · Origines : CORS et CSRF</div>
+</section>
+
+<!-- ============ PAGE 2 · LA RÈGLE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 62</b></div>
+  <p class="rubrique">Schéma 1 · La règle de même origine</p>
+  <h2>Envoyer, oui ; lire, sur autorisation</h2>
+  <p style="max-width:165mm">Quand la page de A appelle B, le navigateur ajoute l'en-tête <code>Origin: A</code>. B répond comme il veut ; le navigateur regarde alors si la réponse autorise A. Sinon, la console affiche une erreur CORS et le script ne voit rien.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<rect x="16" y="20" width="150" height="150" rx="4" fill="#fff" stroke="#A03A2C" stroke-width="1.2"/>
+<text x="91" y="40" font-size="9" fill="#A03A2C" text-anchor="middle" font-weight="700">Navigateur</text>
+<rect x="30" y="54" width="122" height="30" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="91.0" y="71.8" font-size="8.4" fill="#1565C0" text-anchor="middle" font-weight="700">page de A</text>
+<rect x="30" y="120" width="122" height="34" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2" stroke-dasharray="4 3"/>
+<text x="91" y="134" font-size="8" fill="#6B7378" text-anchor="middle" font-weight="700">le gardien</text>
+<text x="91" y="147" font-size="7.4" fill="#6B7378" text-anchor="middle">(même origine)</text>
+<rect x="430" y="70" width="150" height="60" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
+<text x="505" y="94" font-size="9" fill="#7B1FA2" text-anchor="middle" font-weight="700">serveur B</text>
+<text x="505" y="110" font-size="7.6" fill="#2B2F33" text-anchor="middle">une autre origine</text>
+<line x1="154" y1="66" x2="426" y2="84" stroke="#1565C0" stroke-width="1.3"/><polygon points="426,84 419.4,86.3 419.7,80.9" fill="#1565C0"/>
+<text x="290" y="64" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700">1 · fetch part, avec Origin: A</text>
+<line x1="426" y1="116" x2="156" y2="136" stroke="#7B1FA2" stroke-width="1.3"/><polygon points="156,136 162.2,132.8 162.6,138.2" fill="#7B1FA2"/>
+<text x="290" y="116" font-size="8" fill="#7B1FA2" text-anchor="middle" font-weight="700">2 · la réponse revient</text>
+<text x="290" y="160" font-size="8.4" fill="#A03A2C" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">3 · Access-Control-Allow-Origin: A ?</text>
+<text x="290" y="176" font-size="7.8" fill="#2B2F33" text-anchor="middle">oui : la page lit la réponse ; non : erreur CORS, réponse cachée à la page</text>
+<text x="296" y="204" font-size="8" fill="#C62828" text-anchor="middle" font-weight="700">La requête a bien été traitée par B : CORS protège la lecture, pas l'envoi.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Node</span>const AUTORISEES = new Set(["https://magpie.example"]);
+function cors(req, res) {
+  res.setHeader("Vary", "Origin");                     // la réponse dépend de l'origine
+  const o = req.headers.origin;
+  if (AUTORISEES.has(o)) res.setHeader("Access-Control-Allow-Origin", o);
+}</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Pourquoi Vary: Origin</h3>
+      <p>Si la réponse change selon l'origine, un cache intermédiaire doit le savoir. Sans <code>Vary</code>, il pourrait resservir à B la réponse préparée pour A, avec le mauvais en-tête.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>La solution la plus simple</h3>
+      <p>Une seule origine pour tout. En production, le serveur Magpie sert lui-même le front ; en développement, Vite relaie <code>/api</code> vers le backend. Le navigateur ne voit jamais deux origines.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Répondre <code>Access-Control-Allow-Origin: *</code> pour « faire marcher ». N'importe quel site peut alors lire l'API depuis le navigateur de tes visiteurs. Une liste explicite d'origines, comme <code>ALLOWED_ORIGINS</code>, ne coûte que quelques lignes.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 62 · Origines : CORS et CSRF</div>
+</section>
+
+<!-- ============ PAGE 3 · LA REQUÊTE PRÉALABLE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 62</b></div>
+  <p class="rubrique">Schéma 2 · La requête préalable</p>
+  <h2>Demander avant d'envoyer</h2>
+  <p style="max-width:165mm">Pour une requête qu'un simple formulaire HTML ne pourrait pas produire (méthode PUT ou DELETE, en-tête personnalisé, corps en <code>application/json</code>), le navigateur envoie d'abord un <code>OPTIONS</code>. Si la réponse ne l'autorise pas, la vraie requête ne part jamais.</p>
+
+  <svg viewBox="0 0 600 222" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="222" fill="#EFE9E1"/>
+<line x1="120" y1="14" x2="120" y2="210" stroke="#A03A2C" stroke-width="1.2"/>
+<line x1="480" y1="14" x2="480" y2="210" stroke="#7B1FA2" stroke-width="1.2"/>
+<text x="120" y="12" font-size="8.4" fill="#A03A2C" text-anchor="middle" font-weight="700">navigateur</text>
+<text x="480" y="12" font-size="8.4" fill="#7B1FA2" text-anchor="middle" font-weight="700">serveur</text>
+<line x1="122" y1="44" x2="476" y2="44" stroke="#1565C0" stroke-width="1.3"/><polygon points="476,44 469.6,46.7 469.6,41.3" fill="#1565C0"/>
+<text x="300" y="36" font-size="8.6" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">OPTIONS /api/submit</text>
+<text x="300" y="58" font-size="7.6" fill="#2B2F33" text-anchor="middle">Origin · Access-Control-Request-Method: POST</text>
+<line x1="478" y1="92" x2="124" y2="92" stroke="#2E7D32" stroke-width="1.3"/><polygon points="124,92 130.4,89.3 130.4,94.7" fill="#2E7D32"/>
+<text x="300" y="84" font-size="8.6" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">204 No Content</text>
+<text x="300" y="106" font-size="7.6" fill="#2B2F33" text-anchor="middle">Access-Control-Allow-Origin · -Methods · -Headers</text>
+<line x1="122" y1="146" x2="476" y2="146" stroke="#1565C0" stroke-width="1.3"/><polygon points="476,146 469.6,148.7 469.6,143.3" fill="#1565C0"/>
+<text x="300" y="138" font-size="8.6" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">POST /api/submit</text>
+<text x="300" y="160" font-size="7.6" fill="#2B2F33" text-anchor="middle">Content-Type: application/json + le corps</text>
+<line x1="478" y1="194" x2="124" y2="194" stroke="#2E7D32" stroke-width="1.3"/><polygon points="124,194 130.4,191.3 130.4,196.7" fill="#2E7D32"/>
+<text x="300" y="186" font-size="8.6" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">200 OK</text>
+<text x="300" y="208" font-size="7.6" fill="#2B2F33" text-anchor="middle">Access-Control-Allow-Origin + le JSON</text>
+<text x="16" y="70" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">question</text>
+<text x="16" y="172" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">vraie requête</text>
+<text x="500" y="70" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">aucun</text>
+<text x="500" y="82" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">traitement</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · requête simple ou pas</span>fetch(url)                                                   // GET : simple, pas d'OPTIONS
+fetch(url, { method: "POST", body: formData })              // formulaire : simple
+fetch(url, { method: "POST", body: JSON.stringify(x),
+  headers: { "Content-Type": "application/json" } })       // JSON : OPTIONS d'abord
+fetch(url, { method: "DELETE" })                            // DELETE : OPTIONS d'abord</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Les trois types « simples »</h3>
+      <p><code>application/x-www-form-urlencoded</code>, <code>multipart/form-data</code> et <code>text/plain</code> : ceux qu'un formulaire HTML sait envoyer. Tout autre Content-Type déclenche la question préalable.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Répondre à OPTIONS</h3>
+      <p>Le serveur répond vite, sans corps et sans traitement : 204, plus les en-têtes <code>Allow-Methods</code> et <code>Allow-Headers</code>. Magpie le fait avant même la garde d'administration.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Exiger l'authentification sur OPTIONS. Le navigateur n'y joint jamais d'identifiants : la question préalable reçoit 401, la vraie requête n'est jamais envoyée, et l'erreur affichée parle de CORS au lieu de parler d'authentification.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 62 · Origines : CORS et CSRF</div>
+</section>
+
+<!-- ============ PAGE 4 · CSRF ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 62</b></div>
+  <p class="rubrique">Schéma 3 · La falsification de requête</p>
+  <h2>CSRF : agir au nom d'un autre</h2>
+  <p style="max-width:165mm">Le navigateur joint d'office aux requêtes vers un site ce qu'il garde pour lui : cookies, identifiants HTTP Basic déjà saisis. Une page piégée qui soumet un formulaire vers ce site agit donc avec les droits de la victime, sans jamais lire la réponse.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<rect x="16" y="20" width="180" height="72" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="106" y="40" font-size="8.6" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">site-piège.example</text>
+<text x="106" y="58" font-size="7.8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.8px">&lt;form method=post</text>
+<text x="106" y="72" font-size="7.8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.8px">action=magpie/…/admin&gt;</text>
+<rect x="230" y="20" width="150" height="72" rx="4" fill="#fff" stroke="#A03A2C" stroke-width="1.2"/>
+<text x="305" y="42" font-size="9" fill="#A03A2C" text-anchor="middle" font-weight="700">Navigateur</text>
+<text x="305" y="60" font-size="7.8" fill="#2B2F33" text-anchor="middle">identifiants Basic</text>
+<text x="305" y="74" font-size="7.8" fill="#2B2F33" text-anchor="middle">encore en mémoire</text>
+<rect x="420" y="20" width="164" height="72" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
+<text x="502" y="42" font-size="9" fill="#7B1FA2" text-anchor="middle" font-weight="700">serveur Magpie</text>
+<text x="502" y="60" font-size="7.8" fill="#2B2F33" text-anchor="middle">voit un admin</text>
+<text x="502" y="74" font-size="7.8" fill="#2B2F33" text-anchor="middle">authentifié</text>
+<line x1="198" y1="56" x2="226" y2="56" stroke="#C62828" stroke-width="1.3"/><polygon points="226,56 219.6,58.7 219.6,53.3" fill="#C62828"/>
+<line x1="382" y1="56" x2="416" y2="56" stroke="#C62828" stroke-width="1.3"/><polygon points="416,56 409.6,58.7 409.6,53.3" fill="#C62828"/>
+<text x="300" y="116" font-size="8" fill="#2B2F33" text-anchor="middle">Un formulaire n'est pas soumis à CORS : il part, et le navigateur joint ce qu'il a pour ce site.</text>
+<rect x="16" y="140" width="182" height="30" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="107.0" y="157.6" font-size="7.8" fill="#2E7D32" text-anchor="middle" font-weight="700">vérifier l'en-tête Origin</text>
+<rect x="208" y="140" width="182" height="30" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="299.0" y="157.6" font-size="7.8" fill="#2E7D32" text-anchor="middle" font-weight="700">exiger Content-Type: application/json</text>
+<rect x="400" y="140" width="182" height="30" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="491.0" y="157.6" font-size="7.8" fill="#2E7D32" text-anchor="middle" font-weight="700">cookies SameSite, jeton anti-CSRF</text>
+<text x="296" y="196" font-size="7.8" fill="#6B7378" text-anchor="middle" font-style="italic">Trois parades courantes : un formulaire ne peut ni choisir son Origin, ni envoyer du JSON typé.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · une garde d'origine</span>function origineAcceptee(req) {
+  const o = req.headers.origin;                 // posé par le navigateur, pas modifiable par la page
+  return !o || o === "https://magpie.example";  // absent : outil en ligne de commande, non navigateur
+}
+if (req.method === "POST" &amp;&amp; !origineAcceptee(req)) { res.writeHead(403); return res.end(); }</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Pourquoi CORS ne suffit pas</h3>
+      <p>CORS règle la <b>lecture</b> par un script. Un formulaire n'a rien à lire : il lui suffit d'être reçu. L'action « basculer un composant » est faite, même si la page piégée ne voit pas la réponse.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Les cookies SameSite</h3>
+      <p>Un cookie marqué <code>SameSite=Lax</code> ou <code>Strict</code> n'est pas joint aux requêtes POST venues d'un autre site. Les identifiants HTTP Basic n'ont pas cette option : la parade passe par Origin ou le type du corps.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Croire qu'une route POST qui attend du JSON est à l'abri parce qu'un formulaire « n'envoie pas de JSON ». Un formulaire en <code>text/plain</code> peut produire un corps qui se lit comme du JSON valide. Seule la vérification du <code>Content-Type</code> ferme cette porte.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 62 · Origines : CORS et CSRF</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 62</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Une origine, une liste, une porte à surveiller</h2>
+  <p style="max-width:165mm">Magpie web évite CORS par construction, garde une liste d'origines pour les cas restants, et répond à la question préalable avant tout le reste.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">magpie/web/vite.config.js</span></div>
+<div class="l k1"><span class="n">10</span>  <span class="st">"/api"</span>: <span class="st">"http://localhost:5175"</span>,<span class="rep r1">1</span></div>
+<div class="l"><span class="cm">magpie/web/compute-proxy.mjs</span></div>
+<div class="l k2"><span class="n">64</span><span class="kw">const</span> ALLOWED_ORIGINS = <span class="kw">new</span> <span class="ty">Set</span>(<span class="rep r2">2</span></div>
+<div class="l k2"><span class="n">65</span>  (process.env.MAGPIE_ALLOWED_ORIGINS || <span class="st">"…:5173,…"</span>)</div>
+<div class="l k3"><span class="n">445</span>res.setHeader(<span class="st">"Vary"</span>, <span class="st">"Origin"</span>);<span class="rep r3">3</span></div>
+<div class="l k3"><span class="n">447</span><span class="kw">if</span> (!origin || !ALLOWED_ORIGINS.has(origin)) <span class="kw">return</span>;</div>
+<div class="l k3"><span class="n">448</span>res.setHeader(<span class="st">"Access-Control-Allow-Origin"</span>, origin);</div>
+<div class="l k4"><span class="n">608</span><span class="kw">if</span> (req.method === <span class="st">"OPTIONS"</span>) {<span class="rep r4">4</span></div>
+<div class="l k4"><span class="n">609</span>  res.writeHead(<span class="nb">204</span>);</div>
+<div class="l k5"><span class="n">94</span>  <span class="kw">return</span> JSON.parse(body);   <span class="cm">// parseJsonBody</span><span class="rep r5">5</span></div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Pas de CORS en développement</b>Vite relaie /api : une seule origine (lignes 4–5).</li>
+      <li><span class="rep r2">2</span><b>Une liste, pas une étoile</b>Réglable par variable d'environnement.</li>
+      <li><span class="rep r3">3</span><b>Refléter seulement l'admise</b>Une origine inconnue ne reçoit aucun en-tête.</li>
+      <li><span class="rep r4">4</span><b>La question préalable</b>Répondue avant la garde d'admin (ligne 616).</li>
+      <li><span class="rep r5">5</span><b>Le corps est lu sans regarder son type</b>Voir l'encadré.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À surveiller · CSRF sur les routes d'administration</span>
+    Les routes POST d'admin lisent le corps avec <code>parseJsonBody</code> sans vérifier le <code>Content-Type</code> ni l'en-tête <code>Origin</code>. Un navigateur qui garde les identifiants Basic de l'enseignant pourrait les joindre à un formulaire <code>text/plain</code> venu d'un autre site. Deux lignes ferment la porte : refuser un POST d'admin qui n'est pas en <code>application/json</code>, ou dont l'Origin n'est pas celle du site.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 62 · Origines : CORS et CSRF</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 62</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Une origine, c'est…</div><ul>
+      <li><span>A</span>l'adresse IP</li><li><span>B</span>l'adresse complète</li><li><span>C</span>schéma + hôte + port</li><li><span>D</span>le nom de domaine seul</li></ul></div>
+
+    <div class="q"><div class="enonce">localhost:5173 et localhost:5175 sont…</div><ul>
+      <li><span>A</span>la même si HTTP</li><li><span>B</span>deux origines</li><li><span>C</span>la même origine</li><li><span>D</span>sans origine</li></ul></div>
+
+    <div class="q"><div class="enonce">Une erreur CORS signifie que…</div><ul>
+      <li><span>A</span>la page n'a pas le droit de lire la réponse</li><li><span>B</span>le serveur est en panne</li><li><span>C</span>le JSON est invalide</li><li><span>D</span>la requête n'est jamais partie</li></ul></div>
+
+    <div class="q"><div class="enonce">CORS protège… </div><ul>
+      <li><span>A</span>les données lues par une page étrangère</li><li><span>B</span>les mots de passe</li><li><span>C</span>le serveur contre curl</li><li><span>D</span>le disque</li></ul></div>
+
+    <div class="q"><div class="enonce">Déclenchent un OPTIONS : <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>POST en application/json</li><li><span>B</span>GET simple</li><li><span>C</span>un en-tête personnalisé</li><li><span>D</span>DELETE</li></ul></div>
+
+    <div class="q"><div class="enonce">OPTIONS reçoit 401. Résultat…</div><ul>
+      <li><span>A</span>tout marche</li><li><span>B</span>le navigateur redemande</li><li><span>C</span>le serveur plante</li><li><span>D</span>la vraie requête ne part pas</li></ul></div>
+
+    <div class="q"><div class="enonce"><code>Vary: Origin</code> sert…</div><ul>
+      <li><span>A</span>à rien</li><li><span>B</span>à l'authentification</li><li><span>C</span>aux caches intermédiaires</li><li><span>D</span>à compresser</li></ul></div>
+
+    <div class="q"><div class="enonce">Magpie évite CORS en développement par…</div><ul>
+      <li><span>A</span>le relais /api de Vite</li><li><span>B</span>Allow-Origin: *</li><li><span>C</span>un certificat</li><li><span>D</span>un cookie</li></ul></div>
+
+    <div class="q"><div class="enonce">Une attaque CSRF…</div><ul>
+      <li><span>A</span>casse le TLS</li><li><span>B</span>vole le disque du serveur</li><li><span>C</span>lit les réponses</li><li><span>D</span>fait agir le navigateur de la victime</li></ul></div>
+
+    <div class="q"><div class="enonce">Pourquoi CORS n'arrête pas CSRF ?</div><ul>
+      <li><span>A</span>CSRF n'utilise pas HTTP</li><li><span>B</span>un formulaire n'a rien à lire</li><li><span>C</span>il l'arrête</li><li><span>D</span>CORS est désactivé en POST</li></ul></div>
+
+    <div class="q"><div class="enonce">Parades contre CSRF : <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>vérifier Origin</li><li><span>B</span>exiger application/json</li><li><span>C</span>Allow-Origin: *</li><li><span>D</span>SameSite</li></ul></div>
+
+    <div class="q"><div class="enonce">Une origine inconnue, chez Magpie, reçoit…</div><ul>
+      <li><span>A</span>Allow-Origin: *</li><li><span>B</span>une redirection</li><li><span>C</span>aucun en-tête Allow-Origin</li><li><span>D</span>un 403</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 62 · Origines : CORS et CSRF</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 62</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · C.</b> Le chemin n'en fait pas partie.</div>
+    <div><b>02 · B.</b> Le port diffère.</div>
+    <div><b>03 · A.</b> La requête, elle, est partie.</div>
+    <div><b>04 · A.</b> Côté navigateur seulement.</div>
+    <div><b>05 · A, C et D.</b> GET simple n'en a pas besoin.</div>
+    <div><b>06 · D.</b> Et l'erreur parle de CORS.</div>
+    <div><b>07 · C.</b> La réponse dépend de l'origine.</div>
+    <div><b>08 · A.</b> vite.config.js:10.</div>
+    <div><b>09 · D.</b> Avec ses droits à elle.</div>
+    <div><b>10 · B.</b> Il suffit qu'il soit reçu.</div>
+    <div><b>11 · A, B et D.</b> L'étoile aggrave.</div>
+    <div><b>12 · C.</b> compute-proxy.mjs:447.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 63, « L'authentification et les secrets ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">proxy: { "/api": … }</td><td>une seule origine en développement</td><td>vite.config.js:9–10</td></tr>
+      <tr><td class="c">ALLOWED_ORIGINS</td><td>la liste des origines admises</td><td>compute-proxy.mjs:64</td></tr>
+      <tr><td class="c">Vary: Origin</td><td>prévenir les caches</td><td>compute-proxy.mjs:445</td></tr>
+      <tr><td class="c">Access-Control-Allow-Origin</td><td>autoriser la lecture</td><td>compute-proxy.mjs:448</td></tr>
+      <tr><td class="c">OPTIONS → 204</td><td>répondre à la question préalable</td><td>compute-proxy.mjs:608–609</td></tr>
+      <tr><td class="c">req.headers.origin</td><td>savoir d'où vient la requête</td><td>compute-proxy.mjs:446</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Origine</dt><dd>Le triplet schéma, hôte, port d'une adresse web.</dd>
+    <dt>CORS</dt><dd>Les en-têtes par lesquels un serveur autorise une autre origine à lire ses réponses.</dd>
+    <dt>Requête préalable</dt><dd>L'OPTIONS que le navigateur envoie avant une requête non simple.</dd>
+    <dt>CSRF</dt><dd>Faire envoyer par le navigateur d'une victime une requête qu'elle n'a pas voulue.</dd>
+    <dt>SameSite</dt><dd>L'attribut de cookie qui l'empêche de partir avec les requêtes d'un autre site.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 63</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 62 · Origines : CORS et CSRF</div>
+</section>
+
+</body>
+</html>

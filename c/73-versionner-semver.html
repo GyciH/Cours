@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>73 · Versionner : SemVer et compatibilité</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-11">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 73</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Versionner : SemVer et compatibilité</h1>
+  <p class="chapeau">Un numéro de version n'est pas un compteur de sorties : c'est une <b>promesse</b> faite à ceux qui dépendent de ton code. Le <b>versionnage sémantique</b> (SemVer) range cette promesse en trois nombres, et les outils comme npm s'en servent pour décider seuls quelle mise à jour ils ont le droit d'installer.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>04</b> et <b>65</b></span>
+    <span class="pastille">Exemples · <b>Directory.Build.props</b>, <b>ImportParcours</b>, <b>package.json</b> (Magpie)</span>
+  </div>
+
+  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+    <svg viewBox="0 0 600 186" width="100%">
+<rect x="20" y="10" width="168" height="58" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="104" y="50" font-size="26" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:26px">1</text>
+<text x="202" y="52" font-size="26" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:26px">.</text>
+<text x="104" y="88" font-size="9" fill="#C62828" text-anchor="middle" font-weight="700">MAJEUR</text>
+<text x="104" y="106" font-size="8" fill="#2B2F33" text-anchor="middle" font-weight="700">je casse quelque chose</text>
+<text x="104" y="122" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">l'ancien code peut ne plus marcher</text>
+<rect x="216" y="10" width="168" height="58" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="300" y="50" font-size="26" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:26px">4</text>
+<text x="398" y="52" font-size="26" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:26px">.</text>
+<text x="300" y="88" font-size="9" fill="#1565C0" text-anchor="middle" font-weight="700">MINEUR</text>
+<text x="300" y="106" font-size="8" fill="#2B2F33" text-anchor="middle" font-weight="700">j'ajoute, sans casser</text>
+<text x="300" y="122" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">l'ancien code marche toujours</text>
+<rect x="412" y="10" width="168" height="58" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="496" y="50" font-size="26" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:26px">2</text>
+<text x="496" y="88" font-size="9" fill="#2E7D32" text-anchor="middle" font-weight="700">CORRECTIF</text>
+<text x="496" y="106" font-size="8" fill="#2B2F33" text-anchor="middle" font-weight="700">je répare, sans rien ajouter</text>
+<text x="496" y="122" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">aucun changement visible</text>
+<line x1="20" y1="140" x2="580" y2="140" stroke="#CFC6B8" stroke-dasharray="3 3"/>
+<text x="300" y="160" font-size="8.2" fill="#2B2F33" text-anchor="middle" font-weight="700">On incrémente un seul nombre et on remet à zéro ceux de droite : 1.4.2 → 1.5.0 → 2.0.0.</text>
+<text x="300" y="178" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">Avant 1.0.0 (0.y.z, la phase pilote de Magpie), tout peut encore changer : la promesse ne vaut pas encore.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Le premier nombre dit « attention, ça casse », le deuxième « il y a du nouveau », le troisième « c'est réparé » ; tout le reste (plages, verrous, formats de fichier) découle de cette convention.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Une prise électrique. Changer le fusible (correctif) ou ajouter un port USB à côté (mineur) ne gêne aucun appareil ; changer la forme des broches (majeur) oblige chacun à acheter un adaptateur.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>choisir le nombre à incrémenter ;</li>
+        <li>lire une plage npm (<code>^</code>, <code>~</code>, exacte) ;</li>
+        <li>dire à quoi sert le fichier de verrouillage ;</li>
+        <li>versionner un format de fichier.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:5mm">
+    <span class="titre">À retenir</span>
+    Ce qui « casse » se juge du point de vue de celui qui t'utilise : renommer une méthode publique, retirer un champ d'un JSON, changer le sens d'un paramètre. Un changement interne invisible de l'extérieur n'est jamais majeur, même s'il a demandé beaucoup de travail.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 73 · Versionner : SemVer et compatibilité</div>
+</section>
+
+<!-- ============ PAGE 2 · LES PLAGES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 73</b></div>
+  <p class="rubrique">Schéma 1 · Les plages de versions</p>
+  <h2>Ce que j'accepte d'installer</h2>
+  <p style="max-width:165mm">Dans <code>package.json</code>, on n'écrit pas une version mais une <b>plage</b> : l'ensemble des versions qu'on juge compatibles. npm prend ensuite la plus récente de la plage. Les réponses ci-dessous ont été calculées par la bibliothèque <code>semver</code> fournie avec npm.</p>
+
+  <svg viewBox="0 0 600 232" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="232" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">Une plage accepte-t-elle cette version ? (mesuré avec la bibliothèque semver de npm)</text>
+<text x="28" y="44" font-size="8" fill="#6B7378" text-anchor="start" font-weight="700">plage</text>
+<text x="170" y="44" font-size="8" fill="#6B7378" text-anchor="start" font-weight="700">version proposée</text>
+<text x="574" y="44" font-size="8" fill="#6B7378" text-anchor="end" font-weight="700">acceptée ?</text>
+<rect x="16" y="52" width="568" height="22" rx="4" fill="#fff" stroke="#E2DACB" stroke-width="1.2"/>
+<text x="28" y="67" font-size="9" fill="#4F46B8" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">^12.3.6</text>
+<text x="170" y="67" font-size="9" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">12.11.2</text>
+<text x="280" y="67" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">même majeur : oui</text>
+<text x="574" y="67" font-size="8.6" fill="#2E7D32" text-anchor="end" font-weight="700">oui</text>
+<rect x="16" y="80" width="568" height="22" rx="4" fill="#fff" stroke="#E2DACB" stroke-width="1.2"/>
+<text x="28" y="95" font-size="9" fill="#4F46B8" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">^12.3.6</text>
+<text x="170" y="95" font-size="9" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">13.0.0</text>
+<text x="280" y="95" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">nouveau majeur : non</text>
+<text x="574" y="95" font-size="8.6" fill="#C62828" text-anchor="end" font-weight="700">non</text>
+<rect x="16" y="108" width="568" height="22" rx="4" fill="#fff" stroke="#E2DACB" stroke-width="1.2"/>
+<text x="28" y="123" font-size="9" fill="#4F46B8" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">~5.4.11</text>
+<text x="170" y="123" font-size="9" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">5.5.0</text>
+<text x="280" y="123" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">~ ne laisse bouger que le correctif</text>
+<text x="574" y="123" font-size="8.6" fill="#C62828" text-anchor="end" font-weight="700">non</text>
+<rect x="16" y="136" width="568" height="22" rx="4" fill="#fff" stroke="#E2DACB" stroke-width="1.2"/>
+<text x="28" y="151" font-size="9" fill="#4F46B8" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">^0.1.5</text>
+<text x="170" y="151" font-size="9" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">0.1.9</text>
+<text x="280" y="151" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">avant 1.0, ^ fige aussi le mineur…</text>
+<text x="574" y="151" font-size="8.6" fill="#2E7D32" text-anchor="end" font-weight="700">oui</text>
+<rect x="16" y="164" width="568" height="22" rx="4" fill="#fff" stroke="#E2DACB" stroke-width="1.2"/>
+<text x="28" y="179" font-size="9" fill="#4F46B8" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">^0.1.5</text>
+<text x="170" y="179" font-size="9" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">0.2.0</text>
+<text x="280" y="179" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">… donc 0.2.0 est refusée</text>
+<text x="574" y="179" font-size="8.6" fill="#C62828" text-anchor="end" font-weight="700">non</text>
+<rect x="16" y="192" width="568" height="22" rx="4" fill="#fff" stroke="#E2DACB" stroke-width="1.2"/>
+<text x="28" y="207" font-size="9" fill="#4F46B8" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">8.35.0</text>
+<text x="170" y="207" font-size="9" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">8.35.1</text>
+<text x="280" y="207" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">sans symbole : cette version et aucune autre</text>
+<text x="574" y="207" font-size="8.6" fill="#C62828" text-anchor="end" font-weight="700">non</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/package.json · lignes 13 à 21, commentaires ajoutés</span>"@xyflow/react": "^12.3.6",   // tout 12.x.y à partir de 12.3.6
+"react": "^18.3.1",
+"rhino3dm": "8.35.0",         // exactement celle-ci
+"three": "0.186.1",           // idem : une 0.x change à chaque mineur
+"vite": "^5.4.11"             // (devDependencies)</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Le chapeau et la tilde</h3>
+      <p><code>^</code> accepte tout ce qui ne change pas le premier nombre non nul ; <code>~</code> n'accepte que des correctifs. Le chapeau est le choix par défaut de <code>npm install paquet</code> : il fait confiance à l'auteur pour respecter SemVer.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Pourquoi figer rhino3dm et three</h3>
+      <p>Une version 0.x ne promet rien d'un mineur à l'autre, et three.js change parfois d'API entre deux mineurs. Écrire la version exacte, c'est décider soi-même du moment de la mise à jour, et la tester.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Croire que <code>^0.1.5</code> accepte 0.2.0. Avant 1.0.0, le chapeau fige aussi le deuxième nombre, puisque c'est lui qui joue le rôle de majeur. Une bibliothèque en 0.x peut tout casser au passage de 0.1 à 0.2.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 73 · Versionner : SemVer et compatibilité</div>
+</section>
+
+<!-- ============ PAGE 3 · LE VERROU ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 73</b></div>
+  <p class="rubrique">Schéma 2 · Le fichier de verrouillage</p>
+  <h2>Ce que j'ai réellement installé</h2>
+  <p style="max-width:165mm">Une plage laisse une marge, et la plus récente version d'aujourd'hui n'est pas celle de demain. Le fichier <code>package-lock.json</code> note la version <b>choisie</b> pour chaque paquet, dépendances des dépendances comprises : deux installations faites à six mois d'écart donnent alors le même résultat.</p>
+
+  <svg viewBox="0 0 600 196" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="196" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">Ce qu'on demande, ce qu'on a obtenu, ce qu'on installe (web/ de Magpie)</text>
+<rect x="16" y="36" width="176" height="66" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="104" y="56" font-size="9" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">package.json</text>
+<text x="104" y="74" font-size="7.6" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.6px">"@xyflow/react": "^12.3.6"</text>
+<text x="104" y="92" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">ce que j'accepte</text>
+<line x1="194" y1="69" x2="210" y2="69" stroke="#6B7378" stroke-width="1.4"/><polygon points="210,69 203.6,71.7 203.6,66.3" fill="#6B7378"/>
+<rect x="212" y="36" width="176" height="66" rx="4" fill="#fff" stroke="#4F46B8" stroke-width="1.2"/>
+<text x="300" y="56" font-size="9" fill="#4F46B8" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">package-lock.json</text>
+<text x="300" y="74" font-size="7.6" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.6px">"version": "12.11.2"</text>
+<text x="300" y="92" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">ce qui a été choisi</text>
+<line x1="390" y1="69" x2="406" y2="69" stroke="#6B7378" stroke-width="1.4"/><polygon points="406,69 399.6,71.7 399.6,66.3" fill="#6B7378"/>
+<rect x="408" y="36" width="176" height="66" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="496" y="56" font-size="9" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">node_modules/</text>
+<text x="496" y="74" font-size="7.6" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.6px">@xyflow/react 12.11.2</text>
+<text x="496" y="92" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">ce qui tourne</text>
+<text x="16" y="128" font-size="9" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">npm ci</text>
+<text x="80" y="128" font-size="8" fill="#2B2F33" text-anchor="start">installe exactement le verrou, refuse s'il ne correspond plus à package.json : reproductible.</text>
+<text x="16" y="150" font-size="9" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">npm install</text>
+<text x="110" y="150" font-size="8" fill="#2B2F33" text-anchor="start">suit le verrou s'il convient, mais peut le compléter ou le réécrire : pratique sur ton poste.</text>
+<text x="16" y="178" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">Le verrou garde aussi l'empreinte sha512 de chaque paquet (cours 65) : un fichier modifié est refusé.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · terminal, dans web/</span>npm ci              # installe le verrou tel quel (serveur, intégration)
+npm install         # installe, complète le verrou si besoin (poste)
+npm outdated        # liste ce qui a vieilli, sans rien changer
+npm install three@0.187.0   # monte une version figée, à la main</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Le verrou se versionne</h3>
+      <p><code>package-lock.json</code> se commite avec le code, comme <code>package.json</code>. Celui de Magpie est au format <code>lockfileVersion: 3</code> (ligne 4) : le fichier lui-même a un numéro de format, pour que npm sache le lire.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Et en .NET ?</h3>
+      <p><code>&lt;PackageReference Version="2.9.2"/&gt;</code> désigne la version minimale, et NuGet prend la plus basse qui convient : sans plage ouverte, le résultat est stable. Un verrou existe aussi (<code>packages.lock.json</code>), à activer.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Supprimer <code>package-lock.json</code> « pour réparer » une installation. npm reprend alors la plus récente version de chaque plage, dépendances indirectes comprises : on règle peut-être un problème, et on en importe dix autres qu'on n'a pas testés.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 73 · Versionner : SemVer et compatibilité</div>
+</section>
+
+<!-- ============ PAGE 4 · LES FORMATS ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 73</b></div>
+  <p class="rubrique">Schéma 3 · Versionner un format</p>
+  <h2>Un fichier qui survit aux versions du logiciel</h2>
+  <p style="max-width:165mm">Un fichier enregistré aujourd'hui sera rouvert par la version de demain, et parfois par celle d'hier. Écrire dans le fichier le numéro de son <b>format</b> permet au lecteur de décider, avant de lire le reste, s'il sait le comprendre.</p>
+
+  <svg viewBox="0 0 600 212" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="212" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">Un paquet .mgp porte le numéro de son format : l'import décide avant de lire le reste</text>
+<rect x="16" y="36" width="170" height="34" rx="4" fill="#fff" stroke="#4F46B8" stroke-width="1.2"/>
+<text x="101.0" y="55.8" font-size="8.4" fill="#4F46B8" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">formatVersion absent</text>
+<line x1="188" y1="53" x2="214" y2="53" stroke="#6B7378" stroke-width="1.3"/><polygon points="214,53 207.6,55.7 207.6,50.3" fill="#6B7378"/>
+<rect x="216" y="36" width="200" height="34" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="316.0" y="55.733333333333334" font-size="8.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.2px">lu comme 1</text>
+<line x1="418" y1="53" x2="444" y2="53" stroke="#6B7378" stroke-width="1.3"/><polygon points="444,53 437.6,55.7 437.6,50.3" fill="#6B7378"/>
+<rect x="446" y="36" width="138" height="34" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="515.0" y="55.733333333333334" font-size="8.2" fill="#2E7D32" text-anchor="middle" font-weight="700">ouvert</text>
+<rect x="16" y="80" width="170" height="34" rx="4" fill="#fff" stroke="#4F46B8" stroke-width="1.2"/>
+<text x="101.0" y="99.8" font-size="8.4" fill="#4F46B8" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">formatVersion : 1</text>
+<line x1="188" y1="97" x2="214" y2="97" stroke="#6B7378" stroke-width="1.3"/><polygon points="214,97 207.6,99.7 207.6,94.3" fill="#6B7378"/>
+<rect x="216" y="80" width="200" height="34" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="316.0" y="99.73333333333333" font-size="8.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.2px">1 ≤ VersionFormatMax (1)</text>
+<line x1="418" y1="97" x2="444" y2="97" stroke="#6B7378" stroke-width="1.3"/><polygon points="444,97 437.6,99.7 437.6,94.3" fill="#6B7378"/>
+<rect x="446" y="80" width="138" height="34" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="515.0" y="99.73333333333333" font-size="8.2" fill="#2E7D32" text-anchor="middle" font-weight="700">ouvert</text>
+<rect x="16" y="124" width="170" height="34" rx="4" fill="#fff" stroke="#4F46B8" stroke-width="1.2"/>
+<text x="101.0" y="143.8" font-size="8.4" fill="#4F46B8" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">formatVersion : 2</text>
+<line x1="188" y1="141" x2="214" y2="141" stroke="#6B7378" stroke-width="1.3"/><polygon points="214,141 207.6,143.7 207.6,138.3" fill="#6B7378"/>
+<rect x="216" y="124" width="200" height="34" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="316.0" y="143.73333333333332" font-size="8.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.2px">2 > VersionFormatMax (1)</text>
+<line x1="418" y1="141" x2="444" y2="141" stroke="#6B7378" stroke-width="1.3"/><polygon points="444,141 437.6,143.7 437.6,138.3" fill="#6B7378"/>
+<rect x="446" y="124" width="138" height="34" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="515.0" y="143.73333333333332" font-size="8.2" fill="#C62828" text-anchor="middle" font-weight="700">« Mettez le plugin à jour »</text>
+<text x="16" y="184" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">Lire l'ancien, refuser poliment le trop récent : un vieux plugin explique au lieu de planter.</text>
+<text x="16" y="202" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">Ce numéro suit le format du fichier, pas la version du logiciel : il ne bouge que si le format change.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C# et JavaScript</span>new Version("0.1.10") &gt; new Version("0.1.9")   // true : nombre par nombre
+"0.1.10" &lt; "0.1.9"                             // true en JS : texte !
+["0.1.9", "0.1.10", "0.2.0"].sort()            // [ '0.1.10', '0.1.9', … ]</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Compatible dans les deux sens</h3>
+      <p>Lire les anciens fichiers, c'est la compatibilité <b>ascendante</b> : on la doit toujours. Lire un fichier plus récent, c'est la compatibilité <b>descendante</b> : on l'obtient en ignorant les champs inconnus, tant que le format n'a pas changé de sens.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Ajouter sans casser</h3>
+      <p>Un champ nouveau, facultatif, avec une valeur par défaut raisonnable, ne casse personne : c'est l'équivalent d'un mineur. Renommer un champ ou changer son unité, c'est un nouveau format, donc un nouveau numéro.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Ajouter le numéro de format « plus tard, quand on en aura besoin ». Les fichiers déjà diffusés n'en ont pas, et le jour venu, rien ne distingue un vieux fichier d'un fichier abîmé. C'est pourquoi ImportParcours le lit dès la première version.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 73 · Versionner : SemVer et compatibilité</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 73</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Trois numéros dans Magpie</h2>
+  <p style="max-width:165mm">Magpie porte trois sortes de versions : celle du logiciel, que l'utilisateur lit dans Grasshopper ; celle du format des paquets de parcours ; et celles des bibliothèques dont dépend le canevas web.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">magpie/plugin/Directory.Build.props</span></div>
+<div class="l k1"><span class="n">30</span><span class="cm">&lt;!-- Aligné sur le tag v0.1.5 … phase pilote</span><span class="rep r1">1</span></div>
+<div class="l k1"><span class="n">33</span>&lt;Version&gt;0.1.5&lt;/Version&gt;</div>
+<div class="l"><span class="cm">magpie/plugin/Core/ImportParcours.cs</span></div>
+<div class="l k2"><span class="n">33</span><span class="kw">public const int</span> VersionFormatMax = 1;<span class="rep r2">2</span></div>
+<div class="l k2"><span class="n">113</span><span class="kw">int</span> version = m.Value&lt;<span class="kw">int</span>?&gt;(<span class="st">"formatVersion"</span>) ?? 1;</div>
+<div class="l k2"><span class="n">114</span><span class="kw">if</span> (version &gt; VersionFormatMax) <span class="cm">// « plus récente »</span></div>
+<div class="l"><span class="cm">magpie/web/package.json</span></div>
+<div class="l k3"><span class="n">13</span><span class="st">"@xyflow/react"</span>: <span class="st">"^12.3.6"</span>,<span class="rep r3">3</span></div>
+<div class="l k3"><span class="n">16</span><span class="st">"rhino3dm"</span>: <span class="st">"8.35.0"</span>,</div>
+<div class="l"><span class="cm">magpie/plugin/Chargeur/ChargeurCore.cs</span></div>
+<div class="l k4"><span class="n">107</span>.Where(c =&gt; c.Version != <span class="kw">null</span>)</div>
+<div class="l k4"><span class="n">108</span>.OrderByDescending(c =&gt; c.Version)<span class="rep r4">4</span></div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>La version lue</b>MagpieInfo.cs:36 la remonte : 0.1.5.0.</li>
+      <li><span class="rep r2">2</span><b>Le format</b>Absent : 1. Trop grand : refus clair.</li>
+      <li><span class="rep r3">3</span><b>Plage et fixe</b>Chapeau pour React Flow, exact pour rhino3dm.</li>
+      <li><span class="rep r4">4</span><b>Le Core le plus récent</b>Partagé : il doit servir les anciens .gha.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À surveiller · deux écarts entre texte et réalité</span>
+    <b>Le commentaire de tête</b> (Directory.Build.props:5–7) décrit trois projets et un <code>MagpieAdmin.gha</code> ; Magpie.csproj:8–12 en liste quatre, dont <code>MagpieAuteur.gha</code>. Rien ne casse, mais le prochain lecteur sera trompé. <b>L'installation sur le serveur</b> : README.md:112 indique <code>npm ci</code>, et deployer.sh:27 lance <code>npm install --include=dev</code>. Avec un verrou à jour, le résultat est le même ; <code>npm ci</code> refuserait un verrou en retard au lieu de le compléter.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 73 · Versionner : SemVer et compatibilité</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 73</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">On corrige un bug sans rien changer à l'API, depuis 1.4.2 :</div><ul>
+      <li><span>A</span>2.0.0</li><li><span>B</span>1.4.2.1</li><li><span>C</span>1.4.3</li><li><span>D</span>1.5.0</li></ul></div>
+
+    <div class="q"><div class="enonce">On retire une méthode publique, depuis 1.4.2 :</div><ul>
+      <li><span>A</span>2.0.0</li><li><span>B</span>1.5.0</li><li><span>C</span>1.5.2</li><li><span>D</span>1.4.3</li></ul></div>
+
+    <div class="q"><div class="enonce"><code>^12.3.6</code> accepte… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>12.3.7</li><li><span>B</span>12.11.2</li><li><span>C</span>12.3.5</li><li><span>D</span>13.0.0</li></ul></div>
+
+    <div class="q"><div class="enonce"><code>^0.1.5</code> accepte 0.2.0 ?</div><ul>
+      <li><span>A</span>seulement en dev</li><li><span>B</span>oui</li><li><span>C</span>seulement avec npm ci</li><li><span>D</span>non : avant 1.0, le mineur est figé</li></ul></div>
+
+    <div class="q"><div class="enonce"><code>~5.4.11</code> accepte…</div><ul>
+      <li><span>A</span>5.4.10</li><li><span>B</span>5.5.0</li><li><span>C</span>5.4.21</li><li><span>D</span>6.0.0</li></ul></div>
+
+    <div class="q"><div class="enonce">Le fichier package-lock.json…</div><ul>
+      <li><span>A</span>liste les plages acceptées</li><li><span>B</span>note la version choisie de chaque paquet</li><li><span>C</span>se met dans .gitignore</li><li><span>D</span>ne concerne que les devDependencies</li></ul></div>
+
+    <div class="q"><div class="enonce">Pour une installation reproductible sur un serveur :</div><ul>
+      <li><span>A</span>npm ci</li><li><span>B</span>npm update</li><li><span>C</span>npm outdated</li><li><span>D</span>supprimer le verrou</li></ul></div>
+
+    <div class="q"><div class="enonce">Un paquet .mgp sans <code>formatVersion</code> est…</div><ul>
+      <li><span>A</span>lu comme le format 1</li><li><span>B</span>lu comme le format 2</li><li><span>C</span>refusé</li><li><span>D</span>supprimé</li></ul></div>
+
+    <div class="q"><div class="enonce">En JavaScript, <code>"0.1.10" &lt; "0.1.9"</code> vaut…</div><ul>
+      <li><span>A</span>une erreur</li><li><span>B</span>true, comparaison de texte</li><li><span>C</span>false</li><li><span>D</span>undefined</li></ul></div>
+
+    <div class="q"><div class="enonce">Ne demandent pas de changer le numéro de format : <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>un champ facultatif nouveau</li><li><span>B</span>un correctif interne du lecteur</li><li><span>C</span>renommer un champ</li><li><span>D</span>changer l'unité d'un champ</li></ul></div>
+
+    <div class="q"><div class="enonce">ChargeurCore.cs:108 charge parmi les candidats…</div><ul>
+      <li><span>A</span>celui du .gha appelant</li><li><span>B</span>le plus ancien</li><li><span>C</span>le premier trouvé</li><li><span>D</span>le Core de plus haute version</li></ul></div>
+
+    <div class="q"><div class="enonce">Magpie est en 0.1.5 parce que…</div><ul>
+      <li><span>A</span>il a eu cinq correctifs depuis 1.0</li><li><span>B</span>Yak refuse 1.0</li><li><span>C</span>le logiciel est en phase pilote</li><li><span>D</span>Rhino l'impose</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 73 · Versionner : SemVer et compatibilité</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 73</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · C.</b> Un correctif, rien de visible.</div>
+    <div><b>02 · A.</b> Retirer casse les appelants.</div>
+    <div><b>03 · A et B.</b> Même majeur, pas plus bas.</div>
+    <div><b>04 · D.</b> Mesuré : refusée.</div>
+    <div><b>05 · C.</b> Seul le correctif bouge.</div>
+    <div><b>06 · B.</b> Il se commite avec le code.</div>
+    <div><b>07 · A.</b> Le verrou, tel quel.</div>
+    <div><b>08 · A.</b> ImportParcours.cs:113, « ?? 1 ».</div>
+    <div><b>09 · B.</b> « 1 » passe avant « 9 ».</div>
+    <div><b>10 · A et B.</b> Le sens des champs reste.</div>
+    <div><b>11 · D.</b> OrderByDescending(c =&gt; c.Version).</div>
+    <div><b>12 · C.</b> Directory.Build.props:30–32.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 et 2. <b>7 à 9</b> : relis les pages 3 et 4. <b>10 à 12</b> : passe au cours 74, « L'intégration continue ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">&lt;Version&gt;0.1.5&lt;/Version&gt;</td><td>la version de tous les projets du plugin</td><td>Directory.Build.props:33</td></tr>
+      <tr><td class="c">"^12.3.6"</td><td>même majeur, au moins 12.3.6</td><td>web/package.json:13</td></tr>
+      <tr><td class="c">"8.35.0"</td><td>cette version, aucune autre</td><td>web/package.json:16</td></tr>
+      <tr><td class="c">npm ci</td><td>installer le verrou tel quel</td><td>README.md:112</td></tr>
+      <tr><td class="c">"formatVersion"</td><td>le numéro de format d'un paquet</td><td>ImportParcours.cs:113</td></tr>
+      <tr><td class="c">new Version(a) &gt; new Version(b)</td><td>comparer deux versions nombre par nombre</td><td>exemple autonome, page 4</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>SemVer</dt><dd>Le versionnage sémantique : majeur.mineur.correctif, chacun avec sa promesse.</dd>
+    <dt>Plage</dt><dd>L'ensemble des versions qu'une dépendance accepte, comme ^12.3.6.</dd>
+    <dt>Verrou</dt><dd>Le fichier qui note la version réellement choisie de chaque paquet.</dd>
+    <dt>Compatibilité ascendante</dt><dd>La nouvelle version sait lire et servir ce que l'ancienne produisait.</dd>
+    <dt>Version de format</dt><dd>Le numéro d'un format de fichier, distinct de celui du logiciel.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 74</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 73 · Versionner : SemVer et compatibilité</div>
+</section>
+
+</body>
+</html>

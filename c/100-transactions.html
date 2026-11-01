@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>100 · Les transactions</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-10">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 100</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Les transactions</h1>
+  <p class="chapeau">Une modification réelle demande souvent plusieurs écritures : recréer deux tables, puis y remettre les lignes ; réordonner dix exercices. Si le programme s'arrête au milieu, la base garde une moitié de modification. Une <b>transaction</b> regroupe ces écritures : la base les applique toutes, ou aucune.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>76</b> et <b>97</b></span>
+    <span class="pastille">Exemples · <b>db.mjs</b>, <b>exercises.mjs</b>, <b>compute-proxy.mjs</b> (Magpie)</span>
+  </div>
+
+  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+    <svg viewBox="0 0 600 196" width="100%">
+<rect x="10" y="10" width="136" height="104" rx="4" fill="#ECECF2" stroke="#4A4A68" stroke-width="1.2"/>
+<text x="78" y="46" font-size="26" fill="#4A4A68" text-anchor="middle" font-weight="700">A</text>
+<text x="78" y="68" font-size="9" fill="#4A4A68" text-anchor="middle" font-weight="700">Atomicité</text>
+<text x="78" y="86" font-size="7.6" fill="#2B2F33" text-anchor="middle">tout ou rien :</text>
+<text x="78" y="99" font-size="7.6" fill="#2B2F33" text-anchor="middle">jamais une moitié d'écriture</text>
+<rect x="158" y="10" width="136" height="104" rx="4" fill="#fff" stroke="#4A4A68" stroke-width="1.2"/>
+<text x="226" y="46" font-size="26" fill="#4A4A68" text-anchor="middle" font-weight="700">C</text>
+<text x="226" y="68" font-size="9" fill="#4A4A68" text-anchor="middle" font-weight="700">Cohérence</text>
+<text x="226" y="86" font-size="7.6" fill="#2B2F33" text-anchor="middle">les contraintes tiennent</text>
+<text x="226" y="99" font-size="7.6" fill="#2B2F33" text-anchor="middle">à la fin de chaque transaction</text>
+<rect x="306" y="10" width="136" height="104" rx="4" fill="#ECECF2" stroke="#4A4A68" stroke-width="1.2"/>
+<text x="374" y="46" font-size="26" fill="#4A4A68" text-anchor="middle" font-weight="700">I</text>
+<text x="374" y="68" font-size="9" fill="#4A4A68" text-anchor="middle" font-weight="700">Isolation</text>
+<text x="374" y="86" font-size="7.6" fill="#2B2F33" text-anchor="middle">les autres ne voient pas</text>
+<text x="374" y="99" font-size="7.6" fill="#2B2F33" text-anchor="middle">un travail inachevé (cours 101)</text>
+<rect x="454" y="10" width="136" height="104" rx="4" fill="#fff" stroke="#4A4A68" stroke-width="1.2"/>
+<text x="522" y="46" font-size="26" fill="#4A4A68" text-anchor="middle" font-weight="700">D</text>
+<text x="522" y="68" font-size="9" fill="#4A4A68" text-anchor="middle" font-weight="700">Durabilité</text>
+<text x="522" y="86" font-size="7.6" fill="#2B2F33" text-anchor="middle">validé veut dire écrit :</text>
+<text x="522" y="99" font-size="7.6" fill="#2B2F33" text-anchor="middle">une coupure ne l'efface pas</text>
+<text x="300" y="140" font-size="8.6" fill="#2B2F33" text-anchor="middle" font-weight="700">BEGIN ouvre une transaction, COMMIT la valide d'un coup, ROLLBACK l'annule entièrement.</text>
+<text x="300" y="158" font-size="8.2" fill="#2B2F33" text-anchor="middle">Sans BEGIN, SQLite fait de chaque instruction sa propre petite transaction.</text>
+<text x="300" y="182" font-size="7.4" fill="#6B7378" text-anchor="middle" font-style="italic">Les quatre propriétés d'une transaction, ACID, sont garanties par SQLite comme par les grandes bases.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Tout ce qui doit réussir ensemble s'écrit entre BEGIN et COMMIT ; au moindre échec, ROLLBACK remet la base exactement comme avant.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Un virement : débiter un compte et créditer l'autre. La banque ne doit jamais s'arrêter entre les deux. Soit l'argent a changé de compte, soit rien ne s'est passé.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>dire ce que garantit ACID ;</li>
+        <li>écrire une transaction sûre en Node ;</li>
+        <li>accélérer des écritures en série ;</li>
+        <li>repérer une modification en plusieurs temps.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À retenir</span>
+    Les mesures de ce cours ont été faites sur un vrai fichier SQLite, pas en mémoire : la durabilité, et donc son coût, n'existe que sur disque. Le journal par défaut de SQLite (mode <code>delete</code>) et la synchronisation complète étaient actifs.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 100 · Les transactions</div>
+</section>
+
+<!-- ============ PAGE 2 · LA DURABILITÉ ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 100</b></div>
+  <p class="rubrique">Schéma 1 · Le prix d'un COMMIT</p>
+  <h2>Valider coûte, travailler non</h2>
+  <p style="max-width:165mm">Pour qu'une validation survive à une coupure de courant, SQLite écrit un journal, puis attend que le disque confirme avoir tout rangé. Cette attente se paie à chaque <code>COMMIT</code>, pas à chaque ligne. Regrouper mille écritures en une transaction, c'est attendre une fois au lieu de mille.</p>
+
+  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.4" fill="#4A4A68" text-anchor="start" font-weight="700">Insérer des lignes dans un fichier SQLite, une transaction par ligne ou une pour toutes (node:sqlite, mesuré)</text>
+<text x="16" y="60" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700">1 000 lignes</text>
+<rect x="130" y="42" width="261.2" height="17" fill="#C62828"/>
+<text x="397.2447473476821" y="55" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">1,3 s</text>
+<rect x="130" y="62" width="65.9" height="17" fill="#2E7D32"/>
+<text x="201.87808105389888" y="75" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">2,6 ms</text>
+<text x="16" y="114" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700">10 000 lignes</text>
+<rect x="130" y="96" width="336.8" height="17" fill="#C62828"/>
+<text x="472.7597650719556" y="109" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">15,0 s</text>
+<rect x="130" y="116" width="124.8" height="17" fill="#2E7D32"/>
+<text x="260.77571994823506" y="129" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">17,1 ms</text>
+<rect x="130" y="150" width="10" height="10" fill="#C62828"/>
+<text x="146" y="159" font-size="7.6" fill="#2B2F33" text-anchor="start">une transaction par ligne (aucun BEGIN)</text>
+<rect x="350" y="150" width="10" height="10" fill="#2E7D32"/>
+<text x="366" y="159" font-size="7.6" fill="#2B2F33" text-anchor="start">BEGIN … COMMIT autour de tout</text>
+<text x="16" y="182" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Chaque validation attend que le disque confirme l'écriture : 1,3 à 1,5 ms ici. Une seule pour tout : 500 à 900 fois plus vite.</text>
+<text x="16" y="198" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Échelle logarithmique. Disque de la machine de mesure ; un SSD de portable attend moins, mais le rapport reste grand.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · node:sqlite, la version rapide du schéma</span>const ins = db.prepare("INSERT INTO t (v) VALUES (?)");
+db.exec("BEGIN");
+for (let i = 0; i &lt; N; i++) ins.run("x" + i);     // rien n'est encore attendu
+db.exec("COMMIT");                                // une seule attente du disque</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Une transaction implicite</h3>
+      <p>Sans <code>BEGIN</code>, SQLite ouvre et valide une transaction autour de chaque instruction : c'est le mode « autocommit ». Chaque <code>run</code> d'une boucle paie donc sa propre attente du disque, 1,3 ms mesurée ici.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Pour un import</h3>
+      <p>Les scripts d'import de Magpie écrivent quelques dizaines de lignes : quelques dizaines de millisecondes d'attente, invisibles. Le même code sur dix mille lignes prendrait quinze secondes, contre dix-sept millisecondes en une transaction.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Mesurer des écritures sur une base en mémoire et conclure qu'elles sont rapides. En mémoire, il n'y a pas de disque à attendre : l'autocommit y semble gratuit, et ne l'est plus dès qu'on passe au fichier.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 100 · Les transactions</div>
+</section>
+
+<!-- ============ PAGE 3 · L'ATOMICITÉ ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 100</b></div>
+  <p class="rubrique">Schéma 2 · Tout ou rien</p>
+  <h2>Un arrêt au milieu</h2>
+  <p style="max-width:165mm">Un processus peut s'arrêter n'importe où : une exception non rattrapée, une fenêtre fermée, une coupure de courant. Les écritures déjà validées restent. Sans transaction, chaque instruction est validée à part : l'arrêt laisse un état que personne n'a voulu.</p>
+
+  <svg viewBox="0 0 600 222" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="222" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.4" fill="#4A4A68" text-anchor="start" font-weight="700">Les instructions de la migration 2 de db.mjs, 40 exercices, processus arrêté au 16e (reproduction mesurée)</text>
+<rect x="16" y="34" width="104" height="24" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="68.0" y="48.6" font-size="7.8" fill="#6B7378" text-anchor="middle" font-weight="700">lire les 40</text>
+<line x1="121" y1="46" x2="129" y2="46" stroke="#6B7378" stroke-width="1"/><polygon points="129,46 122.6,48.7 122.6,43.3" fill="#6B7378"/>
+<rect x="130" y="34" width="104" height="24" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="182.0" y="48.6" font-size="7.8" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.8px">DROP exercises</text>
+<line x1="235" y1="46" x2="243" y2="46" stroke="#6B7378" stroke-width="1"/><polygon points="243,46 236.6,48.7 236.6,43.3" fill="#6B7378"/>
+<rect x="244" y="34" width="104" height="24" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="296.0" y="48.6" font-size="7.8" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.8px">DROP parcours</text>
+<line x1="349" y1="46" x2="357" y2="46" stroke="#6B7378" stroke-width="1"/><polygon points="357,46 350.6,48.7 350.6,43.3" fill="#6B7378"/>
+<rect x="358" y="34" width="104" height="24" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="410.0" y="48.6" font-size="7.8" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.8px">CREATE …</text>
+<line x1="463" y1="46" x2="471" y2="46" stroke="#6B7378" stroke-width="1"/><polygon points="471,46 464.6,48.7 464.6,43.3" fill="#6B7378"/>
+<rect x="472" y="34" width="104" height="24" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="524.0" y="48.6" font-size="7.8" fill="#6B7378" text-anchor="middle" font-weight="700">réinsérer</text>
+<text x="472" y="72" font-size="7.8" fill="#C62828" text-anchor="middle" font-weight="700">arrêt ici</text>
+<rect x="16" y="86" width="568" height="52" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="28" y="104" font-size="9" fill="#C62828" text-anchor="start" font-weight="700">sans transaction</text>
+<text x="220" y="104" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">15 exercices sur 40</text>
+<text x="400" y="104" font-size="8" fill="#6B7378" text-anchor="start">nouveau schéma (TEXT)</text>
+<text x="28" y="124" font-size="8" fill="#2B2F33" text-anchor="start">la migration ne se relancera plus : 25 exercices perdus</text>
+<rect x="16" y="146" width="568" height="52" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="28" y="164" font-size="9" fill="#2E7D32" text-anchor="start" font-weight="700">BEGIN … COMMIT autour</text>
+<text x="220" y="164" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">40 exercices sur 40</text>
+<text x="400" y="164" font-size="8" fill="#6B7378" text-anchor="start">ancien schéma (INTEGER)</text>
+<text x="28" y="184" font-size="8" fill="#2B2F33" text-anchor="start">rien n'a eu lieu : la migration repart au lancement suivant</text>
+<text x="16" y="214" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Dans SQLite, même CREATE et DROP sont annulés par ROLLBACK : le schéma fait partie de la transaction.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/db.mjs · lignes 91 à 96 et 115 à 121 (extrait)</span>const existingExercises = db
+  .prepare("SELECT id, sortOrder, title, instructions, starterGraph, validationConfig FROM exercises")
+  .all();
+db.exec("DROP TABLE IF EXISTS exercises;");
+db.exec("DROP TABLE IF EXISTS parcours;");
+…
+for (const ex of existingExercises) {
+  reinsert.run(ex.id, ex.sortOrder, ex.title, ex.instructions, ex.starterGraph, ex.validationConfig);</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Des données en mémoire seulement</h3>
+      <p>Entre le <code>DROP</code> et la fin de la boucle, les exercices n'existent que dans le tableau JavaScript <code>existingExercises</code>. Un arrêt dans cet intervalle les perd. Et comme le nouveau schéma est déjà créé, la migration ne se relancera pas.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Avec une transaction</h3>
+      <p>Le <code>DROP</code>, le <code>CREATE</code> et les insertions deviennent un seul changement. À la réouverture, SQLite trouve le journal inachevé et remet l'ancien état : l'ancien schéma revient, la migration repart. La mesure le confirme.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Croire qu'une migration « qui s'exécute en une fraction de seconde » n'a pas besoin de transaction. La durée de la fenêtre réduit le risque, elle ne le supprime pas ; la transaction le supprime pour rien.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 100 · Les transactions</div>
+</section>
+
+<!-- ============ PAGE 4 · LA FORME SÛRE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 100</b></div>
+  <p class="rubrique">Schéma 3 · Écrire une transaction</p>
+  <h2>BEGIN, try, COMMIT, catch, ROLLBACK</h2>
+  <p style="max-width:165mm">node:sqlite n'offre pas de méthode qui enveloppe une fonction dans une transaction : on écrit <code>BEGIN</code> et <code>COMMIT</code> soi-même. Une erreur au milieu ne referme rien toute seule, c'est au code de l'annuler (cours 76).</p>
+
+  <svg viewBox="0 0 600 204" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="204" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#4A4A68" text-anchor="start" font-weight="700">Trois comportements de node:sqlite à connaître (mesurés)</text>
+<rect x="16" y="34" width="568" height="44" rx="4" fill="#ECECF2" stroke="#4A4A68" stroke-width="1.2"/>
+<text x="28" y="51" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">une instruction échoue pendant la transaction</text>
+<text x="574" y="51" font-size="8.2" fill="#C62828" text-anchor="end" font-weight="700">la transaction reste ouverte</text>
+<text x="28" y="68" font-size="7.8" fill="#6B7378" text-anchor="start">db.isTransaction vaut encore true : il faut ROLLBACK soi-même</text>
+<rect x="16" y="84" width="568" height="44" rx="4" fill="#fff" stroke="#4A4A68" stroke-width="1.2"/>
+<text x="28" y="101" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">BEGIN alors qu'une transaction est ouverte</text>
+<text x="574" y="101" font-size="8.2" fill="#C62828" text-anchor="end" font-weight="700">refusé</text>
+<text x="28" y="118" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">« cannot start a transaction within a transaction »</text>
+<rect x="16" y="134" width="568" height="44" rx="4" fill="#ECECF2" stroke="#4A4A68" stroke-width="1.2"/>
+<text x="28" y="151" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">ROLLBACK après un CREATE TABLE</text>
+<text x="574" y="151" font-size="8.2" fill="#2E7D32" text-anchor="end" font-weight="700">la table disparaît</text>
+<text x="28" y="168" font-size="7.8" fill="#6B7378" text-anchor="start">le schéma suit la transaction</text>
+<text x="16" y="196" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">D'où la forme : BEGIN, le travail dans un try, COMMIT à la fin, ROLLBACK dans le catch, puis relancer l'erreur.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · node:sqlite, une fonction utilitaire de transaction</span>function enTransaction(db, travail) {
+  db.exec("BEGIN");
+  try {
+    const r = travail();
+    db.exec("COMMIT");
+    return r;
+  } catch (e) {
+    if (db.isTransaction) db.exec("ROLLBACK");   // annuler, puis laisser l'erreur remonter
+    throw e;
+  }
+}</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Relancer l'erreur</h3>
+      <p>Le <code>catch</code> annule, puis relance : l'appelant doit savoir que rien n'a été écrit. Avaler l'erreur ferait croire à un succès, pour une base restée inchangée.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Pas d'attente dedans</h3>
+      <p>Une transaction tient un verrou sur la base (cours 101). On n'y place pas d'appel réseau ni d'<code>await</code> : on prépare les données avant, on écrit d'un trait, on valide.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Oublier le <code>ROLLBACK</code> dans le <code>catch</code>. La transaction reste ouverte, mesuré : le <code>BEGIN</code> suivant échoue, et les écritures suivantes s'ajoutent à un travail que personne ne validera.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 100 · Les transactions</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 100</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Les écritures en plusieurs temps de Magpie</h2>
+  <p style="max-width:165mm">Le backend de Magpie n'ouvre aucune transaction : chaque instruction est validée seule. Trois endroits enchaînent pourtant des écritures qui n'ont de sens qu'ensemble.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">magpie/web/db.mjs</span></div>
+<div class="l k1"><span class="n">95</span>    db.exec(<span class="st">"DROP TABLE IF EXISTS exercises;"</span>);<span class="rep r1">1</span></div>
+<div class="l k2"><span class="n">119</span>    <span class="kw">for</span> (<span class="kw">const</span> ex <span class="kw">of</span> existingExercises) {<span class="rep r2">2</span></div>
+<div class="l k2"><span class="n">120</span>      reinsert.run(ex.id, ex.sortOrder, ex.title, …);</div>
+<div class="l"><span class="cm">magpie/web/exercises.mjs</span></div>
+<div class="l k3"><span class="n">56</span>config.ExerciseIds.forEach((exerciseId, index) =&gt; {<span class="rep r3">3</span></div>
+<div class="l k3"><span class="n">61</span>    setPosition.run(config.Id, index, exerciseId);</div>
+<div class="l"><span class="cm">magpie/web/compute-proxy.mjs</span></div>
+<div class="l k4"><span class="n">305</span>exerciseIds.forEach((id, index) =&gt; setOrder.run(…));<span class="rep r4">4</span></div>
+<div class="l"><span class="cm">grep BEGIN magpie/web/*.mjs</span></div>
+<div class="l k5"><span class="n">—</span><span class="cm">aucun résultat</span><span class="rep r5">5</span></div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Migration 2</b>Supprime d'abord.</li>
+      <li><span class="rep r2">2</span><b>Puis réinsère</b>Ligne par ligne.</li>
+      <li><span class="rep r3">3</span><b>Import</b>Un parcours entier.</li>
+      <li><span class="rep r4">4</span><b>Réordonner</b>Toutes les positions.</li>
+      <li><span class="rep r5">5</span><b>Aucune</b>Transaction.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À surveiller · aucune transaction autour des écritures liées</span>
+    La migration 2 peut perdre les exercices si le processus s'arrête entre le <code>DROP</code> et la fin de la boucle : mesuré sur une reproduction, 25 exercices sur 40 perdus. Elle ne concerne que les bases d'avant le passage des identifiants en texte, et son commentaire estime qu'elles n'avaient pas encore d'exercices. Un réordonnancement interrompu laisserait des positions mélangées, un import un parcours à moitié rattaché (déduit). Une fonction comme <code>enTransaction</code> autour de chacun suffirait.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 100 · Les transactions</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 100</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">L'atomicité garantit que…</div><ul>
+      <li><span>A</span>toutes les écritures s'appliquent, ou aucune</li><li><span>B</span>les écritures sont rapides</li><li><span>C</span>la base est chiffrée</li><li><span>D</span>chaque ligne a une clé</li></ul></div>
+
+    <div class="q"><div class="enonce">Sans BEGIN, SQLite…</div><ul>
+      <li><span>A</span>garde tout en mémoire</li><li><span>B</span>n'écrit rien</li><li><span>C</span>refuse les écritures</li><li><span>D</span>valide chaque instruction dans sa propre transaction</li></ul></div>
+
+    <div class="q"><div class="enonce">10 000 insertions sur fichier ont pris (mesuré)…</div><ul>
+      <li><span>A</span>15 s sans transaction, 17 ms avec</li><li><span>B</span>15 s dans les deux cas</li><li><span>C</span>17 ms dans les deux cas</li><li><span>D</span>plus lent avec transaction</li></ul></div>
+
+    <div class="q"><div class="enonce">Ce qui coûte, à chaque COMMIT, est…</div><ul>
+      <li><span>A</span>le ramasse-miettes</li><li><span>B</span>l'analyse du SQL</li><li><span>C</span>le réseau</li><li><span>D</span>l'attente de la confirmation du disque</li></ul></div>
+
+    <div class="q"><div class="enonce">Une base en mémoire montre mal ce coût parce que…</div><ul>
+      <li><span>A</span>elle est en lecture seule</li><li><span>B</span>elle compresse les lignes</li><li><span>C</span>elle n'a pas de transactions</li><li><span>D</span>il n'y a pas de disque à attendre</li></ul></div>
+
+    <div class="q"><div class="enonce">Migration 2 arrêtée au 16e exercice sans transaction (reproduction) : il reste…</div><ul>
+      <li><span>A</span>40 exercices, nouveau schéma</li><li><span>B</span>15 exercices sur 40, nouveau schéma</li><li><span>C</span>40 exercices, ancien schéma</li><li><span>D</span>aucune table</li></ul></div>
+
+    <div class="q"><div class="enonce">Le même arrêt, avec BEGIN … COMMIT, laisse… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>15 exercices</li><li><span>B</span>les 40 exercices</li><li><span>C</span>une base illisible</li><li><span>D</span>l'ancien schéma, la migration repartira</li></ul></div>
+
+    <div class="q"><div class="enonce">Dans SQLite, ROLLBACK après un CREATE TABLE…</div><ul>
+      <li><span>A</span>vide la table seulement</li><li><span>B</span>est refusé</li><li><span>C</span>fait disparaître la table</li><li><span>D</span>garde la table</li></ul></div>
+
+    <div class="q"><div class="enonce">Après une erreur dans une transaction, node:sqlite…</div><ul>
+      <li><span>A</span>annule tout seul</li><li><span>B</span>laisse la transaction ouverte</li><li><span>C</span>ferme la base</li><li><span>D</span>valide ce qui a réussi</li></ul></div>
+
+    <div class="q"><div class="enonce">Dans le catch d'une transaction, on… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>relance l'erreur</li><li><span>B</span>exécute ROLLBACK</li><li><span>C</span>exécute COMMIT</li><li><span>D</span>ignore l'erreur</li></ul></div>
+
+    <div class="q"><div class="enonce">Dans une transaction, on évite…</div><ul>
+      <li><span>A</span>les UPDATE</li><li><span>B</span>les INSERT</li><li><span>C</span>les appels réseau et les await</li><li><span>D</span>les requêtes préparées</li></ul></div>
+
+    <div class="q"><div class="enonce">Le backend de Magpie ouvre une transaction…</div><ul>
+      <li><span>A</span>dans reorderParcours</li><li><span>B</span>nulle part</li><li><span>C</span>à chaque import</li><li><span>D</span>dans chaque migration</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 100 · Les transactions</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 100</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · A.</b> Jamais une moitié.</div>
+    <div><b>02 · D.</b> Le mode autocommit.</div>
+    <div><b>03 · A.</b> Près de 900 fois.</div>
+    <div><b>04 · D.</b> La durabilité a un prix.</div>
+    <div><b>05 · D.</b> Rien à synchroniser.</div>
+    <div><b>06 · B.</b> 25 exercices perdus.</div>
+    <div><b>07 · B et D.</b> Rien n'a eu lieu.</div>
+    <div><b>08 · C.</b> Le schéma suit la transaction.</div>
+    <div><b>09 · B.</b> isTransaction reste vrai.</div>
+    <div><b>10 · A et B.</b> Annuler, puis prévenir.</div>
+    <div><b>11 · C.</b> Le verrou durerait.</div>
+    <div><b>12 · B.</b> Aucun BEGIN dans web/.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 101, « Les accès simultanés ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">db.exec("BEGIN")</td><td>ouvrir une transaction</td><td>exemple autonome, page 2</td></tr>
+      <tr><td class="c">db.exec("COMMIT")</td><td>tout valider d'un coup</td><td>exemple autonome, page 2</td></tr>
+      <tr><td class="c">db.exec("ROLLBACK")</td><td>tout annuler</td><td>exemple autonome, page 4</td></tr>
+      <tr><td class="c">db.isTransaction</td><td>une transaction est-elle ouverte ?</td><td>exemple autonome, page 4</td></tr>
+      <tr><td class="c">PRAGMA journal_mode</td><td>le mode du journal</td><td>page 1 et cours 101</td></tr>
+      <tr><td class="c">PRAGMA synchronous</td><td>le niveau d'attente du disque</td><td>page 1</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Transaction</dt><dd>Un groupe d'écritures appliqué entièrement ou pas du tout.</dd>
+    <dt>ACID</dt><dd>Atomicité, cohérence, isolation, durabilité : ce qu'une transaction garantit.</dd>
+    <dt>Autocommit</dt><dd>Le mode où chaque instruction forme sa propre transaction.</dd>
+    <dt>Journal</dt><dd>Le fichier qui permet à SQLite de défaire ou terminer une transaction après un arrêt.</dd>
+    <dt>Retour arrière</dt><dd>L'annulation d'une transaction (ROLLBACK).</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 101</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 100 · Les transactions</div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>128 · Les génériques</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-1">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 128</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Les génériques</h1>
+  <p class="chapeau">Écrire une méthode une fois, pour des types qu'on ne connaît pas encore : c'est un <b>paramètre de type</b>, le T de <code>List&lt;T&gt;</code>. Le compilateur vérifie chaque usage, et .NET évite d'emballer les valeurs. Une <b>contrainte</b> dit quels types sont admis.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>01</b>, <b>03</b></span>
+    <span class="pastille">Exemples · <b>SnapSet</b>, <b>Magpie</b> plugin</span>
+  </div>
+
+  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+    <svg viewBox="0 0 600 206" width="100%">
+<rect x="10" y="50" width="220" height="60" rx="4" fill="#F1E9F3" stroke="#6B2C7A" stroke-width="1.2"/>
+<text x="120" y="72" font-size="8.2" fill="#6B2C7A" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.2px">T Depuis&lt;T&gt;(string, T defaut)</text>
+<text x="120" y="92" font-size="8" fill="#E65100" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">where T : struct</text>
+<rect x="330" y="8" width="250" height="30" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="342" y="21" font-size="8" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">T = NatureChamp</text>
+<text x="342" y="33" font-size="7.2" fill="#6B7378" text-anchor="start">ModeleListeChamp.cs:237</text>
+<line x1="232" y1="80" x2="328" y2="23" stroke="#2E7D32" stroke-width="1.1"/><polygon points="328,23 323.8,28.6 321.1,23.9" fill="#2E7D32"/>
+<rect x="330" y="46" width="250" height="30" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="342" y="59" font-size="8" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">T = ModeListe</text>
+<text x="342" y="71" font-size="7.2" fill="#6B7378" text-anchor="start">ModeleListeChamp.cs:653</text>
+<line x1="232" y1="80" x2="328" y2="61" stroke="#2E7D32" stroke-width="1.1"/><polygon points="328,61 322.2,64.9 321.1,59.6" fill="#2E7D32"/>
+<rect x="330" y="84" width="250" height="30" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="342" y="97" font-size="8" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">T = EtatVoyant</text>
+<text x="342" y="109" font-size="7.2" fill="#6B7378" text-anchor="start">ModeleVoyant.cs:67</text>
+<line x1="232" y1="80" x2="328" y2="99" stroke="#2E7D32" stroke-width="1.1"/><polygon points="328,99 321.1,100.4 322.2,95.1" fill="#2E7D32"/>
+<rect x="330" y="122" width="250" height="30" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2" stroke-dasharray="4 3"/>
+<text x="342" y="135" font-size="8" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">T = int</text>
+<text x="342" y="147" font-size="7.2" fill="#6B7378" text-anchor="start">compile… puis lève</text>
+<line x1="232" y1="80" x2="328" y2="137" stroke="#C62828" stroke-width="1.1"/><polygon points="328,137 321.1,136.1 323.8,131.4" fill="#C62828"/>
+<text x="10" y="176" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">Le même code sert pour chaque type ; la contrainte dit lesquels sont admis, et le compilateur la fait respecter.</text>
+<text x="10" y="194" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Ici, struct admet aussi int, que la méthode ne sait pas traiter : on le verra page 3.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Un générique garde le type exact d'un bout à l'autre : pas de conversion vers object, pas de boîte, et une erreur de type se voit à la compilation plutôt qu'à l'usage.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Un gabarit de perçage réglable. Le même outil sert pour chaque pièce ; la butée, la contrainte, empêche d'y glisser une pièce qu'il percerait de travers.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>repérer une mise en boîte ;</li>
+        <li>choisir la bonne contrainte ;</li>
+        <li>comparer sans emballer ;</li>
+        <li>lire une erreur de variance.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À retenir</span>
+    Une contrainte trop large laisse passer à la compilation ce qui échouera à l'exécution. La plus étroite qui couvre les vrais usages est la bonne.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 128 · Les génériques</div>
+</section>
+
+<!-- ============ PAGE 2 · SANS BOÎTE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 128</b></div>
+  <p class="rubrique">Schéma 1 · Sans boîte</p>
+  <h2>Ce qu'évite List&lt;int&gt;</h2>
+  <p style="max-width:165mm">Avant les génériques, une liste rangeait des object. Un int devait être emballé dans un petit objet pour y entrer. On a compté le temps et la mémoire, puis le prix d'une comparaison.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#6B2C7A" text-anchor="start" font-weight="700">Dix millions d'entiers ajoutés puis additionnés (.NET 8, Release, deux essais, mesuré)</text>
+<text x="16" y="45" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">List&lt;int&gt;</text>
+<rect x="110" y="34" width="44.8" height="14" rx="2" fill="#2E7D32" opacity=".35"/>
+<rect x="110" y="34" width="19.0" height="14" rx="2" fill="#2E7D32"/>
+<text x="160.75" y="45" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">152 à 358 ms · 128,0 Mio alloués</text>
+<text x="16" y="67" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">ArrayList</text>
+<rect x="110" y="56" width="298.0" height="14" rx="2" fill="#C62828" opacity=".35"/>
+<rect x="110" y="56" width="130.6" height="14" rx="2" fill="#C62828"/>
+<text x="414.0" y="67" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">1 045 à 2 384 ms · 484,9 Mio alloués</text>
+<text x="16" y="100" font-size="8.2" fill="#6B2C7A" text-anchor="start" font-weight="700">Comparer deux double dans une méthode générique, dix millions de fois (mesuré)</text>
+<text x="16" y="121" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">EqualityComparer&lt;T&gt;.Default.Equals</text>
+<text x="300" y="121" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700">1,44 à 11,52 ns · 0 octet par appel</text>
+<text x="16" y="141" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">object.Equals(a, b)</text>
+<text x="300" y="141" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700">17,92 à 101,85 ns · 48 octets par appel</text>
+<text x="16" y="170" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Ranger un int comme object le met dans une boîte : un petit objet par valeur, à créer puis à ramasser.</text>
+<text x="16" y="186" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">48 octets : deux double emballés pour être passés à object.Equals. La version générique n'emballe rien.</text>
+<text x="16" y="204" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Le premier essai de chaque paire inclut la compilation à la volée : d'où les écarts entre les deux bornes.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, ne signaler que ce qui change</span>void Poser&lt;T&gt;(ref T champ, T valeur)
+{
+    if (EqualityComparer&lt;T&gt;.Default.Equals(champ, valeur)) return;   // aucune boîte, même pour un double
+    champ = valeur;
+    Redessiner();
+}</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Valeur ou référence</h3>
+      <p>Un int, un double, un Point3d sont des valeurs. Les passer là où on attend un object crée une boîte sur le tas. C'est invisible dans le code, et coûteux dans une boucle.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Un code par type valeur</h3>
+      <p>Le compilateur à la volée produit une version de <code>List&lt;T&gt;</code> pour int, une pour double ; les types référence partagent une seule version.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Écrire <code>object.Equals(a, b)</code> ou <code>a.Equals((object)b)</code> dans une méthode générique. Le code compile, mais chaque appel emballe ses deux valeurs : 48 octets par comparaison mesurés.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 128 · Les génériques</div>
+</section>
+
+<!-- ============ PAGE 3 · LES CONTRAINTES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 128</b></div>
+  <p class="rubrique">Schéma 2 · Les contraintes</p>
+  <h2>Dire quels types sont admis</h2>
+  <p style="max-width:165mm">Sans contrainte, on ne peut presque rien faire de T. Chaque contrainte ouvre des possibilités et ferme la porte à des types. On a essayé la même méthode avec deux contraintes.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#6B2C7A" text-anchor="start" font-weight="700">Ce que chaque contrainte permet d'écrire sur T, et ce qu'elle refuse</text>
+<text x="16" y="40" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700">contrainte</text>
+<text x="150" y="40" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700">permet</text>
+<text x="380" y="40" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700">exemple</text>
+<rect x="10" y="48" width="580" height="18" fill="#fff" opacity=".55"/>
+<text x="16" y="61" font-size="7.6" fill="#6B2C7A" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">class</text>
+<text x="150" y="61" font-size="7.6" fill="#2B2F33" text-anchor="start">null, as, partage du code</text>
+<text x="380" y="61" font-size="7.4" fill="#6B7378" text-anchor="start">MagpieRepository.cs:174</text>
+<text x="16" y="79" font-size="7.6" fill="#6B2C7A" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">struct</text>
+<text x="150" y="79" font-size="7.6" fill="#2B2F33" text-anchor="start">T? et pas de null</text>
+<text x="380" y="79" font-size="7.4" fill="#6B7378" text-anchor="start">ChoixDeSchema.cs:27</text>
+<rect x="10" y="84" width="580" height="18" fill="#fff" opacity=".55"/>
+<text x="16" y="97" font-size="7.6" fill="#6B2C7A" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">struct, Enum</text>
+<text x="150" y="97" font-size="7.6" fill="#2B2F33" text-anchor="start">les méthodes d'Enum, sans surprise</text>
+<text x="380" y="97" font-size="7.4" fill="#6B7378" text-anchor="start">Liste.cs:320</text>
+<text x="16" y="115" font-size="7.6" fill="#6B2C7A" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">new()</text>
+<text x="150" y="115" font-size="7.6" fill="#2B2F33" text-anchor="start">new T()</text>
+<text x="380" y="115" font-size="7.4" fill="#6B7378" text-anchor="start">GeometryTypeRegistry.cs:57</text>
+<rect x="10" y="120" width="580" height="18" fill="#fff" opacity=".55"/>
+<text x="16" y="133" font-size="7.6" fill="#6B2C7A" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">IGH_Goo</text>
+<text x="150" y="133" font-size="7.6" fill="#2B2F33" text-anchor="start">appeler les membres de l'interface</text>
+<text x="380" y="133" font-size="7.4" fill="#6B7378" text-anchor="start">GeometryTypeRegistry.cs:57</text>
+<text x="16" y="158" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700">Depuis&lt;int&gt;("3", 0) avec struct : compile, puis ArgumentException « Type provided must be an Enum » (mesuré).</text>
+<text x="16" y="174" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700">Avec struct, Enum : refusé dès la compilation, erreur CS0315 (mesuré).</text>
+<text x="16" y="196" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">new T() : 15,9 à 23,5 ns contre 0,8 à 0,9 ns pour new Goo() écrit en dur (mesuré, dix millions d'objets).</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, la contrainte qui dit tout</span>public static T Depuis&lt;T&gt;(string texte, T defaut) where T : struct, Enum
+    =&gt; Enum.TryParse&lt;T&gt;(texte, true, out var v) &amp;&amp; Enum.IsDefined(typeof(T), v) ? v : defaut;</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Plusieurs paramètres</h3>
+      <p>GeometryTypeRegistry.cs enregistre chaque géométrie par une paire de types, la donnée et son paramètre, chacun avec ses contraintes (lignes 56 à 58).</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>new() a un prix</h3>
+      <p><code>new T()</code> passe par un appel indirect : une vingtaine de nanosecondes au lieu d'une. Négligeable à côté d'une désérialisation ; à éviter dans une boucle serrée.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Mettre <code>where T : struct</code> pour dire « une énumération ». int, double et Point3d passent aussi : l'erreur attend l'exécution, au lieu de bloquer la compilation.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 128 · Les génériques</div>
+</section>
+
+<!-- ============ PAGE 4 · LA VARIANCE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 128</b></div>
+  <p class="rubrique">Schéma 3 · La variance</p>
+  <h2>Un sac de chaînes est-il un sac d'objets ?</h2>
+  <p style="max-width:165mm">Une chaîne est un objet. Une liste de chaînes n'est pas une liste d'objets : on pourrait y glisser un nombre. Mais une suite qu'on ne fait que lire peut l'être. On a demandé au compilateur.</p>
+
+  <svg viewBox="0 0 600 200" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="200" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#6B2C7A" text-anchor="start" font-weight="700">Un sac de chaînes vu comme un sac d'objets : ce que dit le compilateur (.NET 8, mesuré)</text>
+<rect x="16" y="34" width="568" height="30" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="26" y="47" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">List&lt;object&gt; l = new List&lt;string&gt;();</text>
+<text x="26" y="59" font-size="7.2" fill="#6B7378" text-anchor="start" font-style="italic">on pourrait y ajouter un int</text>
+<text x="574" y="53" font-size="7.8" fill="#C62828" text-anchor="end" font-weight="700">refusé : CS0029</text>
+<rect x="16" y="72" width="568" height="30" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="26" y="85" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">IEnumerable&lt;object&gt; e = new List&lt;string&gt;();</text>
+<text x="26" y="97" font-size="7.2" fill="#6B7378" text-anchor="start" font-style="italic">on ne peut qu'y lire : out T</text>
+<text x="574" y="91" font-size="7.8" fill="#2E7D32" text-anchor="end" font-weight="700">accepté</text>
+<rect x="16" y="110" width="568" height="30" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
+<text x="26" y="123" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">object[] t = new string[2];  t[0] = 42;</text>
+<text x="26" y="135" font-size="7.2" fill="#6B7378" text-anchor="start" font-style="italic">ArrayTypeMismatchException</text>
+<text x="574" y="129" font-size="7.8" fill="#E65100" text-anchor="end" font-weight="700">compile, puis lève</text>
+<text x="16" y="166" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">La variance n'est permise que là où elle est sûre. Les tableaux, plus anciens, l'acceptent et vérifient à chaque écriture.</text>
+<text x="16" y="186" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Écrire dans un string[] vu comme object[] : 2,94 ns contre 2,16 ns dans un vrai object[] (mesuré, cent millions).</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, lire une liste sous un type plus large</span>List&lt;GH_Point&gt; points = Lire();
+IEnumerable&lt;IGH_Goo&gt; donnees = points;        // permis : IEnumerable&lt;out T&gt; ne fait que rendre des T
+foreach (var d in donnees) Console.WriteLine(d.TypeName);</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>out et in</h3>
+      <p><code>out T</code> : l'interface ne fait que rendre des T, elle accepte un type plus précis. <code>in T</code> : elle ne fait qu'en recevoir, comme IComparer&lt;in T&gt;, et accepte un type plus large.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Func et Action</h3>
+      <p><code>Func&lt;out TResult&gt;</code> et <code>Action&lt;in T&gt;</code> suivent la même règle : un Func&lt;string&gt; peut servir là où un Func&lt;object&gt; est attendu.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Passer un string[] à une méthode qui attend object[] et qui y écrit. Ça compile ; la première écriture d'un autre type lève ArrayTypeMismatchException, loin de l'appel fautif.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 128 · Les génériques</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 128</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Des génériques dans SnapSet et Magpie</h2>
+  <p style="max-width:165mm">Deux contraintes pour des énumérations, une comparaison sans boîte, une paire de types.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">…/SnapSet.Constituants/ · ChoixDeSchema.cs · Liste.cs · Jauge.cs</span></div>
+<div class="l k1"><span class="n">27</span>public static T Depuis&lt;T&gt;(…) where T : struct<span class="rep r1">1</span></div>
+<div class="l k2"><span class="n">320</span>… Liste&lt;TEnum&gt; : Liste where TEnum : struct, Enum<span class="rep r2">2</span></div>
+<div class="l k3"><span class="n">126</span>if (….EqualityComparer&lt;T&gt;.Default.Equals(…)) return;<span class="rep r3">3</span></div>
+<div class="l"><span class="cm">magpie/plugin/Core/GeometryTypeRegistry.cs</span></div>
+<div class="l k4"><span class="n">57</span>    where TGoo : class, IGH_Goo, new()<span class="rep r4">4</span></div>
+<div class="l k5"><span class="n">58</span>    where TParam : GH_PersistentParam&lt;TGoo&gt;, new()<span class="rep r5">5</span></div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>struct seul</b>Large.</li>
+      <li><span class="rep r2">2</span><b>struct, Enum</b>Exact.</li>
+      <li><span class="rep r3">3</span><b>Sans boîte</b>Comparer.</li>
+      <li><span class="rep r4">4</span><b>Trois</b>Contraintes.</li>
+      <li><span class="rep r5">5</span><b>Liées</b>À TGoo.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À surveiller · Depuis&lt;T&gt; accepte tout type valeur</span>
+    ChoixDeSchema.cs:27 et MenuReglages.cs:319 contraignent T à struct, alors que la méthode ne traite que des énumérations ; Liste.cs:320 écrit déjà struct, Enum. Mesuré sur une copie : Depuis&lt;int&gt; compile et lève ArgumentException, struct, Enum le refuse (CS0315). Tous les appels relevés passent des énumérations : rien ne casse aujourd'hui. Relevé sans rien modifier.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 128 · Les génériques</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 128</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Mettre un int dans une ArrayList…</div><ul>
+      <li><span>A</span>ne coûte rien</li><li><span>B</span>l'emballe dans un objet sur le tas</li><li><span>C</span>est interdit</li><li><span>D</span>le convertit en texte</li></ul></div>
+
+    <div class="q"><div class="enonce">Dix millions d'entiers : mémoire allouée par ArrayList…</div><ul>
+      <li><span>A</span>autant</li><li><span>B</span>moins</li><li><span>C</span>484,9 Mio, contre 128,0 pour List&lt;int&gt;</li><li><span>D</span>0</li></ul></div>
+
+    <div class="q"><div class="enonce">EqualityComparer&lt;T&gt;.Default.Equals sur deux double alloue…</div><ul>
+      <li><span>A</span>1 Ko</li><li><span>B</span>8 octets</li><li><span>C</span>0 octet</li><li><span>D</span>48 octets</li></ul></div>
+
+    <div class="q"><div class="enonce">where T : struct admet…</div><ul>
+      <li><span>A</span>tout type valeur, int compris</li><li><span>B</span>les classes</li><li><span>C</span>string</li><li><span>D</span>seulement les énumérations</li></ul></div>
+
+    <div class="q"><div class="enonce">Depuis&lt;int&gt;("3", 0), contraint à struct seulement…</div><ul>
+      <li><span>A</span>compile, puis lève ArgumentException</li><li><span>B</span>ne compile pas</li><li><span>C</span>rend 0 sans erreur</li><li><span>D</span>rend 3</li></ul></div>
+
+    <div class="q"><div class="enonce">La même méthode contrainte à struct, Enum…</div><ul>
+      <li><span>A</span>n'existe pas en C#</li><li><span>B</span>lève à l'exécution</li><li><span>C</span>accepte int</li><li><span>D</span>refuse int à la compilation, CS0315</li></ul></div>
+
+    <div class="q"><div class="enonce">La contrainte new() permet…</div><ul>
+      <li><span>A</span>de rendre null</li><li><span>B</span>d'écrire new T()</li><li><span>C</span>de comparer deux T</li><li><span>D</span>d'hériter de T</li></ul></div>
+
+    <div class="q"><div class="enonce">new T() a coûté, par objet…</div><ul>
+      <li><span>A</span>0</li><li><span>B</span>16 à 23 ns, contre moins d'1 ns en dur</li><li><span>C</span>1 ms</li><li><span>D</span>autant</li></ul></div>
+
+    <div class="q"><div class="enonce">List&lt;object&gt; l = new List&lt;string&gt;();…</div><ul>
+      <li><span>A</span>est refusé, CS0029</li><li><span>B</span>lève à l'exécution</li><li><span>C</span>est accepté</li><li><span>D</span>copie la liste</li></ul></div>
+
+    <div class="q"><div class="enonce">Acceptent un type plus précis grâce à out T… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>IEnumerable&lt;T&gt;</li><li><span>B</span>List&lt;T&gt;</li><li><span>C</span>Func&lt;TResult&gt;</li><li><span>D</span>Action&lt;T&gt;</li></ul></div>
+
+    <div class="q"><div class="enonce">object[] t = new string[2]; t[0] = 42;…</div><ul>
+      <li><span>A</span>ne compile pas</li><li><span>B</span>range "42"</li><li><span>C</span>range 42</li><li><span>D</span>lève ArrayTypeMismatchException</li></ul></div>
+
+    <div class="q"><div class="enonce">Liste&lt;TEnum&gt; de SnapSet contraint TEnum à…</div><ul>
+      <li><span>A</span>struct seulement</li><li><span>B</span>new()</li><li><span>C</span>class</li><li><span>D</span>struct, Enum</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 128 · Les génériques</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 128</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · B.</b> Une boîte par valeur.</div>
+    <div><b>02 · C.</b> Mesuré, page 2.</div>
+    <div><b>03 · C.</b> Aucune boîte.</div>
+    <div><b>04 · A.</b> D'où le piège de la page 3.</div>
+    <div><b>05 · A.</b> Mesuré sur une copie.</div>
+    <div><b>06 · D.</b> L'erreur avance.</div>
+    <div><b>07 · B.</b> GeometryTypeRegistry.</div>
+    <div><b>08 · B.</b> 15,9 à 23,5 ns.</div>
+    <div><b>09 · A.</b> On pourrait y ajouter un int.</div>
+    <div><b>10 · A et C.</b> Ils ne font que rendre.</div>
+    <div><b>11 · D.</b> Vérifié à l'écriture.</div>
+    <div><b>12 · D.</b> Liste.cs:320.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 127, « Délégués et événements ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">T Methode&lt;T&gt;(T x)</td><td>une méthode pour tout type</td><td>ChoixDeSchema.cs:27</td></tr>
+      <tr><td class="c">where T : struct, Enum</td><td>seulement une énumération</td><td>Liste.cs:320</td></tr>
+      <tr><td class="c">where T : class, new()</td><td>un type référence constructible</td><td>GeometryTypeRegistry.cs:57</td></tr>
+      <tr><td class="c">EqualityComparer&lt;T&gt;.Default</td><td>comparer sans emballer</td><td>Jauge.cs:126</td></tr>
+      <tr><td class="c">IEnumerable&lt;out T&gt;</td><td>covariance : plus précis accepté</td><td>page 4</td></tr>
+      <tr><td class="c">IComparer&lt;in T&gt;</td><td>contravariance : plus large accepté</td><td>page 4</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Paramètre de type</dt><dd>Le T d'une classe ou d'une méthode générique, fixé à l'usage.</dd>
+    <dt>Contrainte</dt><dd>La condition que T doit remplir, écrite après where.</dd>
+    <dt>Mise en boîte</dt><dd>La copie d'une valeur dans un objet, pour la traiter comme object.</dd>
+    <dt>Covariance</dt><dd>Accepter un type plus précis là où l'on ne fait que lire.</dd>
+    <dt>Contravariance</dt><dd>Accepter un type plus large là où l'on ne fait que recevoir.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 127</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 128 · Les génériques</div>
+</section>
+
+</body>
+</html>

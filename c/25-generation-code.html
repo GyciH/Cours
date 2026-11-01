@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>25 · Génération de code</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-11">
+
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 25</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Génération de code</h1>
+  <p class="chapeau">SnapSet n'écrit pas à la main ce qu'il peut déduire d'une description. Un schéma JSON devient des classes C#, et un dessin posé sur le canvas devient un composant Grasshopper. Le tout est de séparer ce que la machine réécrit de ce que le développeur garde.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>24</b> sérialisation</span>
+    <span class="pastille">Exemples · <b>generer-modele.js</b>, <b>GenerateurDessin</b>, <b>EcrivainGeneration</b> (SnapSet)</span>
+  </div>
+
+  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+    <svg viewBox="0 0 600 214" width="100%">
+<text x="16" y="16" font-size="9" fill="#6B7378" text-anchor="start" font-weight="700" font-style="italic">au développement de SnapSet</text>
+<rect x="16" y="24" width="150" height="44" rx="5" fill="#fff" stroke="#1565C0" stroke-width="1.3"/>
+<text x="91.0" y="43.0" font-size="9.6" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:9.6px">ghstyle.schema.json</text>
+<text x="91.0" y="57.0" font-size="8.4" fill="#2B2F33" text-anchor="middle">58 réglages décrits</text>
+<line x1="168" y1="46" x2="206" y2="46" stroke="#4F46B8" stroke-width="1.8"/><polygon points="206,46 199.6,48.7 199.6,43.3" fill="#4F46B8"/>
+<rect x="208" y="24" width="150" height="44" rx="5" fill="#ECEBFA" stroke="#4F46B8" stroke-width="1.3"/>
+<text x="283.0" y="43.0" font-size="9.6" fill="#4F46B8" text-anchor="middle" font-weight="700" class="mono" style="font-size:9.6px">generer-modele.js</text>
+<text x="283.0" y="57.0" font-size="8.4" fill="#2B2F33" text-anchor="middle">node, sans dépendance</text>
+<line x1="360" y1="46" x2="398" y2="46" stroke="#4F46B8" stroke-width="1.8"/><polygon points="398,46 391.6,48.7 391.6,43.3" fill="#4F46B8"/>
+<rect x="400" y="24" width="184" height="44" rx="5" fill="#fff" stroke="#E65100" stroke-width="1.3"/>
+<text x="492.0" y="43.0" font-size="9.6" fill="#E65100" text-anchor="middle" font-weight="700" class="mono" style="font-size:9.6px">ModeleGHStyle.g.cs</text>
+<text x="492.0" y="57.0" font-size="8.4" fill="#2B2F33" text-anchor="middle">+ ModeleNoeuds.g.cs</text>
+<line x1="16" y1="88" x2="584" y2="88" stroke="#D9D2C7" stroke-dasharray="3 3"/>
+<text x="16" y="106" font-size="9" fill="#6B7378" text-anchor="start" font-weight="700" font-style="italic">à l'usage, sur le canvas</text>
+<rect x="16" y="116" width="150" height="52" rx="5" fill="#fff" stroke="#1565C0" stroke-width="1.3"/>
+<text x="91.0" y="139.0" font-size="9.8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:9.8px">dessin emboîté</text>
+<text x="91.0" y="153.0" font-size="8.4" fill="#2B2F33" text-anchor="middle">Colonne, Ligne, feuilles</text>
+<line x1="168" y1="142" x2="206" y2="142" stroke="#4F46B8" stroke-width="1.8"/><polygon points="206,142 199.6,144.7 199.6,139.3" fill="#4F46B8"/>
+<rect x="208" y="116" width="150" height="52" rx="5" fill="#ECEBFA" stroke="#4F46B8" stroke-width="1.3"/>
+<text x="283.0" y="139.0" font-size="10" fill="#4F46B8" text-anchor="middle" font-weight="700" class="mono" style="font-size:10px">« Générer »</text>
+<text x="283.0" y="153.0" font-size="8.4" fill="#2B2F33" text-anchor="middle">menu du conteneur racine</text>
+<line x1="360" y1="134" x2="398" y2="124" stroke="#4F46B8" stroke-width="1.6"/><polygon points="398,124 392.5,128.3 391.1,123.0" fill="#4F46B8"/>
+<line x1="360" y1="150" x2="398" y2="160" stroke="#4F46B8" stroke-width="1.6"/><polygon points="398,160 391.1,161.0 392.5,155.7" fill="#4F46B8"/>
+<rect x="400" y="106" width="184" height="32" rx="5" fill="#fff" stroke="#E65100" stroke-width="1.3"/>
+<text x="410" y="120" font-size="9.4" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:9.4px">Xxx.Dessin.g.cs</text>
+<text x="410" y="132" font-size="8.4" fill="#2B2F33" text-anchor="start">réécrit à chaque fois</text>
+<rect x="400" y="146" width="184" height="32" rx="5" fill="#fff" stroke="#2E7D32" stroke-width="1.3"/>
+<text x="410" y="160" font-size="9.4" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:9.4px">Xxx.cs</text>
+<text x="410" y="172" font-size="8.4" fill="#2B2F33" text-anchor="start">créé une fois, jamais écrasé</text>
+<text x="300" y="202" font-size="9" fill="#4F46B8" text-anchor="middle" font-weight="700">La même idée deux fois : une description en entrée, du C# en sortie, sans retouche à la main.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Un <b>générateur</b> est un programme qui écrit du code à partir d'une description. Il est utile s'il est <b>déterministe</b> : la même entrée donne toujours les mêmes octets, et le fichier produit n'est jamais retouché à la main.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Un tampon encreur. On grave le motif une fois (le générateur), on l'encre avec la description, et chaque coup donne la même empreinte. Si l'empreinte ne plaît pas, on change le tampon ou l'encre, pas l'empreinte au crayon.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>lire comment une entrée du schéma devient une propriété C# ;</li>
+        <li>repérer ce qui rend une sortie non déterministe ;</li>
+        <li>faire coopérer un fichier généré et un fichier écrit à la main par une classe partielle ;</li>
+        <li>expliquer pourquoi « Générer » n'écrase jamais Xxx.cs.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:5mm">
+    <span class="titre">À retenir</span>
+    Un fichier <code>.g.cs</code> est une <b>sortie</b>, comme un PDF qu'on imprime. On le corrige en changeant son entrée (le schéma, le dessin) ou son générateur, puis on régénère. Une retouche à la main disparaît au coup suivant.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 25 · Génération de code</div>
+</section>
+
+<!-- ============ PAGE 2 · DU SCHÉMA AU MODÈLE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 25</b></div>
+  <p class="rubrique">Schéma 1 · Du schéma au modèle C#</p>
+  <h2>Une clé JSON, une propriété</h2>
+  <p style="max-width:165mm"><code>schema/ghstyle.schema.json</code> décrit les 58 réglages d'apparence. <code>node schema/generer-modele.js</code> le lit et écrit <code>ModeleGHStyle.g.cs</code> et <code>ModeleNoeuds.g.cs</code>. Le script n'utilise que les modules natifs de Node : aucune installation.</p>
+
+  <svg viewBox="0 0 600 236" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="236" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="12" fill="#4F46B8" text-anchor="start" font-weight="700">Chaque clé du schéma a sa place dans la propriété émise</text>
+<text x="16" y="42" font-size="8.8" fill="#6B7378" text-anchor="start" font-weight="700">ghstyle.schema.json · 232–240, condensé</text>
+<text x="322" y="42" font-size="8.8" fill="#6B7378" text-anchor="start" font-weight="700">ModeleGHStyle.g.cs · 590–596</text>
+<rect x="12" y="48" width="252" height="128" rx="4" fill="#fff" stroke="#CFC6BA"/>
+<rect x="318" y="48" width="270" height="128" rx="4" fill="#fff" stroke="#CFC6BA"/>
+<text x="20" y="64" font-size="8.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.6px;white-space:pre">"epaisseurBordure": {</text>
+<text x="20" y="78" font-size="8.6" fill="#1565C0" text-anchor="start" class="mono" style="font-size:8.6px;white-space:pre">  "type": "number",</text>
+<text x="20" y="92" font-size="8.6" fill="#6B7378" text-anchor="start" class="mono" style="font-size:8.6px;white-space:pre">  "minimum": 0, "maximum": 20,</text>
+<text x="20" y="106" font-size="8.6" fill="#E65100" text-anchor="start" class="mono" style="font-size:8.6px;white-space:pre">  "default": 1,</text>
+<text x="20" y="120" font-size="8.6" fill="#2E7D32" text-anchor="start" class="mono" style="font-size:8.6px;white-space:pre">  "description": "Épaisseur…",</text>
+<text x="20" y="134" font-size="8.6" fill="#6B7378" text-anchor="start" class="mono" style="font-size:8.6px;white-space:pre">  "parEtat": true,</text>
+<text x="20" y="148" font-size="8.6" fill="#7B1FA2" text-anchor="start" class="mono" style="font-size:8.6px;white-space:pre">  "titre": "Épaisseur de bordure"</text>
+<text x="20" y="162" font-size="8.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.6px;white-space:pre">}</text>
+<text x="326" y="64" font-size="8.2" fill="#2E7D32" text-anchor="start" class="mono" style="font-size:8.2px;white-space:pre">/// &lt;summary&gt;Épaisseur…&lt;/summary&gt;</text>
+<text x="326" y="78" font-size="8.2" fill="#00838F" text-anchor="start" class="mono" style="font-size:8.2px;white-space:pre">[Category(Rubriques.Apparence)]</text>
+<text x="326" y="92" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px;white-space:pre">[CleJson("remplissage", "epaisseurBordure")]</text>
+<text x="326" y="106" font-size="8.2" fill="#7B1FA2" text-anchor="start" class="mono" style="font-size:8.2px;white-space:pre">[DisplayName("Épaisseur de bordure")]</text>
+<text x="326" y="120" font-size="8.2" fill="#2E7D32" text-anchor="start" class="mono" style="font-size:8.2px;white-space:pre">[Description("Épaisseur…")]</text>
+<text x="326" y="134" font-size="8.2" fill="#E65100" text-anchor="start" class="mono" style="font-size:8.2px;white-space:pre">[DefaultValue(1d)]</text>
+<text x="326" y="148" font-size="8.2" fill="#1565C0" text-anchor="start" class="mono" style="font-size:8.2px;white-space:pre">public double EpaisseurBordure</text>
+<text x="326" y="162" font-size="8.2" fill="#E65100" text-anchor="start" class="mono" style="font-size:8.2px;white-space:pre">    { get; set; } = 1d;</text>
+<path d="M 264 75 C 290 75, 292 145, 318 145" fill="none" stroke="#1565C0" stroke-width="1.2" stroke-dasharray="3 2"/>
+<path d="M 264 103 C 290 103, 292 131, 318 131" fill="none" stroke="#E65100" stroke-width="1.2" stroke-dasharray="3 2"/>
+<path d="M 264 117 C 290 117, 292 117, 318 117" fill="none" stroke="#2E7D32" stroke-width="1.2" stroke-dasharray="3 2"/>
+<path d="M 264 145 C 290 145, 292 103, 318 103" fill="none" stroke="#7B1FA2" stroke-width="1.2" stroke-dasharray="3 2"/>
+<text x="16" y="196" font-size="8.8" fill="#2B2F33" text-anchor="start">Le groupe « remplissage » porte « rubrique » : Apparence, d'où [Category]. « parEtat » le recopie aussi</text>
+<text x="16" y="210" font-size="8.8" fill="#2B2F33" text-anchor="start">dans ReglagesParEtat, typé double? (nullable). « minimum » et « maximum » n'apparaissent pas dans</text>
+<text x="16" y="224" font-size="8.8" fill="#2B2F33" text-anchor="start">cette propriété. Son nom vient de la clé, capitale en tête : epaisseurBordure → EpaisseurBordure.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">generer-modele.js · 92–104 et 367–370, condensé</span>/** "groupe.champ" -&gt; nom de la classe C# composée générée. */
+const NOMS_CLASSES_COMPOSEES = {
+  'gabarit.gripsPresents': 'PresenceGrips',
+  'decorations.badge': 'Badge',
+  …
+};
+const nomClasse = NOMS_CLASSES_COMPOSEES[cheminComposé];
+if (!nomClasse) {
+  throw new Error(`Réglage composé "${cheminComposé}" sans entrée dans NOMS_CLASSES_COMPOSEES …`);
+}</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Ce que le schéma ne dit pas</h3>
+      <p>« gripsPresents » ne fait pas un bon nom de <b>type</b>. Cette petite table vit dans le générateur, jamais dans le fichier émis. Les rubriques, elles, viennent du schéma : une table de plus serait un second vocabulaire.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>S'arrêter plutôt que deviner</h3>
+      <p>Un réglage composé nouveau sans entrée dans la table arrête le script avec un message qui dit quoi faire. Un nom inventé au hasard compilerait, puis resterait dans tous les plugins publiés.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Corriger <code>ModeleGHStyle.g.cs</code> directement. Son en-tête le dit : « NE MODIFIE PAS CE FICHIER À LA MAIN ». La correction compile, puis disparaît à la prochaine exécution de <code>node schema/generer-modele.js</code>. On change le schéma, puis on régénère.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 25 · Génération de code</div>
+</section>
+
+<!-- ============ PAGE 3 · DÉTERMINISME ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 25</b></div>
+  <p class="rubrique">Schéma 2 · Déterminisme</p>
+  <h2>Deux exécutions, les mêmes octets</h2>
+  <p style="max-width:165mm">Un générateur est <b>idempotent</b> quand le relancer sur la même entrée ne change rien. Vérifié pour ce cours : deux exécutions dans une copie du dossier donnent les mêmes empreintes SHA-1 que les fichiers du dépôt.</p>
+
+  <svg viewBox="0 0 600 232" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="232" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="12" fill="#4F46B8" text-anchor="start" font-weight="700">Cinq façons de changer les octets sans changer l'entrée, et la parade de SnapSet</text>
+<text x="16" y="44" font-size="9" fill="#C62828" text-anchor="start" font-weight="700">ce qui varierait</text>
+<text x="250" y="44" font-size="9" fill="#2E7D32" text-anchor="start" font-weight="700">la parade</text>
+<rect x="16" y="54" width="214" height="24" rx="4" fill="#fff" stroke="#C62828"/>
+<text x="26" y="70" font-size="8.8" fill="#2B2F33" text-anchor="start">une date dans l'en-tête</text>
+<line x1="22" y1="66" x2="224" y2="66" stroke="#C62828" stroke-width=".8" opacity=".55"/>
+<line x1="232" y1="66" x2="248" y2="66" stroke="#6B7378" stroke-width="1.2"/><polygon points="248,66 241.6,68.7 241.6,63.3" fill="#6B7378"/>
+<rect x="250" y="54" width="334" height="24" rx="4" fill="#fff" stroke="#2E7D32"/>
+<text x="260" y="70" font-size="8.8" fill="#2B2F33" text-anchor="start">aucune date, aucune horloge lue</text>
+<rect x="16" y="84" width="214" height="24" rx="4" fill="#fff" stroke="#C62828"/>
+<text x="26" y="100" font-size="8.8" fill="#2B2F33" text-anchor="start">l'ordre d'un dictionnaire</text>
+<line x1="22" y1="96" x2="224" y2="96" stroke="#C62828" stroke-width=".8" opacity=".55"/>
+<line x1="232" y1="96" x2="248" y2="96" stroke="#6B7378" stroke-width="1.2"/><polygon points="248,96 241.6,98.7 241.6,93.3" fill="#6B7378"/>
+<rect x="250" y="84" width="334" height="24" rx="4" fill="#fff" stroke="#2E7D32"/>
+<text x="260" y="100" font-size="8.8" fill="#2B2F33" text-anchor="start">l'ordre de déclaration du JSON (ou du dessin)</text>
+<rect x="16" y="114" width="214" height="24" rx="4" fill="#fff" stroke="#C62828"/>
+<text x="26" y="130" font-size="8.8" fill="#2B2F33" text-anchor="start">la culture du poste : 40,5</text>
+<line x1="22" y1="126" x2="224" y2="126" stroke="#C62828" stroke-width=".8" opacity=".55"/>
+<line x1="232" y1="126" x2="248" y2="126" stroke="#6B7378" stroke-width="1.2"/><polygon points="248,126 241.6,128.7 241.6,123.3" fill="#6B7378"/>
+<rect x="250" y="114" width="334" height="24" rx="4" fill="#fff" stroke="#2E7D32"/>
+<text x="260" y="130" font-size="8.8" fill="#2B2F33" text-anchor="start">CultureInfo.InvariantCulture : 40.5</text>
+<rect x="16" y="144" width="214" height="24" rx="4" fill="#fff" stroke="#C62828"/>
+<text x="26" y="160" font-size="8.8" fill="#2B2F33" text-anchor="start">\r\n sur Windows, \n ailleurs</text>
+<line x1="22" y1="156" x2="224" y2="156" stroke="#C62828" stroke-width=".8" opacity=".55"/>
+<line x1="232" y1="156" x2="248" y2="156" stroke="#6B7378" stroke-width="1.2"/><polygon points="248,156 241.6,158.7 241.6,153.3" fill="#6B7378"/>
+<rect x="250" y="144" width="334" height="24" rx="4" fill="#fff" stroke="#2E7D32"/>
+<text x="260" y="160" font-size="8.8" fill="#2B2F33" text-anchor="start">FinDeLigne = "\n", et .gitattributes eol=lf</text>
+<rect x="16" y="174" width="214" height="24" rx="4" fill="#fff" stroke="#C62828"/>
+<text x="26" y="190" font-size="8.8" fill="#2B2F33" text-anchor="start">un Guid tiré à chaque appel</text>
+<line x1="22" y1="186" x2="224" y2="186" stroke="#C62828" stroke-width=".8" opacity=".55"/>
+<line x1="232" y1="186" x2="248" y2="186" stroke="#6B7378" stroke-width="1.2"/><polygon points="248,186 241.6,188.7 241.6,183.3" fill="#6B7378"/>
+<rect x="250" y="174" width="334" height="24" rx="4" fill="#fff" stroke="#2E7D32"/>
+<text x="260" y="190" font-size="8.8" fill="#2B2F33" text-anchor="start">reçu en paramètre : la sortie ne dépend que des entrées</text>
+<text x="16" y="222" font-size="8.8" fill="#6B7378" text-anchor="start" font-style="italic">Vérifié : deux exécutions de generer-modele.js donnent les mêmes empreintes que les fichiers du dépôt.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">GenerationDessinTests.cs · 176–192, condensé</span>CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+string invariant = GenerateurDessin.TexteDessin(ExemplesDessin.Atelier());
+CultureInfo.CurrentCulture = new CultureInfo("fr-FR");
+string francais = GenerateurDessin.TexteDessin(ExemplesDessin.Atelier());
+Assert.Equal(invariant, francais);
+Assert.Contains("LargeurMinimale = 40.5f,", francais);</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Pourquoi tenir aux mêmes octets</h3>
+      <p>Si le texte n'a pas changé, <code>EcrivainGeneration</code> ne réécrit pas le fichier : sa date reste la même, Visual Studio ne recompile rien, et git ne montre aucune différence. Un horodatage dans l'en-tête suffirait à tout casser.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Le Guid, passé de l'extérieur</h3>
+      <p>Le squelette <code>Xxx.cs</code> porte un <code>ComponentGuid</code>. <code>TexteSquelette</code> le reçoit en paramètre et n'en tire jamais lui-même : c'est l'écrivain qui appelle <code>Guid.NewGuid()</code>. Le générateur reste une fonction pure de ses entrées.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    La culture du poste. Sur un Windows français, <code>40.5f.ToString()</code> donne « 40,5 » : le code émis deviendrait <code>40,5f</code>, qui ne compile pas. Chaque nombre passe donc par <code>CultureInfo.InvariantCulture</code>, et le test ci-dessus le vérifie.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 25 · Génération de code</div>
+</section>
+
+<!-- ============ PAGE 4 · CLASSE PARTIELLE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 25</b></div>
+  <p class="rubrique">Schéma 3 · Deux fichiers, une classe</p>
+  <h2>Le généré et le tien, réunis par partial</h2>
+  <p style="max-width:165mm">Le mot-clé <code>partial</code> permet d'écrire une classe dans plusieurs fichiers ; le compilateur les réunit. Le fichier généré déclare des <b>méthodes partielles</b> et les appelle. Ton fichier les implémente, s'il le souhaite.</p>
+
+  <svg viewBox="0 0 600 236" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="236" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="12" fill="#4F46B8" text-anchor="start" font-weight="700">Le compilateur assemble les deux moitiés</text>
+<rect x="16" y="34" width="276" height="150" rx="5" fill="#fff" stroke="#E65100" stroke-width="1.4"/>
+<rect x="16" y="34" width="276" height="22" rx="5" fill="#E65100"/>
+<text x="26" y="49" font-size="9.6" fill="#fff" text-anchor="start" font-weight="700" class="mono" style="font-size:9.6px">Xxx.Dessin.g.cs</text>
+<text x="282" y="49" font-size="8.4" fill="#fff" text-anchor="end" font-style="italic">réécrit</text>
+<text x="26" y="72.0" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px;white-space:pre">partial class Xxx</text>
+<text x="26" y="85.2" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px;white-space:pre">{</text>
+<text x="26" y="98.4" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px;white-space:pre">  internal readonly Liste mode = …;</text>
+<text x="26" y="111.6" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px;white-space:pre">  public override void CreateAttributes()</text>
+<text x="26" y="124.8" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px;white-space:pre">  void QuandModeChange(…)</text>
+<text x="26" y="138.0" font-size="8.2" fill="#7B1FA2" text-anchor="start" class="mono" style="font-size:8.2px;white-space:pre">  {  …  SurChangementMode();  … }</text>
+<text x="26" y="151.2" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px;white-space:pre"></text>
+<text x="26" y="164.39999999999998" font-size="8.2" fill="#7B1FA2" text-anchor="start" class="mono" style="font-size:8.2px;white-space:pre">  partial void SurChangementMode();</text>
+<text x="26" y="177.6" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px;white-space:pre">}</text>
+<rect x="308" y="34" width="276" height="150" rx="5" fill="#fff" stroke="#2E7D32" stroke-width="1.4"/>
+<rect x="308" y="34" width="276" height="22" rx="5" fill="#2E7D32"/>
+<text x="318" y="49" font-size="9.6" fill="#fff" text-anchor="start" font-weight="700" class="mono" style="font-size:9.6px">Xxx.cs</text>
+<text x="574" y="49" font-size="8.4" fill="#fff" text-anchor="end" font-style="italic">le tien</text>
+<text x="318" y="72.0" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px;white-space:pre">public partial class Xxx : GH_Component</text>
+<text x="318" y="85.2" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px;white-space:pre">{</text>
+<text x="318" y="98.4" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px;white-space:pre">  public Xxx() : base(…) { }</text>
+<text x="318" y="111.6" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px;white-space:pre">  public override Guid ComponentGuid …</text>
+<text x="318" y="124.8" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px;white-space:pre">  protected override void SolveInstance(…)</text>
+<text x="318" y="138.0" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px;white-space:pre"></text>
+<text x="318" y="151.2" font-size="8.2" fill="#7B1FA2" text-anchor="start" class="mono" style="font-size:8.2px;white-space:pre">  partial void SurChangementMode()</text>
+<text x="318" y="164.39999999999998" font-size="8.2" fill="#7B1FA2" text-anchor="start" class="mono" style="font-size:8.2px;white-space:pre">  { /* ta logique */ }</text>
+<text x="318" y="177.6" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px;white-space:pre">}</text>
+<path d="M 230 164 C 262 164, 270 160, 316 160" fill="none" stroke="#7B1FA2" stroke-width="1.4" stroke-dasharray="4 2"/>
+<line x1="300" y1="160" x2="316" y2="160" stroke="#7B1FA2" stroke-width="1.4"/><polygon points="316,160 309.6,162.7 309.6,157.3" fill="#7B1FA2"/>
+<text x="300" y="204" font-size="8.8" fill="#7B1FA2" text-anchor="end" font-weight="700">déclarée ici, appelée ici</text>
+<text x="316" y="204" font-size="8.8" fill="#7B1FA2" text-anchor="start" font-weight="700">implémentée ici, si tu le veux</text>
+<text x="300" y="224" font-size="8.8" fill="#2B2F33" text-anchor="middle">Une seule classe Xxx à l'exécution ; les champs typés (mode) sont visibles des deux côtés.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Code émis par GenerateurDessin.Gestionnaire (850–872) pour une Liste taguée « mode »</span>private void QuandModeChange(object sender, global::System.EventArgs e)
+{
+    int v = this.mode.Index;
+    this.RecordUndoEvent("Select: " + this.mode.LibelleChoisi);
+    this._dejaRejoue = true;
+    this._vuMode = v;
+    this.SetValue("mode_Index", v);
+    this.SurChangementMode();          // la méthode partielle
+    this.OnObjectChanged("mode", v);
+    this.ExpireSolution(true);
+}</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Une partielle sans corps disparaît</h3>
+      <p>Si <code>Xxx.cs</code> n'implémente pas <code>SurChangementMode()</code>, le compilateur efface la déclaration et l'appel. Ne rien écrire est permis, et ne coûte rien à l'exécution.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>La base est déclarée chez toi</h3>
+      <p>Le fichier généré écrit <code>partial class Xxx</code>, sans base ni <code>public</code>. <code>Xxx.cs</code> écrit <code>public partial class Xxx : GH_Component</code>. Tu peux passer la classe en <code>internal</code> sans conflit (CS0262).</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Renommer un tag au dessin. <code>Xxx.cs</code> implémente encore <code>SurChangementMode()</code>, que le fichier régénéré ne déclare plus : erreur CS0759. « Générer » le signale dans son compte rendu, mais ne touche pas à ton fichier. C'est à toi de renommer la méthode.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 25 · Génération de code</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 25</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>EcrivainGeneration.Ecrire : deux règles d'écriture</h2>
+  <p style="max-width:165mm">Le texte est calculé par <code>GenerateurDessin</code> ; <code>EcrivainGeneration</code> décide quoi en faire sur le disque. <code>Xxx.Dessin.g.cs</code> est réécrit si besoin, <code>Xxx.cs</code> n'est créé qu'une fois.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l k1"><span class="n">187</span><span class="kw">byte</span>[] dessin = Encodage.GetBytes(<span class="rep r1">1</span></div>
+<div class="l k1"><span class="n"> </span>    <span class="ty">GenerateurDessin</span>.TexteDessin(description));</div>
+<div class="l k2"><span class="n">190</span><span class="kw">byte</span>[] existant = File.Exists(compte.CheminDessin)<span class="rep r2">2</span></div>
+<div class="l k2"><span class="n"> </span>    ? File.ReadAllBytes(compte.CheminDessin) : <span class="kw">null</span>;</div>
+<div class="l k2"><span class="n">191</span><span class="kw">if</span> (existant != <span class="kw">null</span> &amp;&amp; !EstGenere(existant))</div>
+<div class="l k2"><span class="n">193</span>  <span class="kw">return</span> Refuser(compte, …);</div>
+<div class="l k3"><span class="n">200</span><span class="kw">if</span> (existant != <span class="kw">null</span> &amp;&amp; existant.SequenceEqual(dessin))<span class="rep r3">3</span></div>
+<div class="l k3"><span class="n">202</span>  compte.Dessin = <span class="ty">SortFichier</span>.Inchange;</div>
+<div class="l"><span class="n">204</span><span class="kw">else</span></div>
+<div class="l"><span class="n">205</span>{</div>
+<div class="l k4"><span class="n">208</span>  <span class="kw">if</span> (… lecture seule …)<span class="rep r4">4</span></div>
+<div class="l k4"><span class="n">210</span>    <span class="kw">return</span> Refuser(compte, …);</div>
+<div class="l k5"><span class="n">216</span>  EcrireAtomiquement(compte.CheminDessin, dessin);<span class="rep r5">5</span></div>
+<div class="l k5"><span class="n">217</span>  compte.Dessin = existant == <span class="kw">null</span></div>
+<div class="l k5"><span class="n"> </span>    ? <span class="ty">SortFichier</span>.Cree : <span class="ty">SortFichier</span>.Reecrit;</div>
+<div class="l"><span class="n">218</span>}</div>
+<div class="l k6"><span class="n">222</span><span class="kw">if</span> (File.Exists(compte.CheminCode))<span class="rep r6">6</span></div>
+<div class="l k6"><span class="n">223</span>{</div>
+<div class="l k6"><span class="n">224</span>  compte.Code = <span class="ty">SortFichier</span>.Conserve;</div>
+<div class="l k6"><span class="n">232</span>  remarques.AddRange(Orphelines(…));</div>
+<div class="l k6"><span class="n">235</span>}</div>
+<div class="l"><span class="n">236</span><span class="kw">else</span></div>
+<div class="l"><span class="n">237</span>{</div>
+<div class="l k7"><span class="n">241</span>  <span class="kw">using</span> (<span class="kw">var</span> flux = <span class="kw">new</span> <span class="ty">FileStream</span>(compte.CheminCode,<span class="rep r7">7</span></div>
+<div class="l k7"><span class="n"> </span>      <span class="ty">FileMode</span>.CreateNew, <span class="ty">FileAccess</span>.Write, …))</div>
+<div class="l k7"><span class="n">243</span>    flux.Write(squelette, 0, squelette.Length);</div>
+<div class="l"><span class="n">250</span>}</div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Le texte d'abord</b>En octets UTF-8 sans BOM, fins de ligne « \n ».</li>
+      <li><span class="rep r2">2</span><b>Pas le fichier d'un autre</b>Sans l'en-tête « // &lt;auto-generated&gt; », un Dessin.g.cs a été écrit à la main : refus.</li>
+      <li><span class="rep r3">3</span><b>Mêmes octets</b>Rien n'est écrit : la date du fichier ne bouge pas.</li>
+      <li><span class="rep r4">4</span><b>Lecture seule</b>Refus, l'attribut n'est pas retiré.</li>
+      <li><span class="rep r5">5</span><b>Écriture atomique</b>Un temporaire, puis un remplacement d'un seul coup.</li>
+      <li><span class="rep r6">6</span><b>Ton fichier existe</b>Conservé, seulement lu pour signaler les partielles orphelines.</li>
+      <li><span class="rep r7">7</span><b>Sinon, créé</b>CreateNew échoue si le fichier apparaît entre-temps : jamais d'écrasement.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">Pourquoi un temporaire</span>
+    Écrire directement dans <code>Xxx.Dessin.g.cs</code> laisserait, en cas de coupure, un fichier à moitié écrit que Visual Studio essaierait de compiler. <code>EcrireAtomiquement</code> (435–459) écrit <code>.snapset-xxxxxxxx.tmp</code> dans le même dossier, puis appelle <code>File.Replace</code>, qui exige le même volume. Le temporaire est supprimé même en cas d'échec.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 25 · Génération de code</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 25</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Une erreur dans ModeleGHStyle.g.cs se corrige…</div><ul>
+      <li><span>A</span>dans le .g.cs, à la main</li><li><span>B</span>dans le schéma ou le générateur, puis on régénère</li><li><span>C</span>dans Convertisseurs.cs</li><li><span>D</span>par un commentaire</li></ul></div>
+
+    <div class="q"><div class="enonce">Un générateur idempotent…</div><ul>
+      <li><span>A</span>ne s'exécute qu'une fois</li><li><span>B</span>n'écrit jamais de fichier</li><li><span>C</span>rend les mêmes octets pour la même entrée</li><li><span>D</span>ne lève jamais d'erreur</li></ul></div>
+
+    <div class="q"><div class="enonce">Casse le déterminisme… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>un horodatage dans l'en-tête</li><li><span>B</span>la culture du poste pour les nombres</li><li><span>C</span>des fins de ligne \r\n sur un poste, \n sur l'autre</li><li><span>D</span>l'ordre de déclaration du JSON</li></ul></div>
+
+    <div class="q"><div class="enonce">« titre » au schéma devient en C#…</div><ul>
+      <li><span>A</span>[Category]</li><li><span>B</span>[DefaultValue]</li><li><span>C</span>le nom de la propriété</li><li><span>D</span>[DisplayName]</li></ul></div>
+
+    <div class="q"><div class="enonce">Un réglage composé sans entrée dans NOMS_CLASSES_COMPOSEES…</div><ul>
+      <li><span>A</span>reçoit un nom deviné</li><li><span>B</span>est ignoré</li><li><span>C</span>arrête le générateur avec une erreur</li><li><span>D</span>devient un string</li></ul></div>
+
+    <div class="q"><div class="enonce">Sous fr-FR, 40.5f.ToString() donne…</div><ul>
+      <li><span>A</span>40,5</li><li><span>B</span>40.5</li><li><span>C</span>40</li><li><span>D</span>une exception</li></ul></div>
+
+    <div class="q"><div class="enonce">Qui tire le ComponentGuid du squelette ?</div><ul>
+      <li><span>A</span>TexteSquelette</li><li><span>B</span>EcrivainGeneration, qui le passe en paramètre</li><li><span>C</span>Grasshopper au chargement</li><li><span>D</span>le schéma</li></ul></div>
+
+    <div class="q"><div class="enonce">Une méthode partielle déclarée mais jamais implémentée…</div><ul>
+      <li><span>A</span>lève une exception à l'appel</li><li><span>B</span>empêche la compilation</li><li><span>C</span>est effacée avec ses appels</li><li><span>D</span>rend null</li></ul></div>
+
+    <div class="q"><div class="enonce">La base GH_Component est déclarée…</div><ul>
+      <li><span>A</span>dans Xxx.Dessin.g.cs</li><li><span>B</span>dans Xxx.cs</li><li><span>C</span>dans les deux</li><li><span>D</span>dans le .gh</li></ul></div>
+
+    <div class="q"><div class="enonce">Tu renommes le tag « mode » en « style ». Au prochain Générer…</div><ul>
+      <li><span>A</span>Xxx.cs est corrigé automatiquement</li><li><span>B</span>SurChangementMode devient orpheline : CS0759, signalée</li><li><span>C</span>rien ne se passe</li><li><span>D</span>Xxx.cs est recréé</li></ul></div>
+
+    <div class="q"><div class="enonce">Le texte généré est identique à l'existant. L'écrivain…</div><ul>
+      <li><span>A</span>ne touche à rien</li><li><span>B</span>réécrit pour mettre la date à jour</li><li><span>C</span>supprime le fichier</li><li><span>D</span>refuse</li></ul></div>
+
+    <div class="q"><div class="enonce">Xxx.cs est créé avec FileMode.CreateNew pour…</div><ul>
+      <li><span>A</span>aller plus vite</li><li><span>B</span>écrire en UTF-16</li><li><span>C</span>éviter le BOM</li><li><span>D</span>échouer plutôt qu'écraser s'il existe déjà</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 25 · Génération de code</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 25</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · B.</b> Le .g.cs est une sortie : on corrige l'entrée.</div>
+    <div><b>02 · C.</b> Relancer sur la même entrée ne change rien.</div>
+    <div><b>03 · A, B et C.</b> L'ordre du JSON, lui, est stable : Node le préserve.</div>
+    <div><b>04 · D.</b> Le libellé lisible du PropertyGrid.</div>
+    <div><b>05 · C.</b> S'arrêter vaut mieux que deviner un nom de type.</div>
+    <div><b>06 · A.</b> D'où InvariantCulture pour chaque nombre émis.</div>
+    <div><b>07 · B.</b> Le générateur reste une fonction pure.</div>
+    <div><b>08 · C.</b> Ne rien implémenter est permis.</div>
+    <div><b>09 · B.</b> Le généré n'écrit ni base ni accessibilité.</div>
+    <div><b>10 · B.</b> Signalé, jamais corrigé à ta place.</div>
+    <div><b>11 · A.</b> SortFichier.Inchange : date et git intacts.</div>
+    <div><b>12 · D.</b> Ton fichier n'est jamais écrasé, même dans une course.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis la page 4 et le code de la page 5. <b>10 à 12</b> : passe au cours 46, « Les scripts Node d'outillage ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">node schema/generer-modele.js</td><td>régénère les deux modèles</td><td>README:78</td></tr>
+      <tr><td class="c">// &lt;auto-generated&gt;</td><td>marque un fichier généré</td><td>GenerateurDessin:154</td></tr>
+      <tr><td class="c">partial class Xxx</td><td>une classe en plusieurs fichiers</td><td>GenerateurDessin:299</td></tr>
+      <tr><td class="c">partial void SurChangementMode();</td><td>un point d'accroche facultatif</td><td>GenerateurDessin:473</td></tr>
+      <tr><td class="c">CultureInfo.InvariantCulture</td><td>des nombres avec un point</td><td>GenerateurDessin:1238</td></tr>
+      <tr><td class="c">FileMode.CreateNew</td><td>créer sans jamais écraser</td><td>EcrivainGeneration:241</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Générateur</dt><dd>Un programme qui écrit du code à partir d'une description.</dd>
+    <dt>Idempotent</dt><dd>Qu'on peut relancer sans rien changer de plus.</dd>
+    <dt>Déterministe</dt><dd>Même entrée, même sortie, au bit près.</dd>
+    <dt>Méthode partielle</dt><dd>Déclarée dans un fichier, implémentée (ou non) dans un autre.</dd>
+    <dt>Écriture atomique</dt><dd>Le fichier passe d'un état complet à l'autre, sans état intermédiaire visible.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 46</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 25 · Génération de code</div>
+</section>
+
+</body>
+</html>

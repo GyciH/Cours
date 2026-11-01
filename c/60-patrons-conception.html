@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>60 · Les patrons de conception</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-1">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1B</b> · Les objets de près</span><b>Cours 60</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Les patrons de conception</h1>
+  <p class="chapeau">Certains problèmes reviennent dans tous les logiciels : un arbre d'objets à traiter d'un bloc, un objet qui doit prévenir d'autres sans les connaître, un geste qu'on veut pouvoir annuler. Un <b>patron de conception</b> donne un nom et une forme éprouvée à chacune de ces solutions.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>55 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>01</b> et <b>58</b></span>
+    <span class="pastille">Exemples · <b>Conteneur</b>, <b>Bouton</b>, <b>Constituant</b>, <b>Metrique</b>, <b>GenerateurDessin</b></span>
+  </div>
+
+  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+    <svg viewBox="0 0 600 196" width="100%">
+<rect x="6" y="10" width="110" height="160" rx="6" fill="#fff" stroke="#1565C0" stroke-width="1.4"/>
+<rect x="6" y="10" width="110" height="30" rx="6" fill="#1565C0"/>
+<rect x="6" y="30" width="110" height="10" fill="#1565C0"/>
+<text x="61" y="30" font-size="9.4" fill="#fff" text-anchor="middle" font-weight="700">Composite</text>
+<text x="61" y="66" font-size="7.8" fill="#2B2F33" text-anchor="middle">un arbre qu'on traite</text>
+<text x="61" y="80" font-size="7.8" fill="#2B2F33" text-anchor="middle">comme un seul objet</text>
+<line x1="20" y1="108" x2="102" y2="108" stroke="#CFC6B8"/>
+<text x="61" y="126" font-size="7" fill="#6B7378" text-anchor="middle" font-style="italic">dans SnapSet</text>
+<text x="61" y="146" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">Colonne, Ligne</text>
+<rect x="124" y="10" width="110" height="160" rx="6" fill="#fff" stroke="#2E7D32" stroke-width="1.4"/>
+<rect x="124" y="10" width="110" height="30" rx="6" fill="#2E7D32"/>
+<rect x="124" y="30" width="110" height="10" fill="#2E7D32"/>
+<text x="179" y="30" font-size="9.4" fill="#fff" text-anchor="middle" font-weight="700">Observateur</text>
+<text x="179" y="66" font-size="7.8" fill="#2B2F33" text-anchor="middle">prévenir sans connaître</text>
+<text x="179" y="80" font-size="7.8" fill="#2B2F33" text-anchor="middle">qui écoute</text>
+<line x1="138" y1="108" x2="220" y2="108" stroke="#CFC6B8"/>
+<text x="179" y="126" font-size="7" fill="#6B7378" text-anchor="middle" font-style="italic">dans SnapSet</text>
+<text x="179" y="146" font-size="8" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">event Clic</text>
+<rect x="242" y="10" width="110" height="160" rx="6" fill="#fff" stroke="#C62828" stroke-width="1.4"/>
+<rect x="242" y="10" width="110" height="30" rx="6" fill="#C62828"/>
+<rect x="242" y="30" width="110" height="10" fill="#C62828"/>
+<text x="297" y="30" font-size="9.4" fill="#fff" text-anchor="middle" font-weight="700">Commande</text>
+<text x="297" y="66" font-size="7.8" fill="#2B2F33" text-anchor="middle">un changement qu'on</text>
+<text x="297" y="80" font-size="7.8" fill="#2B2F33" text-anchor="middle">peut défaire</text>
+<line x1="256" y1="108" x2="338" y2="108" stroke="#CFC6B8"/>
+<text x="297" y="126" font-size="7" fill="#6B7378" text-anchor="middle" font-style="italic">dans SnapSet</text>
+<text x="297" y="146" font-size="8" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">RecordUndoEvent</text>
+<rect x="360" y="10" width="110" height="160" rx="6" fill="#fff" stroke="#7B1FA2" stroke-width="1.4"/>
+<rect x="360" y="10" width="110" height="30" rx="6" fill="#7B1FA2"/>
+<rect x="360" y="30" width="110" height="10" fill="#7B1FA2"/>
+<text x="415" y="30" font-size="9.4" fill="#fff" text-anchor="middle" font-weight="700">Stratégie</text>
+<text x="415" y="66" font-size="7.8" fill="#2B2F33" text-anchor="middle">un comportement</text>
+<text x="415" y="80" font-size="7.8" fill="#2B2F33" text-anchor="middle">qu'on branche</text>
+<line x1="374" y1="108" x2="456" y2="108" stroke="#CFC6B8"/>
+<text x="415" y="126" font-size="7" fill="#6B7378" text-anchor="middle" font-style="italic">dans SnapSet</text>
+<text x="415" y="146" font-size="8" fill="#7B1FA2" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">MesureurChaine</text>
+<rect x="478" y="10" width="110" height="160" rx="6" fill="#fff" stroke="#E65100" stroke-width="1.4"/>
+<rect x="478" y="10" width="110" height="30" rx="6" fill="#E65100"/>
+<rect x="478" y="30" width="110" height="10" fill="#E65100"/>
+<text x="533" y="30" font-size="9.4" fill="#fff" text-anchor="middle" font-weight="700">Crochet</text>
+<text x="533" y="66" font-size="7.8" fill="#2B2F33" text-anchor="middle">un trou laissé au</text>
+<text x="533" y="80" font-size="7.8" fill="#2B2F33" text-anchor="middle">code d'un autre</text>
+<line x1="492" y1="108" x2="574" y2="108" stroke="#CFC6B8"/>
+<text x="533" y="126" font-size="7" fill="#6B7378" text-anchor="middle" font-style="italic">dans SnapSet</text>
+<text x="533" y="146" font-size="8" fill="#E65100" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">partial void</text>
+<text x="300" y="190" font-size="8" fill="#6B7378" text-anchor="middle" font-style="italic">Un patron nomme une solution déjà éprouvée à un problème qui revient.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Un patron n'est pas une bibliothèque qu'on importe mais un <b>plan</b> : quelles classes, qui connaît qui, qui appelle qui. Le connaître permet de reconnaître le problème plus tôt et d'en parler en un mot.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Les assemblages en menuiserie. Tenon et mortaise, queue d'aronde, mi-bois : personne ne les réinvente, chacun répond à un effort particulier, et le nom suffit entre artisans. Le bois, lui, change à chaque meuble.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>reconnaître cinq patrons dans SnapSet ;</li>
+        <li>dire quel problème chacun règle ;</li>
+        <li>savoir pourquoi l'annulation s'enregistre avant ;</li>
+        <li>éviter le patron plaqué sans problème.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:5mm">
+    <span class="titre">À retenir</span>
+    On part du problème, jamais du patron. Un code qui n'a qu'une façon de mesurer n'a pas besoin d'une stratégie ; un code qui en a deux (Rhino et les tests) en a besoin. Les noms viennent du livre de Gamma, Helm, Johnson et Vlissides (1994).
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 60 · Les patrons de conception</div>
+</section>
+
+<!-- ============ PAGE 2 · COMPOSITE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1B</b> · Les objets de près</span><b>Cours 60</b></div>
+  <p class="rubrique">Schéma 1 · Composite</p>
+  <h2>Un arbre qui parle d'une seule voix</h2>
+  <p style="max-width:165mm">Feuilles et conteneurs partagent un même type de base. Un conteneur range des membres qui peuvent être eux-mêmes des conteneurs ; le code qui parcourt l'arbre n'a pas besoin de distinguer les deux pour la plupart des opérations.</p>
+
+  <svg viewBox="0 0 600 222" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="222" fill="#EFE9E1"/>
+<rect x="200" y="14" width="140" height="28" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="270.0" y="30.866666666666667" font-size="8.6" fill="#1565C0" text-anchor="middle" font-weight="700">Colonne (racine)</text>
+<rect x="60" y="80" width="120" height="28" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="120.0" y="96.86666666666666" font-size="8.6" fill="#1565C0" text-anchor="middle" font-weight="700">Ligne</text>
+<rect x="220" y="80" width="100" height="28" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="270.0" y="96.86666666666666" font-size="8.6" fill="#2E7D32" text-anchor="middle" font-weight="700">Texte</text>
+<rect x="360" y="80" width="100" height="28" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="410.0" y="96.86666666666666" font-size="8.6" fill="#2E7D32" text-anchor="middle" font-weight="700">Curseur</text>
+<rect x="20" y="146" width="90" height="28" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="65.0" y="162.86666666666667" font-size="8.6" fill="#2E7D32" text-anchor="middle" font-weight="700">Bouton</text>
+<rect x="130" y="146" width="90" height="28" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="175.0" y="162.86666666666667" font-size="8.6" fill="#2E7D32" text-anchor="middle" font-weight="700">Champ</text>
+<line x1="270" y1="42" x2="120" y2="78" stroke="#6B7378" stroke-width="1.1"/><polygon points="120,78 125.6,73.8 126.9,79.1" fill="#6B7378"/>
+<line x1="270" y1="42" x2="270" y2="78" stroke="#6B7378" stroke-width="1.1"/><polygon points="270,78 267.3,71.6 272.7,71.6" fill="#6B7378"/>
+<line x1="270" y1="42" x2="410" y2="78" stroke="#6B7378" stroke-width="1.1"/><polygon points="410,78 403.1,79.0 404.4,73.8" fill="#6B7378"/>
+<line x1="120" y1="108" x2="65" y2="144" stroke="#6B7378" stroke-width="1.1"/><polygon points="65,144 68.9,138.2 71.9,142.7" fill="#6B7378"/>
+<line x1="120" y1="108" x2="175" y2="144" stroke="#6B7378" stroke-width="1.1"/><polygon points="175,144 168.1,142.7 171.1,138.2" fill="#6B7378"/>
+<rect x="478" y="20" width="106" height="120" rx="5" fill="#fff" stroke="#6B2C7A"/>
+<text x="531" y="38" font-size="8.6" fill="#6B2C7A" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">Constituant</text>
+<text x="531" y="58" font-size="7.8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.8px">DecrireNoeud()</text>
+<text x="531" y="74" font-size="7.8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.8px">Parent, Index</text>
+<text x="531" y="90" font-size="7.8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.8px">Modifier(…)</text>
+<text x="531" y="116" font-size="7.4" fill="#6B7378" text-anchor="middle" font-style="italic">même vocabulaire</text>
+<text x="531" y="128" font-size="7.4" fill="#6B7378" text-anchor="middle" font-style="italic">pour tous</text>
+<text x="16" y="200" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">Bleu : conteneurs, qui rangent leurs membres. Vert : feuilles. Le parent mesure ses enfants sans savoir ce qu'ils sont.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#</span>abstract class Forme { public abstract double Aire(); }
+class Disque : Forme { public double R; public override double Aire() =&gt; Math.PI * R * R; }
+class Groupe : Forme
+{
+    public List&lt;Forme&gt; Membres = new List&lt;Forme&gt;();
+    public override double Aire() =&gt; Membres.Sum(m =&gt; m.Aire());   // récursif, sans test de type
+}</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>La récursion vient gratuitement</h3>
+      <p>Mesurer une colonne, c'est mesurer ses membres puis les additionner ; si un membre est une ligne, il fait de même avec les siens. Le cas de base, ce sont les feuilles.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Rhino en est plein</h3>
+      <p>Un bloc Rhino contient des objets ou d'autres blocs ; un cluster Grasshopper contient des composants ou d'autres clusters ; un groupe SVG contient des formes ou d'autres groupes.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Remplir le parcours de <code>if (x is Ligne) … else if (x is Colonne) …</code>. Chaque nouveau type oblige alors à retrouver tous ces tests. Ce qui varie selon le type va dans une méthode du type ; le parcours, lui, reste aveugle.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 60 · Les patrons de conception</div>
+</section>
+
+<!-- ============ PAGE 3 · OBSERVATEUR ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1B</b> · Les objets de près</span><b>Cours 60</b></div>
+  <p class="rubrique">Schéma 2 · Observateur</p>
+  <h2>Prévenir sans connaître</h2>
+  <p style="max-width:165mm">Le <b>sujet</b> annonce « il s'est passé quelque chose » ; les <b>observateurs</b> qui se sont inscrits réagissent. Le sujet ne dépend d'aucun d'eux : on peut en ajouter un sans toucher au bouton. En C#, l'<code>event</code> est ce patron intégré au langage.</p>
+
+  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
+<rect x="30" y="70" width="150" height="44" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="105" y="88" font-size="9.4" fill="#2E7D32" text-anchor="middle" font-weight="700">Bouton</text>
+<text x="105" y="104" font-size="8.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.4px">event Clic</text>
+<rect x="360" y="24" width="200" height="34" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="460.0" y="43.733333333333334" font-size="8.2" fill="#1565C0" text-anchor="middle">Capsule : SurClicValider()</text>
+<line x1="184" y1="92" x2="356" y2="41" stroke="#2E7D32" stroke-width="1.2"/><polygon points="356,41 350.6,45.4 349.0,40.2" fill="#2E7D32"/>
+<rect x="360" y="84" width="200" height="34" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="460.0" y="103.73333333333333" font-size="8.2" fill="#1565C0" text-anchor="middle">Journal : noter le clic</text>
+<line x1="184" y1="92" x2="356" y2="101" stroke="#2E7D32" stroke-width="1.2"/><polygon points="356,101 349.4,103.4 349.7,97.9" fill="#2E7D32"/>
+<rect x="360" y="144" width="200" height="34" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="460.0" y="163.73333333333332" font-size="8.2" fill="#1565C0" text-anchor="middle">Compteur : +1</text>
+<line x1="184" y1="92" x2="356" y2="161" stroke="#2E7D32" stroke-width="1.2"/><polygon points="356,161 349.0,161.1 351.0,156.1" fill="#2E7D32"/>
+<text x="270" y="22" font-size="8.6" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">Clic?.Invoke(this, …)</text>
+<text x="105" y="140" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">ne connaît aucun abonné :</text>
+<text x="105" y="152" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">il tient seulement une liste</text>
+<text x="105" y="164" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">de délégués</text>
+<text x="460" y="196" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">chacun s'inscrit par +=, se retire par -=</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#</span>class Thermostat
+{
+    public event EventHandler&lt;double&gt; Mesure;                  // le sujet
+    public void Lire(double t) =&gt; Mesure?.Invoke(this, t);     // ?. : personne n'écoute ? rien
+}
+thermo.Mesure += (s, t) =&gt; ecran.Afficher(t);                // un observateur
+thermo.Mesure += (s, t) =&gt; { if (t &gt; 30) alarme.Sonner(); };  // un autre, indépendant</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Côté React</h3>
+      <p>Un composant qui reçoit <code>onChange</code> en propriété fait la même chose : il annonce, le parent décide. L'état remonte, les données descendent.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Le prix à payer</h3>
+      <p>Le chemin d'exécution ne se lit plus d'un bloc : qui réagit à <code>Clic</code> ? Il faut chercher les <code>+=</code>. Et chaque inscription retient l'observateur en mémoire (cours 58).</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Un observateur qui modifie le sujet dans sa réaction. Le sujet annonce de nouveau, l'observateur réagit de nouveau : boucle infinie ou pile qui déborde. On compare l'ancienne et la nouvelle valeur, et on n'annonce que si elle a vraiment changé.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 60 · Les patrons de conception</div>
+</section>
+
+<!-- ============ PAGE 4 · COMMANDE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1B</b> · Les objets de près</span><b>Cours 60</b></div>
+  <p class="rubrique">Schéma 3 · Commande et annulation</p>
+  <h2>Un geste qu'on peut défaire</h2>
+  <p style="max-width:165mm">Chaque modification devient un objet rangé dans une pile. Annuler, c'est dépiler et défaire ; rétablir, c'est refaire. Deux manières de défaire : jouer l'opération inverse, ou garder une copie de l'état d'avant (un <b>mémento</b>). Grasshopper prend la seconde.</p>
+
+  <svg viewBox="0 0 600 184" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="184" fill="#EFE9E1"/>
+<text x="110" y="22" font-size="9" fill="#C62828" text-anchor="middle" font-weight="700">Pile d'annulation</text>
+<text x="450" y="22" font-size="9" fill="#1565C0" text-anchor="middle" font-weight="700">Pile de rétablissement</text>
+<rect x="40" y="36" width="140" height="28" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="110.0" y="52.8" font-size="8.4" fill="#C62828" text-anchor="middle" class="mono" style="font-size:8.4px">Select: Acier</text>
+<rect x="40" y="70" width="140" height="28" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="110.0" y="86.8" font-size="8.4" fill="#C62828" text-anchor="middle" class="mono" style="font-size:8.4px">Resize Texte</text>
+<rect x="40" y="104" width="140" height="28" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="110.0" y="120.8" font-size="8.4" fill="#C62828" text-anchor="middle" class="mono" style="font-size:8.4px">Toggle</text>
+<text x="110" y="166" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">en haut : le dernier geste</text>
+<rect x="380" y="36" width="140" height="28" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2" stroke-dasharray="4 3"/>
+<line x1="184" y1="50" x2="376" y2="50" stroke="#E65100" stroke-width="1.3"/><polygon points="376,50 369.6,52.7 369.6,47.3" fill="#E65100"/>
+<text x="280" y="42" font-size="9" fill="#E65100" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">Ctrl+Z</text>
+<text x="280" y="66" font-size="7.6" fill="#2B2F33" text-anchor="middle">défait, puis déplace</text>
+<rect x="220" y="94" width="120" height="46" rx="4" fill="#fff" stroke="#6B7378"/>
+<text x="280" y="113" font-size="7.6" fill="#2B2F33" text-anchor="middle">une entrée retient</text>
+<text x="280" y="128" font-size="7.6" fill="#C62828" text-anchor="middle" font-weight="700">l'état AVANT</text>
+<text x="450" y="84" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">Ctrl+Y le refait ;</text>
+<text x="450" y="96" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">un nouveau geste la vide</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#</span>interface ICommande { void Faire(); void Defaire(); }
+var annuler = new Stack&lt;ICommande&gt;();  var retablir = new Stack&lt;ICommande&gt;();
+void Executer(ICommande c) { c.Faire(); annuler.Push(c); retablir.Clear(); }
+void Annuler()   { var c = annuler.Pop();  c.Defaire(); retablir.Push(c); }
+void Retablir()  { var c = retablir.Pop(); c.Faire();   annuler.Push(c); }</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Le libellé compte</h3>
+      <p>Le menu Edit de Grasshopper affiche « Undo Toggle », « Undo Resize… ». SnapSet reprend les noms des objets natifs (<code>Toggle</code>, <code>Select: …</code>) pour qu'un utilisateur ne voie pas la différence.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Pourquoi un nouveau geste vide la pile</h3>
+      <p>Après avoir annulé trois gestes puis fait autre chose, les gestes annulés n'ont plus de sens : ils partaient d'un état qui n'existe plus. La branche est abandonnée.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Enregistrer l'annulation <b>après</b> le changement. Le mémento capture alors l'état déjà modifié : Ctrl+Z « réussit » mais ne change rien. L'ordre est toujours : enregistrer, modifier, prévenir.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 60 · Les patrons de conception</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1B</b> · Les objets de près</span><b>Cours 60</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Cinq patrons, aucun nommé</h2>
+  <p style="max-width:165mm">Aucune classe de SnapSet ne s'appelle « Observer » ou « Command ». Les patrons y sont pourtant tous, sous la forme que C# et Grasshopper leur donnent.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">SnapSet/…/Conteneurs/Conteneur.cs</span></div>
+<div class="l k1"><span class="n">29</span><span class="kw">public abstract class</span> <span class="ty">Conteneur</span> : <span class="ty">Constituant</span>, …<span class="rep r1">1</span></div>
+<div class="l k1"><span class="n">34</span><span class="kw">private readonly</span> <span class="ty">List</span>&lt;<span class="ty">Guid</span>&gt; _membres = …;</div>
+<div class="l"><span class="cm">SnapSet/…/Constituants/Bouton.cs</span></div>
+<div class="l k2"><span class="n">35</span><span class="kw">public event</span> <span class="ty">EventHandler</span> Clic;<span class="rep r2">2</span></div>
+<div class="l k2"><span class="n">74</span><span class="kw">if</span> (clic) Clic?.Invoke(<span class="kw">this</span>, <span class="ty">EventArgs</span>.Empty);</div>
+<div class="l"><span class="cm">SnapSet/…/Noyau/Constituant.cs</span></div>
+<div class="l k3"><span class="n">311</span><span class="kw">public void</span> Modifier(<span class="kw">string</span> libelle, <span class="ty">Action</span> changement)<span class="rep r3">3</span></div>
+<div class="l k3"><span class="n">314</span>    RecordUndoEvent(libelle);</div>
+<div class="l k3"><span class="n">315</span>    changement();</div>
+<div class="l k3"><span class="n">316</span>    SignalerMesureChangee();</div>
+<div class="l"><span class="cm">SnapSet/schema/Metrique.cs · tests/…/FichierTests.cs</span></div>
+<div class="l k4"><span class="n">1253</span><span class="kw">public delegate</span> <span class="ty">SizeF</span> MesureurChaine(…);<span class="rep r4">4</span></div>
+<div class="l k4"><span class="n">46</span>g.MesureurChaine = MesurerChaine;</div>
+<div class="l"><span class="cm">SnapSet/…/Generation/GenerateurDessin.cs</span></div>
+<div class="l k5"><span class="n">473</span>e.L(<span class="st">"partial void "</span> + NomPartielle(f) + <span class="st">"();"</span>);<span class="rep r5">5</span></div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Composite</b>Le conteneur retient des identifiants, pas des objets : ses membres restent des objets du document.</li>
+      <li><span class="rep r2">2</span><b>Observateur</b>Le bouton annonce ; la capsule s'abonne.</li>
+      <li><span class="rep r3">3</span><b>Commande</b>Enregistrer, modifier, prévenir : dans cet ordre.</li>
+      <li><span class="rep r4">4</span><b>Stratégie</b>Rhino branche MesureurGdi ; un test branche sa propre mesure.</li>
+      <li><span class="rep r5">5</span><b>Crochet</b>Le code généré appelle une méthode que le développeur écrira.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">Le crochet le moins cher du monde</span>
+    Une méthode <code>partial void</code> sans implémentation disparaît à la compilation, son appel compris : le commentaire émis aux lignes 469–470 le dit au développeur. Le fichier généré peut donc déclarer un crochet par événement sans rien coûter à ceux qui ne s'en servent pas.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 60 · Les patrons de conception</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1B</b> · Les objets de près</span><b>Cours 60</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Un patron de conception est…</div><ul>
+      <li><span>A</span>un plan de solution éprouvé</li><li><span>B</span>une règle du compilateur</li><li><span>C</span>un style de nommage</li><li><span>D</span>une bibliothèque à installer</li></ul></div>
+
+    <div class="q"><div class="enonce">Composite permet de…</div><ul>
+      <li><span>A</span>changer d'algorithme</li><li><span>B</span>traiter un arbre comme un seul objet</li><li><span>C</span>prévenir des abonnés</li><li><span>D</span>annuler un geste</li></ul></div>
+
+    <div class="q"><div class="enonce">Des <code>is Ligne</code> partout dans un parcours…</div><ul>
+      <li><span>A</span>cassent à chaque nouveau type</li><li><span>B</span>sont plus rapides</li><li><span>C</span>sont le signe d'un bon composite</li><li><span>D</span>sont obligatoires</li></ul></div>
+
+    <div class="q"><div class="enonce">Un <code>event</code> C# réalise…</div><ul>
+      <li><span>A</span>la stratégie</li><li><span>B</span>le composite</li><li><span>C</span>la commande</li><li><span>D</span>l'observateur</li></ul></div>
+
+    <div class="q"><div class="enonce">Le sujet d'un observateur connaît…</div><ul>
+      <li><span>A</span>rien du tout</li><li><span>B</span>le nombre de clics</li><li><span>C</span>une liste de délégués</li><li><span>D</span>chaque abonné par son type</li></ul></div>
+
+    <div class="q"><div class="enonce">Un observateur qui modifie le sujet risque…</div><ul>
+      <li><span>A</span>rien</li><li><span>B</span>une erreur de compilation</li><li><span>C</span>une fuite d'encodage</li><li><span>D</span>une boucle infinie</li></ul></div>
+
+    <div class="q"><div class="enonce">Grasshopper défait un réglage en…</div><ul>
+      <li><span>A</span>supprimant l'objet</li><li><span>B</span>rejouant l'inverse</li><li><span>C</span>redémarrant</li><li><span>D</span>relisant l'état d'avant (mémento)</li></ul></div>
+
+    <div class="q"><div class="enonce">L'ordre de <code>Modifier</code> est…</div><ul>
+      <li><span>A</span>enregistrer, modifier, prévenir</li><li><span>B</span>modifier, enregistrer, prévenir</li><li><span>C</span>sans importance</li><li><span>D</span>prévenir, modifier, enregistrer</li></ul></div>
+
+    <div class="q"><div class="enonce">Un nouveau geste après trois Ctrl+Z…</div><ul>
+      <li><span>A</span>est refusé</li><li><span>B</span>vide la pile d'annulation</li><li><span>C</span>vide la pile de rétablissement</li><li><span>D</span>rétablit tout</li></ul></div>
+
+    <div class="q"><div class="enonce"><code>MesureurChaine</code> est une stratégie car… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>c'est un event</li><li><span>B</span>Rhino branche la mesure GDI</li><li><span>C</span>le gabarit ignore laquelle</li><li><span>D</span>un test branche la sienne</li></ul></div>
+
+    <div class="q"><div class="enonce">Un <code>partial void</code> non implémenté…</div><ul>
+      <li><span>A</span>s'exécute vide au runtime</li><li><span>B</span>disparaît, appel compris</li><li><span>C</span>ne compile pas</li><li><span>D</span>lève une exception</li></ul></div>
+
+    <div class="q"><div class="enonce">Le Conteneur de SnapSet retient ses membres…</div><ul>
+      <li><span>A</span>par objet</li><li><span>B</span>par position à l'écran</li><li><span>C</span>par Guid</li><li><span>D</span>par nom</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 60 · Les patrons de conception</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1B</b> · Les objets de près</span><b>Cours 60</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · A.</b> Un plan, pas du code.</div>
+    <div><b>02 · B.</b> Feuilles et conteneurs, un type.</div>
+    <div><b>03 · A.</b> La variation va dans le type.</div>
+    <div><b>04 · D.</b> Le patron intégré au langage.</div>
+    <div><b>05 · C.</b> Aucun type d'abonné.</div>
+    <div><b>06 · D.</b> D'où le test « a vraiment changé ».</div>
+    <div><b>07 · D.</b> GH_GenericObjectAction relit l'objet.</div>
+    <div><b>08 · A.</b> Constituant.cs:314–316.</div>
+    <div><b>09 · C.</b> La branche est abandonnée.</div>
+    <div><b>10 · B, C et D.</b> Branchée de l'extérieur.</div>
+    <div><b>11 · B.</b> GenerateurDessin.cs:469–470.</div>
+    <div><b>12 · C.</b> Conteneur.cs:34, architecture A.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 04, « .NET : runtime, assemblies et versions ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Patron</th><th>Le problème</th><th>Où le voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">Composite</td><td>un arbre traité d'un bloc</td><td>Conteneur.cs:29, 34</td></tr>
+      <tr><td class="c">Observateur</td><td>prévenir sans connaître</td><td>Bouton.cs:35, 74</td></tr>
+      <tr><td class="c">Commande (mémento)</td><td>un geste qu'on peut défaire</td><td>Constituant.cs:311–316</td></tr>
+      <tr><td class="c">Stratégie</td><td>un comportement branché de l'extérieur</td><td>Metrique.cs:1253</td></tr>
+      <tr><td class="c">Crochet (partial)</td><td>un trou pour le code d'un autre</td><td>GenerateurDessin.cs:473</td></tr>
+      <tr><td class="c">Fabrique</td><td>construire un objet prêt à servir</td><td>ArbreExecution.cs:38</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Patron</dt><dd>Une forme de solution, nommée, à un problème de conception qui revient.</dd>
+    <dt>Sujet</dt><dd>Dans l'observateur, l'objet qui annonce ; ses abonnés sont les observateurs.</dd>
+    <dt>Mémento</dt><dd>Une copie de l'état d'avant, gardée pour pouvoir y revenir.</dd>
+    <dt>Stratégie</dt><dd>Un comportement passé de l'extérieur, interchangeable sans toucher à l'appelant.</dd>
+    <dt>Méthode partielle</dt><dd>Une déclaration C# qu'un autre fichier peut implémenter, sinon effacée.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 04</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 60 · Les patrons de conception</div>
+</section>
+
+</body>
+</html>

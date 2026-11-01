@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>155 · Les algorithmes génétiques</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-5">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 5B</b> · Chercher la meilleure forme</span><b>Cours 155</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Les algorithmes génétiques</h1>
+  <p class="chapeau">Au lieu de promener une seule solution, on en fait vivre une population. Les meilleures se reproduisent, leurs enfants mélangent leurs réglages, quelques erreurs de copie ajoutent de la nouveauté. C'est le solveur évolutif de Galapagos, et l'un des plus robustes face à un paysage inconnu.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>146</b>, <b>151</b>, <b>154</b></span>
+    <span class="pastille">Exemples · <b>Cuttlefish</b></span>
+  </div>
+
+  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+    <svg viewBox="0 0 600 222" width="100%">
+<rect x="10" y="30" width="104" height="40" rx="4" fill="#FCE4EC" stroke="#AD1457" stroke-width="1.2"/>
+<text x="62" y="47" font-size="8.4" fill="#AD1457" text-anchor="middle" font-weight="700">population</text>
+<text x="62" y="62" font-size="7.2" fill="#6B7378" text-anchor="middle">100 solutions</text>
+<line x1="116" y1="50" x2="126" y2="50" stroke="#6B7378" stroke-width="1.2"/><polygon points="126,50 119.6,52.7 119.6,47.3" fill="#6B7378"/>
+<rect x="128" y="30" width="104" height="40" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="180" y="47" font-size="8.4" fill="#1565C0" text-anchor="middle" font-weight="700">sélection</text>
+<text x="180" y="62" font-size="7.2" fill="#6B7378" text-anchor="middle">tournois</text>
+<line x1="234" y1="50" x2="244" y2="50" stroke="#6B7378" stroke-width="1.2"/><polygon points="244,50 237.6,52.7 237.6,47.3" fill="#6B7378"/>
+<rect x="246" y="30" width="104" height="40" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="298" y="47" font-size="8.4" fill="#2E7D32" text-anchor="middle" font-weight="700">croisement</text>
+<text x="298" y="62" font-size="7.2" fill="#6B7378" text-anchor="middle">mélange de deux parents</text>
+<line x1="352" y1="50" x2="362" y2="50" stroke="#6B7378" stroke-width="1.2"/><polygon points="362,50 355.6,52.7 355.6,47.3" fill="#6B7378"/>
+<rect x="364" y="30" width="104" height="40" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
+<text x="416" y="47" font-size="8.4" fill="#E65100" text-anchor="middle" font-weight="700">mutation</text>
+<text x="416" y="62" font-size="7.2" fill="#6B7378" text-anchor="middle">petit bruit, parfois</text>
+<line x1="470" y1="50" x2="480" y2="50" stroke="#6B7378" stroke-width="1.2"/><polygon points="480,50 473.6,52.7 473.6,47.3" fill="#6B7378"/>
+<rect x="482" y="30" width="104" height="40" rx="4" fill="#FCE4EC" stroke="#AD1457" stroke-width="1.2"/>
+<text x="534" y="47" font-size="8.4" fill="#AD1457" text-anchor="middle" font-weight="700">nouvelle génération</text>
+<text x="534" y="62" font-size="7.2" fill="#6B7378" text-anchor="middle">+ le meilleur gardé</text>
+<path d="M534,72 Q300,130 62,72" fill="none" stroke="#6B7378" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="300" y="118" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">on recommence, génération après génération</text>
+<text x="30" y="152" font-size="8" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">x₁ = 3,2 · x₂ = 0,8 · x₃ = 41</text>
+<text x="30" y="168" font-size="8" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">x₁ = 2,6 · x₂ = 1,4 · x₃ = 37</text>
+<text x="330" y="152" font-size="8" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">→ enfant : x₁ = 2,9 · x₂ = 1,1 · x₃ = 39</text>
+<text x="330" y="168" font-size="8" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">→ muté : x₁ = 2,9 · x₂ = 1,3 · x₃ = 39</text>
+<text x="10" y="202" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Les « gènes » sont les curseurs. Un enfant mélange ceux de deux bons parents, puis la mutation en dérange un peu.</text>
+<text x="10" y="216" font-size="7.2" fill="#6B7378" text-anchor="start" font-style="italic">Schéma de principe : valeurs inventées pour l'exemple.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Sélection, croisement, mutation, à chaque génération : les bons morceaux de solutions différentes finissent par se rencontrer dans un même individu.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Un éleveur qui croise ses meilleures plantes depuis des années, sans connaître la génétique : il ne sait pas pourquoi elles sont bonnes, il sait les reconnaître.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>écrire une génération ;</li>
+        <li>régler population et mutation ;</li>
+        <li>repérer une convergence prématurée ;</li>
+        <li>choisir un bon codage.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À retenir</span>
+    Le croisement n'aide que si mélanger deux bonnes solutions donne souvent une bonne solution. C'est une propriété du codage, pas de l'algorithme.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 155 · Les algorithmes génétiques</div>
+</section>
+
+<!-- ============ PAGE 2 · POPULATION ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 5B</b> · Chercher la meilleure forme</span><b>Cours 155</b></div>
+  <p class="rubrique">Schéma 1 · Une population plutôt qu'un point</p>
+  <h2>Mélanger tous les curseurs à la fois</h2>
+  <p style="max-width:165mm">Sur un paysage dont les vallées sont en biais par rapport aux curseurs, bouger une variable à la fois ne mène nulle part. Le croisement déplace toutes les variables ensemble, vers ce qui marche chez les parents.</p>
+
+  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#AD1457" text-anchor="start" font-weight="700">Rastrigin tourné en 10 variables, 100 000 évaluations, 20 essais (0 au minimum global, .NET 8, mesuré)</text>
+<text x="16" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">méthode</text>
+<text x="330" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">médiane</text>
+<text x="450" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">étendue</text>
+<rect x="10" y="48" width="580" height="20" fill="#fff" opacity=".55"/>
+<text x="16" y="62" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">recherche au hasard</text>
+<text x="330" y="62" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">58,6</text>
+<text x="450" y="62" font-size="7.6" fill="#C62828" text-anchor="start">43,3 à 64,3</text>
+<text x="16" y="82" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">recuit, un curseur à la fois (cours 154)</text>
+<text x="330" y="82" font-size="7.6" fill="#E65100" text-anchor="start" font-weight="700">21,9</text>
+<text x="450" y="82" font-size="7.6" fill="#E65100" text-anchor="start">5,0 à 45,1</text>
+<rect x="10" y="88" width="580" height="20" fill="#fff" opacity=".55"/>
+<text x="16" y="102" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">génétique, population de 100</text>
+<text x="330" y="102" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">3,1</text>
+<text x="450" y="102" font-size="7.6" fill="#2E7D32" text-anchor="start">1,1 à 7,0</text>
+<text x="16" y="128" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">« Tourné » : les mêmes creux, vus dans des axes obliques. Bouger un curseur à la fois ne suit plus les vallées ;</text>
+<text x="16" y="144" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">le croisement, qui mélange tous les curseurs de deux bonnes solutions, si.</text>
+<text x="16" y="168" font-size="7.2" fill="#6B7378" text-anchor="start" font-style="italic">Au cours 154, sans rotation, les sauts du recuit suffisaient (0,02). Le classement dépend du problème (déduit).</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, un enfant</span>var a = P[Tournoi(r)]; var b = P[Tournoi(r)]; var c = new double[n];
+for (int k = 0; k &lt; n; k++) { double w = r.NextDouble(); c[k] = w * a[k] + (1 - w) * b[k];   // croisement mélangé
+    if (r.NextDouble() &lt; pm) c[k] += sigma * Gauss(r); }                            // mutation, rare</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Pourquoi ça explore</h3>
+      <p>La population couvre plusieurs creux à la fois. Tant qu'elle reste variée, un enfant peut atterrir entre ses parents, dans une région qu'aucun n'occupait.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Le prix</h3>
+      <p>Une génération de 100 coûte 100 évaluations. Dans Grasshopper, à 50 ms le recalcul, cent générations prennent un peu plus de huit minutes (déduit).</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Conclure qu'une méthode est la meilleure en général. Sur le même paysage non tourné, le recuit atteignait 0,02 ; tourné, il finissait à 21,9 (mesuré) : tout dépend du problème.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 155 · Les algorithmes génétiques</div>
+</section>
+
+<!-- ============ PAGE 3 · RÉGLAGES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 5B</b> · Chercher la meilleure forme</span><b>Cours 155</b></div>
+  <p class="rubrique">Schéma 2 · Les réglages</p>
+  <h2>Population, mutation, élitisme</h2>
+  <p style="max-width:165mm">Trois boutons font l'essentiel du comportement. Ils se règlent ensemble, à budget d'évaluations fixé, car une population plus grande vit moins de générations.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#AD1457" text-anchor="start" font-weight="700">Même problème, même budget : un réglage change à la fois (médiane de 20 essais, mesuré)</text>
+<text x="16" y="54" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">population</text>
+<rect x="170" y="40" width="96" height="22" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
+<text x="218.0" y="53.53333333333333" font-size="7.6" fill="#E65100" text-anchor="middle" font-weight="700">20 → 10,0</text>
+<rect x="274" y="40" width="96" height="22" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="322.0" y="53.53333333333333" font-size="7.6" fill="#2E7D32" text-anchor="middle" font-weight="700">100 → 2,1</text>
+<rect x="378" y="40" width="96" height="22" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="426.0" y="53.53333333333333" font-size="7.6" fill="#2E7D32" text-anchor="middle" font-weight="700">500 → 0,2</text>
+<text x="16" y="86" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">part de gènes mutés</text>
+<rect x="170" y="72" width="96" height="22" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="218.0" y="85.53333333333333" font-size="7.6" fill="#C62828" text-anchor="middle" font-weight="700">0 → 22,2</text>
+<rect x="274" y="72" width="96" height="22" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="322.0" y="85.53333333333333" font-size="7.6" fill="#2E7D32" text-anchor="middle" font-weight="700">2 % → 2,0</text>
+<rect x="378" y="72" width="96" height="22" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="426.0" y="85.53333333333333" font-size="7.6" fill="#2E7D32" text-anchor="middle" font-weight="700">10 % → 2,1</text>
+<rect x="482" y="72" width="96" height="22" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="530.0" y="85.53333333333333" font-size="7.6" fill="#C62828" text-anchor="middle" font-weight="700">50 % → 19,3</text>
+<text x="16" y="118" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">garder le meilleur</text>
+<rect x="170" y="104" width="96" height="22" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="218.0" y="117.53333333333333" font-size="7.6" fill="#2E7D32" text-anchor="middle" font-weight="700">oui → 2,1</text>
+<rect x="274" y="104" width="96" height="22" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
+<text x="322.0" y="117.53333333333333" font-size="7.6" fill="#E65100" text-anchor="middle" font-weight="700">non → 3,1</text>
+<text x="16" y="150" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Sans mutation, la population s'enferme dans les gènes du départ ; avec trop, l'enfant ne ressemble plus à ses parents.</text>
+<text x="16" y="166" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">À budget fixe, une grande population vit moins de générations, mais explore plus large : ici, elle gagnait.</text>
+<text x="16" y="188" font-size="7.2" fill="#6B7378" text-anchor="start" font-style="italic">Population de 100, tournois de 2, mutation gaussienne d'écart 0,5, sauf réglage étudié. Graines différentes du schéma 1.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, garder le meilleur (élitisme)</span>int iMeilleur = Array.IndexOf(F, F.Min());
+Q[0] = (double[])P[iMeilleur].Clone(); G[0] = F[iMeilleur];     // copié tel quel dans la génération suivante
+for (int i = 1; i &lt; pop; i++) { Q[i] = Enfant(r); G[i] = Objectif(Q[i]); }</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>L'élitisme</h3>
+      <p>Sans lui, le meilleur individu peut disparaître par malchance. Le garder ne coûte qu'une place et garantit que la meilleure valeur ne remonte jamais.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Dans Galapagos</h3>
+      <p>On y retrouve ces notions sous d'autres noms : taille de population, part d'individus maintenus d'une génération à l'autre, mélange entre parents proches ou éloignés (non vérifié en détail ici).</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Supprimer la mutation pour « ne pas gâcher » les bons individus. Sans elle, le résultat médian passait de 2,1 à 22,2 (mesuré) : le croisement seul ne crée rien que les parents n'aient déjà.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 155 · Les algorithmes génétiques</div>
+</section>
+
+<!-- ============ PAGE 4 · DIVERSITÉ ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 5B</b> · Chercher la meilleure forme</span><b>Cours 155</b></div>
+  <p class="rubrique">Schéma 3 · La diversité</p>
+  <h2>Une population qui se ressemble trop</h2>
+  <p style="max-width:165mm">Choisir toujours les meilleurs comme parents paraît logique. Mais la population perd alors sa variété, et avec elle sa capacité à explorer : elle se fige avant d'avoir trouvé le bon creux.</p>
+
+  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#AD1457" text-anchor="start" font-weight="700">Sans mutation : écart-type moyen des gènes dans la population, selon la sévérité de la sélection (mesuré)</text>
+<text x="16" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">sélection</text>
+<text x="200" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">génération 0</text>
+<text x="300" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">génération 10</text>
+<text x="400" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">génération 50</text>
+<text x="500" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">résultat</text>
+<rect x="10" y="48" width="580" height="20" fill="#fff" opacity=".55"/>
+<text x="16" y="62" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">tournois de 2</text>
+<text x="200" y="62" font-size="7.6" fill="#E65100" text-anchor="start" font-weight="700">2,23</text>
+<text x="300" y="62" font-size="7.6" fill="#E65100" text-anchor="start" font-weight="700">0,224</text>
+<text x="400" y="62" font-size="7.6" fill="#E65100" text-anchor="start" font-weight="700">0,0078</text>
+<text x="500" y="62" font-size="7.6" fill="#E65100" text-anchor="start" font-weight="700">22,2</text>
+<text x="16" y="82" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">tournois de 10</text>
+<text x="200" y="82" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">1,94</text>
+<text x="300" y="82" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">0,026</text>
+<text x="400" y="82" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">0,0000</text>
+<text x="500" y="82" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">35,1</text>
+<text x="16" y="110" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Plus la sélection est sévère, plus vite tous les individus se ressemblent : la population devient un seul point,</text>
+<text x="16" y="126" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">et l'algorithme n'est plus qu'une descente mal réglée. On appelle cela la convergence prématurée.</text>
+<text x="16" y="150" font-size="7.2" fill="#6B7378" text-anchor="start" font-style="italic">Tournoi de k : on tire k individus au hasard et l'on garde le meilleur comme parent.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, la sélection par tournoi</span>int Tournoi(Random r) {
+    int b = r.Next(pop); for (int k = 1; k &lt; taille; k++) { int c = r.Next(pop); if (F[c] &lt; F[b]) b = c; }
+    return b; }                                // taille 2 : douce ; taille 10 : sévère</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Surveiller la variété</h3>
+      <p>Afficher, génération par génération, l'écart-type de chaque gène. S'il tombe à zéro alors que l'objectif stagne, la population s'est figée trop tôt.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Relancer</h3>
+      <p>Garder le meilleur et retirer au hasard le reste de la population redonne de la variété. Plusieurs petites populations isolées résistent aussi mieux.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Durcir la sélection pour aller plus vite. Avec des tournois de 10, la variété était divisée par 75 dès la génération 10, et le résultat final pire : 35,1 contre 22,2 (mesuré).
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 155 · Les algorithmes génétiques</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 5B</b> · Chercher la meilleure forme</span><b>Cours 155</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Maze : la graine n'est pas un bon gène</h2>
+  <p style="max-width:165mm">Maze creuse un labyrinthe par un parcours en profondeur au hasard. Tout le dessin découle d'un entier, la graine. On pourrait vouloir confier ce curseur à Galapagos pour obtenir le chemin le plus long : c'est un mauvais codage.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">cuttlefish/Maze.cs</span></div>
+<div class="l k1"><span class="n">29</span>…AddIntegerParameter("Seed", "S", …, 0);<span class="rep r1">1</span></div>
+<div class="l k2"><span class="n">52</span>Random rand = new Random(seed);<span class="rep r2">2</span></div>
+<div class="l k3"><span class="n">82</span>if (next.Count == 0) { stack.Pop(); continue; }<span class="rep r3">3</span></div>
+<div class="l k4"><span class="n">84</span>int[] n = next[rand.Next(next.Count)];<span class="rep r4">4</span></div>
+<div class="l k5"><span class="n">99</span>bool exit = i == nx - 1 &amp;&amp; j == ny - 1;<span class="rep r5">5</span></div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Un entier</b>Toute l'entrée.</li>
+      <li><span class="rep r2">2</span><b>Graine</b>Reproductible.</li>
+      <li><span class="rep r3">3</span><b>Impasse</b>Retour arrière.</li>
+      <li><span class="rep r4">4</span><b>Choix</b>Le vrai gène.</li>
+      <li><span class="rep r5">5</span><b>Sortie</b>Coin opposé.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À surveiller · optimiser la graine revient à tirer au hasard</span>
+    Sur une recopie en 20 × 20, le chemin de l'entrée à la sortie allait de 45 à 305 cases selon la graine (médiane 149, 10 000 graines), sans aucun lien d'une graine à la suivante (corrélation −0,005). Pour l'allonger en 500 évaluations, une génétique sur la graine faisait 257 en médiane, moins bien que 500 graines au hasard (281) ; une génétique sur la suite des choix de la ligne 84, où muter un gène ne change qu'une partie du parcours, faisait 303 (mesuré sur recopie, 20 essais). Un composant qui exposerait ses choix plutôt qu'une graine se prêterait à l'optimisation. Relevé sans rien modifier.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 155 · Les algorithmes génétiques</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 5B</b> · Chercher la meilleure forme</span><b>Cours 155</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+    <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Une génération comporte… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>des croisements et des mutations</li><li><span>B</span>un calcul de gradient</li><li><span>C</span>une baisse de température</li><li><span>D</span>une sélection de parents</li></ul></div>
+
+    <div class="q"><div class="enonce">Dans Galapagos, les gènes sont…</div><ul>
+      <li><span>A</span>les fils</li><li><span>B</span>les sorties</li><li><span>C</span>les composants</li><li><span>D</span>les curseurs reliés au solveur</li></ul></div>
+
+    <div class="q"><div class="enonce">Sur Rastrigin tourné, la génétique a fini en médiane à…</div><ul>
+      <li><span>A</span>0</li><li><span>B</span>58,6</li><li><span>C</span>3,1</li><li><span>D</span>21,9</li></ul></div>
+
+    <div class="q"><div class="enonce">Le croisement aide quand…</div><ul>
+      <li><span>A</span>mélanger deux bonnes solutions en donne souvent une bonne</li><li><span>B</span>la population est d'un seul individu</li><li><span>C</span>les gènes sont indépendants du résultat</li><li><span>D</span>il n'y a pas de mutation</li></ul></div>
+
+    <div class="q"><div class="enonce">Sans mutation, le résultat médian…</div><ul>
+      <li><span>A</span>s'améliorait</li><li><span>B</span>passait de 2,1 à 22,2</li><li><span>C</span>ne changeait pas</li><li><span>D</span>atteignait 0</li></ul></div>
+
+    <div class="q"><div class="enonce">Avec la moitié des gènes mutés…</div><ul>
+      <li><span>A</span>tout s'accélère</li><li><span>B</span>l'enfant ne ressemble plus à ses parents</li><li><span>C</span>le croisement disparaît</li><li><span>D</span>la population grandit</li></ul></div>
+
+    <div class="q"><div class="enonce">L'élitisme consiste à…</div><ul>
+      <li><span>A</span>copier le meilleur tel quel dans la génération suivante</li><li><span>B</span>ne garder que les meilleurs parents</li><li><span>C</span>retirer le meilleur</li><li><span>D</span>doubler la mutation</li></ul></div>
+
+    <div class="q"><div class="enonce">Un tournoi de 10 plutôt que de 2…</div><ul>
+      <li><span>A</span>ajoute de la variété</li><li><span>B</span>rend la sélection plus sévère</li><li><span>C</span>supprime l'élitisme</li><li><span>D</span>double la population</li></ul></div>
+
+    <div class="q"><div class="enonce">La convergence prématurée, c'est…</div><ul>
+      <li><span>A</span>un budget trop grand</li><li><span>B</span>une mutation trop forte</li><li><span>C</span>une population figée avant le bon creux</li><li><span>D</span>trouver l'optimum trop tôt</li></ul></div>
+
+    <div class="q"><div class="enonce">Pour la repérer, on suit…</div><ul>
+      <li><span>A</span>le temps de calcul</li><li><span>B</span>la taille du fichier</li><li><span>C</span>l'écart-type des gènes dans la population</li><li><span>D</span>la graine</li></ul></div>
+
+    <div class="q"><div class="enonce">Dans Maze.cs, tout le dessin découle…</div><ul>
+      <li><span>A</span>d'un objectif</li><li><span>B</span>d'une population</li><li><span>C</span>d'un bruit de Perlin</li><li><span>D</span>d'une graine entière</li></ul></div>
+
+    <div class="q"><div class="enonce">Une génétique sur la graine de Maze a fait…</div><ul>
+      <li><span>A</span>bien mieux que tout</li><li><span>B</span>un chemin de 1 000 cases</li><li><span>C</span>autant que les choix</li><li><span>D</span>moins bien que des graines au hasard</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 155 · Les algorithmes génétiques</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 5B</b> · Chercher la meilleure forme</span><b>Cours 155</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · A et D.</b> Page 1.</div>
+    <div><b>02 · D.</b> Les curseurs.</div>
+    <div><b>03 · C.</b> Mesuré.</div>
+    <div><b>04 · A.</b> Le codage.</div>
+    <div><b>05 · B.</b> Page 3.</div>
+    <div><b>06 · B.</b> 19,3.</div>
+    <div><b>07 · A.</b> Une place.</div>
+    <div><b>08 · B.</b> Page 4.</div>
+    <div><b>09 · C.</b> Page 4.</div>
+    <div><b>10 · C.</b> Variété.</div>
+    <div><b>11 · D.</b> Maze.cs:52.</div>
+    <div><b>12 · D.</b> 257 contre 281.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 156, « Plusieurs objectifs et contraintes ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">w * a[k] + (1 - w) * b[k]</td><td>un croisement mélangé</td><td>page 2</td></tr>
+      <tr><td class="c">if (r.NextDouble() &lt; pm) c[k] += …</td><td>une mutation rare</td><td>page 2</td></tr>
+      <tr><td class="c">Q[0] = P[iMeilleur].Clone()</td><td>l'élitisme</td><td>page 3</td></tr>
+      <tr><td class="c">if (F[c] &lt; F[b]) b = c</td><td>un tournoi : garder le meilleur tiré</td><td>page 4</td></tr>
+      <tr><td class="c">écart-type de chaque gène</td><td>surveiller la variété</td><td>page 4</td></tr>
+      <tr><td class="c">next[rand.Next(next.Count)]</td><td>un choix, le vrai gène du labyrinthe</td><td>Maze.cs:84</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Population</dt><dd>L'ensemble des solutions qui vivent ensemble pendant une génération.</dd>
+    <dt>Croisement</dt><dd>Fabriquer un enfant en mélangeant les gènes de deux parents.</dd>
+    <dt>Mutation</dt><dd>Un petit changement au hasard d'un gène, pour apporter de la nouveauté.</dd>
+    <dt>Élitisme</dt><dd>Garder le meilleur individu tel quel d'une génération à la suivante.</dd>
+    <dt>Convergence prématurée</dt><dd>Une population devenue uniforme avant d'avoir trouvé une bonne solution.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 156</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 155 · Les algorithmes génétiques</div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>67 · Processus, threads et verrous</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-9">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 67</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Processus, threads et verrous</h1>
+  <p class="chapeau">Un <b>processus</b> est un programme en cours d'exécution, avec sa propre mémoire. Un <b>thread</b> (ou fil d'exécution) est une suite d'instructions qui s'exécute dans un processus ; il peut y en avoir plusieurs, qui avancent en même temps et partagent la même mémoire. C'est leur force, et la source de bugs parmi les plus sournois.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>44</b> et <b>59</b></span>
+    <span class="pastille">Exemples · <b>MesureurGdi</b>, <b>Constituant</b> (SnapSet), <b>ChargeurCore</b> (Magpie)</span>
+  </div>
+
+  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+    <svg viewBox="0 0 600 196" width="100%">
+<rect x="8" y="8" width="274" height="160" rx="8" fill="#fff" stroke="#A03A2C" stroke-width="1.6"/>
+<text x="22" y="28" font-size="9.4" fill="#A03A2C" text-anchor="start" font-weight="700">Processus Rhino.exe</text>
+<rect x="22" y="38" width="246" height="30" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="145.0" y="55.6" font-size="7.8" fill="#1565C0" text-anchor="middle" font-weight="700">mémoire partagée : tas, code chargé, fichiers ouverts</text>
+<rect x="22" y="80" width="78" height="76" rx="5" fill="#fff" stroke="#7B1FA2" stroke-width="1.1"/>
+<text x="61" y="98" font-size="8" fill="#7B1FA2" text-anchor="middle" font-weight="700">thread</text>
+<text x="61" y="116" font-size="7.4" fill="#2B2F33" text-anchor="middle">sa pile</text>
+<text x="61" y="128" font-size="7.4" fill="#2B2F33" text-anchor="middle">ses registres</text>
+<text x="61" y="144" font-size="6.8" fill="#6B7378" text-anchor="middle" font-style="italic">fil</text>
+<text x="61" y="153" font-size="6.8" fill="#6B7378" text-anchor="middle" font-style="italic">d'interface</text>
+<rect x="106" y="80" width="78" height="76" rx="5" fill="#fff" stroke="#7B1FA2" stroke-width="1.1"/>
+<text x="145" y="98" font-size="8" fill="#7B1FA2" text-anchor="middle" font-weight="700">thread</text>
+<text x="145" y="116" font-size="7.4" fill="#2B2F33" text-anchor="middle">sa pile</text>
+<text x="145" y="128" font-size="7.4" fill="#2B2F33" text-anchor="middle">ses registres</text>
+<text x="145" y="144" font-size="6.8" fill="#6B7378" text-anchor="middle" font-style="italic">fil de calcul</text>
+<rect x="190" y="80" width="78" height="76" rx="5" fill="#fff" stroke="#7B1FA2" stroke-width="1.1"/>
+<text x="229" y="98" font-size="8" fill="#7B1FA2" text-anchor="middle" font-weight="700">thread</text>
+<text x="229" y="116" font-size="7.4" fill="#2B2F33" text-anchor="middle">sa pile</text>
+<text x="229" y="128" font-size="7.4" fill="#2B2F33" text-anchor="middle">ses registres</text>
+<text x="229" y="144" font-size="6.8" fill="#6B7378" text-anchor="middle" font-style="italic">fil</text>
+<text x="229" y="153" font-size="6.8" fill="#6B7378" text-anchor="middle" font-style="italic">du ramasse-miettes</text>
+<rect x="318" y="8" width="274" height="160" rx="8" fill="#fff" stroke="#A03A2C" stroke-width="1.6"/>
+<text x="332" y="28" font-size="9.4" fill="#A03A2C" text-anchor="start" font-weight="700">Processus node.exe</text>
+<rect x="332" y="38" width="246" height="30" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="455.0" y="55.6" font-size="7.8" fill="#1565C0" text-anchor="middle" font-weight="700">mémoire partagée : tas, code chargé, fichiers ouverts</text>
+<rect x="332" y="80" width="78" height="76" rx="5" fill="#fff" stroke="#7B1FA2" stroke-width="1.1"/>
+<text x="371" y="98" font-size="8" fill="#7B1FA2" text-anchor="middle" font-weight="700">thread</text>
+<text x="371" y="116" font-size="7.4" fill="#2B2F33" text-anchor="middle">sa pile</text>
+<text x="371" y="128" font-size="7.4" fill="#2B2F33" text-anchor="middle">ses registres</text>
+<text x="371" y="144" font-size="6.8" fill="#6B7378" text-anchor="middle" font-style="italic">fil</text>
+<text x="371" y="153" font-size="6.8" fill="#6B7378" text-anchor="middle" font-style="italic">principal (boucle)</text>
+<rect x="416" y="80" width="78" height="76" rx="5" fill="#fff" stroke="#7B1FA2" stroke-width="1.1"/>
+<text x="455" y="98" font-size="8" fill="#7B1FA2" text-anchor="middle" font-weight="700">thread</text>
+<text x="455" y="116" font-size="7.4" fill="#2B2F33" text-anchor="middle">sa pile</text>
+<text x="455" y="128" font-size="7.4" fill="#2B2F33" text-anchor="middle">ses registres</text>
+<text x="455" y="144" font-size="6.8" fill="#6B7378" text-anchor="middle" font-style="italic">fil</text>
+<text x="455" y="153" font-size="6.8" fill="#6B7378" text-anchor="middle" font-style="italic">d'E/S (libuv)</text>
+<text x="300" y="186" font-size="7.8" fill="#6B7378" text-anchor="middle" font-style="italic">Entre deux processus, une cloison : chacun sa mémoire. Entre deux threads d'un même processus, aucune.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Deux threads qui touchent la même donnée sans se coordonner peuvent produire un résultat faux, et pas à chaque fois : on protège chaque donnée partagée par un <b>verrou</b>, ou on évite de la partager.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Deux cuisiniers dans la même cuisine (threads d'un processus) partagent le plan de travail ; deux restaurants (processus) ont chacun le leur. Le verrou, c'est la règle « un seul à la fois devant la balance ».</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>distinguer processus et thread ;</li>
+        <li>reconnaître une situation de course ;</li>
+        <li>poser un verrou, éviter l'interblocage ;</li>
+        <li>respecter le fil d'interface.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:5mm">
+    <span class="titre">À retenir</span>
+    Un processeur à 4 cœurs exécute vraiment 4 threads à la fois ; au-delà, le système les fait alterner des milliers de fois par seconde, à des instants que le programme ne choisit pas. Tout raisonnement du type « ça n'arrivera jamais entre ces deux lignes » est faux.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 67 · Processus, threads et verrous</div>
+</section>
+
+<!-- ============ PAGE 2 · LA COURSE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 67</b></div>
+  <p class="rubrique">Schéma 1 · La situation de course</p>
+  <h2>Un bug qui ne se montre pas à chaque fois</h2>
+  <p style="max-width:165mm">Une <b>situation de course</b> (race condition) survient quand le résultat dépend de l'ordre dans lequel les threads s'entrelacent. La mesure ci-dessous a été faite pour ce cours : le même programme, lancé huit fois, donne quatre fois le bon résultat et quatre fois un résultat faux, chaque fois différent.</p>
+
+  <svg viewBox="0 0 600 262" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="262" fill="#EFE9E1"/>
+<text x="16" y="20" font-size="8.6" fill="#A03A2C" text-anchor="start" font-weight="700">compteur++ n'est pas une seule opération : lire, ajouter, écrire.</text>
+<text x="150" y="40" font-size="8.4" fill="#1565C0" text-anchor="middle" font-weight="700">thread A</text>
+<text x="450" y="40" font-size="8.4" fill="#E65100" text-anchor="middle" font-weight="700">thread B</text>
+<text x="300" y="40" font-size="8.4" fill="#6B7378" text-anchor="middle" font-weight="700">compteur</text>
+<rect x="90" y="50" width="120" height="18" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="150.0" y="61.666666666666664" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">lit 41</text>
+<text x="300" y="63" font-size="9" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">41</text>
+<rect x="390" y="74" width="120" height="18" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
+<text x="450.0" y="85.66666666666667" font-size="8" fill="#E65100" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">lit 41</text>
+<text x="300" y="87" font-size="9" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">41</text>
+<rect x="90" y="98" width="120" height="18" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="150.0" y="109.66666666666667" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">écrit 42</text>
+<text x="300" y="111" font-size="9" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">42</text>
+<rect x="390" y="122" width="120" height="18" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
+<text x="450.0" y="133.66666666666666" font-size="8" fill="#E65100" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">écrit 42</text>
+<text x="300" y="135" font-size="9" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">42</text>
+<text x="300" y="158" font-size="8.4" fill="#C62828" text-anchor="middle" font-weight="700">Deux incréments, un seul compté : 42 au lieu de 43.</text>
+<line x1="16" y1="168" x2="584" y2="168" stroke="#CFC6B8" stroke-dasharray="3 3"/>
+<text x="16" y="186" font-size="8" fill="#A03A2C" text-anchor="start" font-weight="700">Mesuré : 2 threads × 1 000 000 incréments, 8 essais (Node, mémoire partagée)</text>
+<rect x="24" y="196.0" width="52" height="40.0" fill="#2E7D32"/>
+<text x="50" y="250" font-size="7.6" fill="#2E7D32" text-anchor="middle" font-weight="700">2 000 000</text>
+<rect x="95" y="196.19124" width="52" height="39.80876" fill="#C62828"/>
+<text x="121" y="250" font-size="7.6" fill="#C62828" text-anchor="middle" font-weight="700">1 990 438</text>
+<rect x="166" y="196.0" width="52" height="40.0" fill="#2E7D32"/>
+<text x="192" y="250" font-size="7.6" fill="#2E7D32" text-anchor="middle" font-weight="700">2 000 000</text>
+<rect x="237" y="208.0117" width="52" height="27.988300000000002" fill="#C62828"/>
+<text x="263" y="250" font-size="7.6" fill="#C62828" text-anchor="middle" font-weight="700">1 399 415</text>
+<rect x="308" y="214.63276" width="52" height="21.367240000000002" fill="#C62828"/>
+<text x="334" y="250" font-size="7.6" fill="#C62828" text-anchor="middle" font-weight="700">1 068 362</text>
+<rect x="379" y="210.82702" width="52" height="25.17298" fill="#C62828"/>
+<text x="405" y="250" font-size="7.6" fill="#C62828" text-anchor="middle" font-weight="700">1 258 649</text>
+<rect x="450" y="196.0" width="52" height="40.0" fill="#2E7D32"/>
+<text x="476" y="250" font-size="7.6" fill="#2E7D32" text-anchor="middle" font-weight="700">2 000 000</text>
+<rect x="521" y="196.0" width="52" height="40.0" fill="#2E7D32"/>
+<text x="547" y="250" font-size="7.6" fill="#2E7D32" text-anchor="middle" font-weight="700">2 000 000</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#</span>compteur++;                          // FAUX si plusieurs threads
+lock (verrou) { compteur++; }        // juste : un seul thread à la fois
+Interlocked.Increment(ref compteur); // juste et plus rapide, pour un entier seul
+var cache = new ConcurrentDictionary&lt;string, Font&gt;();  // collection déjà protégée</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Pourquoi c'est si traître</h3>
+      <p>Sur la machine du développeur, le bug peut ne jamais apparaître ; chez un utilisateur plus chargé, une fois par jour. Le débogueur, en ralentissant tout, le fait souvent disparaître. On ne le corrige pas en le reproduisant : on le corrige en raisonnant.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Les collections ordinaires</h3>
+      <p><code>List</code>, <code>Dictionary</code> et <code>HashSet</code> ne sont pas faites pour être modifiées par deux threads à la fois : au mieux une exception, au pire une structure interne abîmée. La lecture seule, sans aucune écriture, est sans danger.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Vérifier puis agir en deux temps : <code>if (!dico.ContainsKey(k)) dico[k] = v;</code>. Entre le test et l'écriture, un autre thread peut faire la même chose. Le test et l'action doivent être dans le même verrou, ou en une seule opération comme <code>GetOrAdd</code>.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 67 · Processus, threads et verrous</div>
+</section>
+
+<!-- ============ PAGE 3 · VERROUS ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 67</b></div>
+  <p class="rubrique">Schéma 2 · Le verrou et l'interblocage</p>
+  <h2>Protéger, sans se bloquer</h2>
+  <p style="max-width:165mm">Le bloc <code>lock (objet) { … }</code> de C# garantit qu'un seul thread à la fois exécute une section protégée par ce même objet. Les autres attendent à l'entrée. Mais deux threads qui attendent chacun un verrou tenu par l'autre attendront pour toujours : c'est l'<b>interblocage</b> (deadlock).</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<text x="150" y="22" font-size="9" fill="#2E7D32" text-anchor="middle" font-weight="700">Le verrou : un seul à la fois</text>
+<text x="450" y="22" font-size="9" fill="#C62828" text-anchor="middle" font-weight="700">L'interblocage : chacun attend l'autre</text>
+<line x1="300" y1="12" x2="300" y2="204" stroke="#CFC6B8" stroke-dasharray="3 3"/>
+<rect x="40" y="40" width="220" height="46" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="150" y="58" font-size="8.6" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">lock (verrou) {</text>
+<text x="150" y="74" font-size="8.6" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.6px">lire, ajouter, écrire }</text>
+<rect x="40" y="104" width="100" height="26" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="90.0" y="119.66666666666667" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700">A entre</text>
+<rect x="160" y="104" width="100" height="26" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2" stroke-dasharray="4 3"/>
+<text x="210.0" y="119.66666666666667" font-size="8" fill="#E65100" text-anchor="middle" font-weight="700">B attend</text>
+<line x1="90" y1="132" x2="90" y2="150" stroke="#6B7378" stroke-width="1.1"/><polygon points="90,150 87.3,143.6 92.7,143.6" fill="#6B7378"/>
+<line x1="210" y1="132" x2="210" y2="150" stroke="#6B7378" stroke-width="1.1"/><polygon points="210,150 207.3,143.6 212.7,143.6" fill="#6B7378"/>
+<rect x="40" y="152" width="100" height="26" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="90.0" y="167.66666666666666" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700">A sort</text>
+<rect x="160" y="152" width="100" height="26" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
+<text x="210.0" y="167.66666666666666" font-size="8" fill="#E65100" text-anchor="middle" font-weight="700">B entre</text>
+<text x="150" y="198" font-size="7.8" fill="#2E7D32" text-anchor="middle" font-style="italic">Résultat juste à chaque essai : 2 000 000.</text>
+<rect x="330" y="50" width="100" height="30" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="380.0" y="67.8" font-size="8.4" fill="#1565C0" text-anchor="middle" font-weight="700">thread A</text>
+<rect x="470" y="50" width="100" height="30" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
+<text x="520.0" y="67.8" font-size="8.4" fill="#E65100" text-anchor="middle" font-weight="700">thread B</text>
+<rect x="330" y="130" width="100" height="30" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="380.0" y="147.8" font-size="8.4" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">verrou 1</text>
+<rect x="470" y="130" width="100" height="30" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="520.0" y="147.8" font-size="8.4" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">verrou 2</text>
+<line x1="380" y1="128" x2="380" y2="84" stroke="#1565C0" stroke-width="1.4"/><polygon points="380,84 382.7,90.4 377.3,90.4" fill="#1565C0"/>
+<text x="374" y="110" font-size="7.4" fill="#1565C0" text-anchor="end" font-style="italic">tient</text>
+<line x1="520" y1="128" x2="520" y2="84" stroke="#E65100" stroke-width="1.4"/><polygon points="520,84 522.7,90.4 517.3,90.4" fill="#E65100"/>
+<text x="526" y="110" font-size="7.4" fill="#E65100" text-anchor="start" font-style="italic">tient</text>
+<line x1="426" y1="82" x2="474" y2="130" stroke="#C62828" stroke-width="1.4"/><polygon points="474,130 467.5,127.4 471.4,123.5" fill="#C62828"/>
+<line x1="474" y1="82" x2="426" y2="130" stroke="#C62828" stroke-width="1.4"/><polygon points="426,130 428.6,123.5 432.5,127.4" fill="#C62828"/>
+<text x="450" y="182" font-size="7.4" fill="#C62828" text-anchor="middle" font-style="italic">attend</text>
+<text x="450" y="198" font-size="7.8" fill="#C62828" text-anchor="middle" font-style="italic">Parade : toujours prendre les verrous dans le même ordre.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#</span>private readonly object _verrou = new object();   // objet privé, rien d'autre
+lock (_verrou) { /* court : pas d'attente, pas d'appel inconnu */ }
+// à éviter : lock (this), lock (typeof(X)), lock ("texte")
+// en async : await interdit dans un lock -&gt; SemaphoreSlim.WaitAsync()</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Sur quoi verrouiller</h3>
+      <p>Un objet <b>privé</b>, que personne d'autre ne peut verrouiller. Avec <code>this</code> ou une chaîne, un code extérieur peut prendre le même verrou sans le savoir, et créer un interblocage introuvable.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Le coût</h3>
+      <p>Un verrou que personne ne dispute coûte quelques dizaines de nanosecondes. Le vrai coût vient de l'attente quand il est disputé : on garde donc la section protégée la plus courte possible, sans entrée-sortie ni appel réseau dedans.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Appeler, à l'intérieur d'un verrou, un événement ou une méthode fournie par quelqu'un d'autre. On ne sait pas ce qu'elle fait : si elle prend un autre verrou, ou attend le fil d'interface, l'interblocage est servi. On copie ce qu'il faut sous le verrou, puis on appelle dehors.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 67 · Processus, threads et verrous</div>
+</section>
+
+<!-- ============ PAGE 4 · LE FIL D'INTERFACE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 67</b></div>
+  <p class="rubrique">Schéma 3 · Le fil d'interface</p>
+  <h2>Un seul thread pour l'écran</h2>
+  <p style="max-width:165mm">Les interfaces Windows (WinForms, Eto dans Rhino) confient tout l'affichage à <b>un seul thread</b>, qui traite une file de messages. C'est une façon d'éviter les verrous : ce qui ne vit que sur ce fil n'est jamais partagé. Le prix : un travail long sur ce fil fige toute la fenêtre (cours 44).</p>
+
+  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#A03A2C" text-anchor="start" font-weight="700">Le fil d'interface traite les messages un par un : clic, peinture, minuterie…</text>
+<rect x="16" y="36" width="62" height="26" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="47.0" y="51.666666666666664" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700">clic</text>
+<rect x="84" y="36" width="62" height="26" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
+<text x="115.0" y="51.666666666666664" font-size="8" fill="#7B1FA2" text-anchor="middle" font-weight="700">peindre</text>
+<rect x="152" y="36" width="62" height="26" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="183.0" y="51.666666666666664" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700">clic</text>
+<rect x="220" y="36" width="230" height="26" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="335.0" y="51.666666666666664" font-size="8" fill="#C62828" text-anchor="middle" font-weight="700">calcul de 3 s</text>
+<rect x="456" y="36" width="62" height="26" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
+<text x="487.0" y="51.666666666666664" font-size="8" fill="#7B1FA2" text-anchor="middle" font-weight="700">peindre</text>
+<text x="330" y="78" font-size="7.8" fill="#C62828" text-anchor="middle" font-style="italic">pendant ces 3 s : la fenêtre ne répond plus</text>
+<line x1="16" y1="92" x2="584" y2="92" stroke="#CFC6B8" stroke-dasharray="3 3"/>
+<text x="16" y="112" font-size="8.6" fill="#2E7D32" text-anchor="start" font-weight="700">La parade : faire le calcul ailleurs, puis revenir sur le fil d'interface pour afficher</text>
+<rect x="16" y="124" width="160" height="28" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="96.0" y="140.8" font-size="8.4" fill="#1565C0" text-anchor="middle" font-weight="700">fil d'interface</text>
+<rect x="220" y="124" width="160" height="28" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
+<text x="300.0" y="140.8" font-size="8.4" fill="#E65100" text-anchor="middle" font-weight="700">fil de travail</text>
+<rect x="424" y="124" width="160" height="28" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="504.0" y="140.8" font-size="8.4" fill="#1565C0" text-anchor="middle" font-weight="700">fil d'interface</text>
+<line x1="178" y1="138" x2="216" y2="138" stroke="#6B7378" stroke-width="1.2"/><polygon points="216,138 209.6,140.7 209.6,135.3" fill="#6B7378"/>
+<line x1="382" y1="138" x2="420" y2="138" stroke="#6B7378" stroke-width="1.2"/><polygon points="420,138 413.6,140.7 413.6,135.3" fill="#6B7378"/>
+<text x="197" y="166" font-size="7.6" fill="#6B7378" text-anchor="middle" class="mono" style="font-size:7.6px">Task.Run</text>
+<text x="401" y="166" font-size="7.6" fill="#6B7378" text-anchor="middle" class="mono" style="font-size:7.6px">Invoke</text>
+<text x="300" y="192" font-size="7.8" fill="#6B7378" text-anchor="middle" font-style="italic">Seul le fil d'interface a le droit de toucher aux contrôles, au canvas, au document Grasshopper.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C# dans Rhino</span>var resultat = await Task.Run(() =&gt; CalculLong(donnees));   // ailleurs
+etiquette.Text = resultat;   // après await : de retour sur le fil d'interface
+// hors async, depuis un autre fil :
+RhinoApp.InvokeOnUiThread(new Action(() =&gt; doc.Views.Redraw()));</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Et Grasshopper ?</h3>
+      <p>La solution, la peinture du canvas et les événements de souris passent tous par le fil d'interface. C'est pourquoi un composant lent fige Rhino entier, et pourquoi un plugin ne doit modifier le document que depuis ce fil.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Et Node ?</h3>
+      <p>Ton code JavaScript tourne sur un seul thread, avec une boucle d'événements (cours 59) : pas de course entre deux lignes de JS. Les entrées-sorties se font dans d'autres threads, et <code>worker_threads</code> en crée pour le calcul.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Bloquer le fil d'interface en attendant une tâche avec <code>.Result</code> ou <code>.Wait()</code>. Si la tâche a besoin de revenir sur ce fil pour finir, chacun attend l'autre : c'est un interblocage, sans aucun <code>lock</code> écrit. Avec une tâche, on <code>await</code>.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 67 · Processus, threads et verrous</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 67</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Des verrous courts, sur des objets privés</h2>
+  <p style="max-width:165mm">SnapSet et Magpie protègent quatre données partagées : des collections <code>static</code>, visibles de tout le processus, et un cache rempli à la demande. Chaque fois, le test et l'écriture sont dans le même verrou.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">SnapSet/src/SnapSet.Constituants/MesureurGdi.cs</span></div>
+<div class="l k1"><span class="n">54</span><span class="kw">private readonly object</span> _verrou = <span class="kw">new object</span>();<span class="rep r1">1</span></div>
+<div class="l k1"><span class="n">121</span><span class="kw">lock</span> (_verrou)</div>
+<div class="l k1"><span class="n">123</span>  <span class="kw">if</span> (!_polices.TryGetValue(cle, <span class="kw">out var</span> police))</div>
+<div class="l k1"><span class="n">126</span>    _polices[cle] = police;</div>
+<div class="l"><span class="cm">SnapSet/src/SnapSet.Conception/Noyau/Constituant.cs</span></div>
+<div class="l k2"><span class="n">41</span><span class="kw">static readonly</span> <span class="ty">HashSet</span>&lt;<span class="ty">Guid</span>&gt; _types = …;<span class="rep r2">2</span></div>
+<div class="l k2"><span class="n">68</span><span class="kw">lock</span> (_types) _types.Add(ComponentGuid);</div>
+<div class="l k2"><span class="n">77</span><span class="kw">lock</span> (_types) <span class="kw">return</span> _types.Contains(componentGuid);</div>
+<div class="l"><span class="cm">SnapSet/src/SnapSet.Conception/Geste/ServiceGeste.cs</span></div>
+<div class="l k3"><span class="n">54</span><span class="kw">lock</span> (_services)<span class="rep r3">3</span></div>
+<div class="l k3"><span class="n">56</span>  <span class="kw">if</span> (_services.ContainsKey(canvas)) <span class="kw">return</span>;</div>
+<div class="l k3"><span class="n">57</span>  _services[canvas] = <span class="kw">new</span> ServiceGeste(canvas);</div>
+<div class="l"><span class="cm">magpie/plugin/Chargeur/ChargeurCore.cs</span></div>
+<div class="l k4"><span class="n">63</span><span class="kw">static readonly object</span> Verrou = <span class="kw">new object</span>();<span class="rep r4">4</span></div>
+<div class="l k4"><span class="n">76</span><span class="kw">lock</span> (Verrou)</div>
+<div class="l k4"><span class="n">78</span>  <span class="kw">if</span> (_branche) <span class="kw">return</span>;</div>
+<div class="l k4"><span class="n">79</span>  AppDomain.CurrentDomain.AssemblyResolve += SurResolution;</div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Un cache protégé</b>Chercher puis créer, sous le même verrou.</li>
+      <li><span class="rep r2">2</span><b>Une collection static</b>Partagée par tout Rhino : chaque accès verrouillé.</li>
+      <li><span class="rep r3">3</span><b>Vérifier puis agir</b>Le piège de la page 2, évité.</li>
+      <li><span class="rep r4">4</span><b>Une seule fois</b>Brancher l'événement deux fois serait un bug.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">Pourquoi ces verrous, si tout passe par le fil d'interface ?</span>
+    Dans Grasshopper, presque tout se fait en effet sur le fil d'interface, et ces verrous ne sont presque jamais disputés : ils coûtent alors quelques nanosecondes. Mais <code>AssemblyResolve</code> (ChargeurCore.cs:79) peut être levé par n'importe quel thread qui charge un type, et une donnée <code>static</code> est visible de tout code du processus. Le verrou est une assurance bon marché.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 67 · Processus, threads et verrous</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 67</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Deux threads d'un même processus…</div><ul>
+      <li><span>A</span>sont deux programmes</li><li><span>B</span>partagent la même mémoire</li><li><span>C</span>ne peuvent pas communiquer</li><li><span>D</span>ont chacun leur tas</li></ul></div>
+
+    <div class="q"><div class="enonce">Chaque thread a en propre…</div><ul>
+      <li><span>A</span>sa pile</li><li><span>B</span>ses fichiers ouverts</li><li><span>C</span>son code</li><li><span>D</span>son tas</li></ul></div>
+
+    <div class="q"><div class="enonce"><code>compteur++</code> par deux threads sans verrou…</div><ul>
+      <li><span>A</span>peut perdre des incréments</li><li><span>B</span>est toujours juste</li><li><span>C</span>plante toujours</li><li><span>D</span>est plus rapide et juste</li></ul></div>
+
+    <div class="q"><div class="enonce">Une situation de course se reconnaît à…</div><ul>
+      <li><span>A</span>un code lent</li><li><span>B</span>une erreur de compilation</li><li><span>C</span>un résultat qui varie d'un essai à l'autre</li><li><span>D</span>un message clair</li></ul></div>
+
+    <div class="q"><div class="enonce">Pour incrémenter un entier partagé, le plus simple…</div><ul>
+      <li><span>A</span>une variable locale</li><li><span>B</span>Interlocked.Increment</li><li><span>C</span>un try/catch</li><li><span>D</span>Thread.Sleep</li></ul></div>
+
+    <div class="q"><div class="enonce">On verrouille de préférence sur…</div><ul>
+      <li><span>A</span>this</li><li><span>B</span>une chaîne</li><li><span>C</span>typeof(X)</li><li><span>D</span>un objet privé</li></ul></div>
+
+    <div class="q"><div class="enonce">Un interblocage, c'est…</div><ul>
+      <li><span>A</span>un verrou trop lent</li><li><span>B</span>une course</li><li><span>C</span>deux threads qui s'attendent mutuellement</li><li><span>D</span>un thread mort</li></ul></div>
+
+    <div class="q"><div class="enonce">Contre l'interblocage : <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>prendre les verrous dans un ordre fixe</li><li><span>B</span>await plutôt que .Result</li><li><span>C</span>n'appeler aucun code inconnu sous verrou</li><li><span>D</span>ajouter des Sleep</li></ul></div>
+
+    <div class="q"><div class="enonce">Un calcul de 3 s sur le fil d'interface…</div><ul>
+      <li><span>A</span>est impossible</li><li><span>B</span>est invisible</li><li><span>C</span>accélère l'affichage</li><li><span>D</span>fige la fenêtre</li></ul></div>
+
+    <div class="q"><div class="enonce">Depuis un autre fil, pour redessiner une vue Rhino…</div><ul>
+      <li><span>A</span>Process.Start</li><li><span>B</span>RhinoApp.InvokeOnUiThread</li><li><span>C</span>lock</li><li><span>D</span>appeler directement</li></ul></div>
+
+    <div class="q"><div class="enonce">Pourquoi le verrou de ChargeurCore ?</div><ul>
+      <li><span>A</span>pour le fil d'interface</li><li><span>B</span>sans raison</li><li><span>C</span>AssemblyResolve peut venir de n'importe quel thread</li><li><span>D</span>pour la vitesse</li></ul></div>
+
+    <div class="q"><div class="enonce">En JavaScript Node, deux lignes de ton code…</div><ul>
+      <li><span>A</span>tournent sur 4 cœurs</li><li><span>B</span>demandent un lock</li><li><span>C</span>sont des processus</li><li><span>D</span>ne sont jamais interrompues par une autre ligne de JS</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 67 · Processus, threads et verrous</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 67</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · B.</b> Tas, code et fichiers communs.</div>
+    <div><b>02 · A.</b> Et ses registres.</div>
+    <div><b>03 · A.</b> 1 068 362 sur 2 000 000 mesuré.</div>
+    <div><b>04 · C.</b> Il dépend de l'entrelacement.</div>
+    <div><b>05 · B.</b> Une opération indivisible.</div>
+    <div><b>06 · D.</b> Personne d'autre ne le prend.</div>
+    <div><b>07 · C.</b> Pour toujours.</div>
+    <div><b>08 · A, B et C.</b> Sleep ne règle rien.</div>
+    <div><b>09 · D.</b> Les messages s'empilent.</div>
+    <div><b>10 · B.</b> Le seul fil autorisé.</div>
+    <div><b>11 · C.</b> ChargeurCore.cs:76–80.</div>
+    <div><b>12 · D.</b> Un seul thread de JS.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 68, « Fichiers, chemins et système de fichiers ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">private readonly object _verrou</td><td>l'objet du verrou, privé</td><td>MesureurGdi.cs:54</td></tr>
+      <tr><td class="c">lock (_verrou) { test ; écriture }</td><td>vérifier puis agir, d'un bloc</td><td>MesureurGdi.cs:121–126</td></tr>
+      <tr><td class="c">lock (_types) _types.Add(…)</td><td>collection static protégée</td><td>Constituant.cs:68, 77</td></tr>
+      <tr><td class="c">if (_branche) return; … = true</td><td>initialiser une seule fois</td><td>ChargeurCore.cs:76–80</td></tr>
+      <tr><td class="c">Interlocked.Increment(ref n)</td><td>incrément indivisible</td><td>exemple autonome, page 2</td></tr>
+      <tr><td class="c">RhinoApp.InvokeOnUiThread(…)</td><td>revenir sur le fil d'interface</td><td>exemple autonome, page 4</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Processus</dt><dd>Un programme en cours d'exécution, avec sa mémoire propre.</dd>
+    <dt>Thread</dt><dd>Un fil d'exécution dans un processus, qui partage sa mémoire avec les autres.</dd>
+    <dt>Situation de course</dt><dd>Un résultat qui dépend de l'ordre d'entrelacement des threads.</dd>
+    <dt>Verrou</dt><dd>Un mécanisme qui ne laisse entrer qu'un thread à la fois dans une section.</dd>
+    <dt>Interblocage</dt><dd>Des threads qui s'attendent mutuellement, pour toujours.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 68</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 67 · Processus, threads et verrous</div>
+</section>
+
+</body>
+</html>

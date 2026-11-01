@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>77 · La configuration</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-11">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 77</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>La configuration</h1>
+  <p class="chapeau">Le même code tourne sur ton poste, sur celui d'un élève et chez o2switch. Ce qui diffère d'un lieu à l'autre (une adresse, un mot de passe, un dossier) ne s'écrit pas dans le code : c'est la <b>configuration</b>. Bien la ranger, c'est pouvoir déployer sans modifier une ligne, et ne jamais publier un secret par accident.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>63</b>, <b>68</b> et <b>69</b></span>
+    <span class="pastille">Exemples · <b>compute-proxy</b>, <b>app.cjs</b>, <b>MagpieReglages</b> (Magpie), <b>CheminCible</b> (SnapSet)</span>
+  </div>
+
+  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+    <svg viewBox="0 0 600 188" width="100%">
+<rect x="10" y="10" width="182" height="112" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="101" y="32" font-size="10" fill="#1565C0" text-anchor="middle" font-weight="700">le document</text>
+<text x="101" y="50" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">voyage avec le fichier .gh</text>
+<line x1="26" y1="62" x2="176" y2="62" stroke="#E2DACB"/>
+<text x="101" y="82" font-size="7.8" fill="#2B2F33" text-anchor="middle" font-weight="700">SnapSet : le dossier cible</text>
+<text x="101" y="102" font-size="7.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.4px">table de valeurs du conteneur</text>
+<rect x="206" y="10" width="182" height="112" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
+<text x="297" y="32" font-size="10" fill="#7B1FA2" text-anchor="middle" font-weight="700">le poste</text>
+<text x="297" y="50" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">propre à une installation</text>
+<line x1="222" y1="62" x2="372" y2="62" stroke="#E2DACB"/>
+<text x="297" y="82" font-size="7.8" fill="#2B2F33" text-anchor="middle" font-weight="700">Magpie : le dossier de travail</text>
+<text x="297" y="102" font-size="7.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.4px">GH_SettingsServer</text>
+<rect x="402" y="10" width="182" height="112" rx="4" fill="#fff" stroke="#4F46B8" stroke-width="1.2"/>
+<text x="493" y="32" font-size="10" fill="#4F46B8" text-anchor="middle" font-weight="700">le serveur</text>
+<text x="493" y="50" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">propre à un hébergement</text>
+<line x1="418" y1="62" x2="568" y2="62" stroke="#E2DACB"/>
+<text x="493" y="82" font-size="7.8" fill="#2B2F33" text-anchor="middle" font-weight="700">Magpie web : Compute, mot de passe</text>
+<text x="493" y="102" font-size="7.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.4px">variables d'environnement</text>
+<text x="300" y="150" font-size="9" fill="#4F46B8" text-anchor="middle" font-weight="700">Une configuration, c'est ce qui change d'un lieu à l'autre sans changer le code.</text>
+<text x="300" y="170" font-size="7.8" fill="#6B7378" text-anchor="middle" font-style="italic">La première question est sa portée : qui doit la retrouver, et où ?</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Chaque réglage a une <b>portée</b> (document, poste, serveur) qui décide où le ranger, une <b>valeur par défaut</b> sûre, et une <b>vérification</b> au plus tôt, pour qu'une faute de frappe se voie au démarrage et pas au premier élève.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Une voiture de location. Le moteur est le même pour tous ; le siège, les rétroviseurs et la radio se règlent par conducteur, et ne se règlent pas en démontant le tableau de bord.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>choisir où ranger un réglage ;</li>
+        <li>lire l'ordre de priorité des sources ;</li>
+        <li>valider une valeur venue de l'environnement ;</li>
+        <li>garder les secrets hors du dépôt.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:5mm">
+    <span class="titre">À retenir</span>
+    Un bon test : le dépôt pourrait-il devenir public demain sans rien révéler ? Si oui, les secrets sont bien hors du code. Le code peut alors décrire <i>quels</i> réglages existent (un fichier d'exemple), jamais leurs valeurs réelles.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 77 · La configuration</div>
+</section>
+
+<!-- ============ PAGE 2 · L'ENVIRONNEMENT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 77</b></div>
+  <p class="rubrique">Schéma 1 · Les variables d'environnement</p>
+  <h2>Plusieurs sources, un ordre</h2>
+  <p style="max-width:165mm">Chaque processus reçoit un ensemble de variables nommées, héritées de celui qui l'a lancé (cours 69). Un serveur Node les lit dans <code>process.env</code>. Le backend de Magpie accepte en plus un fichier <code>.env</code>, et garde un défaut dans le code : trois sources, donc une règle de priorité.</p>
+
+  <svg viewBox="0 0 600 200" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="200" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">Qui gagne quand une même variable est définie deux fois ? (mesuré avec process.loadEnvFile)</text>
+<rect x="16" y="36" width="568" height="36" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="34" y="59" font-size="12" fill="#2E7D32" text-anchor="middle" font-weight="700">1</text>
+<text x="54" y="52" font-size="8.8" fill="#2E7D32" text-anchor="start" font-weight="700">l'environnement du processus</text>
+<text x="54" y="65" font-size="7.6" fill="#2B2F33" text-anchor="start">cPanel, Passenger, ou le shell : A=depuis_shell</text>
+<rect x="40" y="80" width="544" height="36" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
+<text x="58" y="103" font-size="12" fill="#7B1FA2" text-anchor="middle" font-weight="700">2</text>
+<text x="78" y="96" font-size="8.8" fill="#7B1FA2" text-anchor="start" font-weight="700">le fichier .env</text>
+<text x="78" y="109" font-size="7.6" fill="#2B2F33" text-anchor="start">lu au démarrage par app.cjs:11, ne remplace rien</text>
+<rect x="64" y="124" width="520" height="36" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="82" y="147" font-size="12" fill="#6B7378" text-anchor="middle" font-weight="700">3</text>
+<text x="102" y="140" font-size="8.8" fill="#6B7378" text-anchor="start" font-weight="700">la valeur par défaut du code</text>
+<text x="102" y="153" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">|| 20000, || "enseignant"</text>
+<text x="16" y="186" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">Avec A=depuis_shell dans l'environnement et A=depuis_fichier dans .env, Node lit depuis_shell.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/.env.example · lignes 1 à 7</span># Copier en .env (ignoré par git) et remplir. Lu au lancement du backend grâce à
+# --env-file-if-exists=.env ; en ligne, ces valeurs se règlent dans Passenger.
+MAGPIE_ADMIN_USER=enseignant
+MAGPIE_ADMIN_PASSWORD=
+# MAGPIE_ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
+# COMPUTE_TARGET=http://localhost:6500
+# COMPUTE_TIMEOUT_MS=20000</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Le fichier d'exemple</h3>
+      <p><code>.env.example</code> est versionné, <code>.env</code> ne l'est pas (.gitignore:380–382). L'exemple documente chaque réglage, sa valeur par défaut et son rôle, sans aucune valeur secrète : c'est le mode d'emploi du vrai fichier.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Toujours du texte</h3>
+      <p>Une variable d'environnement est une chaîne, ou rien : <code>PORT=80</code> donne <code>"80"</code>, une absence donne <code>undefined</code> (mesuré). Tout nombre, booléen ou liste doit être converti, et la conversion peut échouer.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Commiter un <code>.env</code> rempli « juste pour tester ». Même supprimé au commit suivant, il reste dans l'historique git et sur GitHub. Un secret publié se considère comme perdu : on le change, on ne se contente pas d'effacer le fichier.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 77 · La configuration</div>
+</section>
+
+<!-- ============ PAGE 3 · VALIDER ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 77</b></div>
+  <p class="rubrique">Schéma 2 · Valider au démarrage</p>
+  <h2>Une faute de frappe doit faire du bruit</h2>
+  <p style="max-width:165mm">Une valeur de configuration est une entrée comme une autre, écrite à la main par quelqu'un, parfois des mois après. Le moment le moins cher pour découvrir qu'elle est fausse, c'est le démarrage : avant le premier utilisateur, devant la personne qui vient de la taper.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">COMPUTE_TIMEOUT_MS selon ce qu'on écrit, lu par Number(…) || 20000 (mesuré)</text>
+<text x="28" y="44" font-size="8" fill="#6B7378" text-anchor="start" font-weight="700">valeur écrite</text>
+<text x="200" y="44" font-size="8" fill="#6B7378" text-anchor="start" font-weight="700">process.env</text>
+<text x="574" y="44" font-size="8" fill="#6B7378" text-anchor="end" font-weight="700">délai retenu</text>
+<rect x="16" y="52" width="568" height="24" rx="4" fill="#fff" stroke="#E2DACB" stroke-width="1.2"/>
+<text x="28" y="68" font-size="8.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.8px">(rien)</text>
+<text x="200" y="68" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px">undefined</text>
+<text x="330" y="68" font-size="7.8" fill="#2E7D32" text-anchor="start" font-style="italic">défaut</text>
+<text x="574" y="68" font-size="8.8" fill="#2E7D32" text-anchor="end" font-weight="700" class="mono" style="font-size:8.8px">20000</text>
+<rect x="16" y="82" width="568" height="24" rx="4" fill="#fff" stroke="#E2DACB" stroke-width="1.2"/>
+<text x="28" y="98" font-size="8.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.8px">15000</text>
+<text x="200" y="98" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px">"15000"</text>
+<text x="330" y="98" font-size="7.8" fill="#2E7D32" text-anchor="start" font-style="italic">pris</text>
+<text x="574" y="98" font-size="8.8" fill="#2E7D32" text-anchor="end" font-weight="700" class="mono" style="font-size:8.8px">15000</text>
+<rect x="16" y="112" width="568" height="24" rx="4" fill="#fff" stroke="#E2DACB" stroke-width="1.2"/>
+<text x="28" y="128" font-size="8.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.8px">20 s</text>
+<text x="200" y="128" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px">"20 s"</text>
+<text x="330" y="128" font-size="7.8" fill="#C62828" text-anchor="start" font-style="italic">ignoré sans le dire</text>
+<text x="574" y="128" font-size="8.8" fill="#C62828" text-anchor="end" font-weight="700" class="mono" style="font-size:8.8px">20000</text>
+<rect x="16" y="142" width="568" height="24" rx="4" fill="#fff" stroke="#E2DACB" stroke-width="1.2"/>
+<text x="28" y="158" font-size="8.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.8px">0</text>
+<text x="200" y="158" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px">"0"</text>
+<text x="330" y="158" font-size="7.8" fill="#C62828" text-anchor="start" font-style="italic">0 est « faux » pour ||</text>
+<text x="574" y="158" font-size="8.8" fill="#C62828" text-anchor="end" font-weight="700" class="mono" style="font-size:8.8px">20000</text>
+<rect x="16" y="172" width="568" height="24" rx="4" fill="#fff" stroke="#E2DACB" stroke-width="1.2"/>
+<text x="28" y="188" font-size="8.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.8px">abc</text>
+<text x="200" y="188" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px">"abc"</text>
+<text x="330" y="188" font-size="7.8" fill="#C62828" text-anchor="start" font-style="italic">ignoré sans le dire</text>
+<text x="574" y="188" font-size="8.8" fill="#C62828" text-anchor="end" font-weight="700" class="mono" style="font-size:8.8px">20000</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript, lire un entier ou refuser de démarrer</span>function entier(nom, defaut) {
+  const brut = process.env[nom];
+  if (brut === undefined || brut === "") return defaut;
+  const n = Number(brut);
+  if (!Number.isInteger(n) || n &lt; 0) throw new Error(`${nom} invalide : "${brut}"`);
+  return n;
+}</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Échouer tôt</h3>
+      <p>Un serveur qui refuse de démarrer avec un message clair est un incident de cinq minutes. Un serveur qui démarre avec un délai inattendu ou une origine mal recopiée est un bug intermittent qu'on cherchera des jours.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Afficher ce qui est retenu</h3>
+      <p>Au démarrage, le backend de Magpie écrit l'adresse de Compute et le délai effectivement retenus (compute-proxy.mjs:740). C'est la moitié du travail : on voit la valeur réelle, même si on n'est pas averti qu'une saisie a été écartée.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Un défaut <b>permissif</b> : « sans mot de passe réglé, l'administration est ouverte ». Le jour où la variable est oubliée, la porte l'est aussi. Magpie fait l'inverse : sans <code>MAGPIE_ADMIN_PASSWORD</code>, l'administration est fermée (compute-proxy.mjs:71–73).
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 77 · La configuration</div>
+</section>
+
+<!-- ============ PAGE 4 · POSTE ET DOCUMENT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 77</b></div>
+  <p class="rubrique">Schéma 3 · Les réglages du poste et du document</p>
+  <h2>Ranger le réglage là où il ne se perdra pas</h2>
+  <p style="max-width:165mm">Un plugin n'a pas de variables d'environnement à lui. Ses réglages vivent soit avec le <b>document</b>, s'ils le concernent, soit dans le <b>profil</b> de l'utilisateur, s'ils concernent son poste. Le choix se décide en se demandant ce qui doit se passer quand on copie le fichier sur une autre machine.</p>
+
+  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">Deux réglages qui survivent à un déplacement</text>
+<rect x="16" y="34" width="276" height="150" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
+<text x="154" y="56" font-size="9" fill="#7B1FA2" text-anchor="middle" font-weight="700">Magpie · le dossier de travail</text>
+<text x="154" y="90" font-size="7.8" fill="#2B2F33" text-anchor="middle">rangé par Grasshopper, hors du dossier lui-même</text>
+<text x="154" y="120" font-size="7.8" fill="#2B2F33" text-anchor="middle">vérifié à l'écriture au moment du choix</text>
+<text x="154" y="150" font-size="7.8" fill="#2B2F33" text-anchor="middle">disparu ? on revient au défaut, sans recréer</text>
+<rect x="308" y="34" width="276" height="150" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="446" y="56" font-size="9" fill="#1565C0" text-anchor="middle" font-weight="700">SnapSet · le dossier cible</text>
+<text x="446" y="90" font-size="7.8" fill="#2B2F33" text-anchor="middle">rangé dans le .gh, relatif à lui : « ..\src »</text>
+<text x="446" y="120" font-size="7.8" fill="#2B2F33" text-anchor="middle">le .gh et son projet se déplacent ensemble</text>
+<text x="446" y="150" font-size="7.8" fill="#2B2F33" text-anchor="middle">autre lecteur : stocké absolu</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/plugin/Core/MagpieReglages.cs · lignes 22 et 38 à 39</span>private static GH_SettingsServer Serveur =&gt; _serveur ??= new GH_SettingsServer("Magpie");
+string regle = Serveur.GetValue(CleDossier, string.Empty);
+return !string.IsNullOrWhiteSpace(regle) &amp;&amp; Directory.Exists(regle) ? regle : DossierParDefaut;</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Pourquoi pas dans le dossier lui-même</h3>
+      <p>Le commentaire de MagpieReglages.cs:12–15 le dit : un fichier de réglages rangé dans le dossier de travail serait introuvable dès qu'on déplace ce dossier. Le réglage qui désigne un lieu ne peut pas habiter ce lieu.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Relatif ou absolu</h3>
+      <p>SnapSet stocke le dossier cible relatif au .gh (CheminCible.cs:35–36) : on peut déplacer ensemble le .gh et son projet, ou les cloner sur un autre poste. Un chemin absolu, lui, ne vaut que sur la machine qui l'a écrit (cours 68).</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Recréer en silence un dossier réglé qui a disparu. Si le disque externe est débranché, le travail s'écrit alors dans un nouveau dossier vide, à côté de l'ancien, et l'auteur croit l'avoir perdu. MagpieReglages.cs:30–32 revient plutôt au dossier par défaut, et sait dire pourquoi (ligne 45).
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 77 · La configuration</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 77</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Une configuration bien rangée</h2>
+  <p style="max-width:165mm">Le backend de Magpie lit tout dans l'environnement, garde des défauts sûrs, et tient ses secrets hors du dépôt. Le plugin range le dossier de travail chez Grasshopper et le vérifie au moment du choix.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">magpie/web/compute-proxy.mjs</span></div>
+<div class="l k1"><span class="n">35</span>… = Number(process.env.COMPUTE_TIMEOUT_MS) || 20000;<span class="rep r1">1</span></div>
+<div class="l k2"><span class="n">75</span>… = process.env.MAGPIE_ADMIN_PASSWORD || <span class="st">""</span>;<span class="rep r2">2</span></div>
+<div class="l"><span class="cm">magpie/web/app.cjs</span></div>
+<div class="l k3"><span class="n">11</span><span class="kw">if</span> (existsSync(envFile)) process.loadEnvFile(envFile);<span class="rep r3">3</span></div>
+<div class="l"><span class="cm">magpie/.gitignore</span></div>
+<div class="l k4"><span class="n">380</span>.env<span class="rep r4">4</span></div>
+<div class="l k4"><span class="n">382</span>!.env.example</div>
+<div class="l"><span class="cm">magpie/plugin/Core/MagpieReglages.cs</span></div>
+<div class="l k5"><span class="n">53</span><span class="kw">public static string</span> ReglerDossierTravail(…)<span class="rep r5">5</span></div>
+<div class="l k5"><span class="n">60</span>… temoin = Path.Combine(dossier, $<span class="st">".magpie-ecriture-…"</span>);</div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Un nombre lu dans du texte</b>Repli sur 20000 si illisible.</li>
+      <li><span class="rep r2">2</span><b>Défaut fermé</b>Vide : l'administration refuse tout.</li>
+      <li><span class="rep r3">3</span><b>Le .env en ligne</b>Ne remplace pas cPanel (mesuré).</li>
+      <li><span class="rep r4">4</span><b>Hors du dépôt</b>Sauf l'exemple, sans valeurs.</li>
+      <li><span class="rep r5">5</span><b>Vérifier au choix</b>Un fichier témoin écrit puis effacé.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:5mm">
+    <span class="titre">À surveiller · une saisie écartée sans prévenir</span>
+    <code>Number(…) || 20000</code> (compute-proxy.mjs:35, et de même <code>PORT</code> ligne 44) remplace toute valeur illisible par le défaut, sans un mot : « 20 s » ou « 20000ms » réglés dans cPanel deviendraient 20000 sans qu'on le sache, et « 0 » aussi (mesuré). La ligne de démarrage 740 montre au moins le délai retenu ; une lecture qui refuse de démarrer sur une valeur fausse, comme l'exemple de la page 3, rendrait l'erreur impossible à manquer.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 77 · La configuration</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 77</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Une configuration, c'est…</div><ul>
+      <li><span>A</span>la liste des dépendances</li><li><span>B</span>ce qui change d'un lieu à l'autre sans changer le code</li><li><span>C</span>le code compilé</li><li><span>D</span>les tests</li></ul></div>
+
+    <div class="q"><div class="enonce">Le mot de passe d'administration de Magpie web se range…</div><ul>
+      <li><span>A</span>dans le README</li><li><span>B</span>dans .env.example</li><li><span>C</span>dans compute-proxy.mjs</li><li><span>D</span>dans l'environnement du serveur</li></ul></div>
+
+    <div class="q"><div class="enonce">A défini dans le shell et dans .env : Node lit (mesuré)…</div><ul>
+      <li><span>A</span>la valeur du shell</li><li><span>B</span>la valeur du .env</li><li><span>C</span>une erreur</li><li><span>D</span>les deux, jointes</li></ul></div>
+
+    <div class="q"><div class="enonce"><code>process.env.PORT</code> avec PORT=80 est…</div><ul>
+      <li><span>A</span>undefined</li><li><span>B</span>true</li><li><span>C</span>le nombre 80</li><li><span>D</span>la chaîne "80"</li></ul></div>
+
+    <div class="q"><div class="enonce"><code>Number("20 s") || 20000</code> vaut (mesuré)…</div><ul>
+      <li><span>A</span>une exception</li><li><span>B</span>NaN</li><li><span>C</span>20000</li><li><span>D</span>20</li></ul></div>
+
+    <div class="q"><div class="enonce">Sont versionnés dans le dépôt Magpie : <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>.gitignore</li><li><span>B</span>.env.example</li><li><span>C</span>.env</li><li><span>D</span>le mot de passe</li></ul></div>
+
+    <div class="q"><div class="enonce">Un .env commité par erreur, puis supprimé :</div><ul>
+      <li><span>A</span>rien à faire</li><li><span>B</span>on renomme le fichier</li><li><span>C</span>on change les secrets qu'il contenait</li><li><span>D</span>on vide la corbeille</li></ul></div>
+
+    <div class="q"><div class="enonce">Sans MAGPIE_ADMIN_PASSWORD, l'administration est…</div><ul>
+      <li><span>A</span>fermée</li><li><span>B</span>ouverte</li><li><span>C</span>supprimée</li><li><span>D</span>protégée par « enseignant »</li></ul></div>
+
+    <div class="q"><div class="enonce">Le meilleur moment pour refuser une valeur fausse :</div><ul>
+      <li><span>A</span>jamais</li><li><span>B</span>au démarrage</li><li><span>C</span>à la première requête</li><li><span>D</span>au prochain déploiement</li></ul></div>
+
+    <div class="q"><div class="enonce">Le dossier de travail de Magpie est rangé…</div><ul>
+      <li><span>A</span>dans chaque .gh</li><li><span>B</span>dans le .gha</li><li><span>C</span>dans le dossier de travail</li><li><span>D</span>par Grasshopper, hors du dossier lui-même</li></ul></div>
+
+    <div class="q"><div class="enonce">Si le dossier réglé a disparu, MagpieReglages…</div><ul>
+      <li><span>A</span>le recrée vide</li><li><span>B</span>lève une exception</li><li><span>C</span>revient au dossier par défaut</li><li><span>D</span>efface le réglage</li></ul></div>
+
+    <div class="q"><div class="enonce">SnapSet stocke le dossier cible relatif au .gh pour…</div><ul>
+      <li><span>A</span>déplacer ensemble le .gh et son projet</li><li><span>B</span>le cacher</li><li><span>C</span>accélérer Générer</li><li><span>D</span>gagner de la place</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 77 · La configuration</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 77</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · B.</b> Une adresse, un secret, un dossier.</div>
+    <div><b>02 · D.</b> Jamais dans le dépôt.</div>
+    <div><b>03 · A.</b> loadEnvFile ne remplace rien.</div>
+    <div><b>04 · D.</b> Toujours du texte.</div>
+    <div><b>05 · C.</b> NaN est « faux » pour ||.</div>
+    <div><b>06 · A et B.</b> .gitignore:380–382.</div>
+    <div><b>07 · C.</b> L'historique le garde.</div>
+    <div><b>08 · A.</b> compute-proxy.mjs:71–73.</div>
+    <div><b>09 · B.</b> Devant qui vient de la taper.</div>
+    <div><b>10 · D.</b> GH_SettingsServer, ligne 22.</div>
+    <div><b>11 · C.</b> MagpieReglages.cs:39.</div>
+    <div><b>12 · A.</b> CheminCible.cs:7–9.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 78, « La documentation ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">process.env.NOM || défaut</td><td>lire une variable, avec repli</td><td>compute-proxy.mjs:34</td></tr>
+      <tr><td class="c">process.loadEnvFile(".env")</td><td>charger un .env sans écraser</td><td>app.cjs:11</td></tr>
+      <tr><td class="c">--env-file-if-exists=.env</td><td>la même chose, en option de node</td><td>web/README.md:37</td></tr>
+      <tr><td class="c">.env / !.env.example</td><td>ignorer le vrai, garder l'exemple</td><td>.gitignore:380–382</td></tr>
+      <tr><td class="c">new GH_SettingsServer("Magpie")</td><td>réglages du poste, via Grasshopper</td><td>MagpieReglages.cs:22</td></tr>
+      <tr><td class="c">Path.GetRelativePath(dossierGh, …)</td><td>stocker un chemin relatif au .gh</td><td>CheminCible.cs:35</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Variable d'environnement</dt><dd>Un couple nom-texte transmis à un processus par celui qui le lance.</dd>
+    <dt>Fichier .env</dt><dd>Un fichier de variables lu au démarrage, gardé hors du dépôt.</dd>
+    <dt>Défaut sûr</dt><dd>La valeur qui, en l'absence de réglage, ferme plutôt qu'elle n'ouvre.</dd>
+    <dt>Échouer tôt</dt><dd>Refuser de démarrer sur une configuration fausse, avec un message clair.</dd>
+    <dt>Portée</dt><dd>Ce que concerne un réglage : un document, un poste ou un serveur.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 78</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 77 · La configuration</div>
+</section>
+
+</body>
+</html>

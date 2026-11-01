@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>117 · JSON et son schéma</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-10">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 117</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>JSON et son schéma</h1>
+  <p class="chapeau">JSON écrit des objets, des tableaux et des valeurs simples, avec une syntaxe minuscule. Les exercices de Magpie en sont faits, lus par le plugin en C# et par le volet web en JavaScript. Le format ne dit pas ce qu'une valeur veut dire : c'est l'affaire de chaque lecteur, ou d'un <b>schéma</b> écrit une fois pour tous.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>24</b>, <b>116</b></span>
+    <span class="pastille">Exemples · <b>Magpie</b> plugin et web, <b>SnapSet</b></span>
+  </div>
+
+  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+    <svg viewBox="0 0 600 214" width="100%">
+<rect x="10" y="6" width="330" height="160" rx="4" fill="#ECECF2" stroke="#4A4A68" stroke-width="1.2"/>
+<text x="22" y="26" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">{</text>
+<text x="22" y="43" font-size="7.8" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">  "Id": "ex04_racine_carree",</text>
+<line x1="346" y1="40" x2="372" y2="40" stroke="#6B7378" stroke-width="1"/><polygon points="372,40 365.6,42.7 365.6,37.3" fill="#6B7378"/>
+<text x="378" y="43" font-size="7.8" fill="#1565C0" text-anchor="start" font-weight="700">chaîne</text>
+<text x="22" y="60" font-size="7.8" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">  "Mode": "NumericTolerance",</text>
+<line x1="346" y1="57" x2="372" y2="57" stroke="#6B7378" stroke-width="1"/><polygon points="372,57 365.6,59.7 365.6,54.3" fill="#6B7378"/>
+<text x="378" y="60" font-size="7.8" fill="#1565C0" text-anchor="start" font-weight="700">chaîne → enum C#</text>
+<text x="22" y="77" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">  "ExpectedNumbers": [ 1.41421356 ],</text>
+<line x1="346" y1="74" x2="372" y2="74" stroke="#6B7378" stroke-width="1"/><polygon points="372,74 365.6,76.7 365.6,71.3" fill="#6B7378"/>
+<text x="378" y="77" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700">tableau de nombres</text>
+<text x="22" y="94" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">  "Tolerance": 0.001,</text>
+<line x1="346" y1="91" x2="372" y2="91" stroke="#6B7378" stroke-width="1"/><polygon points="372,91 365.6,93.7 365.6,88.3" fill="#6B7378"/>
+<text x="378" y="94" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700">nombre → double</text>
+<text x="22" y="111" font-size="7.8" fill="#6B7378" text-anchor="start" class="mono" style="font-size:7.8px">  "StartGeometryBase64": null,</text>
+<line x1="346" y1="108" x2="372" y2="108" stroke="#6B7378" stroke-width="1"/><polygon points="372,108 365.6,110.7 365.6,105.3" fill="#6B7378"/>
+<text x="378" y="111" font-size="7.8" fill="#6B7378" text-anchor="start" font-weight="700">null</text>
+<text x="22" y="128" font-size="7.8" fill="#6B7378" text-anchor="start" class="mono" style="font-size:7.8px">  …</text>
+<text x="22" y="145" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">}</text>
+<line x1="346" y1="142" x2="372" y2="142" stroke="#6B7378" stroke-width="1"/><polygon points="372,142 365.6,144.7 365.6,139.3" fill="#6B7378"/>
+<text x="378" y="145" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">objet</text>
+<text x="10" y="188" font-size="7.9" fill="#2B2F33" text-anchor="start" font-weight="700">Six sortes de valeurs seulement : objet, tableau, chaîne, nombre, vrai/faux, null. Ni date, ni enum, ni entier distinct :</text>
+<text x="10" y="204" font-size="7.9" fill="#2B2F33" text-anchor="start" font-weight="700">c'est le lecteur qui décide qu'une chaîne est un mode, et qu'un nombre est un double. (web/data/exercises, mesuré)</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Un fichier JSON n'a de sens que par le contrat entre ses lecteurs ; tant que ce contrat n'est écrit nulle part, chaque lecteur l'interprète à sa façon, et ils finissent par diverger.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Une feuille de cotes sans cartouche : les chiffres sont lisibles, mais millimètres ou pouces, cote nominale ou tolérancée, chacun le devine. Le schéma est le cartouche.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>dire ce que JSON permet, et ce qu'il interdit ;</li>
+        <li>prévoir les écarts entre deux lecteurs ;</li>
+        <li>repérer ce qu'un champ absent devient ;</li>
+        <li>écrire et passer un schéma JSON.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À retenir</span>
+    JSON fixe la syntaxe, pas le sens. « "Mode": 3 » est du JSON parfait ; que ce soit un mode, et lequel, dépend du programme qui lit. Deux programmes, deux réponses possibles.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 117 · JSON et son schéma</div>
+</section>
+
+<!-- ============ PAGE 2 · TROIS LECTEURS ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 117</b></div>
+  <p class="rubrique">Schéma 1 · Trois lecteurs, un texte</p>
+  <h2>Strict ou tolérant</h2>
+  <p style="max-width:165mm">La norme JSON est courte et stricte. Les bibliothèques, elles, s'en écartent plus ou moins. On a passé seize textes à trois lecteurs ; voici ceux où ils ne sont pas d'accord, ou pas d'accord avec la norme.</p>
+
+  <svg viewBox="0 0 600 262" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="262" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#4A4A68" text-anchor="start" font-weight="700">Le même texte lu par JSON.parse (Node 22), Newtonsoft.Json 13.0.1 (copie du modèle Magpie) et Python (mesuré)</text>
+<text x="300" y="42" font-size="7.6" fill="#6B7378" text-anchor="middle" font-weight="700">JSON.parse</text>
+<text x="400" y="42" font-size="7.6" fill="#6B7378" text-anchor="middle" font-weight="700">Newtonsoft</text>
+<text x="500" y="42" font-size="7.6" fill="#6B7378" text-anchor="middle" font-weight="700">Python json</text>
+<rect x="16" y="50" width="568" height="17" rx="3" fill="#fff"/>
+<text x="26" y="62" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">// commentaire</text>
+<text x="300" y="62" font-size="7.4" fill="#C62828" text-anchor="middle" font-weight="700">✗</text>
+<text x="400" y="62" font-size="7.4" fill="#2E7D32" text-anchor="middle" font-weight="700">✓ ignoré</text>
+<text x="500" y="62" font-size="7.4" fill="#C62828" text-anchor="middle" font-weight="700">✗</text>
+<rect x="16" y="70" width="568" height="17" rx="3" fill="#ECECF2"/>
+<text x="26" y="82" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">virgule finale  [1,2,]</text>
+<text x="300" y="82" font-size="7.4" fill="#C62828" text-anchor="middle" font-weight="700">✗</text>
+<text x="400" y="82" font-size="7.4" fill="#2E7D32" text-anchor="middle" font-weight="700">✓</text>
+<text x="500" y="82" font-size="7.4" fill="#C62828" text-anchor="middle" font-weight="700">✗</text>
+<rect x="16" y="90" width="568" height="17" rx="3" fill="#fff"/>
+<text x="26" y="102" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">apostrophes  {'Id':'X'}</text>
+<text x="300" y="102" font-size="7.4" fill="#C62828" text-anchor="middle" font-weight="700">✗</text>
+<text x="400" y="102" font-size="7.4" fill="#2E7D32" text-anchor="middle" font-weight="700">✓</text>
+<text x="500" y="102" font-size="7.4" fill="#C62828" text-anchor="middle" font-weight="700">✗</text>
+<rect x="16" y="110" width="568" height="17" rx="3" fill="#ECECF2"/>
+<text x="26" y="122" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">clé sans guillemets  {Id:"X"}</text>
+<text x="300" y="122" font-size="7.4" fill="#C62828" text-anchor="middle" font-weight="700">✗</text>
+<text x="400" y="122" font-size="7.4" fill="#2E7D32" text-anchor="middle" font-weight="700">✓</text>
+<text x="500" y="122" font-size="7.4" fill="#C62828" text-anchor="middle" font-weight="700">✗</text>
+<rect x="16" y="130" width="568" height="17" rx="3" fill="#fff"/>
+<text x="26" y="142" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">NaN</text>
+<text x="300" y="142" font-size="7.4" fill="#C62828" text-anchor="middle" font-weight="700">✗</text>
+<text x="400" y="142" font-size="7.4" fill="#2E7D32" text-anchor="middle" font-weight="700">✓ NaN</text>
+<text x="500" y="142" font-size="7.4" fill="#2E7D32" text-anchor="middle" font-weight="700">✓ nan</text>
+<rect x="16" y="150" width="568" height="17" rx="3" fill="#ECECF2"/>
+<text x="26" y="162" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">BOM en tête du texte</text>
+<text x="300" y="162" font-size="7.4" fill="#C62828" text-anchor="middle" font-weight="700">✗</text>
+<text x="400" y="162" font-size="7.4" fill="#C62828" text-anchor="middle" font-weight="700">✗</text>
+<text x="500" y="162" font-size="7.4" fill="#C62828" text-anchor="middle" font-weight="700">✗</text>
+<rect x="16" y="170" width="568" height="17" rx="3" fill="#fff"/>
+<text x="26" y="182" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">clé en double</text>
+<text x="300" y="182" font-size="7.4" fill="#2E7D32" text-anchor="middle" font-weight="700">✓ la 2e</text>
+<text x="400" y="182" font-size="7.4" fill="#2E7D32" text-anchor="middle" font-weight="700">✓ la 2e</text>
+<text x="500" y="182" font-size="7.4" fill="#2E7D32" text-anchor="middle" font-weight="700">✓ la 2e</text>
+<rect x="16" y="190" width="568" height="17" rx="3" fill="#ECECF2"/>
+<text x="26" y="202" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">"Tolerance": "0.01"</text>
+<text x="300" y="202" font-size="7.4" fill="#2E7D32" text-anchor="middle" font-weight="700">✓ chaîne</text>
+<text x="400" y="202" font-size="7.4" fill="#2E7D32" text-anchor="middle" font-weight="700">✓ 0.01 (double)</text>
+<text x="500" y="202" font-size="7.4" fill="#2E7D32" text-anchor="middle" font-weight="700">✓ chaîne</text>
+<rect x="16" y="210" width="568" height="17" rx="3" fill="#fff"/>
+<text x="26" y="222" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">"id" au lieu de "Id"</text>
+<text x="300" y="222" font-size="7.4" fill="#2E7D32" text-anchor="middle" font-weight="700">✓ autre clé</text>
+<text x="400" y="222" font-size="7.4" fill="#2E7D32" text-anchor="middle" font-weight="700">✓ Id rempli</text>
+<text x="500" y="222" font-size="7.4" fill="#2E7D32" text-anchor="middle" font-weight="700">✓ autre clé</text>
+<text x="16" y="242" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">Newtonsoft accepte presque tout et convertit au mieux ; JSON.parse s'en tient à la norme. Un fichier qui passe dans le plugin</text>
+<text x="16" y="256" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">peut donc échouer dans le volet web : écrire strict, lire tolérant, c'est la seule combinaison sûre.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Node, lire un JSON écrit sous Windows</span>import { readFileSync } from "node:fs";
+const texte = readFileSync(chemin, "utf-8").replace(/^\uFEFF/, "");   // retirer un BOM éventuel
+const config = JSON.parse(texte);</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Le BOM</h3>
+      <p>readFileSync(…, "utf-8") garde le BOM, et JSON.parse le refuse. Côté plugin, File.ReadAllText le retire avant Newtonsoft. Les 144 JSON de Magpie n'en ont aucun (mesuré) : le plugin écrit par File.WriteAllText, sans BOM.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Les fichiers de VS Code</h3>
+      <p>.vscode/launch.json a une virgule finale (ligne 44) : Python et JSON.parse le refusent. VS Code lit du JSONC, du JSON avec commentaires et virgules. Même extension, autre format.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Tester un fichier écrit à la main avec le lecteur le plus tolérant. Il passe dans le plugin, qui accepte commentaires et virgules finales ; importé côté web, il est refusé. On valide avec le lecteur le plus strict.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 117 · JSON et son schéma</div>
+</section>
+
+<!-- ============ PAGE 3 · LE SENS ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 117</b></div>
+  <p class="rubrique">Schéma 2 · Ce que la syntaxe ne dit pas</p>
+  <h2>Un mode, deux interprétations</h2>
+  <p style="max-width:165mm">Le champ Mode est une chaîne pour JSON, une énumération pour C#, une clé de table pour JavaScript. Tant que le fichier dit « NumericTolerance », les trois s'accordent ; dès qu'il dit autre chose, chacun suit sa règle.</p>
+
+  <svg viewBox="0 0 600 222" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="222" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.4" fill="#4A4A68" text-anchor="start" font-weight="700">Une valeur de "Mode", lue par le plugin et par le volet web (copies, mesuré)</text>
+<text x="28" y="42" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">écrit dans le JSON</text>
+<text x="196" y="42" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">plugin (Newtonsoft)</text>
+<text x="400" y="42" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">web (exercises.mjs, validation.mjs)</text>
+<rect x="16" y="50" width="568" height="18" rx="3" fill="#fff"/>
+<text x="28" y="63" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">"NumericTolerance"</text>
+<text x="196" y="63" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">NumericTolerance</text>
+<text x="400" y="63" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">valide la réponse</text>
+<rect x="16" y="71" width="568" height="18" rx="3" fill="#ECECF2"/>
+<text x="28" y="84" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">3</text>
+<text x="196" y="84" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">NumericTolerance (ordinal)</text>
+<text x="400" y="84" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">« Mode de validation inconnu »</text>
+<rect x="16" y="92" width="568" height="18" rx="3" fill="#fff"/>
+<text x="28" y="105" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">0</text>
+<text x="196" y="105" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">ExactOrderedList (ordinal)</text>
+<text x="400" y="105" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">refusé à l'import : « obligatoires »</text>
+<rect x="16" y="113" width="568" height="18" rx="3" fill="#ECECF2"/>
+<text x="28" y="126" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">"singlevalue"</text>
+<text x="196" y="126" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">SingleValue (casse ignorée)</text>
+<text x="400" y="126" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">« Mode de validation inconnu »</text>
+<rect x="16" y="134" width="568" height="18" rx="3" fill="#fff"/>
+<text x="28" y="147" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">42</text>
+<text x="196" y="147" font-size="7.6" fill="#E65100" text-anchor="start" font-weight="700">42, hors de l'enum, sans erreur</text>
+<text x="400" y="147" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">« Mode de validation inconnu »</text>
+<rect x="16" y="155" width="568" height="18" rx="3" fill="#ECECF2"/>
+<text x="28" y="168" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">(absent)</text>
+<text x="196" y="168" font-size="7.6" fill="#E65100" text-anchor="start" font-weight="700">ExactOrderedList, sans erreur</text>
+<text x="400" y="168" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">refusé à l'import</text>
+<text x="16" y="196" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Les 58 exercices du dépôt écrivent tous le mode en toutes lettres (mesuré) : les écarts ne touchent aucun fichier aujourd'hui.</text>
+<text x="16" y="212" font-size="7.6" fill="#2B2F33" text-anchor="start">Mais le plugin promet de relire les anciens fichiers en entier (MagpieRepository.cs:29–30), et le web ne les relit pas.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript, lire le mode comme le plugin le lit</span>const MODES = ["ExactOrderedList", "SetEquality", "SingleValue", "NumericTolerance",
+               "GeometryTolerance", "ExactOrderedListText", "SetEqualityText"];
+const mode = Number.isInteger(config.Mode) ? MODES[config.Mode] : config.Mode;
+if (config.Mode === undefined || !(mode in VALIDATORS)) throw new Error("Mode illisible");</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Le champ absent</h3>
+      <p>Newtonsoft ne touche pas une propriété absente : elle garde son initialiseur. ExpectedTexts vaut donc une liste vide (ExerciseDefinition.cs:19), ExpectedBranchSizes null (ligne 31), Mode son premier membre. En JavaScript, tout champ absent vaut undefined.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Quatre générations</h3>
+      <p>Les 58 exercices ont quatre jeux de clés : 32 sans ExpectedTexts, 18 avec, 5 sans graphe de départ, 3 avec ExpectedBranchSizes (mesuré). Chaque fichier garde la forme de son époque ; les lecteurs doivent toutes les accepter.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Tester une valeur avec <code>!config.Mode</code>. Le zéro, la chaîne vide et false sont « faux » en JavaScript : un mode écrit 0, parfaitement valide pour le plugin, passe pour absent. On teste <code>=== undefined</code>.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 117 · JSON et son schéma</div>
+</section>
+
+<!-- ============ PAGE 4 · LE SCHÉMA ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 117</b></div>
+  <p class="rubrique">Schéma 3 · Écrire le contrat</p>
+  <h2>Un schéma JSON</h2>
+  <p style="max-width:165mm">JSON Schema décrit, en JSON, ce qu'un document doit contenir : types, valeurs permises, champs requis ou interdits. Un validateur le passe sur un fichier avant toute lecture. On en a écrit un pour les exercices de Magpie, d'après le modèle C#.</p>
+
+  <svg viewBox="0 0 600 222" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="222" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8" fill="#4A4A68" text-anchor="start" font-weight="700">Un schéma de 23 lignes écrit d'après ExerciseDefinition.cs, passé sur les fichiers et sur les cas (jsonschema 4.26, mesuré)</text>
+<rect x="16" y="36" width="278" height="98" rx="4" fill="#E8F5E9" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="155" y="56" font-size="8.6" fill="#2E7D32" text-anchor="middle" font-weight="700">58 exercices du dépôt</text>
+<text x="155" y="76" font-size="15" fill="#2E7D32" text-anchor="middle" font-weight="700">58 valides</text>
+<text x="155" y="98" font-size="7.4" fill="#2B2F33" text-anchor="middle">après avoir élargi le motif de l'Id :</text>
+<text x="155" y="112" font-size="7.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.2px">A-41, IA-14, A_01, T_01, ex04_racine_carree</text>
+<text x="155" y="126" font-size="7.4" fill="#2B2F33" text-anchor="middle">cohabitent ; le code n'en dit rien</text>
+<rect x="306" y="36" width="278" height="98" rx="4" fill="#FDECEA" stroke="#C62828" stroke-width="1.2"/>
+<text x="445" y="56" font-size="8.6" fill="#C62828" text-anchor="middle" font-weight="700">11 cas lisibles de la page 2</text>
+<text x="445" y="76" font-size="15" fill="#C62828" text-anchor="middle" font-weight="700">8 refusés</text>
+<text x="445" y="98" font-size="7.2" fill="#2B2F33" text-anchor="middle">mode entier, casse, mode inconnu, champ inconnu,</text>
+<text x="445" y="112" font-size="7.2" fill="#2B2F33" text-anchor="middle">nombre en texte, clé "id", objet vide…</text>
+<text x="445" y="126" font-size="7.2" fill="#E65100" text-anchor="middle" font-weight="700">passent : la base, la clé en double, NaN (Python)</text>
+<text x="16" y="156" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Le schéma rend le contrat lisible et vérifiable avant de lire : type, valeurs permises, champs requis, champs interdits.</text>
+<text x="16" y="172" font-size="7.8" fill="#2B2F33" text-anchor="start">Il ne voit pas ce que le parseur a déjà effacé : la clé en double est réglée avant lui.</text>
+<text x="16" y="194" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">SnapSet en a un vrai : schema/ghstyle.schema.json, 152 716 octets, conforme au métaschéma 2020-12 (mesuré),</text>
+<text x="16" y="208" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">qui ne valide aucun fichier : il sert de source au générateur de code C# (cours 114).</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · un extrait du schéma des exercices, et sa vérification</span>"required": ["Id", "Titre", "Mode"], "additionalProperties": false,
+"Mode": { "enum": ["ExactOrderedList", "SetEquality", … "SetEqualityText"] },
+"Tolerance": { "type": "number", "minimum": 0 },
+# Python : jsonschema.Draft202012Validator(schema).iter_errors(exercice)</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Ce que le schéma apprend</h3>
+      <p>Écrit d'après le code, il a d'abord refusé 23 fichiers : le motif « lettres, tiret, chiffres » ne couvrait pas les Id réels. Le schéma oblige à écrire une règle que tout le monde suivait sans l'avoir dite, ou à découvrir qu'il y en a cinq.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Un schéma comme source</h3>
+      <p>SnapSet va plus loin : son schéma porte des clés à lui (parEtat, 58 fois ; rubrique, 192 fois), que la norme ignore, et generer-modele.js en tire le code C#. Le contrat et le code ne peuvent plus diverger.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Écrire le schéma une fois, puis le laisser à côté. Un schéma que rien n'exécute (aucun test, aucun import) se périme au premier champ ajouté. Il vaut par le validateur qui le passe, à chaque import ou à chaque commit.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 117 · JSON et son schéma</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 117</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Le champ Mode, de part et d'autre</h2>
+  <p style="max-width:165mm">Le plugin écrit le mode en toutes lettres et sait relire l'ancien entier ; le volet web ne connaît que les noms.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">magpie/plugin/Core/ExerciseDefinition.cs</span></div>
+<div class="l k1"><span class="n">13</span>public ValidationMode Mode { get; set; }<span class="rep r1">1</span></div>
+<div class="l"><span class="n">19</span>public List&lt;string&gt; ExpectedTexts { get; set; } = new …();</div>
+<div class="l"><span class="cm">magpie/plugin/Core/MagpieRepository.cs</span></div>
+<div class="l k2"><span class="n">34</span>    Converters = { new StringEnumConverter() }<span class="rep r2">2</span></div>
+<div class="l k3"><span class="n">63</span>=&gt; JsonConvert.DeserializeObject&lt;…&gt;(File.ReadAllText(…));<span class="rep r3">3</span></div>
+<div class="l"><span class="cm">magpie/web/exercises.mjs · validation.mjs</span></div>
+<div class="l k4"><span class="n">7</span>  if (!config.Id || !config.Titre || !config.Mode) {<span class="rep r4">4</span></div>
+<div class="l k5"><span class="n">143</span>  const validator = VALIDATORS[config.Mode];<span class="rep r5">5</span></div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Une enum</b>Pas une chaîne.</li>
+      <li><span class="rep r2">2</span><b>Écrire le nom</b>Lire les deux.</li>
+      <li><span class="rep r3">3</span><b>Lecture tolérante</b>Sans BOM.</li>
+      <li><span class="rep r4">4</span><b>0 est faux</b>Import refusé.</li>
+      <li><span class="rep r5">5</span><b>Par le nom</b>Seulement.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À surveiller · le mode écrit en entier</span>
+    MagpieRepository.cs:29–30 garantit que les fichiers au mode entier « restent valides ». Mesuré sur des copies : côté web, « "Mode": 0 » est refusé à l'import par la ligne 7 (0 est faux), et tout autre entier passe l'import puis échoue à la ligne 143, « Mode de validation inconnu ». Aucun des 58 exercices du dépôt n'est concerné (mesuré). Déduit : un ancien fichier exporté du plugin vers le web serait refusé ou invalidable. Relevé sans rien modifier.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 117 · JSON et son schéma</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 117</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">JSON connaît, pour un nombre…</div><ul>
+      <li><span>A</span>int et double</li><li><span>B</span>aucun type</li><li><span>C</span>un seul type, number</li><li><span>D</span>int, float, decimal</li></ul></div>
+
+    <div class="q"><div class="enonce">Un commentaire // dans un JSON…</div><ul>
+      <li><span>A</span>devient une clé</li><li><span>B</span>est refusé par JSON.parse, accepté par Newtonsoft</li><li><span>C</span>est accepté partout</li><li><span>D</span>est refusé partout</li></ul></div>
+
+    <div class="q"><div class="enonce">Une clé présente deux fois…</div><ul>
+      <li><span>A</span>garde la première</li><li><span>B</span>devient un tableau</li><li><span>C</span>donne une erreur</li><li><span>D</span>garde la dernière valeur, pour les trois lecteurs</li></ul></div>
+
+    <div class="q"><div class="enonce">"Tolerance": "0.01" lu par Newtonsoft dans un double…</div><ul>
+      <li><span>A</span>donne 0</li><li><span>B</span>donne 0.01</li><li><span>C</span>donne une erreur</li><li><span>D</span>donne NaN</li></ul></div>
+
+    <div class="q"><div class="enonce">"Mode": 42 lu par le plugin…</div><ul>
+      <li><span>A</span>donne ExactOrderedList</li><li><span>B</span>lève une exception</li><li><span>C</span>donne 42, hors de l'enum, sans erreur</li><li><span>D</span>donne SetEqualityText</li></ul></div>
+
+    <div class="q"><div class="enonce">"Mode": 0 côté web…</div><ul>
+      <li><span>A</span>passe la validation</li><li><span>B</span>est converti en nom</li><li><span>C</span>donne ExactOrderedList</li><li><span>D</span>est refusé à l'import</li></ul></div>
+
+    <div class="q"><div class="enonce">Un ExpectedTexts absent du fichier vaut, en C#…</div><ul>
+      <li><span>A</span>null</li><li><span>B</span>["",""]</li><li><span>C</span>une erreur</li><li><span>D</span>une liste vide</li></ul></div>
+
+    <div class="q"><div class="enonce">readFileSync(f, "utf-8") puis JSON.parse sur un fichier avec BOM…</div><ul>
+      <li><span>A</span>échoue</li><li><span>B</span>réussit</li><li><span>C</span>ignore le fichier</li><li><span>D</span>retire le BOM</li></ul></div>
+
+    <div class="q"><div class="enonce">Un schéma JSON sert à… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>vérifier un fichier avant de le lire</li><li><span>B</span>écrire le contrat une fois</li><li><span>C</span>chiffrer les valeurs</li><li><span>D</span>compresser le fichier</li></ul></div>
+
+    <div class="q"><div class="enonce">Les 58 exercices, avec le motif d'Id élargi…</div><ul>
+      <li><span>A</span>échouent tous</li><li><span>B</span>sont tous valides</li><li><span>C</span>23 échouent</li><li><span>D</span>ne sont pas lisibles</li></ul></div>
+
+    <div class="q"><div class="enonce">Le schéma ne peut pas voir…</div><ul>
+      <li><span>A</span>une clé en double</li><li><span>B</span>un mode inconnu</li><li><span>C</span>un champ en trop</li><li><span>D</span>un nombre en texte</li></ul></div>
+
+    <div class="q"><div class="enonce">Le schéma de SnapSet sert surtout à…</div><ul>
+      <li><span>A</span>documenter l'API web</li><li><span>B</span>valider des fichiers</li><li><span>C</span>générer le code C#</li><li><span>D</span>rien</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 117 · JSON et son schéma</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 117</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · C.</b> Le lecteur choisit int ou double.</div>
+    <div><b>02 · B.</b> Mesuré, page 2.</div>
+    <div><b>03 · D.</b> Réglé avant tout schéma.</div>
+    <div><b>04 · B.</b> Conversion silencieuse.</div>
+    <div><b>05 · C.</b> Une enum C# est un entier.</div>
+    <div><b>06 · D.</b> exercises.mjs:7.</div>
+    <div><b>07 · D.</b> L'initialiseur, ligne 19.</div>
+    <div><b>08 · A.</b> Le BOM reste.</div>
+    <div><b>09 · A et B.</b> Ni compression ni chiffrement.</div>
+    <div><b>10 · B.</b> 58 sur 58.</div>
+    <div><b>11 · A.</b> Le parseur l'a effacée.</div>
+    <div><b>12 · C.</b> generer-modele.js.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 118, « La compression ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">.replace(/^\uFEFF/, "")</td><td>retirer un BOM avant JSON.parse</td><td>page 2</td></tr>
+      <tr><td class="c">new StringEnumConverter()</td><td>écrire une enum par son nom</td><td>MagpieRepository.cs:34</td></tr>
+      <tr><td class="c">config.Mode === undefined</td><td>tester l'absence, pas la fausseté</td><td>page 3</td></tr>
+      <tr><td class="c">"required" · "enum" · "additionalProperties"</td><td>le contrat en JSON Schema</td><td>page 4</td></tr>
+      <tr><td class="c">Draft202012Validator(s).iter_errors(d)</td><td>valider en Python</td><td>page 4</td></tr>
+      <tr><td class="c">"$schema": ".../2020-12/schema"</td><td>la version de la norme</td><td>ghstyle.schema.json:2</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>JSON Schema</dt><dd>Une norme pour décrire en JSON la forme permise d'un document.</dd>
+    <dt>Validateur</dt><dd>Le programme qui confronte un document à son schéma.</dd>
+    <dt>JSONC</dt><dd>Du JSON avec commentaires et virgules finales, lu par VS Code.</dd>
+    <dt>Valeur fausse</dt><dd>En JavaScript : 0, "", false, null, undefined, NaN.</dd>
+    <dt>Ordinal</dt><dd>La position d'un membre dans une enum, écrite comme un entier.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 118</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 117 · JSON et son schéma</div>
+</section>
+
+</body>
+</html>

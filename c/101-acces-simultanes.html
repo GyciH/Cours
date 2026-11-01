@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>101 · Les accès simultanés</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-10">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 101</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Les accès simultanés</h1>
+  <p class="chapeau">Le serveur de Magpie garde magpie.db ouverte pendant qu'il tourne. Un script lancé en SSH, ou un outil de consultation, peut ouvrir le même fichier au même moment. SQLite n'a pas de serveur pour arbitrer : chaque connexion pose des <b>verrous</b> sur le fichier, et celle qui trouve la place prise attend ou échoue.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>67</b> et <b>100</b></span>
+    <span class="pastille">Exemples · <b>db.mjs</b>, <b>restore-authorized.mjs</b>, <b>README.md</b> (Magpie)</span>
+  </div>
+
+  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+    <svg viewBox="0 0 600 196" width="100%">
+<rect x="240" y="64" width="120" height="44" rx="4" fill="#ECECF2" stroke="#4A4A68" stroke-width="1.2"/>
+<text x="300" y="84" font-size="9.4" fill="#4A4A68" text-anchor="middle" font-weight="700" class="mono" style="font-size:9.4px">magpie.db</text>
+<text x="300" y="99" font-size="7.4" fill="#6B7378" text-anchor="middle">un seul fichier</text>
+<rect x="20" y="10" width="140" height="50" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="90" y="27" font-size="8.4" fill="#2B2F33" text-anchor="middle" font-weight="700">le serveur</text>
+<text x="90" y="41" font-size="7" fill="#1565C0" text-anchor="middle" class="mono" style="font-size:7px">compute-proxy.mjs</text>
+<text x="90" y="54" font-size="7.2" fill="#6B7378" text-anchor="middle" font-style="italic">lit et écrit</text>
+<line x1="160" y1="35" x2="240" y2="86" stroke="#6B7378" stroke-width="1"/><polygon points="240,86 233.1,84.8 236.0,80.2" fill="#6B7378"/>
+<rect x="20" y="116" width="140" height="50" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="90" y="133" font-size="8.4" fill="#2B2F33" text-anchor="middle" font-weight="700">un script en SSH</text>
+<text x="90" y="147" font-size="7" fill="#1565C0" text-anchor="middle" class="mono" style="font-size:7px">restore-authorized.mjs</text>
+<text x="90" y="160" font-size="7.2" fill="#6B7378" text-anchor="middle" font-style="italic">écrit</text>
+<line x1="160" y1="141" x2="240" y2="86" stroke="#6B7378" stroke-width="1"/><polygon points="240,86 236.2,91.9 233.1,87.4" fill="#6B7378"/>
+<rect x="440" y="10" width="140" height="50" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="510" y="27" font-size="8.4" fill="#2B2F33" text-anchor="middle" font-weight="700">un outil</text>
+<text x="510" y="41" font-size="7" fill="#1565C0" text-anchor="middle" class="mono" style="font-size:7px">sqlite3, un client graphique</text>
+<text x="510" y="54" font-size="7.2" fill="#6B7378" text-anchor="middle" font-style="italic">lit, parfois écrit</text>
+<line x1="440" y1="35" x2="360" y2="86" stroke="#6B7378" stroke-width="1"/><polygon points="360,86 364.0,80.2 366.9,84.8" fill="#6B7378"/>
+<rect x="440" y="116" width="140" height="50" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="510" y="133" font-size="8.4" fill="#2B2F33" text-anchor="middle" font-weight="700">un second serveur</text>
+<text x="510" y="147" font-size="7" fill="#1565C0" text-anchor="middle" class="mono" style="font-size:7px">redémarrage qui chevauche</text>
+<text x="510" y="160" font-size="7.2" fill="#6B7378" text-anchor="middle" font-style="italic">lit et écrit</text>
+<line x1="440" y1="141" x2="360" y2="86" stroke="#6B7378" stroke-width="1"/><polygon points="360,86 366.9,87.4 363.8,91.9" fill="#6B7378"/>
+<text x="300" y="186" font-size="8" fill="#2B2F33" text-anchor="middle" font-weight="700">Chaque processus ouvre sa propre connexion. SQLite les coordonne par des verrous posés sur le fichier.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Plusieurs lecteurs, un seul écrivain à la fois ; le journal choisit si les lecteurs doivent parfois attendre, et le délai d'attente si l'on échoue tout de suite.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Un tableau d'affichage : tout le monde peut le lire, une seule personne à la fois peut le modifier. En mode delete, elle masque le tableau le temps de recoller l'affiche ; en WAL, elle prépare l'affiche à côté.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>dire qui bloque qui ;</li>
+        <li>choisir entre les journaux delete et WAL ;</li>
+        <li>régler un délai d'attente ;</li>
+        <li>éviter qu'un lecteur voie un état à moitié écrit.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À retenir</span>
+    Le cours 67 parlait des fils d'un même processus. Ici, ce sont des processus séparés, qui ne partagent que le fichier. Les mesures ont été faites avec deux processus Node réels, ouverts sur le même fichier.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 101 · Les accès simultanés</div>
+</section>
+
+<!-- ============ PAGE 2 · LES VERROUS ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 101</b></div>
+  <p class="rubrique">Schéma 1 · Les verrous</p>
+  <h2>Qui bloque qui</h2>
+  <p style="max-width:165mm">Une connexion qui veut écrire réserve la base : une seule peut le faire à la fois. Ce que les lecteurs subissent dépend du <b>journal</b>. En mode <code>delete</code>, l'écrivain modifie le fichier lui-même et doit en écarter les lecteurs pendant ce temps. En mode <code>WAL</code>, il écrit ses changements dans un fichier à part, et les lecteurs continuent sur l'ancien état.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#4A4A68" text-anchor="start" font-weight="700">Une connexion tient une transaction d'écriture ouverte ; une autre essaie de lire, puis d'écrire (mesuré, deux processus)</text>
+<text x="30" y="44" font-size="7.8" fill="#6B7378" text-anchor="start" font-weight="700">situation de la première</text>
+<text x="300" y="44" font-size="7.8" fill="#6B7378" text-anchor="start" font-weight="700">journal</text>
+<text x="400" y="44" font-size="7.8" fill="#6B7378" text-anchor="start" font-weight="700">lire</text>
+<text x="500" y="44" font-size="7.8" fill="#6B7378" text-anchor="start" font-weight="700">écrire</text>
+<rect x="16" y="52" width="568" height="22" rx="3" fill="#ECECF2"/>
+<text x="30" y="67" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">petite écriture en cours</text>
+<text x="300" y="67" font-size="8.2" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:8.2px">delete</text>
+<text x="400" y="67" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700">possible</text>
+<text x="500" y="67" font-size="8.4" fill="#C62828" text-anchor="start" font-weight="700">refusé</text>
+<rect x="16" y="78" width="568" height="22" rx="3" fill="#fff"/>
+<text x="30" y="93" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">petite écriture en cours</text>
+<text x="300" y="93" font-size="8.2" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:8.2px">WAL</text>
+<text x="400" y="93" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700">possible</text>
+<text x="500" y="93" font-size="8.4" fill="#C62828" text-anchor="start" font-weight="700">refusé</text>
+<rect x="16" y="104" width="568" height="22" rx="3" fill="#ECECF2"/>
+<text x="30" y="119" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">grosse écriture, le cache a débordé</text>
+<text x="300" y="119" font-size="8.2" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:8.2px">delete</text>
+<text x="400" y="119" font-size="8.4" fill="#C62828" text-anchor="start" font-weight="700">refusé</text>
+<text x="500" y="119" font-size="8.4" fill="#C62828" text-anchor="start" font-weight="700">refusé</text>
+<rect x="16" y="130" width="568" height="22" rx="3" fill="#fff"/>
+<text x="30" y="145" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">grosse écriture, le cache a débordé</text>
+<text x="300" y="145" font-size="8.2" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:8.2px">WAL</text>
+<text x="400" y="145" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700">possible</text>
+<text x="500" y="145" font-size="8.4" fill="#C62828" text-anchor="start" font-weight="700">refusé</text>
+<text x="16" y="172" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">« refusé » : l'erreur « database is locked », rendue en 0 ms. Un seul écrivain à la fois, dans les deux modes.</text>
+<text x="16" y="188" font-size="7.8" fill="#2B2F33" text-anchor="start">En mode delete, un écrivain qui doit toucher au fichier en écarte aussi les lecteurs ; en WAL, les lecteurs passent toujours.</text>
+<text x="16" y="204" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Le mode delete est celui par défaut, et celui de magpie.db. WAL : PRAGMA journal_mode = WAL, une fois, mémorisé dans le fichier.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/db.mjs · lignes 13 et 14</span>export function openDb() {
+  const db = new DatabaseSync(DB_PATH);</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Write-Ahead Log</h3>
+      <p>En WAL, un validateur ajoute ses pages au fichier <code>magpie.db-wal</code> ; les lecteurs lisent la base plus ce journal jusqu'au point où ils ont commencé. Les pages sont recopiées dans la base plus tard, par paquets. Deux fichiers de plus apparaissent à côté : <code>-wal</code> et <code>-shm</code>.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Les réglages de Magpie</h3>
+      <p><code>openDb</code> ouvre la base sans option et n'exécute aucun <code>PRAGMA journal_mode</code> : magpie.db est donc en journal <code>delete</code>, avec un délai d'attente nul. Rien, dans db.mjs, ne parle d'accès simultanés.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Copier seulement <code>magpie.db</code> d'une base en mode WAL. Les dernières validations peuvent encore se trouver dans <code>-wal</code> : la copie est en retard, voire incohérente (cours 102).
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 101 · Les accès simultanés</div>
+</section>
+
+<!-- ============ PAGE 3 · ATTENDRE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 101</b></div>
+  <p class="rubrique">Schéma 2 · Le délai d'attente</p>
+  <h2>Attendre plutôt qu'échouer</h2>
+  <p style="max-width:165mm">Quand le verrou est pris, SQLite peut réessayer un moment avant d'abandonner. Ce <b>délai d'attente</b> (busy timeout) vaut 0 par défaut dans node:sqlite : la moindre rencontre rend aussitôt l'erreur <code>database is locked</code>. Une valeur de quelques secondes transforme la plupart des conflits en courtes attentes.</p>
+
+  <svg viewBox="0 0 600 200" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="200" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#4A4A68" text-anchor="start" font-weight="700">La même écriture, pendant qu'une autre connexion garde le verrou 1,5 s (mesuré)</text>
+<rect x="16" y="40" width="568" height="44" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="28" y="58" font-size="8.4" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">new DatabaseSync(f)</text>
+<text x="28" y="75" font-size="8.4" fill="#C62828" text-anchor="start" font-weight="700">« database is locked »</text>
+<rect x="300" y="54" width="2" height="16" fill="#C62828"/>
+<text x="308" y="67" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">0 ms</text>
+<rect x="16" y="92" width="568" height="44" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="28" y="110" font-size="8.4" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">new DatabaseSync(f, { timeout: 3000 })</text>
+<text x="28" y="127" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700">réussie</text>
+<rect x="300" y="106" width="197" height="16" fill="#2E7D32"/>
+<text x="502.56" y="119" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">1134 ms</text>
+<text x="16" y="158" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">Avec un délai, SQLite réessaie jusqu'à ce que le verrou se libère, ou que le délai expire.</text>
+<text x="16" y="174" font-size="8" fill="#2B2F33" text-anchor="start">Sans délai (la valeur par défaut, 0), la moindre rencontre échoue : c'est à l'appelant de réessayer.</text>
+<text x="16" y="192" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Le délai retarde l'écriture, il ne la perd pas ; une transaction courte (cours 100) garde l'attente courte.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · node:sqlite, ouvrir une base partagée</span>const db = new DatabaseSync(DB_PATH, { timeout: 5000 });   // attendre jusqu'à 5 s
+db.exec("PRAGMA journal_mode = WAL");                    // les lecteurs ne sont plus écartés</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Le serveur, une seule connexion</h3>
+      <p>compute-proxy.mjs ouvre la base une fois (ligne 100) et Node exécute une requête à la fois : à l'intérieur du serveur, aucun conflit n'est possible. Les conflits viennent d'un autre processus, un script ou un second serveur.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Ce que voit l'utilisateur</h3>
+      <p>Une écriture refusée lève une exception dans le gestionnaire de la route. Le serveur répond alors par une erreur, et l'administrateur voit son action échouer sans raison apparente. Déduit du code, non provoqué.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Mettre un délai très long pour ne plus jamais voir l'erreur. Une transaction oubliée ouverte bloquerait alors tous les écrivains pendant tout le délai ; l'erreur, elle, au moins se voit.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 101 · Les accès simultanés</div>
+</section>
+
+<!-- ============ PAGE 4 · L'ISOLATION ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 101</b></div>
+  <p class="rubrique">Schéma 3 · L'isolation</p>
+  <h2>Ne jamais montrer une moitié</h2>
+  <p style="max-width:165mm">L'isolation, le I de ACID, promet qu'un lecteur ne voit jamais une transaction inachevée. Mais si chaque instruction est sa propre transaction, les étapes intermédiaires sont, chacune, des états validés : rien n'empêche un lecteur de les voir.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#4A4A68" text-anchor="start" font-weight="700">Les écritures de restore-authorized.mjs (8 composants) pendant qu'un autre processus lit en boucle (5 essais, mesuré)</text>
+<rect x="16" y="36" width="72" height="24" rx="4" fill="#fff" stroke="#4A4A68" stroke-width="1.2"/>
+<text x="52.0" y="50.6" font-size="7.8" fill="#4A4A68" text-anchor="middle" font-weight="700">8 autorisés</text>
+<line x1="89" y1="48" x2="97" y2="48" stroke="#6B7378" stroke-width="1"/><polygon points="97,48 90.6,50.7 90.6,45.3" fill="#6B7378"/>
+<rect x="98" y="36" width="72" height="24" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="134.0" y="50.6" font-size="7.8" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.8px">UPDATE … = 0</text>
+<line x1="171" y1="48" x2="179" y2="48" stroke="#6B7378" stroke-width="1"/><polygon points="179,48 172.6,50.7 172.6,45.3" fill="#6B7378"/>
+<rect x="180" y="36" width="72" height="24" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="216.0" y="50.6" font-size="7.8" fill="#C62828" text-anchor="middle" font-weight="700">0</text>
+<line x1="253" y1="48" x2="261" y2="48" stroke="#6B7378" stroke-width="1"/><polygon points="261,48 254.6,50.7 254.6,45.3" fill="#6B7378"/>
+<rect x="262" y="36" width="72" height="24" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="298.0" y="50.6" font-size="7.8" fill="#C62828" text-anchor="middle" font-weight="700">1</text>
+<line x1="335" y1="48" x2="343" y2="48" stroke="#6B7378" stroke-width="1"/><polygon points="343,48 336.6,50.7 336.6,45.3" fill="#6B7378"/>
+<rect x="344" y="36" width="72" height="24" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="380.0" y="50.6" font-size="7.8" fill="#C62828" text-anchor="middle" font-weight="700">2</text>
+<line x1="417" y1="48" x2="425" y2="48" stroke="#6B7378" stroke-width="1"/><polygon points="425,48 418.6,50.7 418.6,45.3" fill="#6B7378"/>
+<rect x="426" y="36" width="72" height="24" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="462.0" y="50.6" font-size="7.8" fill="#C62828" text-anchor="middle" font-weight="700">…</text>
+<line x1="499" y1="48" x2="507" y2="48" stroke="#6B7378" stroke-width="1"/><polygon points="507,48 500.6,50.7 500.6,45.3" fill="#6B7378"/>
+<rect x="508" y="36" width="72" height="24" rx="4" fill="#fff" stroke="#4A4A68" stroke-width="1.2"/>
+<text x="544.0" y="50.6" font-size="7.8" fill="#4A4A68" text-anchor="middle" font-weight="700">8</text>
+<text x="16" y="78" font-size="7.8" fill="#2B2F33" text-anchor="start">Sans transaction, chaque UPDATE est validé seul : les états intermédiaires existent, et un lecteur peut tomber dessus.</text>
+<rect x="16" y="92" width="568" height="40" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="28" y="108" font-size="8.6" fill="#C62828" text-anchor="start" font-weight="700">sans transaction</text>
+<text x="28" y="123" font-size="8" fill="#2B2F33" text-anchor="start">2 essais sur 5 : une lecture a vu 1 composant autorisé, une autre 4, au lieu de 8</text>
+<rect x="16" y="140" width="568" height="40" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="28" y="156" font-size="8.6" fill="#2E7D32" text-anchor="start" font-weight="700">BEGIN IMMEDIATE … COMMIT</text>
+<text x="28" y="171" font-size="8" fill="#2B2F33" text-anchor="start">5 essais sur 5 : toutes les lectures voient 8, l'ancien état puis le nouveau</text>
+<text x="16" y="200" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Le plus souvent, le lecteur attend pendant les validations et ne voit rien : l'erreur est rare, donc difficile à reproduire.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/restore-authorized.mjs · lignes 38 à 43</span>// Remise à zéro : l'état final doit refléter EXACTEMENT le seed, sans conserver
+// d'autorisations faites entre-temps — sinon « restaurer » ne restaurerait rien.
+const avant = db.prepare("SELECT COUNT(*) n FROM components WHERE isAuthorized = 1").get().n;
+db.prepare("UPDATE components SET isAuthorized = 0").run();
+
+const activer = db.prepare("UPDATE components SET isAuthorized = 1 WHERE typeGuid = ?");</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Un ruban vide, un instant</h3>
+      <p>Entre la remise à zéro et la dernière activation, le catalogue autorisé est incomplet. Un apprenant qui charge la page à ce moment reçoit un ruban avec moins de composants, voire aucun. La fenêtre dure quelques millisecondes par composant.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>BEGIN IMMEDIATE</h3>
+      <p><code>IMMEDIATE</code> prend le verrou d'écriture dès le <code>BEGIN</code>, au lieu d'attendre la première écriture. Une transaction qui lit puis écrit ne risque plus d'être refusée au milieu, après avoir lu un état qu'un autre aurait changé.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Conclure d'un essai réussi qu'il n'y a pas de problème. La mesure ne l'a montré que dans deux essais sur cinq, une seule lecture à chaque fois : c'est un défaut rare, qu'on prévient par construction.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 101 · Les accès simultanés</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 101</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Le serveur et les scripts de Magpie</h2>
+  <p style="max-width:165mm">Sur l'hébergement, l'application tourne en continu, et la procédure de mise en ligne fait reconstruire la base en SSH. Les deux peuvent donc ouvrir magpie.db en même temps.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">magpie/web/db.mjs</span></div>
+<div class="l k1"><span class="n">14</span>  <span class="kw">const</span> db = <span class="kw">new</span> DatabaseSync(DB_PATH);<span class="rep r1">1</span></div>
+<div class="l"><span class="cm">magpie/web/compute-proxy.mjs</span></div>
+<div class="l k2"><span class="n">100</span><span class="kw">const</span> db = openDb();<span class="rep r2">2</span></div>
+<div class="l"><span class="cm">magpie/web/restore-authorized.mjs</span></div>
+<div class="l k3"><span class="n">41</span>db.prepare(<span class="st">"UPDATE components SET isAuthorized = 0"</span>).run();<span class="rep r3">3</span></div>
+<div class="l k3"><span class="n">62</span>  activer.run(guid);</div>
+<div class="l"><span class="cm">magpie/web/README.md</span></div>
+<div class="l k4"><span class="n">112</span>3. En SSH, … puis reconstruire la base dans<span class="rep r4">4</span></div>
+<div class="l k5"><span class="n">116</span>5. Redémarrer l'application dans cPanel …<span class="rep r5">5</span></div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Réglages</b>Par défaut.</li>
+      <li><span class="rep r2">2</span><b>Le serveur</b>Une connexion.</li>
+      <li><span class="rep r3">3</span><b>Le script</b>Neuf validations.</li>
+      <li><span class="rep r4">4</span><b>En SSH</b>Base reconstruite.</li>
+      <li><span class="rep r5">5</span><b>Redémarrer</b>Après coup.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À surveiller · une base partagée ouverte sans délai ni transaction</span>
+    Si la base est reconstruite pendant que l'application tourne (étapes 3 puis 5 du README), un apprenant peut recevoir un catalogue incomplet pendant <code>restore-authorized.mjs</code>, et un script ou une route d'administration peut échouer sur « database is locked ». Mesuré sur une reproduction pour le premier point, déduit pour le second. Un délai d'attente dans <code>openDb</code>, le mode WAL, et une transaction dans le script régleraient les trois ; arrêter l'application avant l'étape 3 aussi.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 101 · Les accès simultanés</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 101</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">SQLite coordonne plusieurs processus par…</div><ul>
+      <li><span>A</span>le réseau</li><li><span>B</span>un serveur central</li><li><span>C</span>rien : un seul processus est permis</li><li><span>D</span>des verrous posés sur le fichier</li></ul></div>
+
+    <div class="q"><div class="enonce">Combien d'écrivains à la fois, en delete comme en WAL ?</div><ul>
+      <li><span>A</span>deux</li><li><span>B</span>autant que de cœurs</li><li><span>C</span>illimité en WAL</li><li><span>D</span>un seul</li></ul></div>
+
+    <div class="q"><div class="enonce">Pendant une grosse écriture en mode delete, un lecteur a reçu (mesuré)…</div><ul>
+      <li><span>A</span>un état mélangé</li><li><span>B</span>database is locked</li><li><span>C</span>le nouvel état</li><li><span>D</span>l'ancien état</li></ul></div>
+
+    <div class="q"><div class="enonce">En WAL, pendant la même écriture, le lecteur…</div><ul>
+      <li><span>A</span>attend la fin</li><li><span>B</span>est refusé</li><li><span>C</span>lit le travail inachevé</li><li><span>D</span>lit l'ancien état sans attendre</li></ul></div>
+
+    <div class="q"><div class="enonce">Le délai d'attente par défaut de node:sqlite est…</div><ul>
+      <li><span>A</span>5 s</li><li><span>B</span>infini</li><li><span>C</span>0 : échec immédiat</li><li><span>D</span>1 min</li></ul></div>
+
+    <div class="q"><div class="enonce">Avec timeout: 3000, l'écriture bloquée 1,5 s a…</div><ul>
+      <li><span>A</span>échoué tout de suite</li><li><span>B</span>été perdue</li><li><span>C</span>réussi après 1,1 s d'attente</li><li><span>D</span>échoué après 3 s</li></ul></div>
+
+    <div class="q"><div class="enonce">Une base en WAL se compose de… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>magpie.db-shm</li><li><span>B</span>magpie.db</li><li><span>C</span>magpie.db-wal</li><li><span>D</span>magpie.db-lock</li></ul></div>
+
+    <div class="q"><div class="enonce">À l'intérieur du serveur de Magpie, deux requêtes ne se bloquent pas parce que…</div><ul>
+      <li><span>A</span>il a un délai de 5 s</li><li><span>B</span>Node exécute une requête à la fois sur une seule connexion</li><li><span>C</span>le serveur est en WAL</li><li><span>D</span>SQLite les fusionne</li></ul></div>
+
+    <div class="q"><div class="enonce">Sans transaction, pendant restore-authorized.mjs, un lecteur a pu voir…</div><ul>
+      <li><span>A</span>une erreur de syntaxe</li><li><span>B</span>1 ou 4 composants autorisés au lieu de 8</li><li><span>C</span>16 composants</li><li><span>D</span>toujours 8</li></ul></div>
+
+    <div class="q"><div class="enonce">BEGIN IMMEDIATE…</div><ul>
+      <li><span>A</span>prend le verrou d'écriture dès le début</li><li><span>B</span>lit sans verrou</li><li><span>C</span>désactive le journal</li><li><span>D</span>valide aussitôt</li></ul></div>
+
+    <div class="q"><div class="enonce">Pour éviter un catalogue incomplet pendant une reconstruction… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>un index sur isAuthorized</li><li><span>B</span>arrêter l'application avant</li><li><span>C</span>une transaction dans le script</li><li><span>D</span>COUNT(*) au lieu de COUNT(id)</li></ul></div>
+
+    <div class="q"><div class="enonce">Un délai d'attente très long a pour défaut…</div><ul>
+      <li><span>A</span>de corrompre la base</li><li><span>B</span>aucun</li><li><span>C</span>de cacher une transaction oubliée derrière de longues attentes</li><li><span>D</span>de perdre des écritures</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 101 · Les accès simultanés</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 101</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · D.</b> Pas de serveur à arbitrer.</div>
+    <div><b>02 · D.</b> WAL ne change que les lecteurs.</div>
+    <div><b>03 · B.</b> Le fichier est en travaux.</div>
+    <div><b>04 · D.</b> Les changements sont à part.</div>
+    <div><b>05 · C.</b> D'où l'erreur en 0 ms.</div>
+    <div><b>06 · C.</b> 1 134 ms mesurées.</div>
+    <div><b>07 · A, B et C.</b> Trois fichiers à garder ensemble.</div>
+    <div><b>08 · B.</b> compute-proxy.mjs:100.</div>
+    <div><b>09 · B.</b> Deux essais sur cinq.</div>
+    <div><b>10 · A.</b> Pas de refus au milieu.</div>
+    <div><b>11 · B et C.</b> Isoler, ou ne pas partager.</div>
+    <div><b>12 · C.</b> L'erreur, elle, se voit.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 102, « Sauvegarder une base ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">new DatabaseSync(f, { timeout })</td><td>attendre un verrou, en ms</td><td>exemple autonome, page 3</td></tr>
+      <tr><td class="c">PRAGMA journal_mode = WAL</td><td>passer en journal WAL</td><td>exemple autonome, page 3</td></tr>
+      <tr><td class="c">PRAGMA busy_timeout = 5000</td><td>le même délai, en SQL</td><td>page 3</td></tr>
+      <tr><td class="c">BEGIN IMMEDIATE</td><td>verrou d'écriture dès le début</td><td>page 4</td></tr>
+      <tr><td class="c">database is locked</td><td>le verrou était pris</td><td>schéma 1, page 2</td></tr>
+      <tr><td class="c">PRAGMA journal_mode</td><td>lire le mode actuel</td><td>page 2</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Verrou de fichier</dt><dd>Une réservation posée sur la base pour écarter les autres connexions.</dd>
+    <dt>WAL</dt><dd>Write-Ahead Log : un journal où l'on ajoute les changements avant de les recopier.</dd>
+    <dt>Délai d'attente</dt><dd>Le temps pendant lequel SQLite réessaie avant de rendre « database is locked ».</dd>
+    <dt>Isolation</dt><dd>La garantie qu'un lecteur ne voit pas une transaction inachevée.</dd>
+    <dt>Connexion</dt><dd>Un accès ouvert à la base, avec ses verrous et ses transactions.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 102</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 101 · Les accès simultanés</div>
+</section>
+
+</body>
+</html>

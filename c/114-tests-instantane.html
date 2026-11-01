@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>114 · Tests d'instantané</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-11">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 114</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Tests d'instantané</h1>
+  <p class="chapeau">Certaines sorties sont trop longues pour qu'on écrive à la main ce qu'on attend : un fichier .ghx, du code C# généré, un rapport. Le <b>test d'instantané</b> (snapshot) enregistre la sortie une fois, la fait relire, puis vérifie à chaque lancement qu'elle n'a pas bougé. Tout changement devient un diff à lire.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>109</b>, <b>113</b></span>
+    <span class="pastille">Exemples · <b>Magpie</b> web, <b>SnapSet</b></span>
+  </div>
+
+  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+    <svg viewBox="0 0 600 200" width="100%">
+<rect x="10" y="14" width="134" height="96" rx="4" fill="#ECEBFA" stroke="#4F46B8" stroke-width="1.2"/>
+<text x="77" y="34" font-size="8.8" fill="#4F46B8" text-anchor="middle" font-weight="700">1er lancement</text>
+<text x="77" y="54" font-size="7.4" fill="#2B2F33" text-anchor="middle">la sortie est écrite</text>
+<text x="77" y="66" font-size="7.4" fill="#2B2F33" text-anchor="middle">dans un fichier</text>
+<text x="77" y="96" font-size="6.8" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.8px">--test-update-snapshots</text>
+<line x1="146" y1="62" x2="156" y2="62" stroke="#6B7378" stroke-width="1.2"/><polygon points="156,62 149.6,64.7 149.6,59.3" fill="#6B7378"/>
+<rect x="158" y="14" width="134" height="96" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="225" y="34" font-size="8.8" fill="#6B7378" text-anchor="middle" font-weight="700">relecture</text>
+<text x="225" y="54" font-size="7.4" fill="#2B2F33" text-anchor="middle">un humain lit le fichier</text>
+<text x="225" y="66" font-size="7.4" fill="#2B2F33" text-anchor="middle">et le versionne</text>
+<text x="225" y="96" font-size="6.8" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.8px">git add *.snapshot</text>
+<line x1="294" y1="62" x2="304" y2="62" stroke="#6B7378" stroke-width="1.2"/><polygon points="304,62 297.6,64.7 297.6,59.3" fill="#6B7378"/>
+<rect x="306" y="14" width="134" height="96" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="373" y="34" font-size="8.8" fill="#2E7D32" text-anchor="middle" font-weight="700">lancements suivants</text>
+<text x="373" y="54" font-size="7.4" fill="#2B2F33" text-anchor="middle">la sortie est comparée</text>
+<text x="373" y="66" font-size="7.4" fill="#2B2F33" text-anchor="middle">au fichier, mot à mot</text>
+<text x="373" y="96" font-size="6.8" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.8px">node --test</text>
+<line x1="442" y1="62" x2="452" y2="62" stroke="#6B7378" stroke-width="1.2"/><polygon points="452,62 445.6,64.7 445.6,59.3" fill="#6B7378"/>
+<rect x="454" y="14" width="134" height="96" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="521" y="34" font-size="8.8" fill="#C62828" text-anchor="middle" font-weight="700">différence</text>
+<text x="521" y="54" font-size="7.4" fill="#2B2F33" text-anchor="middle">rouge, avec le diff :</text>
+<text x="521" y="66" font-size="7.4" fill="#2B2F33" text-anchor="middle">défaut ou changement voulu ?</text>
+<text x="521" y="96" font-size="6.8" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.8px">relire, puis accepter</text>
+<text x="10" y="138" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">Au lieu d'écrire ce qu'on attend, on enregistre ce que le programme produit, on le relit une fois,</text>
+<text x="10" y="154" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">et le test garde cette version de référence. Idéal pour une sortie longue : XML, code généré, rapport.</text>
+<text x="10" y="176" font-size="7.8" fill="#4F46B8" text-anchor="start" font-weight="700">La valeur du test tient entièrement à la relecture : un instantané accepté sans le lire fige les défauts avec le reste.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>On ne décrit pas la bonne sortie, on la montre une fois ; ensuite, le test signale toute différence, et c'est à nous de dire si elle est voulue.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Le plan tamponné « bon pour exécution ». On ne revérifie pas chaque cote à chaque tirage : on compare le nouveau tirage au plan validé, et toute différence passe par un nouvel indice de révision.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>écrire un instantané avec node:test ;</li>
+        <li>neutraliser ce qui varie ;</li>
+        <li>relire un diff d'instantané ;</li>
+        <li>voir un fichier généré comme un instantané.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À retenir</span>
+    Un instantané ne sait pas si la sortie est juste ; il sait seulement qu'elle a changé. Il complète les assertions précises, il ne les remplace pas : SnapSet garde ses 495 Assert.Contains, qui disent chacun ce qui compte.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 114 · Tests d'instantané</div>
+</section>
+
+<!-- ============ PAGE 2 · CE QUI VARIE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 114</b></div>
+  <p class="rubrique">Schéma 1 · Ce qui varie</p>
+  <h2>Un instantané doit être stable</h2>
+  <p style="max-width:165mm">Un instantané compare tout, octet par octet. Si la sortie contient une date, un GUID tiré au hasard ou un chemin de la machine, elle change à chaque lancement et le test échoue toujours : c'est un test instable par construction (cours 113).</p>
+
+  <svg viewBox="0 0 600 222" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="222" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.4" fill="#4F46B8" text-anchor="start" font-weight="700">Un Panel seul, sérialisé par build-graph.mjs, en instantané avec node:test (Node 22.22, copie, mesuré)</text>
+<rect x="16" y="36" width="568" height="22" rx="3" fill="#ECEBFA"/>
+<text x="28" y="51" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">lancement 1, --test-update-snapshots</text>
+<text x="300" y="51" font-size="8" fill="#2E7D32" text-anchor="start" font-weight="700">ok : le fichier .snapshot est écrit</text>
+<rect x="16" y="62" width="568" height="22" rx="3" fill="#fff"/>
+<text x="28" y="77" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">lancement 2</text>
+<text x="300" y="77" font-size="8" fill="#C62828" text-anchor="start" font-weight="700">échec : InstanceGuid a changé</text>
+<text x="28" y="106" font-size="7.6" fill="#C62828" text-anchor="start" class="mono" style="font-size:7.6px">- &lt;item name="InstanceGuid" …&gt;d36fda30-e29b-4ead-8296-d57711345bc2&lt;/item&gt;</text>
+<text x="28" y="120" font-size="7.6" fill="#2E7D32" text-anchor="start" class="mono" style="font-size:7.6px">+ &lt;item name="InstanceGuid" …&gt;a0a75006-1c0f-4205-a23b-01ee2ce15cbd&lt;/item&gt;</text>
+<text x="16" y="142" font-size="7.8" fill="#2B2F33" text-anchor="start">Chaque sérialisation tire un GUID neuf : la sortie n'est jamais deux fois la même, l'instantané échoue à tous les coups.</text>
+<text x="16" y="164" font-size="8.2" fill="#4F46B8" text-anchor="start" font-weight="700">Correction : remplacer ce qui varie par un repère avant de comparer.</text>
+<text x="28" y="182" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">xml().replace(/(InstanceGuid"[^&gt;]*&gt;)[0-9a-f-]{36}/g, "$1&lt;guid&gt;").split("\n")</text>
+<text x="16" y="204" font-size="7.8" fill="#2B2F33" text-anchor="start">Mesuré ensuite : trois lancements, trois verts. Le .split("\n") range une ligne par entrée : le diff devient lisible.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · node:test, un instantané stable</span>test("un Panel seul, sérialisé", (t) =&gt; {
+  const texte = xml().replace(/(InstanceGuid"[^&gt;]*&gt;)[0-9a-f-]{36}/g, "$1&lt;guid&gt;");
+  t.assert.snapshot(texte.split("\n"));          // une entrée par ligne
+});                                            // node --test --experimental-test-snapshots</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Masquer ou fixer</h3>
+      <p>Deux parades : remplacer la valeur variable par un repère (ici <code>&lt;guid&gt;</code>), ou la fixer à la source, comme le GuidFixe de SnapSet (cours 113). La seconde est meilleure quand le code le permet.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Une ligne par entrée</h3>
+      <p>Sans le <code>split</code>, l'instantané est une seule chaîne de 2 187 caractères : le diff montre deux lignes géantes, illisibles. Découpé, il montre les deux lignes qui ont changé.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Masquer trop large. Une expression qui remplace tous les GUID cache aussi celui du type de composant, qui, lui, ne doit jamais changer. On ne masque que la valeur qui varie, à son emplacement précis.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 114 · Tests d'instantané</div>
+</section>
+
+<!-- ============ PAGE 3 · RELIRE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 114</b></div>
+  <p class="rubrique">Schéma 2 · Relire le diff</p>
+  <h2>Défaut, ou changement voulu ?</h2>
+  <p style="max-width:165mm">Quand l'instantané rougit, la question n'est pas « comment le faire passer », mais « cette différence est-elle celle que je voulais ». Le diff montre tout ce que le changement a touché, y compris ce qu'on n'avait pas prévu.</p>
+
+  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.4" fill="#4F46B8" text-anchor="start" font-weight="700">Puis on change une valeur par défaut dans build-graph.mjs:237 (largeur 100 devenue 120), sur la copie (mesuré)</text>
+<rect x="16" y="36" width="568" height="84" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="28" y="54" font-size="8.2" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:8.2px">not ok 1 - un Panel seul, sérialisé</text>
+<text x="40" y="72" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">+   &lt;W&gt;120&lt;/W&gt;</text>
+<text x="40" y="84" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">-   &lt;W&gt;100&lt;/W&gt;</text>
+<text x="40" y="96" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">+   &lt;X&gt;60&lt;/X&gt;</text>
+<text x="40" y="108" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">-   &lt;X&gt;50&lt;/X&gt;</text>
+<text x="220" y="84" font-size="8" fill="#2B2F33" text-anchor="start">deux lignes sur une cinquantaine :</text>
+<text x="220" y="98" font-size="8" fill="#2B2F33" text-anchor="start">la largeur, et le pivot qui en dépend</text>
+<text x="16" y="144" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">L'instantané a vu une conséquence qu'aucun test écrit à la main ne visait : le pivot a bougé avec la largeur.</text>
+<text x="16" y="162" font-size="7.8" fill="#2B2F33" text-anchor="start">Voulu ? On relit, on relance avec --test-update-snapshots, et le diff du .snapshot entre dans le commit.</text>
+<text x="16" y="178" font-size="7.8" fill="#2B2F33" text-anchor="start">Non voulu ? C'est un défaut, attrapé avant de partir.</text>
+<text x="16" y="198" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">build-graph.mjs a été restauré ; tous les tests repassent (mesuré).</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · accepter un changement relu</span>node --test --experimental-test-snapshots --test-update-snapshots \
+     test/serialisation.test.mjs
+git diff test/serialisation.test.mjs.snapshot     # relire ce qui a été accepté
+git add test/serialisation.test.mjs.snapshot src/serializer/build-graph.mjs</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Le diff dans le commit</h3>
+      <p>Le fichier .snapshot est versionné avec le code. Dans la pull request, le relecteur voit le changement de code et son effet sur la sortie, côte à côte.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>En .NET</h3>
+      <p>La bibliothèque Verify (Verify.Xunit) fait de même : un fichier <code>.verified.txt</code> versionné, un <code>.received.txt</code> écrit en cas de différence, et un outil de comparaison pour accepter.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Relancer avec --test-update-snapshots dès qu'un instantané rougit. Le test repasse, le défaut est entré dans la référence, et le test le protège désormais. On met à jour après avoir lu, jamais pour faire passer.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 114 · Tests d'instantané</div>
+</section>
+
+<!-- ============ PAGE 4 · LE FICHIER GÉNÉRÉ ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 114</b></div>
+  <p class="rubrique">Schéma 3 · Le fichier généré versionné</p>
+  <h2>Un instantané qui ne dit pas son nom</h2>
+  <p style="max-width:165mm">SnapSet produit deux fichiers C# à partir de son schéma JSON, par un script Node, et les versionne. Chaque changement du schéma apparaît donc deux fois dans un commit : dans le JSON, et dans le code généré. C'est le principe de l'instantané, appliqué par Git.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#4F46B8" text-anchor="start" font-weight="700">SnapSet versionne ses fichiers générés : chaque commit qui les touche, regénéré sur une copie et comparé (mesuré)</text>
+<rect x="20" y="36" width="42" height="36" rx="4" fill="#E8F5E9" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="41" y="50" font-size="6.4" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.4px">d43123e</text>
+<text x="41" y="64" font-size="8" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">= =</text>
+<rect x="67" y="36" width="42" height="36" rx="4" fill="#E8F5E9" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="88" y="50" font-size="6.4" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.4px">8c6a358</text>
+<text x="88" y="64" font-size="8" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">= =</text>
+<rect x="114" y="36" width="42" height="36" rx="4" fill="#E8F5E9" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="135" y="50" font-size="6.4" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.4px">32cddbc</text>
+<text x="135" y="64" font-size="8" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">= =</text>
+<rect x="161" y="36" width="42" height="36" rx="4" fill="#E8F5E9" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="182" y="50" font-size="6.4" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.4px">f846b33</text>
+<text x="182" y="64" font-size="8" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">= =</text>
+<rect x="208" y="36" width="42" height="36" rx="4" fill="#E8F5E9" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="229" y="50" font-size="6.4" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.4px">cc0782e</text>
+<text x="229" y="64" font-size="8" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">= =</text>
+<rect x="255" y="36" width="42" height="36" rx="4" fill="#E8F5E9" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="276" y="50" font-size="6.4" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.4px">710a3d5</text>
+<text x="276" y="64" font-size="8" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">= =</text>
+<rect x="302" y="36" width="42" height="36" rx="4" fill="#E8F5E9" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="323" y="50" font-size="6.4" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.4px">93eba38</text>
+<text x="323" y="64" font-size="8" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">= =</text>
+<rect x="349" y="36" width="42" height="36" rx="4" fill="#E8F5E9" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="370" y="50" font-size="6.4" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.4px">83436d4</text>
+<text x="370" y="64" font-size="8" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">= =</text>
+<rect x="396" y="36" width="42" height="36" rx="4" fill="#E8F5E9" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="417" y="50" font-size="6.4" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.4px">78154d4</text>
+<text x="417" y="64" font-size="8" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">= =</text>
+<rect x="443" y="36" width="42" height="36" rx="4" fill="#E8F5E9" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="464" y="50" font-size="6.4" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.4px">a8f8ac6</text>
+<text x="464" y="64" font-size="8" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">= =</text>
+<rect x="490" y="36" width="42" height="36" rx="4" fill="#E8F5E9" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="511" y="50" font-size="6.4" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.4px">658b70e</text>
+<text x="511" y="64" font-size="8" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">= =</text>
+<rect x="537" y="36" width="42" height="36" rx="4" fill="#E8F5E9" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="558" y="50" font-size="6.4" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.4px">5c9be8e</text>
+<text x="558" y="64" font-size="8" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">= =</text>
+<text x="20" y="90" font-size="7" fill="#6B7378" text-anchor="start">07/10</text>
+<text x="580" y="90" font-size="7" fill="#6B7378" text-anchor="end">15/10</text>
+<text x="16" y="112" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Aux 12 commits, ModeleGHStyle.g.cs et ModeleNoeuds.g.cs sont exactement ce que le générateur produit (fins de ligne mises à part).</text>
+<text x="16" y="130" font-size="7.8" fill="#2B2F33" text-anchor="start">Avant 5c9be8e, le générateur écrivait en CRLF et Git normalisait au commit ; depuis, il écrit en LF.</text>
+<text x="16" y="152" font-size="7.8" fill="#2B2F33" text-anchor="start">Le fichier versionné joue le rôle d'un instantané : git diff le montre à la relecture de chaque changement de schéma.</text>
+<text x="16" y="168" font-size="7.8" fill="#E65100" text-anchor="start" font-weight="700">Mais aucun test ne compare la sortie au fichier : LotATests régénère dans une copie et ne vérifie que l'absence de CR.</text>
+<text x="16" y="190" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Régénérer prend 44 ms (mesuré) : comparer les deux textes coûterait une ligne de plus.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, compléter LotATests en vrai test d'instantané</span>foreach (var kv in g)                        // g : les deux fichiers régénérés dans une copie
+    Assert.Equal(File.ReadAllText(Path.Combine(Racine, "schema", kv.Key)), kv.Value);
+// échoue si quelqu'un a changé ghstyle.schema.json sans relancer le générateur</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Le marqueur « .g.cs »</h3>
+      <p>Le suffixe annonce un fichier régénéré, qu'on ne modifie jamais à la main. La décision 2 de SnapSet fait la même distinction pour le code émis : Xxx.Dessin.g.cs régénéré, Xxx.cs jamais écrasé.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Comment c'est mesuré</h3>
+      <p>Sur un clone, pour chacun des 12 commits qui touchent au schéma ou aux fichiers générés : sortie du commit, générateur relancé dans un dossier à part, comparaison ligne à ligne.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Corriger à la main un fichier généré. La correction disparaît à la prochaine génération, souvent des semaines plus tard, et le défaut revient sans qu'aucun commit récent ne l'explique.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 114 · Tests d'instantané</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 114</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Le générateur de schéma de SnapSet, sous test</h2>
+  <p style="max-width:165mm">LotATests relance déjà le générateur dans une copie isolée et lit les deux fichiers produits. Il ne lui manque que la comparaison au fichier versionné.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">snapset/tests/ResolutionTests/LotATests.cs</span></div>
+<div class="l k1"><span class="n">32</span>var copie = Path.Combine(…BaseDirectory, "lotA-" + …);<span class="rep r1">1</span></div>
+<div class="l k2"><span class="n">52</span>return new[] { "ModeleGHStyle.g.cs", "ModeleNoeuds.g.cs" }<span class="rep r2">2</span></div>
+<div class="l"><span class="n">53</span>    .ToDictionary(n =&gt; n, n =&gt; File.ReadAllText(…));</div>
+<div class="l k3"><span class="n">63</span>foreach (var kv in g)<span class="rep r3">3</span></div>
+<div class="l k4"><span class="n">64</span>    Assert.True(!kv.Value.Contains("\r"), …);<span class="rep r4">4</span></div>
+<div class="l"><span class="cm">snapset/tests/ResolutionTests/GenerationDessinTests.cs</span></div>
+<div class="l k5"><span class="n">186</span>Assert.Contains("LargeurMinimale = 40.5f,", francais);<span class="rep r5">5</span></div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Copie isolée</b>Dossier unique.</li>
+      <li><span class="rep r2">2</span><b>Les sorties</b>Lues en entier.</li>
+      <li><span class="rep r3">3</span><b>Pour chacune</b>…</li>
+      <li><span class="rep r4">4</span><b>Seulement</b>Pas de CR.</li>
+      <li><span class="rep r5">5</span><b>Assertion précise</b>Un fragment.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À surveiller · les fichiers générés ne sont comparés à rien</span>
+    Mesuré sur un clone : aux 12 commits qui touchent au schéma, les deux .g.cs versionnés sont exactement la sortie du générateur. L'accord tient par discipline : LotATests régénère (44 ms mesurés hors test) mais ne vérifie que les fins de ligne (ligne 64). Un ghstyle.schema.json modifié sans relancer le script ne ferait rougir aucun test qui compare les textes. Déduit : une assertion d'égalité aux lignes 63–64 en ferait un instantané complet. Relevé sans rien modifier.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 114 · Tests d'instantané</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 114</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Un test d'instantané compare la sortie…</div><ul>
+      <li><span>A</span>à une version enregistrée et relue</li><li><span>B</span>à la sortie d'un autre programme</li><li><span>C</span>à une valeur calculée à la main</li><li><span>D</span>à rien</li></ul></div>
+
+    <div class="q"><div class="enonce">Un instantané qui rougit signifie…</div><ul>
+      <li><span>A</span>que le test est lent</li><li><span>B</span>que la sortie a changé</li><li><span>C</span>que le fichier est perdu</li><li><span>D</span>que la sortie est fausse</li></ul></div>
+
+    <div class="q"><div class="enonce">Le Panel sérialisé échouait au 2e lancement à cause…</div><ul>
+      <li><span>A</span>de la date</li><li><span>B</span>du fuseau</li><li><span>C</span>de la taille</li><li><span>D</span>d'un InstanceGuid tiré à chaque fois</li></ul></div>
+
+    <div class="q"><div class="enonce">Découper la sortie en lignes sert à…</div><ul>
+      <li><span>A</span>masquer les GUID</li><li><span>B</span>accélérer le test</li><li><span>C</span>réduire le fichier</li><li><span>D</span>obtenir un diff lisible</li></ul></div>
+
+    <div class="q"><div class="enonce">Largeur 100 devenue 120 : le diff montre…</div><ul>
+      <li><span>A</span>tout le fichier</li><li><span>B</span>rien</li><li><span>C</span>la largeur et le pivot</li><li><span>D</span>la largeur seule</li></ul></div>
+
+    <div class="q"><div class="enonce">--test-update-snapshots…</div><ul>
+      <li><span>A</span>relit le diff à ta place</li><li><span>B</span>corrige le code</li><li><span>C</span>supprime les tests</li><li><span>D</span>accepte la sortie actuelle comme référence</li></ul></div>
+
+    <div class="q"><div class="enonce">Le bon moment pour mettre à jour un instantané…</div><ul>
+      <li><span>A</span>après avoir lu et voulu la différence</li><li><span>B</span>dès qu'il rougit</li><li><span>C</span>chaque matin</li><li><span>D</span>jamais</li></ul></div>
+
+    <div class="q"><div class="enonce">Pour stabiliser une sortie qui varie… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>masquer la valeur à son emplacement précis</li><li><span>B</span>masquer tous les GUID</li><li><span>C</span>fixer la valeur à la source</li><li><span>D</span>relancer jusqu'au vert</li></ul></div>
+
+    <div class="q"><div class="enonce">Aux 12 commits de schéma de SnapSet, les .g.cs versionnés…</div><ul>
+      <li><span>A</span>manquent</li><li><span>B</span>égalent la sortie du générateur</li><li><span>C</span>sont écrits à la main</li><li><span>D</span>diffèrent toujours</li></ul></div>
+
+    <div class="q"><div class="enonce">LotATests vérifie aujourd'hui…</div><ul>
+      <li><span>A</span>l'égalité avec les fichiers versionnés</li><li><span>B</span>l'absence de CR dans les fichiers régénérés</li><li><span>C</span>la compilation</li><li><span>D</span>rien</li></ul></div>
+
+    <div class="q"><div class="enonce">Un fichier .g.cs…</div><ul>
+      <li><span>A</span>est ignoré par Git</li><li><span>B</span>est un test</li><li><span>C</span>est régénéré, jamais modifié à la main</li><li><span>D</span>est écrit à la main</li></ul></div>
+
+    <div class="q"><div class="enonce">En .NET, la bibliothèque d'instantanés citée est…</div><ul>
+      <li><span>A</span>Stryker</li><li><span>B</span>FsCheck</li><li><span>C</span>Verify</li><li><span>D</span>Coverlet</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 114 · Tests d'instantané</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 114</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · A.</b> Montrée une fois.</div>
+    <div><b>02 · B.</b> Pas forcément fausse.</div>
+    <div><b>03 · D.</b> Neuf à chaque appel.</div>
+    <div><b>04 · D.</b> Deux lignes, pas deux blocs.</div>
+    <div><b>05 · C.</b> Le pivot suit la largeur.</div>
+    <div><b>06 · D.</b> Sans rien relire.</div>
+    <div><b>07 · A.</b> Lire, puis accepter.</div>
+    <div><b>08 · A et C.</b> Jamais trop large.</div>
+    <div><b>09 · B.</b> Fins de ligne à part.</div>
+    <div><b>10 · B.</b> Ligne 64.</div>
+    <div><b>11 · C.</b> Le suffixe le dit.</div>
+    <div><b>12 · C.</b> Verify.Xunit.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 73, « Versionner : SemVer et compatibilité ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">t.assert.snapshot(valeur)</td><td>comparer à l'instantané</td><td>page 2</td></tr>
+      <tr><td class="c">--experimental-test-snapshots</td><td>activer les instantanés (Node 22)</td><td>page 2</td></tr>
+      <tr><td class="c">--test-update-snapshots</td><td>accepter la sortie actuelle</td><td>page 3</td></tr>
+      <tr><td class="c">.replace(…, "&lt;guid&gt;")</td><td>masquer ce qui varie</td><td>schéma 1, page 2</td></tr>
+      <tr><td class="c">Assert.Equal(versionné, régénéré)</td><td>fichier généré sous test</td><td>page 4</td></tr>
+      <tr><td class="c">Verify.Xunit</td><td>instantanés en .NET</td><td>page 3</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Instantané (snapshot)</dt><dd>Une sortie enregistrée, relue, qui sert de référence.</dd>
+    <dt>Fichier de référence</dt><dd>Le fichier versionné auquel on compare (golden file).</dd>
+    <dt>Masquage</dt><dd>Le remplacement d'une valeur variable par un repère fixe.</dd>
+    <dt>Fichier généré</dt><dd>Un fichier produit par un script, régénéré, jamais édité.</dd>
+    <dt>Mise à jour</dt><dd>L'acceptation volontaire d'une nouvelle référence.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 73</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 114 · Tests d'instantané</div>
+</section>
+
+</body>
+</html>

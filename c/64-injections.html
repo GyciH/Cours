@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>64 · Les injections</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-9">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 64</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Les injections</h1>
+  <p class="chapeau">Une <b>injection</b> se produit quand une donnée venue de l'extérieur est collée dans un texte qui sera <b>interprété</b> : une requête SQL, une page HTML, un chemin de fichier, un document XML. Si la donnée contient la syntaxe de ce langage, elle cesse d'être une donnée et devient une instruction.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>34</b> et <b>57</b></span>
+    <span class="pastille">Exemples · <b>compute-proxy.mjs</b>, <b>xml-builder.mjs</b>, <b>ImportParcours</b> (Magpie)</span>
+  </div>
+
+  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+    <svg viewBox="0 0 600 196" width="100%">
+<text x="14" y="18" font-size="8.6" fill="#A03A2C" text-anchor="start" font-weight="700">Saisie de l'utilisateur</text>
+<rect x="14" y="26" width="572" height="26" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
+<text x="26" y="43" font-size="10" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:10px;white-space:pre">x' OR '1'='1</text>
+<text x="14" y="78" font-size="8.6" fill="#C62828" text-anchor="start" font-weight="700">Collée dans le texte de la requête</text>
+<rect x="14" y="86" width="572" height="30" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="26" y="105" font-size="9" fill="#2B2F33" class="mono" style="font-size:9px;white-space:pre">SELECT * FROM exercises WHERE id = '<tspan fill="#E65100" font-weight="700">x' OR '1'='1</tspan>'</text>
+<text x="400" y="105" font-size="8.4" fill="#C62828" text-anchor="start" font-weight="700">→ toutes les lignes</text>
+<text x="14" y="140" font-size="8.6" fill="#2E7D32" text-anchor="start" font-weight="700">Passée à part, comme paramètre</text>
+<rect x="14" y="148" width="572" height="30" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="26" y="167" font-size="9" fill="#2B2F33" class="mono" style="font-size:9px;white-space:pre">SELECT * FROM exercises WHERE id = ?   <tspan fill="#E65100" font-weight="700">← "x' OR '1'='1"</tspan></text>
+<text x="400" y="167" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700">→ aucun exercice de ce nom</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>On ne fabrique jamais du code par concaténation avec une donnée étrangère : on la passe <b>à part</b> (paramètre), ou à défaut on l'<b>échappe</b> pour le langage précis qui va la lire.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Un formulaire de virement où l'on écrirait le montant en toutes lettres dans la phrase « Je verse … euros à Paul ». Quelqu'un écrit « 10 euros à Paul, et 1000 euros à Marc, et 0 ». Un formulaire à cases séparées rend la ruse impossible.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>reconnaître une injection SQL ;</li>
+        <li>écrire une requête paramétrée ;</li>
+        <li>échapper selon le contexte ;</li>
+        <li>bloquer une traversée de chemin.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:5mm">
+    <span class="titre">À retenir</span>
+    Toute donnée qui franchit une frontière (formulaire, URL, fichier importé, corps de requête) est <b>suspecte</b> jusqu'à preuve du contraire. La question à se poser à chaque collage : « quel programme va lire ce texte, et que se passe-t-il si la donnée contient sa syntaxe ? »
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 64 · Les injections</div>
+</section>
+
+<!-- ============ PAGE 2 · SQL ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 64</b></div>
+  <p class="rubrique">Schéma 1 · L'injection SQL</p>
+  <h2>Séparer le texte et les valeurs</h2>
+  <p style="max-width:165mm">Une requête préparée envoie à la base deux choses distinctes : un texte fixe avec des <code>?</code>, puis les valeurs. Le texte est analysé seul ; les valeurs ne passent jamais par l'analyseur SQL et ne peuvent donc rien y ajouter.</p>
+
+  <svg viewBox="0 0 600 200" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="200" fill="#EFE9E1"/>
+<text x="150" y="22" font-size="9" fill="#C62828" text-anchor="middle" font-weight="700">Concaténation</text>
+<text x="450" y="22" font-size="9" fill="#2E7D32" text-anchor="middle" font-weight="700">Requête préparée</text>
+<line x1="300" y1="12" x2="300" y2="190" stroke="#CFC6B8" stroke-dasharray="3 3"/>
+<rect x="30" y="36" width="240" height="34" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="150.0" y="55.8" font-size="8.4" fill="#C62828" text-anchor="middle" font-weight="700">texte + données mélangés</text>
+<line x1="150" y1="72" x2="150" y2="92" stroke="#6B7378" stroke-width="1.2"/><polygon points="150,92 147.3,85.6 152.7,85.6" fill="#6B7378"/>
+<rect x="30" y="94" width="240" height="34" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="150.0" y="113.8" font-size="8.4" fill="#6B7378" text-anchor="middle" font-weight="700">analyseur SQL</text>
+<line x1="150" y1="130" x2="150" y2="150" stroke="#6B7378" stroke-width="1.2"/><polygon points="150,150 147.3,143.6 152.7,143.6" fill="#6B7378"/>
+<rect x="30" y="152" width="240" height="30" rx="4" fill="#FBEDEA" stroke="#C62828" stroke-width="1.2"/>
+<text x="150.0" y="169.66666666666666" font-size="8" fill="#C62828" text-anchor="middle" font-weight="700">la donnée peut devenir du code</text>
+<rect x="330" y="36" width="110" height="34" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="385.0" y="55.8" font-size="8.4" fill="#1565C0" text-anchor="middle" font-weight="700">texte fixe</text>
+<rect x="460" y="36" width="110" height="34" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
+<text x="515.0" y="55.8" font-size="8.4" fill="#E65100" text-anchor="middle" font-weight="700">valeurs</text>
+<line x1="385" y1="72" x2="385" y2="92" stroke="#6B7378" stroke-width="1.2"/><polygon points="385,92 382.3,85.6 387.7,85.6" fill="#6B7378"/>
+<rect x="330" y="94" width="110" height="34" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="385.0" y="113.8" font-size="8.4" fill="#6B7378" text-anchor="middle" font-weight="700">analysé seul</text>
+<line x1="385" y1="130" x2="385" y2="150" stroke="#6B7378" stroke-width="1.2"/><polygon points="385,150 382.3,143.6 387.7,143.6" fill="#6B7378"/>
+<line x1="515" y1="72" x2="515" y2="150" stroke="#E65100" stroke-width="1.2"/><polygon points="515,150 512.3,143.6 517.7,143.6" fill="#E65100"/>
+<rect x="330" y="152" width="240" height="30" rx="4" fill="#EAF3EA" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="450.0" y="169.66666666666666" font-size="8" fill="#2E7D32" text-anchor="middle" font-weight="700">la donnée reste une donnée</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Node et C#</span>db.prepare("SELECT * FROM exercises WHERE id = ?").get(id);                 // better-sqlite3
+db.prepare("UPDATE t SET a = ?, b = ? WHERE id = ?").run(a, b, id);
+cmd.CommandText = "SELECT * FROM exercises WHERE id = @id";              // ADO.NET
+cmd.Parameters.AddWithValue("@id", id);
+// JAMAIS : `SELECT * FROM exercises WHERE id = '${id}'`</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Ce qui ne peut pas être un paramètre</h3>
+      <p>Un nom de table ou de colonne, un sens de tri. Si l'utilisateur doit le choisir, on prend la valeur dans une <b>liste blanche</b> écrite dans le code : <code>tri === "asc" ? "ASC" : "DESC"</code>.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Pourquoi c'est aussi plus rapide</h3>
+      <p>Une requête préparée une fois peut être exécutée mille fois avec d'autres valeurs : la base ne la ré-analyse pas. C'est ce que fait la migration de <code>db.mjs</code> dans sa boucle de réinsertion.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    « Nettoyer » soi-même en retirant les apostrophes. On oublie toujours un cas (un autre guillemet, un encodage, un commentaire <code>--</code>), et on abîme les données légitimes, comme « l'arc » ou « O'Neil ». Le paramètre règle tout, sans rien retirer.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 64 · Les injections</div>
+</section>
+
+<!-- ============ PAGE 3 · ÉCHAPPER ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 64</b></div>
+  <p class="rubrique">Schéma 2 · Échapper selon le contexte</p>
+  <h2>Chaque langage a ses caractères dangereux</h2>
+  <p style="max-width:165mm">Quand le paramètre n'existe pas (une page HTML, un fichier XML, une URL), on <b>échappe</b> : on remplace chaque caractère qui a un sens dans ce langage par sa forme neutre. Il n'y a pas d'échappement universel : le bon dépend de qui lira le texte.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#A03A2C" text-anchor="start" font-weight="700">La même chaîne :</text>
+<text x="130" y="22" font-size="9.4" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:9.4px;white-space:pre">&lt;b&gt;"Tom &amp; Jerry"&lt;/b&gt;</text>
+<rect x="16" y="38" width="568" height="28" rx="4" fill="#fff" stroke="#CFC6B8" stroke-width="1.2"/>
+<text x="26" y="56" font-size="8.4" fill="#A03A2C" text-anchor="start" font-weight="700">HTML (texte)</text>
+<text x="130" y="56" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px;white-space:pre">&amp;lt;b&amp;gt;&amp;quot;Tom &amp;amp; Jerry&amp;quot;&amp;lt;/b&amp;gt;</text>
+<text x="574" y="56" font-size="7.8" fill="#2E7D32" text-anchor="end" font-weight="700" class="mono" style="font-size:7.8px">React le fait seul</text>
+<rect x="16" y="72" width="568" height="28" rx="4" fill="#fff" stroke="#CFC6B8" stroke-width="1.2"/>
+<text x="26" y="90" font-size="8.4" fill="#A03A2C" text-anchor="start" font-weight="700">XML (attribut)</text>
+<text x="130" y="90" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px;white-space:pre">name=&amp;quot;&amp;lt;b&amp;gt;&amp;quot;Tom &amp;amp; …&amp;quot;</text>
+<text x="574" y="90" font-size="7.8" fill="#2E7D32" text-anchor="end" font-weight="700" class="mono" style="font-size:7.8px">escapeXml</text>
+<rect x="16" y="106" width="568" height="28" rx="4" fill="#fff" stroke="#CFC6B8" stroke-width="1.2"/>
+<text x="26" y="124" font-size="8.4" fill="#A03A2C" text-anchor="start" font-weight="700">JSON</text>
+<text x="130" y="124" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px;white-space:pre">"&lt;b&gt;\"Tom &amp; Jerry\"&lt;/b&gt;"</text>
+<text x="574" y="124" font-size="7.8" fill="#2E7D32" text-anchor="end" font-weight="700" class="mono" style="font-size:7.8px">JSON.stringify</text>
+<rect x="16" y="140" width="568" height="28" rx="4" fill="#fff" stroke="#CFC6B8" stroke-width="1.2"/>
+<text x="26" y="158" font-size="8.4" fill="#A03A2C" text-anchor="start" font-weight="700">Regex</text>
+<text x="130" y="158" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px;white-space:pre">&lt;b&gt;"Tom\ &amp;\ Jerry"&lt;/b&gt;   (les espaces sont échappés)</text>
+<text x="574" y="158" font-size="7.8" fill="#2E7D32" text-anchor="end" font-weight="700" class="mono" style="font-size:7.8px">Regex.Escape</text>
+<rect x="16" y="174" width="568" height="28" rx="4" fill="#fff" stroke="#CFC6B8" stroke-width="1.2"/>
+<text x="26" y="192" font-size="8.4" fill="#A03A2C" text-anchor="start" font-weight="700">URL</text>
+<text x="130" y="192" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px;white-space:pre">%3Cb%3E%22Tom%20%26%20Jerry%22%3C%2Fb%3E</text>
+<text x="574" y="192" font-size="7.8" fill="#2E7D32" text-anchor="end" font-weight="700" class="mono" style="font-size:7.8px">encodeURIComponent</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript et C#</span>&lt;p&gt;{titre}&lt;/p&gt;                                  // React échappe : affiché tel quel
+el.textContent = titre;                         // DOM : texte, jamais interprété
+el.innerHTML = titre;                           // DANGER : interprété comme HTML
+WebUtility.HtmlEncode(titre)                    // C#
+new XElement("item", titre)                     // C# : LINQ to XML échappe pour toi</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Le XSS</h3>
+      <p>L'injection dans une page web s'appelle XSS : un titre d'exercice contenant <code>&lt;script&gt;</code> s'exécuterait chez chaque élève qui l'affiche. React échappe tout texte placé entre accolades ; le front de Magpie n'utilise jamais <code>dangerouslySetInnerHTML</code>.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Les bibliothèques le font</h3>
+      <p><code>JSON.stringify</code>, <code>XElement</code>, <code>encodeURIComponent</code> : chacune échappe pour son format. Écrire son propre échappement n'a de sens que pour un format sans bibliothèque, comme l'archive XML de Grasshopper.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Échapper deux fois, ou pour le mauvais contexte. Une chaîne échappée pour HTML puis passée à React s'affiche avec des <code>&amp;amp;</code> visibles. On garde la donnée brute aussi longtemps que possible et on échappe une seule fois, au dernier moment.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 64 · Les injections</div>
+</section>
+
+<!-- ============ PAGE 4 · CHEMINS ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 64</b></div>
+  <p class="rubrique">Schéma 3 · La traversée de chemin</p>
+  <h2>Rester dans son dossier</h2>
+  <p style="max-width:165mm">Un serveur de fichiers colle le chemin demandé à son dossier racine. Avec des <code>..</code>, le chemin peut remonter et sortir de ce dossier : vers la base de données, les variables de configuration, n'importe quel fichier lisible. La parade : résoudre le chemin, puis vérifier qu'il commence bien par le dossier.</p>
+
+  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#A03A2C" text-anchor="start" font-weight="700">Demande :</text>
+<text x="90" y="22" font-size="9.4" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:9.4px">GET /../../magpie.db</text>
+<rect x="16" y="40" width="220" height="34" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="126.0" y="59.8" font-size="8.4" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">join(DIST_DIR, chemin)</text>
+<line x1="240" y1="57" x2="286" y2="57" stroke="#6B7378" stroke-width="1.2"/><polygon points="286,57 279.6,59.7 279.6,54.3" fill="#6B7378"/>
+<text x="296" y="61" font-size="8.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.6px">…/web/dist/../../magpie.db</text>
+<line x1="126" y1="76" x2="126" y2="86" stroke="#6B7378" stroke-width="1.1"/><polygon points="126,86 123.3,79.6 128.7,79.6" fill="#6B7378"/>
+<rect x="16" y="88" width="220" height="34" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
+<text x="126.0" y="107.8" font-size="8.4" fill="#7B1FA2" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">normalize(…)</text>
+<line x1="240" y1="105" x2="286" y2="105" stroke="#6B7378" stroke-width="1.2"/><polygon points="286,105 279.6,107.7 279.6,102.3" fill="#6B7378"/>
+<text x="296" y="109" font-size="8.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.6px">…/magpie.db  (hors de dist/)</text>
+<line x1="126" y1="124" x2="126" y2="134" stroke="#6B7378" stroke-width="1.1"/><polygon points="126,134 123.3,127.6 128.7,127.6" fill="#6B7378"/>
+<rect x="16" y="136" width="220" height="34" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="126.0" y="155.8" font-size="8.4" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">startsWith(DIST_DIR + sep) ?</text>
+<line x1="240" y1="153" x2="286" y2="153" stroke="#6B7378" stroke-width="1.2"/><polygon points="286,153 279.6,155.7 279.6,150.3" fill="#6B7378"/>
+<text x="296" y="157" font-size="8.6" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">non → 404</text>
+<text x="16" y="196" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Exemple schématique : en pratique, le navigateur résout déjà « .. » ; un client comme curl, lui, l'envoie tel quel.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#</span>string racine = Path.GetFullPath(dossier) + Path.DirectorySeparatorChar;
+string cible = Path.GetFullPath(Path.Combine(racine, demande));     // résout les ".."
+if (!cible.StartsWith(racine, StringComparison.OrdinalIgnoreCase))  // Windows : casse ignorée
+    throw new UnauthorizedAccessException();</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Le séparateur final compte</h3>
+      <p>Sans lui, <code>…/dist</code> accepterait aussi <code>…/dist-secret/</code>, qui commence par les mêmes lettres. Magpie compare donc avec <code>DIST_DIR + sep</code>, plus le cas du dossier lui-même.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Le « zip slip »</h3>
+      <p>Une archive peut contenir une entrée nommée <code>../../Rhino/plugin.dll</code>. Décompressée naïvement, elle écrit hors du dossier prévu. Même parade, appliquée à chaque entrée de l'archive.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Chercher la chaîne <code>".."</code> dans la demande pour la refuser. Les encodages (<code>%2e%2e</code>), les antislashs Windows et les chemins absolus passent à côté. On ne filtre pas la demande : on vérifie le <b>résultat</b> une fois résolu.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 64 · Les injections</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 64</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Paramètres, échappement, dossier gardé</h2>
+  <p style="max-width:165mm">Magpie reçoit des données de l'extérieur à trois endroits : les requêtes de l'API, les fichiers servis, les paquets de parcours importés. Chacun a sa parade.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">magpie/web/compute-proxy.mjs · db.mjs</span></div>
+<div class="l k1"><span class="n">170</span>db.prepare(<span class="st">"SELECT … WHERE id = ?"</span>).get(exerciseId)<span class="rep r1">1</span></div>
+<div class="l k1"><span class="n">117</span>  <span class="kw">VALUES</span> (?, <span class="kw">NULL</span>, ?, ?, ?, ?, ?)</div>
+<div class="l"><span class="cm">magpie/web/src/serializer/xml-builder.mjs</span></div>
+<div class="l k2"><span class="n">27</span>.replace(<span class="st">/&amp;/g</span>, <span class="st">"&amp;amp;"</span>)<span class="rep r2">2</span></div>
+<div class="l k2"><span class="n">28</span>.replace(<span class="st">/&lt;/g</span>, <span class="st">"&amp;lt;"</span>)</div>
+<div class="l k2"><span class="n">73</span><span class="kw">return</span> `${pad}&lt;item ${attrs}&gt;${escapeXml(node.value)}…`;</div>
+<div class="l"><span class="cm">magpie/web/compute-proxy.mjs</span></div>
+<div class="l k3"><span class="n">496</span><span class="kw">const</span> file = normalize(join(DIST_DIR, path));<span class="rep r3">3</span></div>
+<div class="l k3"><span class="n">497</span><span class="kw">if</span> (!file.startsWith(DIST_DIR + sep) &amp;&amp; …) <span class="kw">throw</span> …404</div>
+<div class="l"><span class="cm">magpie/plugin/Core/ImportParcours.cs</span></div>
+<div class="l k4"><span class="n">97</span><span class="cm">// ExtractToDirectory refuse d'elle-même une entrée</span><span class="rep r4">4</span></div>
+<div class="l k4"><span class="n">98</span><span class="cm">// qui sortirait du dossier (« ../ ») …</span></div>
+<div class="l k4"><span class="n">99</span><span class="ty">ZipFile</span>.ExtractToDirectory(chemin, dossier);</div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Toujours des ?</b>Aucune requête du serveur n'insère une donnée par concaténation.</li>
+      <li><span class="rep r2">2</span><b>Échapper le XML à la main</b>Le format de Grasshopper n'a pas de bibliothèque : le &amp; d'abord, sinon il serait échappé deux fois.</li>
+      <li><span class="rep r3">3</span><b>Vérifier le résultat</b>Le chemin résolu doit rester sous dist/.</li>
+      <li><span class="rep r4">4</span><b>Zip slip couvert</b>La bibliothèque .NET fait le contrôle.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">Pourquoi le &amp; passe en premier (xml-builder.mjs:27)</span>
+    Si l'on remplaçait d'abord <code>&lt;</code> par <code>&amp;lt;</code>, le remplacement suivant de <code>&amp;</code> transformerait ce <code>&amp;lt;</code> en <code>&amp;amp;lt;</code>. Commencer par l'esperluette garantit que chaque caractère n'est échappé qu'une fois. Les attributs étant entre guillemets doubles, l'apostrophe n'a pas besoin d'être échappée.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 64 · Les injections</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 64</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Une injection, c'est…</div><ul>
+      <li><span>A</span>un virus</li><li><span>B</span>une fuite mémoire</li><li><span>C</span>une donnée qui devient instruction</li><li><span>D</span>une erreur réseau</li></ul></div>
+
+    <div class="q"><div class="enonce">La parade principale en SQL…</div><ul>
+      <li><span>A</span>retirer les apostrophes</li><li><span>B</span>HTTPS</li><li><span>C</span>la requête paramétrée</li><li><span>D</span>mettre en majuscules</li></ul></div>
+
+    <div class="q"><div class="enonce">Un nom de colonne choisi par l'utilisateur…</div><ul>
+      <li><span>A</span>est interdit</li><li><span>B</span>se concatène</li><li><span>C</span>se prend dans une liste blanche</li><li><span>D</span>passe en paramètre ?</li></ul></div>
+
+    <div class="q"><div class="enonce">Retirer les apostrophes à la main…</div><ul>
+      <li><span>A</span>accélère</li><li><span>B</span>est obligatoire</li><li><span>C</span>suffit</li><li><span>D</span>oublie des cas et abîme les données</li></ul></div>
+
+    <div class="q"><div class="enonce">Le XSS est une injection dans…</div><ul>
+      <li><span>A</span>une page HTML</li><li><span>B</span>un en-tête</li><li><span>C</span>un zip</li><li><span>D</span>une base SQL</li></ul></div>
+
+    <div class="q"><div class="enonce">En React, <code>{titre}</code> affiche <code>&lt;b&gt;</code>…</div><ul>
+      <li><span>A</span>pas du tout</li><li><span>B</span>tel quel, comme texte</li><li><span>C</span>en erreur</li><li><span>D</span>en gras</li></ul></div>
+
+    <div class="q"><div class="enonce">Sont des échappements adaptés : <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>JSON.stringify pour du JSON</li><li><span>B</span>encodeURIComponent pour une URL</li><li><span>C</span>escapeXml pour du SQL</li><li><span>D</span>Regex.Escape pour un motif</li></ul></div>
+
+    <div class="q"><div class="enonce">Dans escapeXml, &amp; est remplacé en premier pour…</div><ul>
+      <li><span>A</span>l'ordre alphabétique</li><li><span>B</span>ne pas échapper deux fois</li><li><span>C</span>rien</li><li><span>D</span>la vitesse</li></ul></div>
+
+    <div class="q"><div class="enonce">Contre la traversée de chemin, on…</div><ul>
+      <li><span>A</span>cherche ".." dans la demande</li><li><span>B</span>refuse les GET</li><li><span>C</span>met le site en HTTPS</li><li><span>D</span>vérifie le chemin résolu</li></ul></div>
+
+    <div class="q"><div class="enonce">Pourquoi <code>DIST_DIR + sep</code> ?</div><ul>
+      <li><span>A</span>exclure dist-secret/</li><li><span>B</span>pour Windows seulement</li><li><span>C</span>sans raison</li><li><span>D</span>pour la vitesse</li></ul></div>
+
+    <div class="q"><div class="enonce">Le zip slip, c'est…</div><ul>
+      <li><span>A</span>un mot de passe de zip</li><li><span>B</span>une entrée d'archive qui sort du dossier</li><li><span>C</span>un zip trop gros</li><li><span>D</span>un zip corrompu</li></ul></div>
+
+    <div class="q"><div class="enonce">Données suspectes : <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>une constante du code</li><li><span>B</span>un corps de requête</li><li><span>C</span>une URL demandée</li><li><span>D</span>un paquet importé</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 64 · Les injections</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 64</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · C.</b> Elle franchit la frontière du langage.</div>
+    <div><b>02 · C.</b> Texte et valeurs séparés.</div>
+    <div><b>03 · C.</b> Un nom ne se paramètre pas.</div>
+    <div><b>04 · D.</b> « l'arc » perd son apostrophe.</div>
+    <div><b>05 · A.</b> Cross-site scripting.</div>
+    <div><b>06 · B.</b> React échappe.</div>
+    <div><b>07 · A, B et D.</b> Chacun son format.</div>
+    <div><b>08 · B.</b> xml-builder.mjs:27.</div>
+    <div><b>09 · D.</b> compute-proxy.mjs:496–497.</div>
+    <div><b>10 · A.</b> Même début de nom.</div>
+    <div><b>11 · B.</b> ImportParcours.cs:97–99.</div>
+    <div><b>12 · B, C et D.</b> Tout ce qui vient de dehors.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 65, « Hachage et intégrité ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">prepare("… = ?").get(v)</td><td>requête paramétrée</td><td>compute-proxy.mjs:170</td></tr>
+      <tr><td class="c">VALUES (?, ?, …)</td><td>insertion paramétrée, répétée</td><td>db.mjs:115–117</td></tr>
+      <tr><td class="c">escapeXml(v)</td><td>échapper pour XML, &amp; d'abord</td><td>xml-builder.mjs:25–30</td></tr>
+      <tr><td class="c">normalize(join(…)) + startsWith</td><td>rester dans le dossier</td><td>compute-proxy.mjs:496–497</td></tr>
+      <tr><td class="c">ZipFile.ExtractToDirectory</td><td>décompresser sans zip slip</td><td>ImportParcours.cs:99</td></tr>
+      <tr><td class="c">{texte} en JSX</td><td>afficher sans interpréter</td><td>tout le front Magpie</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Injection</dt><dd>Une donnée insérée dans un texte interprété, qui en modifie le sens.</dd>
+    <dt>Requête paramétrée</dt><dd>Une requête au texte fixe dont les valeurs sont transmises à part.</dd>
+    <dt>Échappement</dt><dd>Remplacer les caractères spéciaux d'un langage par leur forme neutre.</dd>
+    <dt>XSS</dt><dd>Une injection de HTML ou de script dans une page affichée à d'autres.</dd>
+    <dt>Traversée de chemin</dt><dd>Sortir du dossier prévu avec des « .. » dans un chemin demandé.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 65</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 64 · Les injections</div>
+</section>
+
+</body>
+</html>

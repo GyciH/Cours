@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>40 · L'éditeur d'exercices</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-12">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Cours 40</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>L'éditeur d'exercices</h1>
+  <p class="chapeau">Pour créer un exercice Magpie, l'auteur ne remplit pas un fichier : il <b>résout l'exercice</b> dans Grasshopper, branche sa solution sur l'éditeur, et dépose sous lui les composants que l'apprenant trouvera au départ. Un clic sur Enregistrer, et tout part dans un fichier JSON.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>12</b>, <b>20</b>, <b>21</b> et <b>37</b></span>
+    <span class="pastille">Exemples · <b>Admin/MagpieExerciseEditor.cs</b>, <b>Admin/ModesCorrection.cs</b>, <b>Core/ValidationMode.cs</b> (Magpie)</span>
+  </div>
+
+  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+    <svg viewBox="0 0 600 262" width="100%">
+<rect x="10" y="40" width="60" height="24" rx="5" fill="#D8D8D8" stroke="#2B2F33" stroke-width="1.2"/>
+<text x="40.0" y="56" font-size="8" fill="#2B2F33" text-anchor="middle" font-weight="700">Series</text>
+<rect x="90" y="40" width="60" height="24" rx="5" fill="#D8D8D8" stroke="#2B2F33" stroke-width="1.2"/>
+<text x="120.0" y="56" font-size="8" fill="#2B2F33" text-anchor="middle" font-weight="700">Square</text>
+<line x1="70" y1="52" x2="90" y2="52" stroke="#2B2F33" stroke-width="1.2"/>
+<text x="80" y="30" font-size="7.8" fill="#6B7378" text-anchor="middle" font-style="italic">la solution de l'auteur</text>
+<path d="M150 52 C 175 52, 175 120, 196 120" fill="none" stroke="#2B2F33" stroke-width="1.3"/>
+<rect x="196" y="10" width="230" height="172" rx="6" fill="#3A3A3A" stroke="#2B2F33"/>
+<text x="206" y="26" font-size="8.6" fill="#fff" text-anchor="start" font-weight="700">Éditeur d'exercice</text>
+<rect x="380" y="15" width="18" height="14" rx="3" fill="#555"/><rect x="402" y="15" width="18" height="14" rx="3" fill="#555"/>
+<rect x="206" y="36" width="210" height="18" rx="3" fill="#F2F2F2"/>
+<text x="212" y="48.5" font-size="7.4" fill="#6B7378" text-anchor="start">Id</text><text x="260" y="48.5" font-size="7.8" fill="#2B2F33" text-anchor="start">carres</text>
+<rect x="206" y="58" width="210" height="18" rx="3" fill="#F2F2F2"/>
+<text x="212" y="70.5" font-size="7.4" fill="#6B7378" text-anchor="start">Titre</text><text x="260" y="70.5" font-size="7.8" fill="#2B2F33" text-anchor="start">Les carrés</text>
+<rect x="206" y="80" width="210" height="18" rx="3" fill="#F2F2F2"/>
+<text x="212" y="92.5" font-size="7.4" fill="#6B7378" text-anchor="start">Consigne</text><text x="260" y="92.5" font-size="7.8" fill="#2B2F33" text-anchor="start">Construis la liste…</text>
+<rect x="206" y="102" width="210" height="18" rx="3" fill="#F2F2F2"/>
+<text x="212" y="114.5" font-size="7.4" fill="#6B7378" text-anchor="start">Mode</text><text x="260" y="114.5" font-size="7.8" fill="#2B2F33" text-anchor="start">Liste ordonnée (nombres) ▾</text>
+<rect x="206" y="132" width="10" height="10" fill="#F2F2F2"/><text x="222" y="141" font-size="7.6" fill="#ddd" text-anchor="start">Tolérance</text><rect x="286" y="132" width="10" height="10" fill="#F2F2F2"/><text x="302" y="141" font-size="7.6" fill="#ddd" text-anchor="start">Branches vides comptent</text>
+<rect x="206" y="158" width="210" height="16" rx="3" fill="#C2410C"/><text x="311.0" y="169.5" font-size="8.2" fill="#fff" text-anchor="middle" font-weight="700">Enregistrer</text>
+<circle cx="196" cy="120" r="4" fill="#fff" stroke="#2B2F33" stroke-width="1.3"/>
+<text x="190" y="112" font-size="7.4" fill="#2B2F33" text-anchor="end" font-weight="700">Réponse attendue</text>
+<rect x="196" y="192" width="230" height="58" rx="4" fill="none" stroke="#C2410C" stroke-width="1.3" stroke-dasharray="5 3"/>
+<text x="204" y="204" font-size="7.6" fill="#C2410C" text-anchor="start" font-weight="700">Composants de départ</text>
+<rect x="216" y="214" width="60" height="24" rx="5" fill="#fff" stroke="#2B2F33" stroke-width="1.2"/>
+<text x="246.0" y="230" font-size="8" fill="#2B2F33" text-anchor="middle" font-weight="700">Series</text>
+<rect x="296" y="214" width="70" height="24" rx="5" fill="#fff" stroke="#2B2F33" stroke-width="1.2"/>
+<text x="331.0" y="230" font-size="8" fill="#2B2F33" text-anchor="middle" font-weight="700">Number</text>
+<line x1="430" y1="84" x2="466" y2="84" stroke="#6B7378" stroke-width="1.4"/><polygon points="466,84 459.6,86.7 459.6,81.3" fill="#6B7378"/>
+<path d="M470 52 h92 l16 16 v62 h-108 z" fill="#fff" stroke="#6D4C41" stroke-width="1.4"/>
+<text x="478" y="70" font-size="8" fill="#6D4C41" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">Exercises\</text>
+<text x="478" y="84" font-size="8.6" fill="#6D4C41" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">carres.json</text>
+<text x="478" y="104" font-size="7.6" fill="#2B2F33" text-anchor="start">consigne, mode,</text>
+<text x="478" y="116" font-size="7.6" fill="#2B2F33" text-anchor="start">réponse, départ</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Un seul composant tient tout l'exercice : les champs saisis dans sa capsule, la réponse attendue sur son unique entrée, et une zone en pointillés dont les composants deviennent le graphe de départ de l'apprenant.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Un professeur qui prépare une feuille d'exercice en la faisant lui-même : il écrit l'énoncé en haut, garde son corrigé de côté, et laisse sur la feuille les premières lignes à compléter.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>choisir un mode de correction et sa tolérance ;</li>
+        <li>dire quand un composant entre dans la zone de départ ;</li>
+        <li>suivre les contrôles faits avant d'enregistrer ;</li>
+        <li>expliquer l'état « Enregistré » et son empreinte.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:5mm">
+    <span class="titre">À retenir</span>
+    L'Id de l'exercice est aussi son nom de fichier : <code>Exercises\&lt;Id&gt;.json</code> dans le dossier de travail (MagpieRepository.cs, lignes 90–95). C'est pourquoi l'éditeur refuse un Id vide ou qui contient un caractère interdit dans un nom de fichier (ligne 585).
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 40 · L'éditeur d'exercices</div>
+</section>
+
+<!-- ============ PAGE 2 · LES MODES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Cours 40</b></div>
+  <p class="rubrique">Schéma 1 · Les modes de correction</p>
+  <h2>Sept façons de comparer</h2>
+  <p style="max-width:165mm">Le mode dit comment la réponse de l'apprenant sera comparée à celle de l'auteur. Il dit aussi ce que la prise « Réponse attendue » doit recevoir, et si la case Tolérance a un sens.</p>
+
+  <svg viewBox="0 0 600 236" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="236" fill="#EFE9E1"/>
+<rect x="16" y="12" width="568" height="22" rx="4" fill="#C2410C"/>
+<text x="26" y="27" font-size="8.8" fill="#fff" text-anchor="start" font-weight="700">Mode (libellé du menu)</text>
+<text x="232" y="27" font-size="8.8" fill="#fff" text-anchor="start" font-weight="700">La prise attend</text>
+<text x="360" y="27" font-size="8.8" fill="#fff" text-anchor="start" font-weight="700">Tolérance</text>
+<text x="476" y="27" font-size="8.8" fill="#fff" text-anchor="start" font-weight="700">Arbre possible</text>
+<rect x="16" y="38" width="568" height="24" fill="#fff"/>
+<text x="26" y="54" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700">Liste ordonnée (nombres)</text>
+<text x="232" y="54" font-size="8.4" fill="#2B2F33" text-anchor="start">des nombres</text>
+<text x="360" y="54" font-size="8.4" fill="#6B7378" text-anchor="start">—</text>
+<text x="476" y="54" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700">oui</text>
+<rect x="16" y="64" width="568" height="24" fill="#FCEDE5"/>
+<text x="26" y="80" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700">Liste, ordre libre (nombres)</text>
+<text x="232" y="80" font-size="8.4" fill="#2B2F33" text-anchor="start">des nombres</text>
+<text x="360" y="80" font-size="8.4" fill="#6B7378" text-anchor="start">—</text>
+<text x="476" y="80" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700">oui</text>
+<rect x="16" y="90" width="568" height="24" fill="#fff"/>
+<text x="26" y="106" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700">Valeur unique (nombre)</text>
+<text x="232" y="106" font-size="8.4" fill="#2B2F33" text-anchor="start">un nombre</text>
+<text x="360" y="106" font-size="8.4" fill="#6B7378" text-anchor="start">—</text>
+<text x="476" y="106" font-size="8.4" fill="#C62828" text-anchor="start" font-weight="700">non</text>
+<rect x="16" y="116" width="568" height="24" fill="#FCEDE5"/>
+<text x="26" y="132" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700">Nombres avec tolérance</text>
+<text x="232" y="132" font-size="8.4" fill="#2B2F33" text-anchor="start">des nombres</text>
+<text x="360" y="132" font-size="8.4" fill="#E65100" text-anchor="start" font-weight="700">obligatoire</text>
+<text x="476" y="132" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700">oui</text>
+<rect x="16" y="142" width="568" height="24" fill="#fff"/>
+<text x="26" y="158" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700">Liste ordonnée (textes)</text>
+<text x="232" y="158" font-size="8.4" fill="#2B2F33" text-anchor="start">des textes</text>
+<text x="360" y="158" font-size="8.4" fill="#6B7378" text-anchor="start">—</text>
+<text x="476" y="158" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700">oui</text>
+<rect x="16" y="168" width="568" height="24" fill="#FCEDE5"/>
+<text x="26" y="184" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700">Liste, ordre libre (textes)</text>
+<text x="232" y="184" font-size="8.4" fill="#2B2F33" text-anchor="start">des textes</text>
+<text x="360" y="184" font-size="8.4" fill="#6B7378" text-anchor="start">—</text>
+<text x="476" y="184" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700">oui</text>
+<rect x="16" y="194" width="568" height="24" fill="#fff"/>
+<text x="26" y="210" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700">Géométrie avec tolérance</text>
+<text x="232" y="210" font-size="8.4" fill="#2B2F33" text-anchor="start">une géométrie</text>
+<text x="360" y="210" font-size="8.4" fill="#1565C0" text-anchor="start" font-weight="700">facultative</text>
+<text x="476" y="210" font-size="8.4" fill="#C62828" text-anchor="start" font-weight="700">non</text>
+<text x="16" y="230" font-size="8" fill="#6B7378" text-anchor="start" font-style="italic">Facultative : décochée, Magpie prend une tolérance de repli (ComparaisonGeometrie.ToleranceDeRepli).</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Admin/ModesCorrection.cs · 45–52</span>public static bool AvecTolerance(ValidationMode mode)
+    => mode == ValidationMode.NumericTolerance || mode == ValidationMode.GeometryTolerance;
+
+public static bool ToleranceObligatoire(ValidationMode mode)
+    => mode == ValidationMode.NumericTolerance;
+
+public static bool EstTexte(ValidationMode mode)
+    => mode == ValidationMode.ExactOrderedListText || mode == ValidationMode.SetEqualityText;</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Deux noms par mode</h3>
+      <p>Sur le canvas, l'auteur lit « Liste ordonnée (nombres) » ; dans le JSON, c'est <code>ExactOrderedList</code>. Les libellés vivent dans <code>ModesCorrection</code> (lignes 28–37) ; les noms techniques ne se lisent jamais sur le canvas, car ils sont un format de fichier.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Un arbre, en mode liste seulement</h3>
+      <p>Une réponse attendue à plusieurs branches est un arbre : sa forme sera vérifiée aussi (issue #10). Seuls les cinq modes de liste savent comparer branche par branche ; avec un autre mode, l'éditeur refuse d'enregistrer (ligne 615).</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Ajouter un mode au milieu de l'énumération. Les vieux exercices portent leur mode en entier (<code>"Mode": 0</code>), lu comme une position : insérer un membre décale tous les suivants et change en silence le mode de ces fichiers. Un nouveau mode s'ajoute à la fin (ValidationMode.cs, lignes 12–15).
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 40 · L'éditeur d'exercices</div>
+</section>
+
+<!-- ============ PAGE 3 · LA ZONE DE DÉPART ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Cours 40</b></div>
+  <p class="rubrique">Schéma 2 · La zone de départ</p>
+  <h2>C'est le centre qui décide</h2>
+  <p style="max-width:165mm">Sous la capsule, la zone en pointillés tient lieu de groupe. Un composant dont le <b>centre</b> tombe dedans en devient membre ; la zone grandit pour l'entourer, avec 12 unités de marge, et suit l'éditeur quand on le déplace.</p>
+
+  <svg viewBox="0 0 600 200" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="200" fill="#EFE9E1"/>
+<rect x="30" y="14" width="200" height="34" rx="6" fill="#3A3A3A"/><text x="130" y="35" font-size="9" fill="#fff" text-anchor="middle" font-weight="700">Éditeur</text>
+<rect x="30" y="58" width="300" height="122" rx="4" fill="none" stroke="#C2410C" stroke-width="1.4" stroke-dasharray="5 3"/>
+<rect x="30" y="58" width="200" height="70" fill="none" stroke="#6B7378" stroke-width=".8" stroke-dasharray="2 3"/>
+<text x="36" y="122" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">zone minimale</text>
+<rect x="250" y="140" width="68" height="24" rx="5" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="256" y="155.5" font-size="7.4" fill="#2E7D32" text-anchor="start" font-weight="700">Square</text>
+<circle cx="284.0" cy="152" r="3.2" fill="#2E7D32"/>
+<rect x="238" y="128" width="92" height="48" fill="none" stroke="#2E7D32" stroke-width=".8" stroke-dasharray="2 2"/>
+<text x="338" y="150" font-size="7.4" fill="#2E7D32" text-anchor="start" font-weight="700">+12 de marge : la zone</text>
+<text x="338" y="162" font-size="7.4" fill="#2E7D32" text-anchor="start">a grandi pour l'entourer</text>
+<rect x="60" y="80" width="80" height="24" rx="5" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="66" y="95.5" font-size="7.4" fill="#2E7D32" text-anchor="start" font-weight="700">Series</text>
+<circle cx="100.0" cy="92" r="3.2" fill="#2E7D32"/>
+<rect x="296" y="70" width="90" height="24" rx="5" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="302" y="85.5" font-size="7.4" fill="#C62828" text-anchor="start" font-weight="700">Number</text>
+<circle cx="341.0" cy="82" r="3.2" fill="#C62828"/>
+<text x="250" y="52" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">centre hors de la zone : pas membre</text>
+<rect x="452" y="20" width="132" height="160" rx="5" fill="#fff" stroke="#C2410C"/>
+<text x="462" y="40" font-size="9" fill="#C2410C" text-anchor="start" font-weight="700">À la fin du geste</text>
+<text x="462" y="60" font-size="7.8" fill="#2B2F33" text-anchor="start">seuls les objets déplacés</text>
+<text x="462" y="73" font-size="7.8" fill="#2B2F33" text-anchor="start">sont réexaminés, dans</text>
+<text x="462" y="86" font-size="7.8" fill="#2B2F33" text-anchor="start">la zone calculée</text>
+<text x="462" y="99" font-size="7.8" fill="#2B2F33" text-anchor="start">SANS eux.</text>
+<text x="462" y="112" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Centre dedans : membre.</text>
+<text x="462" y="125" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Centre dehors : retiré.</text>
+<text x="462" y="138" font-size="7.8" fill="#2B2F33" text-anchor="start"></text>
+<text x="462" y="151" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Éditeur déplacé aussi :</text>
+<text x="462" y="164" font-size="7.8" fill="#2B2F33" text-anchor="start">rien ne change.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Admin/MagpieExerciseEditor.cs · 502–514</span>var ids = new HashSet&lt;Guid&gt;(deplaces.Select(o => o.InstanceGuid));
+var zone = Attrs.ZoneSans(ids);
+…
+foreach (var obj in deplaces)
+{
+    if (!Adherable(obj, this)) continue;
+    if (zone.Contains(Centre(obj))) change |= AjouterMembre(obj);
+    else change |= _membres.Remove(obj.InstanceGuid);
+}
+if (change) ApresChangementDeZone();</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Lu à la fin du geste</h3>
+      <p>À l'enfoncement du bouton, l'éditeur note où est chaque objet (ligne 468). Au relâchement, il attend que Grasshopper ait fini (<code>BeginInvoke</code>, ligne 480), puis ne réexamine que les objets qui ont bougé, dans la zone <b>sans eux</b> : un membre ne se garde pas dedans parce qu'il l'a lui-même agrandie.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Une liste, pas un groupe</h3>
+      <p>Les membres sont une liste d'<code>InstanceGuid</code> que l'éditeur garde (ligne 75), pas un <code>GH_Group</code> qu'on pourrait vider ou supprimer par accident. Un éditeur collé abandonne les membres déjà revendiqués par l'original (ligne 396).</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Déplacer l'éditeur avec un composant sélectionné en même temps. C'est un déplacement d'ensemble : la zone suit, et rien n'y entre ni n'en sort (lignes 494–500). Pour faire entrer un composant, il faut le glisser seul jusqu'à ce que son centre soit dans la zone.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 40 · L'éditeur d'exercices</div>
+</section>
+
+<!-- ============ PAGE 4 · ENREGISTRER ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Cours 40</b></div>
+  <p class="rubrique">Schéma 3 · Enregistrer</p>
+  <h2>Valider, demander, écrire, retenir</h2>
+  <p style="max-width:165mm">Enregistrer ne se contente pas d'écrire. L'éditeur vérifie d'abord que l'exercice est jouable, demande avant d'écraser, puis retient une empreinte de ce qu'il vient d'écrire pour savoir, plus tard, si quelque chose a changé.</p>
+
+  <svg viewBox="0 0 600 176" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="176" fill="#EFE9E1"/>
+<rect x="12" y="22" width="88" height="70" rx="5" fill="#fff" stroke="#1565C0" stroke-width="1.4"/>
+<text x="56" y="42" font-size="8.4" fill="#1565C0" text-anchor="middle" font-weight="700">Valider</text>
+<text x="56" y="62" font-size="7.8" fill="#2B2F33" text-anchor="middle">Id, réponse,</text>
+<text x="56" y="76" font-size="7.8" fill="#2B2F33" text-anchor="middle">tolérance, arbre</text>
+<line x1="101" y1="57" x2="109" y2="57" stroke="#6B7378" stroke-width="1"/><polygon points="109,57 102.6,59.7 102.6,54.3" fill="#6B7378"/>
+<rect x="110" y="22" width="88" height="70" rx="5" fill="#fff" stroke="#1565C0" stroke-width="1.4"/>
+<text x="154" y="42" font-size="8.4" fill="#1565C0" text-anchor="middle" font-weight="700">Copier</text>
+<text x="154" y="62" font-size="7.8" fill="#2B2F33" text-anchor="middle">le graphe</text>
+<text x="154" y="76" font-size="7.8" fill="#2B2F33" text-anchor="middle">de départ</text>
+<line x1="199" y1="57" x2="207" y2="57" stroke="#6B7378" stroke-width="1"/><polygon points="207,57 200.6,59.7 200.6,54.3" fill="#6B7378"/>
+<rect x="208" y="22" width="88" height="70" rx="5" fill="#fff" stroke="#E65100" stroke-width="1.4"/>
+<text x="252" y="42" font-size="8.4" fill="#E65100" text-anchor="middle" font-weight="700">Autre exercice</text>
+<text x="252" y="62" font-size="7.8" fill="#2B2F33" text-anchor="middle">même Id ?</text>
+<text x="252" y="76" font-size="7.8" fill="#2B2F33" text-anchor="middle">demander</text>
+<line x1="297" y1="57" x2="305" y2="57" stroke="#6B7378" stroke-width="1"/><polygon points="305,57 298.6,59.7 298.6,54.3" fill="#6B7378"/>
+<rect x="306" y="22" width="88" height="70" rx="5" fill="#fff" stroke="#E65100" stroke-width="1.4"/>
+<text x="350" y="42" font-size="8.4" fill="#E65100" text-anchor="middle" font-weight="700">Départ vidé ?</text>
+<text x="350" y="62" font-size="7.8" fill="#2B2F33" text-anchor="middle">il en avait un :</text>
+<text x="350" y="76" font-size="7.8" fill="#2B2F33" text-anchor="middle">demander</text>
+<line x1="395" y1="57" x2="403" y2="57" stroke="#6B7378" stroke-width="1"/><polygon points="403,57 396.6,59.7 396.6,54.3" fill="#6B7378"/>
+<rect x="404" y="22" width="88" height="70" rx="5" fill="#fff" stroke="#2E7D32" stroke-width="1.4"/>
+<text x="448" y="42" font-size="8.4" fill="#2E7D32" text-anchor="middle" font-weight="700">SaveExercise</text>
+<text x="448" y="62" font-size="7.8" fill="#2B2F33" text-anchor="middle">Exercises\</text>
+<text x="448" y="76" font-size="7.8" fill="#2B2F33" text-anchor="middle">&lt;Id&gt;.json</text>
+<line x1="493" y1="57" x2="501" y2="57" stroke="#6B7378" stroke-width="1"/><polygon points="501,57 494.6,59.7 494.6,54.3" fill="#6B7378"/>
+<rect x="502" y="22" width="88" height="70" rx="5" fill="#fff" stroke="#7B1FA2" stroke-width="1.4"/>
+<text x="546" y="42" font-size="8.4" fill="#7B1FA2" text-anchor="middle" font-weight="700">Empreinte</text>
+<text x="546" y="62" font-size="7.8" fill="#2B2F33" text-anchor="middle">SHA-256 sans</text>
+<text x="546" y="76" font-size="7.8" fill="#2B2F33" text-anchor="middle">positions</text>
+<line x1="56" y1="93" x2="56" y2="120" stroke="#C62828" stroke-width="1.2"/><polygon points="56,120 53.3,113.6 58.7,113.6" fill="#C62828"/>
+<line x1="252" y1="93" x2="252" y2="120" stroke="#C62828" stroke-width="1.2"/><polygon points="252,120 249.3,113.6 254.7,113.6" fill="#C62828"/>
+<line x1="350" y1="93" x2="350" y2="120" stroke="#C62828" stroke-width="1.2"/><polygon points="350,120 347.3,113.6 352.7,113.6" fill="#C62828"/>
+<rect x="12" y="122" width="382" height="26" rx="4" fill="#FBEAEA" stroke="#C62828"/>
+<text x="203" y="139" font-size="8.2" fill="#C62828" text-anchor="middle" font-weight="700">refus ou « Non » : un message sur le composant, rien n'est écrit</text>
+<text x="12" y="168" font-size="8.2" fill="#6B7378" text-anchor="start" font-style="italic">« Non » est le bouton par défaut des deux questions : Entrée ne détruit rien.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Admin/MagpieExerciseEditor.cs · 289–296, 319–325</span>private string CalculerSignature()
+{
+    var sb = new StringBuilder();
+    sb.Append(Id).Append('\u001f').Append(Titre).Append('\u001f').Append(Consigne).Append('\u001f') …
+    …
+    using (var sha = SHA256.Create())
+        return Convert.ToBase64String(sha.ComputeHash(Encoding.UTF8.GetBytes(sb.ToString())));
+}
+private static readonly Regex RetirerPositions = new Regex("&lt;item name=\"(Bounds|Pivot)\"[\\s\\S]*?&lt;/item&gt;", …);</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Deux empreintes, pas le fichier</h3>
+      <p>Le bouton affiche « Enregistré » tant que l'empreinte du contenu actuel égale celle prise à l'enregistrement. On ne compare pas au fichier : le graphe de départ y est une archive Grasshopper, rien ne garantit qu'elle se reproduise à l'octet près (lignes 281–284).</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Déplacer n'est pas modifier</h3>
+      <p>Avant le hachage, les positions et les cadres des composants de départ sont retirés de leur archive (<code>RetirerPositions</code>). Ranger la zone ne fait donc pas repasser le bouton à « Enregistrer » ; changer une valeur, si.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Écraser un autre exercice en réutilisant son Id. L'éditeur le demande, et le bouton par défaut est « Non » (<code>Button2</code>, ligne 572). Même garde-fou si la zone est vide alors que l'exercice existant avait des composants de départ (lignes 543–552).
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 40 · L'éditeur d'exercices</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Cours 40</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Enregistrer, en entier</h2>
+  <p style="max-width:165mm">La méthode appelée par le bouton. Chaque refus laisse un message sur le composant et n'écrit rien ; une seule ligne touche au disque.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="n">519</span><span class="kw">public void</span> Enregistrer()</div>
+<div class="l k1"><span class="n">525</span>  <span class="kw">if</span> (!Valider(<span class="kw">out var</span> def, <span class="kw">out string</span> erreur))<span class="rep r1">1</span></div>
+<div class="l k1"><span class="n">527</span>  { Signaler(Error, erreur); <span class="kw">return</span>; }</div>
+<div class="l k2"><span class="n">531</span>  def.StarterGraphText = CopierGrapheDeDepart(doc);<span class="rep r2">2</span></div>
+<div class="l k3"><span class="n">533</span>  <span class="kw">var</span> existant = <span class="ty">MagpieRepository</span>.LoadExercise(def.Id);<span class="rep r3">3</span></div>
+<div class="l k3"><span class="n">534</span>  <span class="kw">bool</span> memeFichier = <span class="kw">string</span>.Equals(def.Id,</div>
+<div class="l k3"><span class="n"> </span>    _idEnregistre, OrdinalIgnoreCase);</div>
+<div class="l k4"><span class="n">536</span>  <span class="kw">if</span> (existant != <span class="kw">null</span> &amp;&amp; !memeFichier &amp;&amp;<span class="rep r4">4</span></div>
+<div class="l k4"><span class="n">537</span>      !Confirmer(<span class="st">$"… existe déjà. Le remplacer ?"</span>))</div>
+<div class="l k4"><span class="n"> </span>  { Signaler(Remark, <span class="st">"Enregistrement annulé."</span>); …</div>
+<div class="l k5"><span class="n">545</span>  <span class="kw">if</span> (<span class="kw">string</span>.IsNullOrEmpty(def.StarterGraphText)<span class="rep r5">5</span></div>
+<div class="l k5"><span class="n">546</span>      &amp;&amp; existant?.StarterGraphText <span class="cm">non vide</span></div>
+<div class="l k5"><span class="n">547</span>      &amp;&amp; !Confirmer(<span class="st">"… canvas nu ?"</span>)) …</div>
+<div class="l k6"><span class="n">556</span>  <span class="kw">try</span> { <span class="ty">MagpieRepository</span>.SaveExercise(def); }<span class="rep r6">6</span></div>
+<div class="l k6"><span class="n">558</span>  <span class="kw">catch</span> (<span class="ty">Exception</span> ex) { Signaler(Error, …); <span class="kw">return</span>; }</div>
+<div class="l k7"><span class="n">564</span>  _idEnregistre = def.Id;<span class="rep r7">7</span></div>
+<div class="l k7"><span class="n">565</span>  _signatureEnregistree = CalculerSignature();</div>
+<div class="l k7"><span class="n">566</span>  InvaliderEtat();</div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Valider</b>Id, réponse branchée, tolérance, arbre et mode.</li>
+      <li><span class="rep r2">2</span><b>Le graphe de départ</b>Les membres, archivés comme un copier Grasshopper.</li>
+      <li><span class="rep r3">3</span><b>Existe-t-il déjà ?</b>Et est-ce celui que cet éditeur a écrit ?</li>
+      <li><span class="rep r4">4</span><b>Demander avant d'écraser</b>Sauf son propre fichier.</li>
+      <li><span class="rep r5">5</span><b>Ne pas vider en silence</b>Un départ existant contre une zone vide.</li>
+      <li><span class="rep r6">6</span><b>Écrire</b>La seule ligne qui touche au disque.</li>
+      <li><span class="rep r7">7</span><b>Retenir</b>Le fichier et l'empreinte, pour « Enregistré ».</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">Un geste, une annulation</span>
+    Chaque changement de champ passe par <code>Modifier</code> (lignes 161–169), qui commence par <code>RecordUndoEvent</code> : Ctrl+Z rend la valeur précédente, comme pour n'importe quel composant. Vider l'éditeur, champs et composants compris, tient aussi en une seule étape d'annulation.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 40 · L'éditeur d'exercices</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Cours 40</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Où est écrit l'exercice d'Id « carres » ?</div><ul>
+      <li><span>A</span>dans le .gh de l'auteur</li><li><span>B</span>dans le .gha</li><li><span>C</span>Exercises\carres.json, dans le dossier de travail</li><li><span>D</span>sur le serveur web</li></ul></div>
+
+    <div class="q"><div class="enonce">La case Tolérance est disponible pour… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>Nombres avec tolérance</li><li><span>B</span>Géométrie avec tolérance</li><li><span>C</span>Liste ordonnée (textes)</li><li><span>D</span>Valeur unique</li></ul></div>
+
+    <div class="q"><div class="enonce">En mode Géométrie, la case Tolérance décochée veut dire…</div><ul>
+      <li><span>A</span>aucune tolérance</li><li><span>B</span>erreur</li><li><span>C</span>tolérance 1</li><li><span>D</span>une tolérance de repli choisie par Magpie</li></ul></div>
+
+    <div class="q"><div class="enonce">Pourquoi ajouter un mode à la fin de ValidationMode ?</div><ul>
+      <li><span>A</span>les vieux fichiers lisent le mode par sa position</li><li><span>B</span>par ordre alphabétique</li><li><span>C</span>pour le menu</li><li><span>D</span>pour le web</li></ul></div>
+
+    <div class="q"><div class="enonce">Une réponse attendue à trois branches, en mode Valeur unique :</div><ul>
+      <li><span>A</span>enregistrée telle quelle</li><li><span>B</span>refusée : ce mode n'accepte pas d'arbre</li><li><span>C</span>aplatie en silence</li><li><span>D</span>seule la première compte</li></ul></div>
+
+    <div class="q"><div class="enonce">Un composant entre dans la zone de départ quand…</div><ul>
+      <li><span>A</span>il la touche</li><li><span>B</span>on le relie à l'éditeur</li><li><span>C</span>son centre tombe dedans</li><li><span>D</span>on le sélectionne</li></ul></div>
+
+    <div class="q"><div class="enonce">On déplace l'éditeur et un composant ensemble. Le composant…</div><ul>
+      <li><span>A</span>ne change pas d'appartenance</li><li><span>B</span>entre dans la zone</li><li><span>C</span>sort de la zone</li><li><span>D</span>est supprimé</li></ul></div>
+
+    <div class="q"><div class="enonce">Pourquoi les membres sont-ils une liste de Guid, pas un GH_Group ?</div><ul>
+      <li><span>A</span>c'est plus rapide</li><li><span>B</span>un groupe se vide ou se supprime par accident</li><li><span>C</span>pour le web</li><li><span>D</span>Grasshopper l'impose</li></ul></div>
+
+    <div class="q"><div class="enonce">« Enregistré » s'affiche tant que…</div><ul>
+      <li><span>A</span>le fichier existe</li><li><span>B</span>le .gh est sauvegardé</li><li><span>C</span>aucun clic n'a eu lieu</li><li><span>D</span>l'empreinte actuelle égale celle de l'enregistrement</li></ul></div>
+
+    <div class="q"><div class="enonce">Ranger les composants de départ dans la zone…</div><ul>
+      <li><span>A</span>ne change pas l'empreinte</li><li><span>B</span>oblige à réenregistrer</li><li><span>C</span>efface la réponse</li><li><span>D</span>change l'Id</li></ul></div>
+
+    <div class="q"><div class="enonce">Enregistrer sous l'Id d'un autre exercice existant :</div><ul>
+      <li><span>A</span>écrase sans rien dire</li><li><span>B</span>demande, « Non » par défaut</li><li><span>C</span>refuse toujours</li><li><span>D</span>crée « Id (2) »</li></ul></div>
+
+    <div class="q"><div class="enonce">Ctrl+Z après un changement de mode…</div><ul>
+      <li><span>A</span>ne fait rien</li><li><span>B</span>supprime l'éditeur</li><li><span>C</span>rend le mode précédent</li><li><span>D</span>efface le fichier</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 40 · L'éditeur d'exercices</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Cours 40</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · C.</b> L'Id est le nom du fichier.</div>
+    <div><b>02 · A et B.</b> AvecTolerance, ligne 45.</div>
+    <div><b>03 · D.</b> ToleranceDeRepli : document ou 2 × pas.</div>
+    <div><b>04 · A.</b> « "Mode": 0 » est une position.</div>
+    <div><b>05 · B.</b> Seuls les modes de liste.</div>
+    <div><b>06 · C.</b> zone.Contains(Centre(obj)).</div>
+    <div><b>07 · A.</b> Déplacement d'ensemble.</div>
+    <div><b>08 · B.</b> La zone appartient à l'éditeur.</div>
+    <div><b>09 · D.</b> Deux SHA-256 comparés.</div>
+    <div><b>10 · A.</b> Bounds et Pivot sont retirés.</div>
+    <div><b>11 · B.</b> MessageBoxDefaultButton.Button2.</div>
+    <div><b>12 · C.</b> RecordUndoEvent dans Modifier.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis la page 4 et <code>Enregistrer</code> page 5. <b>10 à 12</b> : passe au cours 41, « Les paquets de parcours ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">ModesCorrection.Libelle(Mode)</td><td>le nom lisible d'un mode</td><td>ModesCorrection.cs:39</td></tr>
+      <tr><td class="c">ModesCorrection.ToleranceObligatoire(Mode)</td><td>tolérance exigée ?</td><td>ModesCorrection.cs:48</td></tr>
+      <tr><td class="c">zone.Contains(Centre(obj))</td><td>entrer dans la zone</td><td>MagpieExerciseEditor.cs:511</td></tr>
+      <tr><td class="c">GrapheDeDepart.Ecrire(doc, ids)</td><td>archiver les membres</td><td>GrapheDeDepart.cs:31</td></tr>
+      <tr><td class="c">MagpieRepository.SaveExercise(def)</td><td>écrire le JSON</td><td>MagpieExerciseEditor.cs:556</td></tr>
+      <tr><td class="c">CalculerSignature() == _signatureEnregistree</td><td>« Enregistré »</td><td>MagpieExerciseEditor.cs:273</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Mode de correction</dt><dd>La règle qui compare la réponse de l'apprenant à celle de l'auteur.</dd>
+    <dt>Réponse attendue</dt><dd>La solution de référence, branchée par l'auteur sur l'éditeur.</dd>
+    <dt>Graphe de départ</dt><dd>Les composants posés d'office sur le canvas de l'apprenant.</dd>
+    <dt>Empreinte (hash)</dt><dd>Un résumé court d'un contenu, qui change dès que le contenu change.</dd>
+    <dt>Garde-fou</dt><dd>Une question posée avant une action qu'on ne pourrait pas défaire.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 41</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 40 · L'éditeur d'exercices</div>
+</section>
+
+</body>
+</html>

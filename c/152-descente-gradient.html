@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>152 · La descente de gradient</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-5">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 5B</b> · Chercher la meilleure forme</span><b>Cours 152</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>La descente de gradient</h1>
+  <p class="chapeau">Quand l'objectif est lisse, sa pente indique où il baisse le plus vite. La descente de gradient fait un pas dans ce sens, mesure à nouveau, et recommence. C'est la méthode la plus simple qui exploite la forme du paysage, et elle fait tourner la plupart des apprentissages automatiques.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>49</b>, <b>50</b>, <b>151</b></span>
+    <span class="pastille">Exemples · <b>Cuttlefish</b></span>
+  </div>
+
+  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+    <svg viewBox="0 0 600 222" width="100%">
+<ellipse cx="150" cy="100" rx="22.1" ry="22.1" fill="none" stroke="#6B7378" stroke-width=".6"/>
+<ellipse cx="150" cy="100" rx="44.3" ry="44.3" fill="none" stroke="#6B7378" stroke-width=".6"/>
+<ellipse cx="150" cy="100" rx="66.4" ry="66.4" fill="none" stroke="#6B7378" stroke-width=".6"/>
+<ellipse cx="150" cy="100" rx="88.5" ry="88.5" fill="none" stroke="#6B7378" stroke-width=".6"/>
+<ellipse cx="150" cy="100" rx="110.7" ry="110.7" fill="none" stroke="#6B7378" stroke-width=".6"/>
+<polyline points="52.0,79.0 81.4,85.3 102.0,89.7 116.4,92.8 126.5,95.0 133.5,96.5 138.5,97.5 141.9,98.3 144.4,98.8 146.0,99.2 147.2,99.4 148.1,99.6 148.6,99.7 149.1,99.8 149.3,99.9 149.5,99.9 149.7,99.9 149.8,100.0 149.8,100.0 149.9,100.0 149.9,100.0 149.9,100.0 150.0,100.0 150.0,100.0 150.0,100.0 150.0,100.0 150.0,100.0 150.0,100.0 150.0,100.0 150.0,100.0 150.0,100.0 150.0,100.0 150.0,100.0 150.0,100.0 150.0,100.0 150.0,100.0 150.0,100.0 150.0,100.0 150.0,100.0 150.0,100.0" fill="none" stroke="#AD1457" stroke-width="1.3"/>
+<circle cx="52.0" cy="79.0" r="2" fill="#AD1457"/>
+<circle cx="81.4" cy="85.3" r="2" fill="#AD1457"/>
+<circle cx="102.0" cy="89.7" r="2" fill="#AD1457"/>
+<circle cx="116.4" cy="92.8" r="2" fill="#AD1457"/>
+<circle cx="126.5" cy="95.0" r="2" fill="#AD1457"/>
+<circle cx="133.5" cy="96.5" r="2" fill="#AD1457"/>
+<circle cx="138.5" cy="97.5" r="2" fill="#AD1457"/>
+<circle cx="141.9" cy="98.3" r="2" fill="#AD1457"/>
+<circle cx="150" cy="100" r="3" fill="#2E7D32"/>
+<text x="150" y="16" font-size="8" fill="#AD1457" text-anchor="middle" font-weight="700">cuvette ronde : droit au but</text>
+<ellipse cx="450" cy="100" rx="22.1" ry="7.0" fill="none" stroke="#6B7378" stroke-width=".6"/>
+<ellipse cx="450" cy="100" rx="44.3" ry="14.0" fill="none" stroke="#6B7378" stroke-width=".6"/>
+<ellipse cx="450" cy="100" rx="66.4" ry="21.0" fill="none" stroke="#6B7378" stroke-width=".6"/>
+<ellipse cx="450" cy="100" rx="88.5" ry="28.0" fill="none" stroke="#6B7378" stroke-width=".6"/>
+<ellipse cx="450" cy="100" rx="110.7" ry="35.0" fill="none" stroke="#6B7378" stroke-width=".6"/>
+<polyline points="352.0,79.0 368.7,114.7 382.5,89.7 394.0,107.2 403.5,95.0 411.4,103.5 418.0,97.5 423.4,101.7 427.9,98.8 431.7,100.8 434.8,99.4 437.4,100.4 439.5,99.7 441.3,100.2 442.8,99.9 444.0,100.1 445.0,99.9 445.9,100.0 446.6,100.0 447.2,100.0 447.6,100.0 448.0,100.0 448.4,100.0 448.7,100.0 448.9,100.0 449.1,100.0 449.2,100.0 449.4,100.0 449.5,100.0 449.6,100.0 449.6,100.0 449.7,100.0 449.7,100.0 449.8,100.0 449.8,100.0 449.9,100.0 449.9,100.0 449.9,100.0 449.9,100.0 449.9,100.0" fill="none" stroke="#E65100" stroke-width="1.3"/>
+<circle cx="352.0" cy="79.0" r="2" fill="#E65100"/>
+<circle cx="368.7" cy="114.7" r="2" fill="#E65100"/>
+<circle cx="382.5" cy="89.7" r="2" fill="#E65100"/>
+<circle cx="394.0" cy="107.2" r="2" fill="#E65100"/>
+<circle cx="403.5" cy="95.0" r="2" fill="#E65100"/>
+<circle cx="411.4" cy="103.5" r="2" fill="#E65100"/>
+<circle cx="418.0" cy="97.5" r="2" fill="#E65100"/>
+<circle cx="423.4" cy="101.7" r="2" fill="#E65100"/>
+<circle cx="450" cy="100" r="3" fill="#2E7D32"/>
+<text x="450" y="16" font-size="8" fill="#E65100" text-anchor="middle" font-weight="700">cuvette allongée : zigzag</text>
+<text x="10" y="196" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">Chaque pas suit la pente la plus forte sous les pieds, perpendiculaire aux courbes de niveau. Dans une vallée</text>
+<text x="10" y="212" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">étroite, cette pente pointe vers le flanc d'en face plutôt que vers le fond. Tracés calculés en Python.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>À chaque itération, x devient x − η ∇f(x) : on recule d'un pas η le long du gradient, le vecteur des pentes selon chaque variable.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Une bille qui roule dans une cuvette, mais qu'on arrête et relance à chaque pas, toujours dans le sens de la pente sous elle.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>écrire une descente de gradient ;</li>
+        <li>choisir le pas sans diverger ;</li>
+        <li>reconnaître un mauvais conditionnement ;</li>
+        <li>calculer une pente sans formule.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À retenir</span>
+    Le gradient dit la direction, pas la distance. Tout l'art de la méthode tient dans le choix du pas : la pente ne sait pas où se trouve le fond.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 152 · La descente de gradient</div>
+</section>
+
+<!-- ============ PAGE 2 · LE PAS ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 5B</b> · Chercher la meilleure forme</span><b>Cours 152</b></div>
+  <p class="rubrique">Schéma 1 · Le pas</p>
+  <h2>Ni trop court, ni trop long</h2>
+  <p style="max-width:165mm">Sur une même cuvette, seul le pas change. Entre ramper et exploser, la plage utile est étroite, et sa borne se calcule à partir de la courbure la plus forte.</p>
+
+  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#AD1457" text-anchor="start" font-weight="700">Cuvette ½ (x² + 10 y²), départ (1, 1), arrêt sous 10⁻¹² : itérations selon le pas η (.NET 8, mesuré)</text>
+<rect x="16" y="36" width="75" height="22" rx="4" fill="#fff" stroke="#AD1457" stroke-width="1.2"/>
+<text x="53.5" y="49.53333333333333" font-size="7.6" fill="#AD1457" text-anchor="middle" font-weight="700">η = 0,01</text>
+<text x="53.5" y="76" font-size="8.4" fill="#E65100" text-anchor="middle" font-weight="700">1 341</text>
+<rect x="97" y="36" width="75" height="22" rx="4" fill="#fff" stroke="#AD1457" stroke-width="1.2"/>
+<text x="134.5" y="49.53333333333333" font-size="7.6" fill="#AD1457" text-anchor="middle" font-weight="700">η = 0,05</text>
+<text x="134.5" y="76" font-size="8.4" fill="#E65100" text-anchor="middle" font-weight="700">263</text>
+<rect x="178" y="36" width="75" height="22" rx="4" fill="#fff" stroke="#AD1457" stroke-width="1.2"/>
+<text x="215.5" y="49.53333333333333" font-size="7.6" fill="#AD1457" text-anchor="middle" font-weight="700">η = 0,1</text>
+<text x="215.5" y="76" font-size="8.4" fill="#2E7D32" text-anchor="middle" font-weight="700">128</text>
+<rect x="259" y="36" width="75" height="22" rx="4" fill="#fff" stroke="#AD1457" stroke-width="1.2"/>
+<text x="296.5" y="49.53333333333333" font-size="7.6" fill="#AD1457" text-anchor="middle" font-weight="700">η = 0,18</text>
+<text x="296.5" y="76" font-size="8.4" fill="#2E7D32" text-anchor="middle" font-weight="700">69</text>
+<rect x="340" y="36" width="75" height="22" rx="4" fill="#fff" stroke="#AD1457" stroke-width="1.2"/>
+<text x="377.5" y="49.53333333333333" font-size="7.6" fill="#AD1457" text-anchor="middle" font-weight="700">η = 0,199</text>
+<text x="377.5" y="76" font-size="8.4" fill="#E65100" text-anchor="middle" font-weight="700">1 455</text>
+<rect x="421" y="36" width="75" height="22" rx="4" fill="#fff" stroke="#AD1457" stroke-width="1.2"/>
+<text x="458.5" y="49.53333333333333" font-size="7.6" fill="#AD1457" text-anchor="middle" font-weight="700">η = 0,201</text>
+<text x="458.5" y="76" font-size="8.4" fill="#C62828" text-anchor="middle" font-weight="700">diverge</text>
+<rect x="502" y="36" width="75" height="22" rx="4" fill="#fff" stroke="#AD1457" stroke-width="1.2"/>
+<text x="539.5" y="49.53333333333333" font-size="7.6" fill="#AD1457" text-anchor="middle" font-weight="700">η = 0,25</text>
+<text x="539.5" y="76" font-size="8.4" fill="#C62828" text-anchor="middle" font-weight="700">diverge</text>
+<text x="16" y="104" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Trop petit, on rampe ; trop grand, on rebondit d'un flanc à l'autre, de plus en plus haut.</text>
+<text x="16" y="120" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">La limite est 2 / L, où L est la plus forte courbure : ici L = 10, donc η doit rester sous 0,2.</text>
+<text x="16" y="136" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Juste sous la limite, la descente converge encore, mais en oscillant longtemps (1 455 itérations).</text>
+<text x="16" y="160" font-size="7.2" fill="#6B7378" text-anchor="start" font-style="italic">« diverge » : la valeur dépasse 10¹² ; à 0,201, après 1 308 itérations, à 0,25 après 33.</text>
+<text x="16" y="174" font-size="7.2" fill="#6B7378" text-anchor="start" font-style="italic">Le meilleur pas fixe pour une cuvette de courbures 1 et L vaut 2 / (1 + L), soit 0,18 (déduit).</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, la descente de gradient</span>for (int i = 0; i &lt; max; i++) {
+    var g = Gradient(x);                                 // les pentes selon chaque variable
+    if (Norme(g) &lt; tol) break;                           // pente presque nulle : on est au fond
+    for (int k = 0; k &lt; x.Length; k++) x[k] -= eta * g[k]; }</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Quand s'arrêter</h3>
+      <p>Sur une pente presque nulle, ou quand l'objectif ne baisse plus d'une itération à l'autre. Toujours avec un nombre maximal d'itérations, en garde-fou.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Surveiller l'objectif</h3>
+      <p>Une valeur qui remonte d'une itération à l'autre signale un pas trop long. Le réduire de moitié à ce moment suffit souvent.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Allonger le pas pour aller plus vite. Passer de 0,18 à 0,199 a multiplié les itérations par 21, et 0,201 a fait exploser la descente (mesuré).
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 152 · La descente de gradient</div>
+</section>
+
+<!-- ============ PAGE 3 · CONDITIONNEMENT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 5B</b> · Chercher la meilleure forme</span><b>Cours 152</b></div>
+  <p class="rubrique">Schéma 2 · Le conditionnement</p>
+  <h2>Les vallées étroites ralentissent tout</h2>
+  <p style="max-width:165mm">Le pas doit rester sous la courbure la plus forte ; mais c'est la plus faible qui décide combien de pas il faut. Leur rapport, κ, est le conditionnement du problème.</p>
+
+  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#AD1457" text-anchor="start" font-weight="700">Cuvettes de plus en plus allongées : itérations pour atteindre 10⁻¹² (mesuré)</text>
+<text x="16" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">allongement κ</text>
+<text x="170" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">pas fixe optimal</text>
+<text x="290" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">avec inertie</text>
+<text x="410" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">pas adaptatif</text>
+<text x="510" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700"></text>
+<rect x="10" y="48" width="580" height="18" fill="#fff" opacity=".55"/>
+<text x="16" y="61" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">1 (ronde)</text>
+<text x="170" y="61" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">1</text>
+<text x="290" y="61" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">1</text>
+<text x="410" y="61" font-size="7.6" fill="#E65100" text-anchor="start" font-weight="700">1</text>
+<text x="16" y="79" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">10</text>
+<text x="170" y="79" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">74</text>
+<text x="290" y="79" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">29</text>
+<text x="410" y="79" font-size="7.6" fill="#E65100" text-anchor="start" font-weight="700">48</text>
+<rect x="10" y="84" width="580" height="18" fill="#fff" opacity=".55"/>
+<text x="16" y="97" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">100</text>
+<text x="170" y="97" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">789</text>
+<text x="290" y="97" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">105</text>
+<text x="410" y="97" font-size="7.6" fill="#E65100" text-anchor="start" font-weight="700">493</text>
+<text x="16" y="115" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">1 000</text>
+<text x="170" y="115" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">8 462</text>
+<text x="290" y="115" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">372</text>
+<text x="410" y="115" font-size="7.6" fill="#E65100" text-anchor="start" font-weight="700">386</text>
+<text x="16" y="140" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Le nombre de pas grandit comme κ, le rapport des courbures. L'inertie le ramène vers √κ.</text>
+<text x="16" y="156" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">La vallée de Rosenbrock, courbée et étroite : 15 068 itérations au pas 0,001 pour approcher le fond (mesuré).</text>
+<text x="16" y="178" font-size="7.2" fill="#6B7378" text-anchor="start" font-style="italic">Pas adaptatif : on divise le pas par deux jusqu'à une baisse suffisante (règle d'Armijo), à chaque itération.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, la descente avec inertie (« boule lourde »)</span>for (int k = 0; k &lt; x.Length; k++) {
+    v[k] = beta * v[k] - eta * g[k];                    // la vitesse garde une part du pas précédent
+    x[k] += v[k]; }                                     // beta autour de 0,9 : les zigzags s'annulent</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Pourquoi l'inertie aide</h3>
+      <p>Les zigzags d'un flanc à l'autre changent de signe à chaque pas et s'annulent dans la vitesse ; le mouvement le long de la vallée, toujours de même sens, s'accumule.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Changer d'échelle</h3>
+      <p>Rendre la cuvette ronde est encore mieux : diviser chaque variable par sa plage (cours 151) réduit souvent κ avant même de commencer.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Attribuer la lenteur à l'algorithme. À κ = 1 000, la même descente demandait 8 462 itérations, contre une seule à κ = 1 (mesuré) : c'est le problème qui est mal posé.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 152 · La descente de gradient</div>
+</section>
+
+<!-- ============ PAGE 4 · PENTE NUMÉRIQUE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 5B</b> · Chercher la meilleure forme</span><b>Cours 152</b></div>
+  <p class="rubrique">Schéma 3 · La pente sans formule</p>
+  <h2>Mesurer la pente en bougeant un peu</h2>
+  <p style="max-width:165mm">Dans Grasshopper, l'objectif sort d'une définition : aucune formule de dérivée. On mesure la pente en décalant chaque variable d'un petit écart h, et le choix de h a ses propres pièges.</p>
+
+  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#AD1457" text-anchor="start" font-weight="700">Dériver sin en 1 sans formule : erreur selon le petit écart h (mesuré, doubles)</text>
+<text x="16" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">écart h</text>
+<text x="150" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">différence avant</text>
+<text x="300" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">différence centrée</text>
+<rect x="10" y="48" width="420" height="17" fill="#fff" opacity=".55"/>
+<text x="16" y="60" font-size="7.4" fill="#2B2F33" text-anchor="start" font-weight="700">10⁻²</text>
+<text x="150" y="60" font-size="7.4" fill="#E65100" text-anchor="start" font-weight="700">4,2 × 10⁻³</text>
+<text x="300" y="60" font-size="7.4" fill="#E65100" text-anchor="start" font-weight="700">9,0 × 10⁻⁶</text>
+<text x="16" y="77" font-size="7.4" fill="#2B2F33" text-anchor="start" font-weight="700">10⁻⁴</text>
+<text x="150" y="77" font-size="7.4" fill="#E65100" text-anchor="start" font-weight="700">4,2 × 10⁻⁵</text>
+<text x="300" y="77" font-size="7.4" fill="#E65100" text-anchor="start" font-weight="700">9,0 × 10⁻¹⁰</text>
+<rect x="10" y="82" width="420" height="17" fill="#fff" opacity=".55"/>
+<text x="16" y="94" font-size="7.4" fill="#2B2F33" text-anchor="start" font-weight="700">10⁻⁶</text>
+<text x="150" y="94" font-size="7.4" fill="#2E7D32" text-anchor="start" font-weight="700">4,2 × 10⁻⁷</text>
+<text x="300" y="94" font-size="7.4" fill="#2E7D32" text-anchor="start" font-weight="700">2,8 × 10⁻¹¹</text>
+<text x="16" y="111" font-size="7.4" fill="#2B2F33" text-anchor="start" font-weight="700">10⁻⁸</text>
+<text x="150" y="111" font-size="7.4" fill="#2E7D32" text-anchor="start" font-weight="700">3,0 × 10⁻⁹</text>
+<text x="300" y="111" font-size="7.4" fill="#2E7D32" text-anchor="start" font-weight="700">2,6 × 10⁻⁹</text>
+<rect x="10" y="116" width="420" height="17" fill="#fff" opacity=".55"/>
+<text x="16" y="128" font-size="7.4" fill="#2B2F33" text-anchor="start" font-weight="700">10⁻¹²</text>
+<text x="150" y="128" font-size="7.4" fill="#C62828" text-anchor="start" font-weight="700">4,3 × 10⁻⁵</text>
+<text x="300" y="128" font-size="7.4" fill="#C62828" text-anchor="start" font-weight="700">1,2 × 10⁻⁵</text>
+<text x="16" y="145" font-size="7.4" fill="#2B2F33" text-anchor="start" font-weight="700">10⁻¹⁴</text>
+<text x="150" y="145" font-size="7.4" fill="#C62828" text-anchor="start" font-weight="700">3,7 × 10⁻³</text>
+<text x="300" y="145" font-size="7.4" fill="#C62828" text-anchor="start" font-weight="700">3,7 × 10⁻³</text>
+<text x="450" y="60" font-size="7.6" fill="#E65100" text-anchor="start" font-weight="700">trop grand :</text>
+<text x="450" y="74" font-size="7.4" fill="#2B2F33" text-anchor="start">la courbure fausse</text>
+<text x="450" y="88" font-size="7.4" fill="#2B2F33" text-anchor="start">la pente</text>
+<text x="450" y="116" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">trop petit :</text>
+<text x="450" y="130" font-size="7.4" fill="#2B2F33" text-anchor="start">les arrondis</text>
+<text x="450" y="144" font-size="7.4" fill="#2B2F33" text-anchor="start">dominent</text>
+<text x="16" y="172" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Centrée : f(x + h) − f(x − h), divisé par 2h. Le meilleur h tourne autour de 10⁻⁵ en centrée, 10⁻⁸ en avant.</text>
+<text x="16" y="190" font-size="7.2" fill="#6B7378" text-anchor="start" font-style="italic">Ces optimums dépendent de la taille de x : on les règle à l'échelle de chaque variable (déduit, cours 49).</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, le gradient par différences centrées</span>for (int k = 0; k &lt; x.Length; k++) {
+    double s = x[k]; x[k] = s + h; double fp = f(x); x[k] = s - h; double fm = f(x); x[k] = s;
+    g[k] = (fp - fm) / (2 * h); }                       // 2 évaluations par variable et par pas</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Le prix dans Grasshopper</h3>
+      <p>Dix curseurs, différences centrées : vingt recalculs de la définition pour un seul pas, avant même de bouger (déduit). Le budget fond vite.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Quand la pente ment</h3>
+      <p>Un objectif en marches (un nombre de pièces, un test « dedans ou dehors ») a une pente nulle presque partout : la descente n'a rien à suivre.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Prendre h minuscule pour être précis. À h = 10⁻¹⁴, l'erreur remontait à 3,7 × 10⁻³, cent millions de fois plus qu'à h = 10⁻⁶ en centrée (mesuré).
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 152 · La descente de gradient</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 5B</b> · Chercher la meilleure forme</span><b>Cours 152</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Flow suit un champ pas à pas</h2>
+  <p style="max-width:165mm">Flow trace des lignes qui suivent la direction moyenne de courbes guides. Comme une descente suit la pente, chaque ligne avance d'un pas fixe dans la direction du champ, recalculée à chaque pas.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">cuttlefish/Flow.cs</span></div>
+<div class="l k1"><span class="n">27</span>…AddNumberParameter("Step", "St", …, 1);<span class="rep r1">1</span></div>
+<div class="l k2"><span class="n">84</span>return sum.Unitize() ? sum : Vector3d.Zero;<span class="rep r2">2</span></div>
+<div class="l k3"><span class="n">95</span>Vector3d v1 = field(p);<span class="rep r3">3</span></div>
+<div class="l k4"><span class="n">97</span>Vector3d v2 = field(p + v1 * (step / 2));<span class="rep r4">4</span></div>
+<div class="l k5"><span class="n">99</span>p += v2 * step;<span class="rep r5">5</span></div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Pas</b>Absolu, 1 par défaut.</li>
+      <li><span class="rep r2">2</span><b>Direction</b>Unitaire.</li>
+      <li><span class="rep r3">3</span><b>Premier regard</b>Au départ.</li>
+      <li><span class="rep r4">4</span><b>Point milieu</b>Second regard.</li>
+      <li><span class="rep r5">5</span><b>Pas</b>Avec la direction du milieu.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À surveiller · un pas absolu face à un guide serré</span>
+    Le point milieu (lignes 95 à 99) est un bon choix : autour d'un guide circulaire de rayon 10, après un tour au pas 1, la ligne restait au rayon 10,004, contre 12,77 avec un seul regard (mesuré sur recopie, en Python). Mais le pas est une longueur fixe, 1 par défaut (ligne 27) : autour d'un guide de rayon 1, un tour au pas 1 finissait au rayon 1,24, et 1,006 au pas 0,25 (mesuré sur recopie). Un pas exprimé en fraction de la taille des guides suivrait l'échelle du modèle. Relevé sans rien modifier.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 152 · La descente de gradient</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 5B</b> · Chercher la meilleure forme</span><b>Cours 152</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+    <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Une itération de descente de gradient fait…</div><ul>
+      <li><span>A</span>un tirage au hasard</li><li><span>B</span>x − η ∇f(x)</li><li><span>C</span>x / ∇f(x)</li><li><span>D</span>x + η ∇f(x)</li></ul></div>
+
+    <div class="q"><div class="enonce">Le gradient indique…</div><ul>
+      <li><span>A</span>la direction de plus forte pente</li><li><span>B</span>la distance au fond</li><li><span>C</span>le nombre de pas</li><li><span>D</span>le minimum global</li></ul></div>
+
+    <div class="q"><div class="enonce">Sur la cuvette de courbure maximale 10, le pas doit rester sous…</div><ul>
+      <li><span>A</span>10</li><li><span>B</span>1</li><li><span>C</span>0,01</li><li><span>D</span>0,2</li></ul></div>
+
+    <div class="q"><div class="enonce">Un pas trop long provoque… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>une divergence au-delà de la limite</li><li><span>B</span>des rebonds d'un flanc à l'autre</li><li><span>C</span>un minimum global garanti</li><li><span>D</span>une convergence plus rapide, toujours</li></ul></div>
+
+    <div class="q"><div class="enonce">Le conditionnement κ est…</div><ul>
+      <li><span>A</span>le pas</li><li><span>B</span>le rapport des courbures extrêmes</li><li><span>C</span>la valeur au fond</li><li><span>D</span>le nombre de variables</li></ul></div>
+
+    <div class="q"><div class="enonce">À κ = 1 000, le pas fixe optimal a demandé…</div><ul>
+      <li><span>A</span>1 itération</li><li><span>B</span>8 462 itérations</li><li><span>C</span>372</li><li><span>D</span>74</li></ul></div>
+
+    <div class="q"><div class="enonce">L'inertie accélère parce que…</div><ul>
+      <li><span>A</span>elle supprime le gradient</li><li><span>B</span>elle tire au hasard</li><li><span>C</span>les zigzags s'annulent dans la vitesse</li><li><span>D</span>elle agrandit le pas sans limite</li></ul></div>
+
+    <div class="q"><div class="enonce">Remettre chaque variable à l'échelle de sa plage sert à…</div><ul>
+      <li><span>A</span>arrondir la cuvette, donc réduire κ</li><li><span>B</span>supprimer le pas</li><li><span>C</span>rien</li><li><span>D</span>augmenter κ</li></ul></div>
+
+    <div class="q"><div class="enonce">La différence centrée calcule…</div><ul>
+      <li><span>A</span>(f(x + h) − f(x − h)) / 2h</li><li><span>B</span>f(x) / h</li><li><span>C</span>(f(x + h) − f(x)) / h</li><li><span>D</span>f(x + h) · h</li></ul></div>
+
+    <div class="q"><div class="enonce">À h = 10⁻¹⁴, l'erreur de la dérivée…</div><ul>
+      <li><span>A</span>valait 10⁻¹⁴</li><li><span>B</span>était nulle</li><li><span>C</span>remontait à 3,7 × 10⁻³</li><li><span>D</span>était la plus petite</li></ul></div>
+
+    <div class="q"><div class="enonce">Flow.cs calcule chaque pas avec…</div><ul>
+      <li><span>A</span>la seule direction au départ</li><li><span>B</span>la pente d'un objectif</li><li><span>C</span>la direction au point milieu</li><li><span>D</span>un tirage</li></ul></div>
+
+    <div class="q"><div class="enonce">Autour d'un guide de rayon 1, un tour au pas 1 finissait au rayon…</div><ul>
+      <li><span>A</span>1,000</li><li><span>B</span>10</li><li><span>C</span>0,5</li><li><span>D</span>1,24</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 152 · La descente de gradient</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 5B</b> · Chercher la meilleure forme</span><b>Cours 152</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · B.</b> On recule.</div>
+    <div><b>02 · A.</b> Page 1.</div>
+    <div><b>03 · D.</b> 2 / L.</div>
+    <div><b>04 · A et B.</b> Page 2.</div>
+    <div><b>05 · B.</b> Page 3.</div>
+    <div><b>06 · B.</b> Mesuré.</div>
+    <div><b>07 · C.</b> Signes alternés.</div>
+    <div><b>08 · A.</b> Cours 151.</div>
+    <div><b>09 · A.</b> Page 4.</div>
+    <div><b>10 · C.</b> Arrondis.</div>
+    <div><b>11 · C.</b> Flow.cs:97.</div>
+    <div><b>12 · D.</b> Mesuré sur recopie.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 153, « Chercher sans pente ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">x[k] -= eta * g[k]</td><td>un pas de descente</td><td>page 2</td></tr>
+      <tr><td class="c">eta &lt; 2 / L</td><td>la limite pour ne pas diverger</td><td>page 2</td></tr>
+      <tr><td class="c">v = beta * v - eta * g</td><td>la descente avec inertie</td><td>page 3</td></tr>
+      <tr><td class="c">(f(x + h) - f(x - h)) / (2 * h)</td><td>une pente sans formule</td><td>page 4</td></tr>
+      <tr><td class="c">field(p + v1 * (step / 2))</td><td>regarder au point milieu</td><td>Flow.cs:97</td></tr>
+      <tr><td class="c">t *= 0.5</td><td>réduire le pas jusqu'à une vraie baisse</td><td>page 3</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Gradient</dt><dd>Le vecteur des pentes de l'objectif selon chaque variable.</dd>
+    <dt>Pas (η)</dt><dd>La longueur multipliée par le gradient à chaque itération.</dd>
+    <dt>Conditionnement</dt><dd>Le rapport entre les courbures la plus forte et la plus faible.</dd>
+    <dt>Inertie</dt><dd>Une vitesse qui garde une part du pas précédent.</dd>
+    <dt>Différence centrée</dt><dd>Une pente mesurée de part et d'autre du point, par (f(x + h) − f(x − h)) / 2h.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 153</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 152 · La descente de gradient</div>
+</section>
+
+</body>
+</html>

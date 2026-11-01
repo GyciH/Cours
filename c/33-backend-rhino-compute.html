@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>33 · Le backend qui parle à Rhino Compute</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-8">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 33</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Le backend qui parle<br>à Rhino Compute</h1>
+  <p class="chapeau">Rhino Compute, c'est Rhino et Grasshopper <b>sans fenêtre</b>, derrière une adresse HTTP. Le backend de Magpie lui envoie une définition .ghx fabriquée à partir du canvas, lit ce qui revient, et décide seul du verdict. Le navigateur, lui, n'est jamais cru sur parole.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>60 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>24</b>, <b>30</b> et <b>32</b></span>
+    <span class="pastille">Exemples · <b>compute-proxy.mjs</b>, <b>computeOutputs.mjs</b>, <b>serializer/</b></span>
+  </div>
+
+  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+    <svg viewBox="0 0 600 206" width="100%">
+<text x="16" y="16" font-size="11" fill="#7A5A12" text-anchor="start" font-weight="700">« Envoyer » : une soumission, aller et retour</text>
+<rect x="16" y="32" width="104" height="40" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.3"/>
+<text x="68.0" y="49.0" font-size="8.8" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.8px">navigateur</text>
+<text x="68.0" y="63.0" font-size="7.8" fill="#2B2F33" text-anchor="middle">graphe en JSON</text>
+<rect x="134" y="32" width="104" height="40" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.3"/>
+<text x="186.0" y="49.0" font-size="8.8" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.8px">gardes</text>
+<text x="186.0" y="63.0" font-size="7.8" fill="#2B2F33" text-anchor="middle">contrôles du serveur</text>
+<rect x="252" y="32" width="104" height="40" rx="4" fill="#fff" stroke="#7A5A12" stroke-width="1.3"/>
+<text x="304.0" y="49.0" font-size="8.8" fill="#7A5A12" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.8px">generateGhx</text>
+<text x="304.0" y="63.0" font-size="7.8" fill="#2B2F33" text-anchor="middle">graphe → .ghx</text>
+<rect x="370" y="32" width="104" height="40" rx="4" fill="#fff" stroke="#7A5A12" stroke-width="1.3"/>
+<text x="422.0" y="49.0" font-size="8.8" fill="#7A5A12" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.8px">callCompute</text>
+<text x="422.0" y="63.0" font-size="7.8" fill="#2B2F33" text-anchor="middle">POST /grasshopper</text>
+<line x1="121" y1="52" x2="148" y2="52" stroke="#6B7378" stroke-width="1.1"/><polygon points="148,52 141.6,54.7 141.6,49.3" fill="#6B7378"/>
+<line x1="239" y1="52" x2="266" y2="52" stroke="#6B7378" stroke-width="1.1"/><polygon points="266,52 259.6,54.7 259.6,49.3" fill="#6B7378"/>
+<line x1="357" y1="52" x2="384" y2="52" stroke="#6B7378" stroke-width="1.1"/><polygon points="384,52 377.6,54.7 377.6,49.3" fill="#6B7378"/>
+<rect x="492" y="66" width="92" height="52" rx="4" fill="#F4EEDF" stroke="#7B1FA2" stroke-width="1.3"/>
+<text x="538.0" y="89.0" font-size="9" fill="#7B1FA2" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">Compute</text>
+<text x="538.0" y="103.0" font-size="8.2" fill="#2B2F33" text-anchor="middle">calcule, rend</text>
+<line x1="475" y1="52" x2="506" y2="64" stroke="#7A5A12" stroke-width="1.1"/><polygon points="506,64 499.0,64.2 501.0,59.1" fill="#7A5A12"/>
+<rect x="370" y="112" width="104" height="40" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.3"/>
+<text x="422.0" y="129.0" font-size="8.2" fill="#7B1FA2" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.2px">RH_OUT:answer</text>
+<text x="422.0" y="143.0" font-size="7.8" fill="#2B2F33" text-anchor="middle">les valeurs du groupe</text>
+<rect x="252" y="112" width="104" height="40" rx="4" fill="#fff" stroke="#7A5A12" stroke-width="1.3"/>
+<text x="304.0" y="129.0" font-size="8.2" fill="#7A5A12" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.2px">extractOutputTree</text>
+<text x="304.0" y="143.0" font-size="7.8" fill="#2B2F33" text-anchor="middle">décode l'arbre</text>
+<rect x="134" y="112" width="104" height="40" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.3"/>
+<text x="186.0" y="129.0" font-size="8.2" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.2px">validateSubmission</text>
+<text x="186.0" y="143.0" font-size="7.8" fill="#2B2F33" text-anchor="middle">compare à l'attendu</text>
+<rect x="16" y="112" width="104" height="40" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.3"/>
+<text x="68.0" y="129.0" font-size="8.2" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.2px">navigateur</text>
+<text x="68.0" y="143.0" font-size="7.8" fill="#2B2F33" text-anchor="middle">{ status, pass }</text>
+<line x1="506" y1="120" x2="476" y2="132" stroke="#7B1FA2" stroke-width="1.1"/><polygon points="476,132 481.0,127.1 483.0,132.1" fill="#7B1FA2"/>
+<line x1="369" y1="132" x2="342" y2="132" stroke="#6B7378" stroke-width="1.1"/><polygon points="342,132 348.4,129.3 348.4,134.7" fill="#6B7378"/>
+<line x1="251" y1="132" x2="224" y2="132" stroke="#6B7378" stroke-width="1.1"/><polygon points="224,132 230.4,129.3 230.4,134.7" fill="#6B7378"/>
+<line x1="133" y1="132" x2="106" y2="132" stroke="#6B7378" stroke-width="1.1"/><polygon points="106,132 112.4,129.3 112.4,134.7" fill="#6B7378"/>
+<text x="300" y="176" font-size="9" fill="#2B2F33" text-anchor="middle">Seuls l'identifiant de l'exercice et le graphe partent du navigateur.</text>
+<text x="300" y="190" font-size="9" fill="#2B2F33" text-anchor="middle">La réponse attendue, la tolérance et la raison d'un refus ne quittent jamais le serveur.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Le backend traduit le graphe en .ghx, entoure de groupes <code>RH_OUT:</code> ce qu'il veut récupérer, et Compute lui rend exactement ces sorties-là, en JSON.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Envoyer un .gh à un collègue qui a Rhino ouvert, avec une consigne : « renvoie-moi seulement ce qui est dans le groupe Réponse ». Il calcule, recopie ce groupe, et ne sait rien de l'exercice. Le jugement reste chez toi.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>suivre une soumission, du clic au verdict ;</li>
+        <li>dire comment un graphe devient un .ghx ;</li>
+        <li>lire la requête /grasshopper et sa réponse ;</li>
+        <li>nommer les gardes qui protègent le serveur.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:5mm">
+    <span class="titre">À retenir</span>
+    Compute ne connaît ni les exercices ni les apprenants : il calcule ce qu'on lui envoie. Tout ce qui touche à la confiance (composants permis, objets du départ, verdict) se décide dans <code>compute-proxy.mjs</code>, <b>avant</b> et <b>après</b> l'appel.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 33 · Le backend qui parle à Rhino Compute</div>
+</section>
+
+<!-- ============ PAGE 2 · DU GRAPHE AU GHX ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 33</b></div>
+  <p class="rubrique">Schéma 1 · Du graphe au .ghx</p>
+  <h2>Des nœuds JSON aux chunks GH_IO</h2>
+  <p style="max-width:165mm">Le cours 24 a montré le format .ghx : des chunks et des items typés. Le backend en écrit un de toutes pièces, sans Rhino, avec trois modules de <code>src/serializer/</code>, puis le code en base64.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="12" fill="#7A5A12" text-anchor="start" font-weight="700">Trois modules, une chaîne de texte</text>
+<rect x="16" y="34" width="118" height="40" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.3"/>
+<text x="75.0" y="51.0" font-size="8.8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.8px">build-graph.mjs</text>
+<text x="75.0" y="65.0" font-size="8" fill="#2B2F33" text-anchor="middle">un chunk Object par nœud</text>
+<rect x="166" y="34" width="118" height="40" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.3"/>
+<text x="225.0" y="51.0" font-size="8.8" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.8px">skeleton.mjs</text>
+<text x="225.0" y="65.0" font-size="8" fill="#2B2F33" text-anchor="middle">l'enveloppe Definition</text>
+<rect x="316" y="34" width="118" height="40" rx="4" fill="#fff" stroke="#7A5A12" stroke-width="1.3"/>
+<text x="375.0" y="51.0" font-size="8.8" fill="#7A5A12" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.8px">xml-builder.mjs</text>
+<text x="375.0" y="65.0" font-size="8" fill="#2B2F33" text-anchor="middle">le texte XML</text>
+<rect x="466" y="34" width="118" height="40" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.3"/>
+<text x="525.0" y="51.0" font-size="8.8" fill="#7B1FA2" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.8px">base64</text>
+<text x="525.0" y="65.0" font-size="8" fill="#2B2F33" text-anchor="middle">le champ algo</text>
+<line x1="135" y1="54" x2="164" y2="54" stroke="#6B7378" stroke-width="1.1"/><polygon points="164,54 157.6,56.7 157.6,51.3" fill="#6B7378"/>
+<line x1="285" y1="54" x2="314" y2="54" stroke="#6B7378" stroke-width="1.1"/><polygon points="314,54 307.6,56.7 307.6,51.3" fill="#6B7378"/>
+<line x1="435" y1="54" x2="464" y2="54" stroke="#6B7378" stroke-width="1.1"/><polygon points="464,54 457.6,56.7 457.6,51.3" fill="#6B7378"/>
+<rect x="16" y="88" width="568" height="112" rx="5" fill="#fff" stroke="#CFC6BA"/>
+<text x="28" y="106" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">&lt;chunk name="Object" index="1"&gt;</text>
+<text x="28" y="122" font-size="8.8" fill="#6B7378" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">  … InstanceGuid  b2e4…   (le nœud b)</text>
+<text x="28" y="138" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">  &lt;chunk name="param_input"&gt;</text>
+<text x="28" y="154" font-size="8.8" fill="#2E7D32" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">    &lt;item name="Source" type_name="gh_guid"&gt;7f3c…&lt;/item&gt;</text>
+<text x="28" y="170" font-size="8.8" fill="#2E7D32" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">    &lt;item name="SourceCount" type_name="gh_int32"&gt;1&lt;/item&gt;</text>
+<text x="28" y="186" font-size="8.8" fill="#E65100" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">&lt;chunk name="Object"&gt; … NickName  RH_OUT:answer  · ID  a91d…</text>
+<text x="574" y="170" font-size="8.4" fill="#2E7D32" text-anchor="end" font-weight="700">le câble a → b</text>
+<text x="574" y="186" font-size="8.4" fill="#E65100" text-anchor="end" font-weight="700">le groupe autour de a</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">compute-proxy.mjs · 433–442</span>function generateGhx(nodes, edges, groups = [], catalogByGuid = …, guidsOut = null) {
+  const defObjects = buildDefinitionObjectsChunk(nodes, edges, catalogByGuid, groups, guidsOut);
+  const skeleton = buildDefinitionChunkSkeleton("magpie_exercise.ghx");
+  const definitionChunk = chunk("Definition", skeleton.itemsPluginVersion,
+    [...skeleton.childChunks, defObjects]);
+  return serializeArchive([definitionChunk], buildRootItems());
+}
+function toBase64Utf8(str) {
+  return Buffer.from(str, "utf-8").toString("base64");
+}</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Le câble devient une Source</h3>
+      <p>Dans un .ghx, un câble n'est pas un objet. Le port d'<b>entrée</b> retient le GUID de la sortie qui l'alimente : un item <code>Source</code> par câble, puis <code>SourceCount</code> (build-graph.mjs, lignes 132–135).</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Un groupe pour dire quoi rendre</h3>
+      <p>Compute renvoie la sortie de chaque groupe dont le nom commence par <code>RH_OUT:</code>. Pour une soumission, le backend entoure le composant câblé au marqueur Réponse d'un groupe <code>RH_OUT:answer</code> (computeOutputs.mjs, ligne 7).</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Chercher <code>RH_OUT:answer</code> quand le composant a plusieurs sorties. Compute ajoute alors le surnom de la sortie : <code>RH_OUT:answer (S)</code>. <code>outputParamCandidates</code> essaie d'abord ce nom suffixé, puis le nom nu (computeOutputs.mjs, lignes 28–30).
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 33 · Le backend qui parle à Rhino Compute</div>
+</section>
+
+<!-- ============ PAGE 3 · REQUÊTE ET RÉPONSE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 33</b></div>
+  <p class="rubrique">Schéma 2 · La requête et la réponse</p>
+  <h2>Un POST, un arbre en retour</h2>
+  <p style="max-width:165mm">Un seul point d'entrée : <code>POST /grasshopper</code>. Le corps porte la définition ; la réponse porte une entrée par groupe <code>RH_OUT:</code>, avec ses données rangées en arbre, comme dans Grasshopper.</p>
+
+  <svg viewBox="0 0 600 226" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="226" fill="#EFE9E1"/>
+<rect x="16" y="12" width="276" height="202" rx="5" fill="#fff" stroke="#7A5A12" stroke-width="1.4"/>
+<rect x="16" y="12" width="276" height="22" rx="5" fill="#7A5A12"/>
+<text x="26" y="27" font-size="9.4" fill="#fff" text-anchor="start" font-weight="700">Requête · POST /grasshopper</text>
+<text x="26" y="52" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">{</text>
+<text x="26" y="67" font-size="8.8" fill="#2E7D32" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">  "algo": "PD94bWwgdmVyc2lv…",</text>
+<text x="26" y="82" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">  "pointer": null,</text>
+<text x="26" y="97" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">  "cachesolve": false,</text>
+<text x="26" y="112" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">  "values": []</text>
+<text x="26" y="127" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">}</text>
+<text x="26" y="142" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre"></text>
+<text x="26" y="157" font-size="8.8" fill="#2E7D32" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">algo : le .ghx en base64</text>
+<text x="26" y="172" font-size="8.8" fill="#6B7378" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">pointer : aucune définition stockée</text>
+<text x="26" y="187" font-size="8.8" fill="#6B7378" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">cachesolve : toujours recalculer</text>
+<text x="26" y="202" font-size="8.8" fill="#6B7378" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">values : aucune entrée RH_IN</text>
+<rect x="308" y="12" width="276" height="202" rx="5" fill="#fff" stroke="#7B1FA2" stroke-width="1.4"/>
+<rect x="308" y="12" width="276" height="22" rx="5" fill="#7B1FA2"/>
+<text x="318" y="27" font-size="9.4" fill="#fff" text-anchor="start" font-weight="700">Réponse · 200 (ou 500)</text>
+<text x="318" y="52" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">{</text>
+<text x="318" y="67" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">  "values": [{</text>
+<text x="318" y="82" font-size="8.8" fill="#E65100" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">    "ParamName": "RH_OUT:answer",</text>
+<text x="318" y="97" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">    "InnerTree": {</text>
+<text x="318" y="112" font-size="8.8" fill="#1565C0" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">      "{0}": [{ "type": "System.Double",</text>
+<text x="318" y="127" font-size="8.8" fill="#1565C0" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">               "data": "3.5" }]</text>
+<text x="318" y="142" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">    } }],</text>
+<text x="318" y="157" font-size="8.8" fill="#C62828" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">  "errors": [], "warnings": []</text>
+<text x="318" y="172" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">}</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">computeOutputs.mjs · 38–58, condensé</span>export function extractOutputTree(computeResponse, candidates) {
+  for (const candidate of candidates) {
+    const entry = computeResponse.values?.find((v) =&gt; v.ParamName === candidate);
+    if (!entry?.InnerTree) continue;
+    const tree = {};
+    for (const path of Object.keys(entry.InnerTree)) {
+      tree[path] = entry.InnerTree[path].map((item) =&gt; {
+        try { return JSON.parse(item.data); } catch { return item.data; }
+      });
+    }
+    return { tree, paramName: candidate };
+  } …</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Du JSON dans du JSON</h3>
+      <p>Chaque <code>item.data</code> est une <b>chaîne</b> qui contient du JSON : <code>"3.5"</code>, ou <code>"\"abc\""</code> pour un texte. D'où le <code>JSON.parse</code> par item, et la donnée brute si le décodage échoue.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Les chemins de l'arbre</h3>
+      <p>Les clés <code>{0}</code>, <code>{0;1}</code> sont les chemins de branches de Grasshopper. Pour comparer à la réponse attendue, <code>flattenTree</code> met les branches bout à bout, dans l'ordre reçu (ligne 61).</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Prendre un 500 de Compute pour une panne. Compute répond 500 dès qu'un composant est en erreur (une division par zéro), alors que le calcul a abouti. Pour « Tester », Magpie renvoie 200 avec les messages, et le composant se teinte en rouge (compute-proxy.mjs, lignes 581–585).
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 33 · Le backend qui parle à Rhino Compute</div>
+</section>
+
+<!-- ============ PAGE 4 · LES GARDES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 33</b></div>
+  <p class="rubrique">Schéma 3 · Ne jamais croire le navigateur</p>
+  <h2>Cinq gardes autour de Compute</h2>
+  <p style="max-width:165mm">Tout ce qui arrive du navigateur a pu être modifié : il suffit des outils de développement. Le backend vérifie donc lui-même ce que l'interface semble déjà garantir.</p>
+
+  <svg viewBox="0 0 600 226" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="226" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="12" fill="#7A5A12" text-anchor="start" font-weight="700">Avant et après l'appel à Compute</text>
+<rect x="16" y="30" width="568" height="30" rx="4" fill="#fff" stroke="#C62828"/>
+<circle cx="32" cy="45" r="9" fill="#C62828"/><text x="32" y="49" font-size="9" fill="#fff" text-anchor="middle" font-weight="700">1</text>
+<text x="50" y="49" font-size="9.2" fill="#C62828" text-anchor="start" font-weight="700">Administration</text>
+<text x="190" y="49" font-size="8.6" fill="#2B2F33" text-anchor="start">routes /api/admin : HTTP Basic, temps constant</text>
+<text x="574" y="49" font-size="8.6" fill="#C62828" text-anchor="end" font-weight="700" class="mono" style="font-size:8.6px">401 ou 503</text>
+<rect x="16" y="66" width="568" height="30" rx="4" fill="#fff" stroke="#1565C0"/>
+<circle cx="32" cy="81" r="9" fill="#1565C0"/><text x="32" y="85" font-size="9" fill="#fff" text-anchor="middle" font-weight="700">2</text>
+<text x="50" y="85" font-size="9.2" fill="#1565C0" text-anchor="start" font-weight="700">Taille du corps</text>
+<text x="190" y="85" font-size="8.6" fill="#2B2F33" text-anchor="start">1 Mo, 16 Mo pour l'administration</text>
+<text x="574" y="85" font-size="8.6" fill="#1565C0" text-anchor="end" font-weight="700" class="mono" style="font-size:8.6px">413</text>
+<rect x="16" y="102" width="568" height="30" rx="4" fill="#fff" stroke="#1565C0"/>
+<circle cx="32" cy="117" r="9" fill="#1565C0"/><text x="32" y="121" font-size="9" fill="#fff" text-anchor="middle" font-weight="700">3</text>
+<text x="50" y="121" font-size="9.2" fill="#1565C0" text-anchor="start" font-weight="700">Objets du départ</text>
+<text x="190" y="121" font-size="8.6" fill="#2B2F33" text-anchor="start">le XML vient de la base, pour cet exercice seul</text>
+<text x="574" y="121" font-size="8.6" fill="#1565C0" text-anchor="end" font-weight="700" class="mono" style="font-size:8.6px">400</text>
+<rect x="16" y="138" width="568" height="30" rx="4" fill="#fff" stroke="#1565C0"/>
+<circle cx="32" cy="153" r="9" fill="#1565C0"/><text x="32" y="157" font-size="9" fill="#fff" text-anchor="middle" font-weight="700">4</text>
+<text x="50" y="157" font-size="9.2" fill="#1565C0" text-anchor="start" font-weight="700">Composants autorisés</text>
+<text x="190" y="157" font-size="8.6" fill="#2B2F33" text-anchor="start">isAuthorized = 1, plus le Panel</text>
+<text x="574" y="157" font-size="8.6" fill="#1565C0" text-anchor="end" font-weight="700" class="mono" style="font-size:8.6px">400</text>
+<rect x="16" y="184" width="568" height="30" rx="4" fill="#fff" stroke="#2E7D32"/>
+<circle cx="32" cy="199" r="9" fill="#2E7D32"/><text x="32" y="203" font-size="9" fill="#fff" text-anchor="middle" font-weight="700">5</text>
+<text x="50" y="203" font-size="9.2" fill="#2E7D32" text-anchor="start" font-weight="700">Verdict muet</text>
+<text x="190" y="203" font-size="8.6" fill="#2B2F33" text-anchor="start">la raison reste dans le journal du serveur</text>
+<text x="574" y="203" font-size="8.6" fill="#2E7D32" text-anchor="end" font-weight="700" class="mono" style="font-size:8.6px">{ status, pass }</text>
+<line x1="16" y1="179" x2="584" y2="179" stroke="#7B1FA2" stroke-dasharray="5 3"/>
+<rect x="250" y="172" width="100" height="14" rx="3" fill="#7B1FA2"/>
+<text x="300" y="182.5" font-size="8.2" fill="#fff" text-anchor="middle" font-weight="700">appel à Compute</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">compute-proxy.mjs · 149–160, condensé</span>function assertAuthorizedGraph(nodes) {
+  const rows = db.prepare("SELECT typeGuid FROM components WHERE isAuthorized = 1").all();
+  const allowed = new Set(rows.map((r) =&gt; r.typeGuid));
+  allowed.add(PANEL_GUID);
+  const refused = [...new Set(nodes.filter((n) =&gt; !n?.opaque)
+    .map((n) =&gt; n?.typeGuid).filter((guid) =&gt; !allowed.has(guid)))];
+  if (refused.length &gt; 0)
+    throw new HttpError(400, `Composant(s) non autorisé(s) : …`, "UNAUTHORIZED_COMPONENT");
+}</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Le ruban ne suffit pas</h3>
+      <p>Masquer un composant du ruban est un confort, pas une protection. Sans ce contrôle, un client modifié pourrait envoyer n'importe quel GUID connu, y compris le comparateur réservé à la correction (commentaire des lignes 146–148).</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Le verdict muet</h3>
+      <p><code>sendVerdict</code> écrit la raison dans le journal du serveur et ne renvoie que <code>{ status, pass }</code> (lignes 360–364). Comme dans le plugin, l'apprenant ne sait pas pendant le parcours pourquoi une réponse est fausse.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Comparer un mot de passe avec <code>===</code>. La comparaison s'arrête au premier caractère faux, et le temps de réponse trahit le secret petit à petit. <code>sameSecret</code> compare deux empreintes SHA-256 avec <code>timingSafeEqual</code>, qui prend toujours le même temps (lignes 460–462).
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 33 · Le backend qui parle à Rhino Compute</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 33</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>handleSubmit : une soumission de bout en bout</h2>
+  <p style="max-width:165mm">Appelée pour chaque <code>POST /api/submit</code>. Tout le parcours de la page 1 tient dans cette fonction : contrôler, traduire, appeler, lire, juger.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l k1"><span class="n">369</span><span class="kw">async function</span> handleSubmit(body, res) {<span class="rep r1">1</span></div>
+<div class="l k1"><span class="n">370</span>  <span class="kw">const</span> { exerciseId, nodes, edges, groups,</div>
+<div class="l k1"><span class="n"> </span>    outputNickname } = parseJsonBody(body);</div>
+<div class="l k2"><span class="n">371</span>  resolveOpaqueNodes(exerciseId, nodes);<span class="rep r2">2</span></div>
+<div class="l k2"><span class="n">372</span>  assertAuthorizedGraph(nodes);</div>
+<div class="l k3"><span class="n">374</span>  <span class="kw">const</span> exerciseRow = db.prepare(<span class="st">"…"</span>).get(exerciseId);<span class="rep r3">3</span></div>
+<div class="l k3"><span class="n">375</span>  <span class="kw">if</span> (!exerciseRow) <span class="kw">throw new</span> <span class="ty">HttpError</span>(<span class="st">404</span>, …);</div>
+<div class="l k3"><span class="n">376</span>  <span class="kw">const</span> config = JSON.parse(exerciseRow.validationConfig);</div>
+<div class="l k4"><span class="n">379</span>  <span class="kw">if</span> (config.Mode === <span class="st">"GeometryTolerance"</span> || …) {<span class="rep r4">4</span></div>
+<div class="l k4"><span class="n">380</span>    <span class="kw">await</span> handleGeometrySubmit({ … }, res);</div>
+<div class="l k4"><span class="n">381</span>    <span class="kw">return</span>;</div>
+<div class="l k4"><span class="n">382</span>  }</div>
+<div class="l k5"><span class="n">384</span>  <span class="kw">const</span> xml = generateGhx(nodes, edges, groups || []);<span class="rep r5">5</span></div>
+<div class="l k5"><span class="n">385</span>  <span class="kw">const</span> { ok, json: computeJson } = <span class="kw">await</span> callCompute(xml);</div>
+<div class="l k6"><span class="n">387</span>  <span class="kw">if</span> (!ok) {<span class="rep r6">6</span></div>
+<div class="l k6"><span class="n">389</span>    sendVerdict(res, { pass: <span class="kw">false</span>, reason: GRAPH_NOT_SOLVED });</div>
+<div class="l k6"><span class="n">390</span>    <span class="kw">return</span>;</div>
+<div class="l k6"><span class="n">391</span>  }</div>
+<div class="l k7"><span class="n">393</span>  <span class="kw">const</span> output = extractOutputTree(computeJson,<span class="rep r7">7</span></div>
+<div class="l k7"><span class="n"> </span>    outputParamCandidates(ANSWER_GROUP, outputNickname));</div>
+<div class="l k7"><span class="n">394</span>  <span class="kw">if</span> (!output) { sendVerdict(…, NOTHING_WIRED); <span class="kw">return</span>; }</div>
+<div class="l k7"><span class="n">399</span>  sendVerdict(res, validateSubmission(</div>
+<div class="l k7"><span class="n"> </span>    flattenTree(output.tree), config));</div>
+<div class="l"><span class="n">400</span>}</div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Le corps</b>Le graphe tel que le navigateur l'envoie.</li>
+      <li><span class="rep r2">2</span><b>Les gardes</b>Objets du départ repris de la base, composants vérifiés.</li>
+      <li><span class="rep r3">3</span><b>La consigne</b>Lue en base, jamais dans la requête.</li>
+      <li><span class="rep r4">4</span><b>La géométrie à part</b>Compute corrige lui-même (cours 28).</li>
+      <li><span class="rep r5">5</span><b>Traduire, appeler</b>Le .ghx, puis l'appel borné du cours 30.</li>
+      <li><span class="rep r6">6</span><b>Compute en échec</b>Une tentative refusée, sans détail.</li>
+      <li><span class="rep r7">7</span><b>Lire, juger</b>Le groupe Réponse, comparé par validation.mjs (cours 29).</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">La consigne ne voyage pas</span>
+    Le navigateur envoie un <code>exerciseId</code>, jamais la réponse attendue ni la tolérance : elles restent dans <code>magpie.db</code>. Même en lisant tout le trafic, l'apprenant n'y trouve pas la solution.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 33 · Le backend qui parle à Rhino Compute</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 33</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Rhino Compute, c'est…</div><ul>
+      <li><span>A</span>un module du navigateur</li><li><span>B</span>Rhino et Grasshopper sans fenêtre, derrière HTTP</li><li><span>C</span>une base de données</li><li><span>D</span>un format de fichier</li></ul></div>
+
+    <div class="q"><div class="enonce">Le .ghx part vers Compute…</div><ul>
+      <li><span>A</span>en pièce jointe</li><li><span>B</span>en XML brut dans l'adresse</li><li><span>C</span>en base64, dans le champ algo</li><li><span>D</span>par un dossier partagé</li></ul></div>
+
+    <div class="q"><div class="enonce">Dans le .ghx, un câble du canvas devient…</div><ul>
+      <li><span>A</span>un objet Wire</li><li><span>B</span>un groupe</li><li><span>C</span>rien du tout</li><li><span>D</span>un item Source sur le port d'entrée</li></ul></div>
+
+    <div class="q"><div class="enonce">Compute renvoie les sorties…</div><ul>
+      <li><span>A</span>des groupes nommés RH_OUT:…</li><li><span>B</span>de tous les composants</li><li><span>C</span>du dernier composant</li><li><span>D</span>des seuls Panels</li></ul></div>
+
+    <div class="q"><div class="enonce">Réponse câblée à un composant à deux sorties S et L. Nom cherché d'abord ?</div><ul>
+      <li><span>A</span>RH_OUT:answer</li><li><span>B</span>RH_OUT:answer (S)</li><li><span>C</span>answer</li><li><span>D</span>S</li></ul></div>
+
+    <div class="q"><div class="enonce">Dans InnerTree, la clé "{0;1}" est…</div><ul>
+      <li><span>A</span>un index d'item</li><li><span>B</span>un GUID</li><li><span>C</span>un chemin de branche</li><li><span>D</span>un code d'erreur</li></ul></div>
+
+    <div class="q"><div class="enonce">item.data contient…</div><ul>
+      <li><span>A</span>des octets bruts</li><li><span>B</span>du XML</li><li><span>C</span>un objet déjà décodé</li><li><span>D</span>une chaîne de JSON, à décoder</li></ul></div>
+
+    <div class="q"><div class="enonce">Un client modifié envoie un composant non autorisé…</div><ul>
+      <li><span>A</span>Compute le calcule</li><li><span>B</span>400, avant tout appel à Compute</li><li><span>C</span>le ruban le masque, rien de plus</li><li><span>D</span>la soumission réussit</li></ul></div>
+
+    <div class="q"><div class="enonce">Après une soumission, l'apprenant reçoit… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>status</li><li><span>B</span>pass</li><li><span>C</span>reason</li><li><span>D</span>l'écart mesuré</li></ul></div>
+
+    <div class="q"><div class="enonce">Pour un objet conservé du graphe de départ…</div><ul>
+      <li><span>A</span>le navigateur envoie une référence ; le XML vient de la base</li><li><span>B</span>le navigateur envoie son XML</li><li><span>C</span>il est supprimé</li><li><span>D</span>Compute le télécharge</li></ul></div>
+
+    <div class="q"><div class="enonce">sameSecret utilise timingSafeEqual pour…</div><ul>
+      <li><span>A</span>aller plus vite</li><li><span>B</span>chiffrer le mot de passe</li><li><span>C</span>que le temps de réponse ne trahisse rien</li><li><span>D</span>la compatibilité</li></ul></div>
+
+    <div class="q"><div class="enonce">« Tester » : Compute répond 500, mais avec des values…</div><ul>
+      <li><span>A</span>Magpie renvoie 500</li><li><span>B</span>Magpie relance le calcul</li><li><span>C</span>Magpie ignore la réponse</li><li><span>D</span>Magpie renvoie 200 et les messages</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 33 · Le backend qui parle à Rhino Compute</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 33</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · B.</b> Il calcule ce qu'on lui envoie, sans interface.</div>
+    <div><b>02 · C.</b> toBase64Utf8(xml), dans le corps JSON.</div>
+    <div><b>03 · D.</b> Le GUID de la sortie qui l'alimente.</div>
+    <div><b>04 · A.</b> La convention RH_OUT de Compute.</div>
+    <div><b>05 · B.</b> Suffixé du surnom, puis le nom nu.</div>
+    <div><b>06 · C.</b> Comme les chemins de Grasshopper.</div>
+    <div><b>07 · D.</b> D'où un JSON.parse par item.</div>
+    <div><b>08 · B.</b> assertAuthorizedGraph, avant generateGhx.</div>
+    <div><b>09 · A et B.</b> La raison reste dans le journal.</div>
+    <div><b>10 · A.</b> resolveOpaqueNodes, pour cet exercice seul.</div>
+    <div><b>11 · C.</b> Toujours le même temps de comparaison.</div>
+    <div><b>12 · D.</b> Un composant rouge n'est pas une panne.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis la page 4 et le code de la page 5. <b>10 à 12</b> : passe au cours 35, « Mettre en ligne ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">generateGhx(nodes, edges, groups)</td><td>graphe vers .ghx</td><td>compute-proxy:433</td></tr>
+      <tr><td class="c">{ algo: toBase64Utf8(xml), … }</td><td>le corps de /grasshopper</td><td>compute-proxy:202</td></tr>
+      <tr><td class="c">"RH_OUT:answer"</td><td>nommer la sortie à rendre</td><td>computeOutputs:7</td></tr>
+      <tr><td class="c">extractOutputTree(json, candidats)</td><td>lire une sortie</td><td>computeOutputs:38</td></tr>
+      <tr><td class="c">assertAuthorizedGraph(nodes)</td><td>refuser l'inconnu</td><td>compute-proxy:149</td></tr>
+      <tr><td class="c">sendVerdict(res, { pass, reason })</td><td>juger sans expliquer</td><td>compute-proxy:360</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Rhino Compute</dt><dd>Un serveur HTTP qui exécute Rhino et Grasshopper sans interface.</dd>
+    <dt>algo</dt><dd>Le champ du corps de /grasshopper qui porte la définition en base64.</dd>
+    <dt>RH_OUT:</dt><dd>Le préfixe de groupe qui désigne une sortie à renvoyer.</dd>
+    <dt>InnerTree</dt><dd>L'arbre de données d'une sortie : chemin de branche, liste d'items.</dd>
+    <dt>Temps constant</dt><dd>Une comparaison dont la durée ne dépend pas du contenu comparé.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 35</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 33 · Le backend qui parle à Rhino Compute</div>
+</section>
+
+</body>
+</html>

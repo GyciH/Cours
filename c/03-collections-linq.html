@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>03 · Collections, génériques, lambdas et LINQ</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-1">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 03</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Collections, génériques,<br>lambdas et LINQ</h1>
+  <p class="chapeau">Un composant Grasshopper passe son temps à recevoir des listes, à les filtrer, à les transformer et à les renvoyer. LINQ permet de décrire ce traitement en une chaîne lisible, au lieu d'écrire chaque boucle à la main.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>55 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>01</b> C# moderne, <b>02</b> héritage</span>
+    <span class="pastille">Exemples · <b>Cuttlefish</b> : Bubble, Voronoi, Maze</span>
+  </div>
+
+  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+    <svg viewBox="0 0 600 220" width="100%">
+      <defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2B2F33"/></marker></defs>
+      <text x="0" y="14" font-size="10" font-weight="700" fill="#6B2C7A" letter-spacing="1.2">UNE LIGNE DE BUBBLE.CS (l. 60), LUE COMME UNE CHAÎNE DE MONTAGE</text>
+      <!-- étapes -->
+      <g font-size="10">
+        <rect x="0" y="34" width="120" height="58" rx="6" fill="#fff" stroke="#6B7378" stroke-width="1.3"/>
+        <text x="60" y="54" text-anchor="middle" class="mono" style="font-size:9.5px">points</text>
+        <text x="60" y="70" text-anchor="middle" class="mono" style="font-size:9.5px">.AllData(true)</text>
+        <text x="60" y="85" text-anchor="middle" fill="#6B7378" style="font-size:9px">tout l'arbre, à plat</text>
+        <path d="M122 63 H 150" stroke="#2B2F33" stroke-width="1.4" marker-end="url(#a1)"/>
+        <rect x="154" y="34" width="130" height="58" rx="6" fill="#fff" stroke="#7B1FA2" stroke-width="1.5"/>
+        <text x="219" y="54" text-anchor="middle" class="mono" style="font-size:9.5px" fill="#7B1FA2">.OfType&lt;GH_Point&gt;()</text>
+        <text x="219" y="72" text-anchor="middle" style="font-size:9px">ne garde que</text>
+        <text x="219" y="85" text-anchor="middle" style="font-size:9px">les points (tri)</text>
+        <path d="M286 63 H 314" stroke="#2B2F33" stroke-width="1.4" marker-end="url(#a1)"/>
+        <rect x="318" y="34" width="130" height="58" rx="6" fill="#fff" stroke="#1565C0" stroke-width="1.5"/>
+        <text x="383" y="54" text-anchor="middle" class="mono" style="font-size:9.5px" fill="#1565C0">.Select(p =&gt; p.Value)</text>
+        <text x="383" y="72" text-anchor="middle" style="font-size:9px">GH_Point devient</text>
+        <text x="383" y="85" text-anchor="middle" style="font-size:9px">Point3d (transforme)</text>
+        <path d="M450 63 H 478" stroke="#2B2F33" stroke-width="1.4" marker-end="url(#a1)"/>
+        <rect x="482" y="34" width="118" height="58" rx="6" fill="#6B2C7A"/>
+        <text x="541" y="54" text-anchor="middle" class="mono" style="font-size:9.5px" fill="#fff">.ToList()</text>
+        <text x="541" y="72" text-anchor="middle" style="font-size:9px" fill="#fff">range le résultat</text>
+        <text x="541" y="85" text-anchor="middle" style="font-size:9px" fill="#fff">(emballe)</text>
+      </g>
+      <!-- objets qui défilent -->
+      <g>
+        <circle cx="20" cy="128" r="7" fill="#7B1FA2"/><rect x="34" y="121" width="14" height="14" fill="#E65100"/><circle cx="62" cy="128" r="7" fill="#7B1FA2"/><circle cx="84" cy="128" r="7" fill="#7B1FA2"/><rect x="98" y="121" width="14" height="14" fill="#E65100"/>
+        <circle cx="190" cy="128" r="7" fill="#7B1FA2"/><circle cx="212" cy="128" r="7" fill="#7B1FA2"/><circle cx="234" cy="128" r="7" fill="#7B1FA2"/>
+        <g fill="#1565C0"><path d="M354 121 l7 7 l-7 7 l-7 -7 z"/><path d="M376 121 l7 7 l-7 7 l-7 -7 z"/><path d="M398 121 l7 7 l-7 7 l-7 -7 z"/></g>
+        <rect x="502" y="117" width="78" height="22" rx="3" fill="none" stroke="#6B2C7A" stroke-width="1.4"/>
+        <g fill="#1565C0"><path d="M520 121 l7 7 l-7 7 l-7 -7 z"/><path d="M541 121 l7 7 l-7 7 l-7 -7 z"/><path d="M562 121 l7 7 l-7 7 l-7 -7 z"/></g>
+      </g>
+      <text x="0" y="168" font-size="10" fill="#2B2F33">Rond violet : un GH_Point. Carré orange : autre chose (null, autre type). Losange bleu : un Point3d.</text>
+      <text x="0" y="190" font-size="10" fill="#6B7378">Chaque maillon reçoit une séquence et en rend une autre. Rien ne s'exécute avant le dernier :</text>
+      <text x="0" y="204" font-size="10" fill="#6B7378"><tspan class="mono" style="font-size:9.5px">ToList()</tspan> déclenche toute la chaîne d'un coup.</text>
+    </svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Une collection range des valeurs d'un même type ; une <b>lambda</b> est une petite fonction écrite sur place ; <b>LINQ</b> enchaîne des opérations toutes faites (trier, filtrer, transformer) qui prennent ces lambdas en paramètre.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Une chaîne d'atelier. Les pièces avancent sur un tapis ; à chaque poste, un ouvrier applique une consigne courte (« ne garde que les ronds », « peins-les en bleu »). La consigne, c'est la lambda ; le poste, c'est l'opérateur LINQ.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>choisir la bonne collection : List, Dictionary, HashSet, Stack ;</li>
+        <li>lire et écrire une lambda, et dire ce qu'elle reçoit et ce qu'elle rend ;</li>
+        <li>lire une chaîne LINQ de Cuttlefish de gauche à droite, et la réécrire en boucle si besoin.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:5mm">
+    <span class="titre">À retenir</span>
+    LINQ ne fait rien qu'une boucle ne sache faire. Il dit <b>quoi</b> obtenir au lieu de <b>comment</b> le parcourir, et c'est ce qui le rend plus court à lire, pas plus rapide à l'exécution.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 03 · Collections, génériques, lambdas et LINQ</div>
+</section>
+
+<!-- ============ PAGE 2 · LES COLLECTIONS ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 03</b></div>
+  <p class="rubrique">Schéma 1 · La famille des collections</p>
+  <h2>Quatre rangements, une même interface</h2>
+  <p style="max-width:165mm">Le <code>&lt;T&gt;</code> d'une collection générique est un moule : on choisit le type une fois, et le compilateur refuse tout le reste. Toutes ces collections savent se faire parcourir, parce qu'elles implémentent la même interface : <code>IEnumerable&lt;T&gt;</code>.</p>
+
+  <svg viewBox="0 0 600 440" width="100%" style="margin-top:2mm">
+    <defs><marker id="h1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#fff" stroke="#2B2F33"/></marker></defs>
+    <rect x="0" y="0" width="600" height="440" fill="#EFE9E1"/>
+    <!-- interface -->
+    <rect x="170" y="18" width="260" height="44" rx="6" fill="#fff" stroke="#6B2C7A" stroke-width="1.6" stroke-dasharray="5 3"/>
+    <text x="300" y="38" text-anchor="middle" class="mono" style="font-size:11px" font-weight="700" fill="#6B2C7A">IEnumerable&lt;T&gt;</text>
+    <text x="300" y="54" text-anchor="middle" font-size="9.5" fill="#2B2F33">« je sais donner mes éléments un par un »</text>
+    <g stroke="#2B2F33" stroke-width="1.2" fill="none">
+      <path d="M75 108 V 86 H 300 V 66" marker-end="url(#h1)"/>
+      <path d="M225 108 V 86"/><path d="M375 108 V 86"/><path d="M525 108 V 86 H 300"/>
+    </g>
+
+    <!-- List -->
+    <rect x="10" y="108" width="132" height="190" rx="6" fill="#fff" stroke="#2E7D32" stroke-width="1.5"/>
+    <text x="22" y="128" class="mono" style="font-size:10.5px" font-weight="700" fill="#2E7D32">List&lt;T&gt;</text>
+    <text x="22" y="144" font-size="9.5" fill="#6B7378">une file de cases</text>
+    <g><rect x="22" y="154" width="22" height="22" fill="#E8F3E8" stroke="#2E7D32"/><rect x="44" y="154" width="22" height="22" fill="#E8F3E8" stroke="#2E7D32"/><rect x="66" y="154" width="22" height="22" fill="#E8F3E8" stroke="#2E7D32"/><rect x="88" y="154" width="22" height="22" fill="#E8F3E8" stroke="#2E7D32"/></g>
+    <g font-size="8.5" fill="#6B7378" text-anchor="middle"><text x="33" y="188">0</text><text x="55" y="188">1</text><text x="77" y="188">2</text><text x="99" y="188">3</text></g>
+    <text x="22" y="208" font-size="9.5">accès par position,</text>
+    <text x="22" y="221" font-size="9.5">ordre conservé,</text>
+    <text x="22" y="234" font-size="9.5">doublons permis</text>
+    <text x="22" y="258" font-size="8.8" fill="#2E7D32" font-weight="700">partout dans Cuttlefish</text>
+    <text x="22" y="272" class="mono" style="font-size:8px" fill="#6B7378">List&lt;Point3d&gt; all</text>
+    <text x="22" y="285" class="mono" style="font-size:8px" fill="#6B7378">Bubble.cs:60</text>
+
+    <!-- Dictionary -->
+    <rect x="159" y="108" width="132" height="190" rx="6" fill="#fff" stroke="#1565C0" stroke-width="1.5"/>
+    <text x="171" y="128" class="mono" style="font-size:10.5px" font-weight="700" fill="#1565C0">Dictionary&lt;K,V&gt;</text>
+    <text x="171" y="144" font-size="9.5" fill="#6B7378">des étiquettes</text>
+    <g font-size="9"><rect x="171" y="154" width="40" height="16" fill="#E5EEF9" stroke="#1565C0"/><text x="191" y="166" text-anchor="middle">0</text><text x="216" y="166">→ groupe 0</text>
+    <rect x="171" y="174" width="40" height="16" fill="#E5EEF9" stroke="#1565C0"/><text x="191" y="186" text-anchor="middle">3</text><text x="216" y="186">→ groupe 1</text></g>
+    <text x="171" y="208" font-size="9.5">accès par clé,</text>
+    <text x="171" y="221" font-size="9.5">clé unique,</text>
+    <text x="171" y="234" font-size="9.5">recherche immédiate</text>
+    <text x="171" y="258" font-size="8.8" fill="#1565C0" font-weight="700">regrouper des branches</text>
+    <text x="171" y="272" class="mono" style="font-size:8px" fill="#6B7378">Dictionary&lt;int,int&gt;</text>
+    <text x="171" y="285" class="mono" style="font-size:8px" fill="#6B7378">Outils.cs:22</text>
+
+    <!-- HashSet -->
+    <rect x="308" y="108" width="132" height="190" rx="6" fill="#fff" stroke="#7B1FA2" stroke-width="1.5"/>
+    <text x="320" y="128" class="mono" style="font-size:10.5px" font-weight="700" fill="#7B1FA2">HashSet&lt;T&gt;</text>
+    <text x="320" y="144" font-size="9.5" fill="#6B7378">un sac sans doublon</text>
+    <ellipse cx="374" cy="168" rx="48" ry="16" fill="#F1E6F5" stroke="#7B1FA2"/>
+    <g fill="#7B1FA2"><circle cx="350" cy="168" r="5"/><circle cx="370" cy="164" r="5"/><circle cx="390" cy="171" r="5"/></g>
+    <text x="320" y="208" font-size="9.5">pas d'ordre, pas</text>
+    <text x="320" y="221" font-size="9.5">de doublon, test</text>
+    <text x="320" y="234" font-size="9.5">« contient ? » rapide</text>
+    <text x="320" y="258" font-size="8.8" fill="#7B1FA2" font-weight="700">déjà vu ? déjà traité ?</text>
+    <text x="320" y="272" font-size="8.5" fill="#6B7378">Cuttlefish préfère un</text>
+    <text x="320" y="285" class="mono" style="font-size:8px" fill="#6B7378">bool[,] seen (Maze)</text>
+
+    <!-- Stack -->
+    <rect x="457" y="108" width="132" height="190" rx="6" fill="#fff" stroke="#E65100" stroke-width="1.5"/>
+    <text x="469" y="128" class="mono" style="font-size:10.5px" font-weight="700" fill="#E65100">Stack&lt;T&gt;</text>
+    <text x="469" y="144" font-size="9.5" fill="#6B7378">une pile d'assiettes</text>
+    <g><rect x="497" y="150" width="50" height="10" fill="#FCEDE2" stroke="#E65100"/><rect x="497" y="161" width="50" height="10" fill="#FCEDE2" stroke="#E65100"/><rect x="497" y="172" width="50" height="10" fill="#FCEDE2" stroke="#E65100"/></g>
+    <text x="469" y="196" font-size="8.5" fill="#E65100" font-weight="700">Push pose, Pop reprend</text>
+    <text x="469" y="208" font-size="9.5">le dernier posé est</text>
+    <text x="469" y="221" font-size="9.5">le premier repris</text>
+    <text x="469" y="234" font-size="9.5">(LIFO)</text>
+    <text x="469" y="258" font-size="8.8" fill="#E65100" font-weight="700">revenir sur ses pas</text>
+    <text x="469" y="272" class="mono" style="font-size:8px" fill="#6B7378">Stack&lt;int[]&gt; stack</text>
+    <text x="469" y="285" class="mono" style="font-size:8px" fill="#6B7378">Maze.cs:71</text>
+
+    <!-- tableau et Grasshopper -->
+    <rect x="10" y="316" width="282" height="110" rx="6" fill="#fff" stroke="#6D4C41" stroke-width="1.2"/>
+    <text x="22" y="336" class="mono" style="font-size:10.5px" font-weight="700" fill="#6D4C41">T[]  et  T[,]</text>
+    <text x="22" y="354" font-size="9.5">le tableau : taille fixée à la création.</text>
+    <text x="22" y="369" font-size="9.5">Idéal pour une grille de taille connue :</text>
+    <text x="22" y="384" class="mono" style="font-size:8.6px">bool[,] seen = new bool[nx, ny];</text>
+    <text x="22" y="404" font-size="9" fill="#6B7378">C'est aussi un IEnumerable : LINQ marche dessus</text>
+    <text x="22" y="417" font-size="9" fill="#6B7378">(les mouvements de Maze sont un int[][]).</text>
+
+    <rect x="308" y="316" width="281" height="110" rx="6" fill="#fff" stroke="#00838F" stroke-width="1.2" stroke-dasharray="4 3"/>
+    <text x="320" y="336" class="mono" style="font-size:10.5px" font-weight="700" fill="#00838F">GH_Structure&lt;T&gt;, DataTree&lt;T&gt;</text>
+    <text x="320" y="354" font-size="9.5">les arbres de Grasshopper : des listes</text>
+    <text x="320" y="369" font-size="9.5">rangées par chemin {0;1}. Ce sont</text>
+    <text x="320" y="384" font-size="9.5">des collections maison, vues au cours 08.</text>
+    <text x="320" y="404" font-size="9" fill="#6B7378"><tspan class="mono" style="font-size:8.6px">AllData(true)</tspan> les aplatit en une séquence</text>
+    <text x="320" y="417" font-size="9" fill="#6B7378">que LINQ sait traiter.</text>
+  </svg>
+
+  <div class="encadre piege" style="margin-top:4mm">
+    <span class="titre">Piège courant</span>
+    Utiliser une <code>List</code> pour demander « ai-je déjà vu ce point ? ». <code>list.Contains(x)</code> relit toute la liste à chaque appel : sur 10 000 points, cela fait 100 millions de comparaisons. Un <code>HashSet</code> ou un <code>Dictionary</code> répond presque immédiatement, quelle que soit sa taille.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 03 · Collections, génériques, lambdas et LINQ</div>
+</section>
+
+<!-- ============ PAGE 3 · LES LAMBDAS ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 03</b></div>
+  <p class="rubrique">Schéma 2 · Anatomie d'une lambda</p>
+  <h2>Une fonction écrite là où on s'en sert</h2>
+  <p style="max-width:165mm">Une lambda est une méthode sans nom. Elle se compose de paramètres, d'une flèche <code>=&gt;</code> (« donne ») et d'un résultat. Le compilateur devine les types d'après l'endroit où elle est posée.</p>
+
+  <div class="panneau" style="padding:5mm 6mm 3mm; margin-top:2mm">
+    <svg viewBox="0 0 600 150" width="100%">
+      <text x="300" y="58" text-anchor="middle" class="mono" style="font-size:26px"><tspan fill="#7B1FA2" font-weight="700">p</tspan> <tspan fill="#6B2C7A" font-weight="700">=&gt;</tspan> <tspan fill="#1565C0">p.Value</tspan></text>
+      <g stroke-width="1.3" fill="none">
+        <path d="M203 68 V 96 H 120" stroke="#7B1FA2"/>
+        <path d="M262 68 V 112" stroke="#6B2C7A"/>
+        <path d="M370 68 V 96 H 450" stroke="#1565C0"/>
+      </g>
+      <text x="20" y="100" font-size="10.5" font-weight="700" fill="#7B1FA2">le paramètre</text>
+      <text x="20" y="115" font-size="9.5">un élément de la séquence,</text>
+      <text x="20" y="128" font-size="9.5">ici un GH_Point (nom libre)</text>
+      <text x="262" y="128" text-anchor="middle" font-size="10.5" font-weight="700" fill="#6B2C7A">« donne »</text>
+      <text x="262" y="142" text-anchor="middle" font-size="9.5">pas « supérieur ou égal »</text>
+      <text x="456" y="100" font-size="10.5" font-weight="700" fill="#1565C0">le résultat</text>
+      <text x="456" y="115" font-size="9.5">ce que la fonction rend,</text>
+      <text x="456" y="128" font-size="9.5">ici un Point3d</text>
+    </svg>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">La même idée, à trois époques</p>
+  <div class="paire">
+    <div class="nom"><span class="rep r7">1</span><br>Méthode nommée<br><span class="ver">C# 1</span><span class="src">écrite à part,<br>puis passée par son nom</span></div>
+<div class="boite avant"><span class="etiq">Avant</span><span class="hl">static Point3d Valeur(GH_Point p)
+{
+    return p.Value;
+}</span>
+…
+pts.Select(<span class="hl">Valeur</span>)</div>
+<div class="boite apres"><span class="etiq">Après</span>pts.Select(<span class="hl">p =&gt; p.Value</span>)
+
+<span style="color:#6B7378">// la méthode n'existe plus à part :
+// elle vit là où on l'utilise</span></div>
+  </div>
+  <div class="paire">
+    <div class="nom"><span class="rep r4">2</span><br>Méthode anonyme<br><span class="ver">C# 2</span><span class="src">delegate(…) { … }</span></div>
+<div class="boite avant"><span class="etiq">Avant</span>pts.Select(<span class="hl">delegate (GH_Point p)
+{
+    return</span> p.Value<span class="hl">;
+}</span>)</div>
+<div class="boite apres"><span class="etiq">Après</span>pts.Select(p =&gt; p.Value)
+
+<span style="color:#6B7378">// type de p, return, accolades :
+// tout est déduit</span></div>
+  </div>
+  <div class="paire">
+    <div class="nom"><span class="rep r2">3</span><br>Plusieurs paramètres, ou un corps<br><span class="ver">C# 3</span><span class="src">Cuttlefish/Voronoi.cs:62<br>Cuttlefish/Maze.cs:80</span></div>
+<div class="boite apres" style="grid-column: span 2"><span class="etiq">Formes utiles</span>(path, index) =&gt; new { Path = path, Index = index }   <span style="color:#6B7378">// deux paramètres</span>
+_ =&gt; new List&lt;double&gt;()                           <span style="color:#6B7378">// paramètre ignoré (Weave.cs:64)</span>
+c =&gt; c[0] &gt;= 0 &amp;&amp; c[1] &gt;= 0 &amp;&amp; !seen[c[0], c[1]]  <span style="color:#6B7378">// rend un bool : un filtre</span></div>
+  </div>
+
+  <div class="deuxcol" style="margin-top:3mm; gap:6mm">
+    <div class="encadre" style="margin:0">
+      <span class="titre">Le type d'une lambda</span>
+      Une lambda qui reçoit un <code>T</code> et rend un <code>R</code> est un <code>Func&lt;T, R&gt;</code>. Celle qui rend un <code>bool</code> sert de filtre. C'est ce que <code>Select</code> et <code>Where</code> attendent en paramètre.
+    </div>
+    <div class="encadre piege" style="margin:0">
+      <span class="titre">Piège courant</span>
+      Lire <code>=&gt;</code> comme une comparaison. <code>i =&gt; i != k</code> veut dire « pour chaque i, rends vrai si i est différent de k ». La comparaison est <code>!=</code>, la flèche ne compare rien.
+    </div>
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 03 · Collections, génériques, lambdas et LINQ</div>
+</section>
+
+<!-- ============ PAGE 4 · UNE CHAÎNE PAS À PAS ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 03</b></div>
+  <p class="rubrique">Schéma 3 · Une chaîne LINQ, pas à pas</p>
+  <h2>La distance au plus proche voisin, en une ligne</h2>
+  <p style="max-width:165mm">Bubble dessine autour de chaque point un cercle dont le rayon dépend de son voisin le plus proche. <code>RTree</code> a déjà trouvé les deux points les plus proches de chacun ; le premier est le point lui-même. La ligne 81 en tire une distance.</p>
+
+  <div class="panneau" style="padding:5mm 5mm 4mm; margin-top:2mm">
+    <svg viewBox="0 0 600 330" width="100%">
+      <defs><marker id="a4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2B2F33"/></marker></defs>
+      <text x="0" y="14" class="mono" style="font-size:9.6px"><tspan fill="#2B2F33">neighbours[k]</tspan><tspan fill="#2E7D32">.Where(i =&gt; i != k)</tspan><tspan fill="#1565C0">.Select(i =&gt; c.DistanceTo(all[i]))</tspan><tspan fill="#7B1FA2">.DefaultIfEmpty(0)</tspan><tspan fill="#E65100">.Min()</tspan></text>
+      <text x="0" y="32" font-size="9" fill="#6B7378">Bubble.cs, ligne 81. Exemple pour le point n° 3 (k = 3), dont le voisin le plus proche est le n° 7.</text>
+
+      <g font-size="10">
+        <!-- étape 0 -->
+        <rect x="0" y="52" width="104" height="88" rx="6" fill="#fff" stroke="#6B7378"/>
+        <text x="52" y="70" text-anchor="middle" font-weight="700">au départ</text>
+        <text x="52" y="100" text-anchor="middle" class="mono" style="font-size:13px">{ 3, 7 }</text>
+        <text x="52" y="126" text-anchor="middle" font-size="8.8" fill="#6B7378">indices des 2 voisins</text>
+        <path d="M106 96 H 122" stroke="#2B2F33" stroke-width="1.3" marker-end="url(#a4)"/>
+        <!-- Where -->
+        <rect x="124" y="52" width="104" height="88" rx="6" fill="#fff" stroke="#2E7D32" stroke-width="1.5"/>
+        <text x="176" y="70" text-anchor="middle" font-weight="700" fill="#2E7D32">Where</text>
+        <text x="176" y="100" text-anchor="middle" class="mono" style="font-size:13px">{ 7 }</text>
+        <text x="176" y="126" text-anchor="middle" font-size="8.8" fill="#6B7378">3 retiré : c'est lui</text>
+        <path d="M230 96 H 246" stroke="#2B2F33" stroke-width="1.3" marker-end="url(#a4)"/>
+        <!-- Select -->
+        <rect x="248" y="52" width="104" height="88" rx="6" fill="#fff" stroke="#1565C0" stroke-width="1.5"/>
+        <text x="300" y="70" text-anchor="middle" font-weight="700" fill="#1565C0">Select</text>
+        <text x="300" y="100" text-anchor="middle" class="mono" style="font-size:13px">{ 2.4 }</text>
+        <text x="300" y="126" text-anchor="middle" font-size="8.8" fill="#6B7378">indice → distance</text>
+        <path d="M354 96 H 370" stroke="#2B2F33" stroke-width="1.3" marker-end="url(#a4)"/>
+        <!-- DefaultIfEmpty -->
+        <rect x="372" y="52" width="104" height="88" rx="6" fill="#fff" stroke="#7B1FA2" stroke-width="1.5"/>
+        <text x="424" y="70" text-anchor="middle" font-weight="700" fill="#7B1FA2">DefaultIfEmpty</text>
+        <text x="424" y="100" text-anchor="middle" class="mono" style="font-size:13px">{ 2.4 }</text>
+        <text x="424" y="120" text-anchor="middle" font-size="8.8" fill="#6B7378">si vide : { 0 }</text>
+        <text x="424" y="132" text-anchor="middle" font-size="8.8" fill="#6B7378">jamais vide pour Min</text>
+        <path d="M478 96 H 494" stroke="#2B2F33" stroke-width="1.3" marker-end="url(#a4)"/>
+        <!-- Min -->
+        <rect x="496" y="52" width="104" height="88" rx="6" fill="#6B2C7A"/>
+        <text x="548" y="70" text-anchor="middle" font-weight="700" fill="#fff">Min</text>
+        <text x="548" y="100" text-anchor="middle" class="mono" style="font-size:13px" fill="#fff">2.4</text>
+        <text x="548" y="126" text-anchor="middle" font-size="8.8" fill="#fff">un seul nombre</text>
+      </g>
+
+      <!-- boucle équivalente -->
+      <text x="0" y="172" font-size="10" font-weight="700" fill="#6B2C7A" letter-spacing="1">LA MÊME CHOSE, EN BOUCLE</text>
+      <rect x="0" y="180" width="330" height="140" rx="5" fill="#fff" stroke="#D9D2C8"/>
+      <g>
+        <text class="mono" style="font-size:9.2px" x="12" y="200"><tspan fill="#0B4F9C">double</tspan> d = <tspan fill="#0B4F9C">double</tspan>.MaxValue;</text>
+        <text class="mono" style="font-size:9.2px" x="12" y="216"><tspan fill="#0B4F9C">bool</tspan> trouve = <tspan fill="#0B4F9C">false</tspan>;</text>
+        <text class="mono" style="font-size:9.2px" x="12" y="232"><tspan fill="#0B4F9C">foreach</tspan> (<tspan fill="#0B4F9C">int</tspan> i <tspan fill="#0B4F9C">in</tspan> neighbours[k])</text>
+        <text class="mono" style="font-size:9.2px" x="12" y="248">{</text>
+        <text class="mono" style="font-size:9.2px" x="36" y="264" fill="#2E7D32">if (i == k) continue;</text>
+        <text class="mono" style="font-size:9.2px" x="36" y="280" fill="#1565C0">double di = c.DistanceTo(all[i]);</text>
+        <text class="mono" style="font-size:9.2px" x="36" y="296" fill="#E65100">if (di &lt; d) d = di; trouve = true;</text>
+        <text class="mono" style="font-size:9.2px" x="12" y="312">}  <tspan fill="#7B1FA2">if (!trouve) d = 0;</tspan></text>
+      </g>
+      <g font-size="9.5">
+        <text x="348" y="200" font-weight="700">Huit lignes contre une.</text>
+        <text x="348" y="216">Chaque couleur de la boucle</text>
+        <text x="348" y="230">correspond à un maillon de</text>
+        <text x="348" y="244">la chaîne : rien n'est perdu,</text>
+        <text x="348" y="258">rien n'est ajouté.</text>
+        <text x="348" y="282" font-weight="700" fill="#6B2C7A">Choisir l'une ou l'autre :</text>
+        <text x="348" y="298">la chaîne pour lire vite ; la boucle</text>
+        <text x="348" y="312">pour déboguer pas à pas.</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="encadre piege" style="margin-top:4mm">
+    <span class="titre">Piège courant : l'exécution différée</span>
+    Une chaîne sans <code>ToList()</code>, <code>Min()</code> ou <code>foreach</code> n'a encore rien calculé : elle n'est qu'une recette. Si on la parcourt deux fois, elle est recalculée deux fois ; si la liste source change entre-temps, le résultat change aussi. D'où le <code>.ToList()</code> en bout de chaîne, qui fige le résultat.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 03 · Collections, génériques, lambdas et LINQ</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 03</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Regrouper des branches, choisir un voisin</h2>
+  <p style="max-width:165mm">Deux usages plus riches. Voronoi regroupe les branches d'un arbre par leur premier indice de chemin, avec un type anonyme. Maze choisit au hasard une case voisine encore libre.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="n"> </span><span class="cm">// Cuttlefish/Voronoi.cs</span></div>
+<div class="l k1"><span class="n">61</span><span class="kw">var</span> groups = points.Paths<span class="rep r1">1</span></div>
+<div class="l k2"><span class="n">62</span>    .Select((path, index) =&gt;<span class="rep r2">2</span></div>
+<div class="l k2"><span class="n"> </span>        <span class="kw">new</span> { Path = path, Index = index })</div>
+<div class="l k3"><span class="n">63</span>    .GroupBy(p =&gt; p.Path[0]);<span class="rep r3">3</span></div>
+<div class="l"><span class="n">64</span><span class="kw">int</span> idRect = 0;</div>
+<div class="l"><span class="n"> </span> </div>
+<div class="l k4"><span class="n">66</span><span class="kw">foreach</span> (<span class="kw">var</span> group <span class="kw">in</span> groups)<span class="rep r4">4</span></div>
+<div class="l"><span class="n">67</span>{</div>
+<div class="l k6"><span class="n">68</span>    <span class="kw">var</span> ids = group<span class="rep r6">5</span></div>
+<div class="l k6"><span class="n">69</span>        .Select(x =&gt; x.Index)</div>
+<div class="l k6"><span class="n">70</span>        .ToList();</div>
+<div class="l"><span class="n">72</span>    <span class="ty">List</span>&lt;<span class="ty">Point3d</span>&gt; currentPoints = <span class="kw">new</span> …;</div>
+<div class="l"><span class="n"> </span>    <span class="cm">// … une cellule de Voronoi par groupe</span></div>
+<div class="l"><span class="n"> </span> </div>
+<div class="l"><span class="n"> </span><span class="cm">// Cuttlefish/Maze.cs</span></div>
+<div class="l k7"><span class="n">71</span><span class="kw">var</span> stack = <span class="kw">new</span> <span class="ty">Stack</span>&lt;<span class="kw">int</span>[]&gt;();<span class="rep r7">6</span></div>
+<div class="l"><span class="n">74</span><span class="kw">int</span>[][] moves = { <span class="kw">new</span>[] { 1, 0 }, … };</div>
+<div class="l k7"><span class="n">75</span><span class="kw">while</span> (stack.Count &gt; 0)</div>
+<div class="l"><span class="n">76</span>{</div>
+<div class="l"><span class="n">77</span>    <span class="kw">int</span>[] cell = stack.Peek();</div>
+<div class="l k2"><span class="n">78</span>    <span class="kw">var</span> next = moves</div>
+<div class="l k2"><span class="n">79</span>        .Select(m =&gt; <span class="kw">new</span>[] { cell[0] + m[0], … })</div>
+<div class="l k5"><span class="n">80</span>        .Where(c =&gt; c[0] &gt;= 0 &amp;&amp; … &amp;&amp; !seen[…])<span class="rep r5">7</span></div>
+<div class="l k6"><span class="n">81</span>        .ToList();</div>
+<div class="l k7"><span class="n">82</span>    <span class="kw">if</span> (next.Count == 0) { stack.Pop(); <span class="kw">continue</span>; }</div>
+<div class="l"><span class="n">84</span>    <span class="kw">int</span>[] n = next[rand.Next(next.Count)];</div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>La source</b>La liste des chemins de l'arbre : {0;0}, {0;1}, {1;0}… C'est déjà un IEnumerable.</li>
+      <li><span class="rep r2">2</span><b>Select à deux paramètres</b>La version (élément, position) garde l'indice de chaque branche. <em>new { … }</em> crée un type anonyme, sans classe à déclarer.</li>
+      <li><span class="rep r3">3</span><b>GroupBy</b>Range les branches par leur premier indice : toutes les {0;…} ensemble, puis les {1;…}. Une boîte par rectangle d'entrée.</li>
+      <li><span class="rep r4">4</span><b>Le déclencheur</b>Rien n'a été calculé avant ce foreach : l'exécution différée de la page 4.</li>
+      <li><span class="rep r6">5</span><b>ToList fige</b>On extrait les indices du groupe dans une vraie liste, qu'on parcourt ensuite avec ids[i].</li>
+      <li><span class="rep r7">6</span><b>La pile</b>Le parcours en profondeur avance tant qu'il trouve une case libre, et revient en arrière par Pop sinon.</li>
+      <li><span class="rep r5">7</span><b>Where comme filtre</b>La lambda rend un bool : dans la grille et pas encore vue. Les cases refusées disparaissent de la séquence.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À retenir</span>
+    Le même motif <code>Select((path, index) =&gt; …).GroupBy(…)</code> revient dans Voronoi, Blur, Lining, Meshing et Attractor. Un motif copié cinq fois est un candidat naturel pour une méthode de la classe <code>Outils</code>, comme <code>Groupes</code> l'a déjà fait (cours 01, page 5).
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 03 · Collections, génériques, lambdas et LINQ</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 03</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Que veut dire le <code>&lt;Point3d&gt;</code> de <code>List&lt;Point3d&gt;</code> ?</div><ul>
+      <li><span>A</span>la liste contient un seul point</li><li><span>B</span>la liste n'accepte que des Point3d</li><li><span>C</span>la liste est triée</li><li><span>D</span>c'est une option facultative</li></ul></div>
+
+    <div class="q"><div class="enonce">Pour tester vite « ai-je déjà vu cet élément ? »…</div><ul>
+      <li><span>A</span>List.Contains</li><li><span>B</span>HashSet</li><li><span>C</span>Stack</li><li><span>D</span>un tableau trié à la main</li></ul></div>
+
+    <div class="q"><div class="enonce">Dans <code>p =&gt; p.Value</code>, que désigne <code>p</code> ?</div><ul>
+      <li><span>A</span>la liste entière</li><li><span>B</span>un élément de la séquence</li><li><span>C</span>un mot-clé réservé</li><li><span>D</span>le résultat</li></ul></div>
+
+    <div class="q"><div class="enonce">Que fait <code>Where</code> ?</div><ul>
+      <li><span>A</span>transforme chaque élément</li><li><span>B</span>garde les éléments pour lesquels la lambda rend vrai</li><li><span>C</span>trie la séquence</li><li><span>D</span>compte les éléments</li></ul></div>
+
+    <div class="q"><div class="enonce">Que fait <code>Select</code> ?</div><ul>
+      <li><span>A</span>choisit un élément au hasard</li><li><span>B</span>filtre</li><li><span>C</span>transforme chaque élément en une autre valeur</li><li><span>D</span>supprime les doublons</li></ul></div>
+
+    <div class="q"><div class="enonce">Quand une chaîne LINQ s'exécute-t-elle ? <span class="tag" style="color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>à la ligne où elle est écrite</li><li><span>B</span>au ToList()</li><li><span>C</span>au foreach qui la parcourt</li><li><span>D</span>à un Min() ou un Count()</li></ul></div>
+
+    <div class="q"><div class="enonce">Pourquoi <code>DefaultIfEmpty(0)</code> avant <code>Min()</code> dans Bubble ?</div><ul>
+      <li><span>A</span>pour trier</li><li><span>B</span>Min sur une séquence vide lève une exception</li><li><span>C</span>pour arrondir</li><li><span>D</span>pour aller plus vite</li></ul></div>
+
+    <div class="q"><div class="enonce">Quel type a la lambda <code>c =&gt; c[0] &gt;= 0</code> ?</div><ul>
+      <li><span>A</span>Func&lt;int[], bool&gt;</li><li><span>B</span>Func&lt;bool, int[]&gt;</li><li><span>C</span>List&lt;int&gt;</li><li><span>D</span>void</li></ul></div>
+
+    <div class="q"><div class="enonce">Que crée <code>new { Path = path, Index = index }</code> ?</div><ul>
+      <li><span>A</span>un dictionnaire</li><li><span>B</span>un objet d'un type anonyme, sans classe déclarée</li><li><span>C</span>une erreur en C# 7.3</li><li><span>D</span>une structure Grasshopper</li></ul></div>
+
+    <div class="q"><div class="enonce">Pourquoi Maze utilise-t-il une <code>Stack</code> ?</div><ul>
+      <li><span>A</span>pour trier les cases</li><li><span>B</span>pour revenir à la dernière case posée quand on est bloqué</li><li><span>C</span>parce que List n'existe pas en net48</li><li><span>D</span>pour éviter les doublons</li></ul></div>
+
+    <div class="q"><div class="enonce">Que garantit <code>IEnumerable&lt;T&gt;</code> ? <span class="tag" style="color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>qu'on peut parcourir les éléments un par un</li><li><span>B</span>qu'on peut appliquer LINQ</li><li><span>C</span>un accès par position</li><li><span>D</span>l'absence de doublons</li></ul></div>
+
+    <div class="q"><div class="enonce">LINQ est-il plus rapide qu'une boucle ?</div><ul>
+      <li><span>A</span>oui, toujours</li><li><span>B</span>non, il est plus lisible, pas plus rapide</li><li><span>C</span>oui, il est parallèle</li><li><span>D</span>non, il est interdit dans Grasshopper</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 03 · Collections, génériques, lambdas et LINQ</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET AIDE-MÉMOIRE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 03</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · B.</b> Le type entre chevrons est le moule : le compilateur refuse tout autre type.</div>
+    <div><b>02 · B.</b> HashSet répond sans relire tout le contenu ; List.Contains parcourt tout.</div>
+    <div><b>03 · B.</b> Le paramètre reçoit chaque élément à tour de rôle. Son nom est libre.</div>
+    <div><b>04 · B.</b> Where filtre ; c'est Select qui transforme.</div>
+    <div><b>05 · C.</b> Select fait correspondre une valeur à chaque élément : GH_Point vers Point3d.</div>
+    <div><b>06 · B, C et D.</b> Tant que rien ne consomme la chaîne, elle n'est qu'une recette.</div>
+    <div><b>07 · B.</b> Si le seul voisin était le point lui-même, Where rendrait une séquence vide.</div>
+    <div><b>08 · A.</b> Elle reçoit un int[] et rend un bool : c'est un filtre.</div>
+    <div><b>09 · B.</b> Un type anonyme, disponible depuis C# 3 : utilisable en net48.</div>
+    <div><b>10 · B.</b> Le dernier posé est le premier repris : c'est le retour en arrière.</div>
+    <div><b>11 · A et B.</b> L'accès par position est propre à List et aux tableaux.</div>
+    <div><b>12 · B.</b> Même travail qu'une boucle, parfois un peu plus coûteux ; le gain est la lecture.</div>
+  </div>
+
+  <div class="panneau" style="padding:3.5mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:30mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.3pt; line-height:1.45"><b>0 à 6</b> : relis la page 3, puis la boucle de la page 4. <b>7 à 9</b> : réécris en boucle la ligne 80 de Maze. <b>10 à 12</b> : passe au cours 128, « Les génériques ».</div>
+  </div>
+
+  <p class="rubrique" style="margin-top:6mm">Aide-mémoire · les opérateurs LINQ de Cuttlefish</p>
+  <table class="aide">
+    <thead><tr><th>Opérateur</th><th>Ce qu'il fait</th><th>Rend</th><th>Où</th></tr></thead>
+    <tbody>
+      <tr><td class="c">Where(x =&gt; bool)</td><td>garde ce qui passe le test</td><td>séquence</td><td class="c">Bubble:81, Maze:80</td></tr>
+      <tr><td class="c">Select(x =&gt; y)</td><td>transforme chaque élément</td><td>séquence</td><td class="c">Bubble:60</td></tr>
+      <tr><td class="c">OfType&lt;T&gt;()</td><td>garde les éléments du type T</td><td>séquence</td><td class="c">Bubble:60</td></tr>
+      <tr><td class="c">GroupBy(x =&gt; clé)</td><td>range par clé</td><td>groupes</td><td class="c">Voronoi:63</td></tr>
+      <tr><td class="c">SelectMany(x =&gt; liste)</td><td>aplatit des listes de listes</td><td>séquence</td><td class="c">Delaunay:55</td></tr>
+      <tr><td class="c">OrderBy(x =&gt; clé)</td><td>trie</td><td>séquence</td><td class="c">Hatch:94</td></tr>
+      <tr><td class="c">Min, Max, Average</td><td>réduit à une valeur</td><td>nombre</td><td class="c">Spiral:68</td></tr>
+      <tr><td class="c">ToList()</td><td>exécute et fige</td><td>List&lt;T&gt;</td><td class="c">partout</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:6mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Générique</dt><dd>Classe ou méthode écrite une fois pour un type T choisi à l'usage.</dd>
+    <dt>Lambda</dt><dd>Fonction sans nom, écrite sur place : paramètres =&gt; résultat.</dd>
+    <dt>LINQ</dt><dd>Opérateurs prêts à l'emploi sur toute séquence IEnumerable.</dd>
+    <dt>Exécution différée</dt><dd>La chaîne ne calcule qu'au moment où on la consomme.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 128</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 03 · Collections, génériques, lambdas et LINQ</div>
+</section>
+
+</body>
+</html>

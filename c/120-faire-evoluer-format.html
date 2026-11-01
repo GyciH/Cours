@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>120 · Faire évoluer un format</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-10">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 120</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Faire évoluer un format</h1>
+  <p class="chapeau">Un fichier survit au programme qui l'a écrit. Changer un nom de champ, l'ordre d'une énumération ou le sens d'une valeur, c'est changer le contrat de tous les fichiers déjà enregistrés. En une journée de septembre, l'enum <b>ValidationMode</b> de Magpie a cassé ce contrat, puis l'a réparé ; tout le cours tient dans ces deux commits.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>117</b></span>
+    <span class="pastille">Exemples · <b>Magpie</b> plugin et web, <b>SnapSet</b></span>
+  </div>
+
+  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+    <svg viewBox="0 0 600 222" width="100%">
+<rect x="10" y="6" width="186" height="168" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="103" y="22" font-size="8.4" fill="#6B7378" text-anchor="middle" font-weight="700">17/08 · 6e83eb3</text>
+<text x="22" y="42" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">0</text>
+<text x="38" y="42" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">ExactOrderedList</text>
+<text x="22" y="60" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">1</text>
+<text x="38" y="60" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">SetEquality</text>
+<text x="22" y="78" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">2</text>
+<text x="38" y="78" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">SingleValue</text>
+<text x="22" y="96" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">3</text>
+<text x="38" y="96" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">NumericTolerance</text>
+<text x="22" y="114" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">4</text>
+<text x="38" y="114" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">GeometryTolerance</text>
+<line x1="197" y1="90" x2="205" y2="90" stroke="#6B7378" stroke-width="1.2"/><polygon points="205,90 198.6,92.7 198.6,87.3" fill="#6B7378"/>
+<rect x="206" y="6" width="186" height="168" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="299" y="22" font-size="8.4" fill="#C62828" text-anchor="middle" font-weight="700">07/09 · 6fbb234</text>
+<text x="218" y="42" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">0</text>
+<text x="234" y="42" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">ExactOrderedListNum</text>
+<text x="218" y="60" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">1</text>
+<text x="234" y="60" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">ExactOrderedListText</text>
+<text x="218" y="78" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">2</text>
+<text x="234" y="78" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">SetEquality</text>
+<text x="218" y="96" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">3</text>
+<text x="234" y="96" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">SingleValue</text>
+<text x="218" y="114" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">4</text>
+<text x="234" y="114" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">NumericTolerance</text>
+<text x="218" y="132" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">5</text>
+<text x="234" y="132" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">GeometryTolerance</text>
+<line x1="393" y1="90" x2="401" y2="90" stroke="#6B7378" stroke-width="1.2"/><polygon points="401,90 394.6,92.7 394.6,87.3" fill="#6B7378"/>
+<rect x="402" y="6" width="186" height="168" rx="4" fill="#ECECF2" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="495" y="22" font-size="8.4" fill="#2E7D32" text-anchor="middle" font-weight="700">07/09 · ac278b5</text>
+<text x="414" y="42" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">0</text>
+<text x="430" y="42" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">ExactOrderedList</text>
+<text x="414" y="60" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">1</text>
+<text x="430" y="60" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">SetEquality</text>
+<text x="414" y="78" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">2</text>
+<text x="430" y="78" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">SingleValue</text>
+<text x="414" y="96" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">3</text>
+<text x="430" y="96" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">NumericTolerance</text>
+<text x="414" y="114" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">4</text>
+<text x="430" y="114" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">GeometryTolerance</text>
+<text x="414" y="132" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">5</text>
+<text x="430" y="132" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">ExactOrderedListText</text>
+<text x="414" y="150" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">6</text>
+<text x="430" y="150" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">SetEqualityText</text>
+<text x="10" y="192" font-size="7.9" fill="#2B2F33" text-anchor="start" font-weight="700">6fbb234 renomme le premier membre et en insère un deuxième : tous les noms et tous les numéros d'avant changent.</text>
+<text x="10" y="208" font-size="7.9" fill="#2B2F33" text-anchor="start" font-weight="700">ac278b5 rend les cinq d'origine à leur place et ajoute les modes texte à la fin (git show, mesuré).</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Tout ce qu'un programme écrit sur disque devient une promesse : il faudra savoir le relire tel quel, quoi qu'on change au code ensuite.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>La référence d'une pièce dans un catalogue fournisseur. On peut ajouter des références, jamais en réattribuer une : les bons de commande déjà émis la citent, et livreraient la mauvaise pièce.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>reconnaître ce qui fait partie d'un format ;</li>
+        <li>classer un changement, sûr ou cassant ;</li>
+        <li>ajouter un champ sans casser ;</li>
+        <li>écrire une version et migrer.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À retenir</span>
+    Un nom de membre, sa position, un nom de chunk, un GUID de composant : dès qu'ils sont écrits dans un fichier, ce ne sont plus des détails de code. La documentation de Magpie le dit pour deux d'entre eux : on les garde, même mal orthographiés.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 120 · Faire évoluer un format</div>
+</section>
+
+<!-- ============ PAGE 2 · CE QUI CASSE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 120</b></div>
+  <p class="rubrique">Schéma 1 · Rejouer l'histoire</p>
+  <h2>Un numéro décalé, un nom disparu</h2>
+  <p style="max-width:165mm">On a recopié les trois versions de l'enum dans un petit programme et relu, avec chacune, quatre fichiers d'exercice possibles : deux écrits en numéro, deux en nom. Le décalage de 6fbb234 se voit immédiatement.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.4" fill="#4A4A68" text-anchor="start" font-weight="700">Quatre fichiers relus par les trois versions de l'enum, avec Newtonsoft (copie, mesuré)</text>
+<text x="250" y="42" font-size="7.6" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.6px">6e83eb3</text>
+<text x="380" y="42" font-size="7.6" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.6px">6fbb234</text>
+<text x="510" y="42" font-size="7.6" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.6px">ac278b5</text>
+<rect x="16" y="50" width="568" height="19" rx="3" fill="#fff"/>
+<text x="26" y="63" font-size="7.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">{"Mode": 1}</text>
+<text x="250" y="63" font-size="7.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.2px">SetEquality</text>
+<text x="380" y="63" font-size="7.2" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.2px">ExactOrderedListText</text>
+<text x="510" y="63" font-size="7.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.2px">SetEquality</text>
+<rect x="16" y="72" width="568" height="19" rx="3" fill="#ECECF2"/>
+<text x="26" y="85" font-size="7.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">{"Mode": "SetEquality"}</text>
+<text x="250" y="85" font-size="7.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.2px">SetEquality</text>
+<text x="380" y="85" font-size="7.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.2px">SetEquality</text>
+<text x="510" y="85" font-size="7.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.2px">SetEquality</text>
+<rect x="16" y="94" width="568" height="19" rx="3" fill="#fff"/>
+<text x="26" y="107" font-size="7.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">{"Mode": "ExactOrderedList"}</text>
+<text x="250" y="107" font-size="7.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.2px">ExactOrderedList</text>
+<text x="380" y="107" font-size="7.2" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.2px">exception</text>
+<text x="510" y="107" font-size="7.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.2px">ExactOrderedList</text>
+<rect x="16" y="116" width="568" height="19" rx="3" fill="#ECECF2"/>
+<text x="26" y="129" font-size="7.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">{"Mode": 0}</text>
+<text x="250" y="129" font-size="7.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.2px">ExactOrderedList</text>
+<text x="380" y="129" font-size="7.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.2px">ExactOrderedListNum</text>
+<text x="510" y="129" font-size="7.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.2px">ExactOrderedList</text>
+<text x="16" y="160" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Un numéro décalé ne lève rien : l'exercice change de mode en silence. Un nom disparu lève une exception,</text>
+<text x="16" y="176" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">et le chargeur d'alors faisait tomber tout le catalogue pour un seul fichier (message de ac278b5).</text>
+<text x="16" y="198" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Le premier fichier est ce qu'écrivait le plugin avant ac278b5 : sans StringEnumConverter, Newtonsoft écrit le numéro.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, fixer la valeur écrite de chaque membre</span>public enum ValidationMode
+{
+    ExactOrderedList = 0, SetEquality = 1, SingleValue = 2, NumericTolerance = 3,
+    GeometryTolerance = 4, ExactOrderedListText = 5, SetEqualityText = 6,   // jamais réattribués
+}</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Le silence, pire que l'erreur</h3>
+      <p>Le nom disparu lève une exception : on la voit, on répare. Le numéro décalé transforme un exercice d'ensemble en exercice de textes, sans un mot : seuls les étudiants le découvrent, à la correction.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Les numéros explicites</h3>
+      <p>Écrire <code>= 0</code>, <code>= 1</code>… rend chaque numéro visible et fixe. Le jour où quelqu'un insère un membre, il doit lui choisir un numéro neuf, et l'erreur saute aux yeux en relecture.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Renommer pour faire plus clair. ExactOrderedListNum était plus précis qu'ExactOrderedList ; il rendait aussi illisibles tous les exercices écrits avec l'ancien nom. Un renommage se fait par un alias lu en plus de l'ancien nom, jamais à sa place.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 120 · Faire évoluer un format</div>
+</section>
+
+<!-- ============ PAGE 3 · AJOUTER ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 120</b></div>
+  <p class="rubrique">Schéma 2 · Ajouter sans casser</p>
+  <h2>Ce qu'on peut changer, ce qu'on ne peut pas</h2>
+  <p style="max-width:165mm">Un changement se juge dans les deux sens : un nouveau programme doit relire les vieux fichiers (compatibilité ascendante), et il est bon qu'un vieux programme ne se trompe pas sur un fichier neuf (compatibilité descendante).</p>
+
+  <svg viewBox="0 0 600 226" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="226" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.4" fill="#4A4A68" text-anchor="start" font-weight="700">Ce qu'un changement fait aux fichiers déjà écrits, et aux lecteurs déjà installés</text>
+<text x="28" y="42" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">changement</text>
+<text x="250" y="42" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">nouveau lecteur, vieux fichier</text>
+<text x="430" y="42" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">vieux lecteur, nouveau fichier</text>
+<rect x="16" y="50" width="568" height="18" rx="3" fill="#fff"/>
+<text x="28" y="63" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">ajouter un champ facultatif</text>
+<text x="250" y="63" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">valeur par défaut</text>
+<text x="430" y="63" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">l'ignore</text>
+<rect x="16" y="71" width="568" height="18" rx="3" fill="#ECECF2"/>
+<text x="28" y="84" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">ajouter un membre à la fin d'une enum</text>
+<text x="250" y="84" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">rien à faire</text>
+<text x="430" y="84" font-size="7.6" fill="#E65100" text-anchor="start" font-weight="700">valeur inconnue</text>
+<rect x="16" y="92" width="568" height="18" rx="3" fill="#fff"/>
+<text x="28" y="105" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">insérer un membre au milieu</text>
+<text x="250" y="105" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">numéros décalés</text>
+<text x="430" y="105" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">numéros décalés</text>
+<rect x="16" y="113" width="568" height="18" rx="3" fill="#ECECF2"/>
+<text x="28" y="126" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">renommer un champ ou un membre</text>
+<text x="250" y="126" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">valeur perdue</text>
+<text x="430" y="126" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">valeur perdue</text>
+<rect x="16" y="134" width="568" height="18" rx="3" fill="#fff"/>
+<text x="28" y="147" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">changer le sens d'un champ</text>
+<text x="250" y="147" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">faux, en silence</text>
+<text x="430" y="147" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">faux, en silence</text>
+<text x="16" y="174" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Les exercices de Magpie ont pris trois champs facultatifs : ExpectedTexts, puis ExpectedBranchSizes et</text>
+<text x="16" y="190" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">EmptyBranchesSignificant. Résultat mesuré : quatre jeux de clés coexistent (32, 18, 5 et 3 fichiers), tous lus.</text>
+<text x="16" y="210" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Un « vieux lecteur » peut aussi refuser franchement : le web rejette un exercice en arbre (validation.mjs:150).</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, lire un chunk GH_IO en tolérant les champs absents</span>int n = bloc.ItemExists("Nombre") ? bloc.GetInt32("Nombre") : 0;
+string libelle = e.ItemExists("Libelle") ? e.GetString("Libelle") : string.Empty;
+// la forme de SnapSet, ConceptionListe.cs:275 et 285 : un fichier d'avant le champ se relit</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>La valeur par défaut est un choix</h3>
+      <p>ExpectedTexts arrive vide sur les anciens exercices, ExpectedBranchSizes null : « liste simple, comme avant » (ExerciseDefinition.cs:22–24). Le défaut doit redonner exactement l'ancien comportement, sinon l'ajout n'est pas additif.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Refuser franchement</h3>
+      <p>Le web ne sait pas comparer un arbre. Plutôt que d'ignorer ExpectedBranchSizes et de corriger à plat, il refuse l'exercice. Un vieux lecteur qui ignore un champ dont le sens compte se trompe en silence.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Réutiliser un champ existant pour un sens nouveau (« Tolerance vaudra désormais un pourcentage »). Aucun lecteur ne peut deviner de quelle époque date le fichier : les anciens exercices sont corrigés avec la nouvelle règle, sans erreur.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 120 · Faire évoluer un format</div>
+</section>
+
+<!-- ============ PAGE 4 · LA VERSION ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 120</b></div>
+  <p class="rubrique">Schéma 3 · Dire la version</p>
+  <h2>Un numéro pour décider</h2>
+  <p style="max-width:165mm">Quand un changement cassant devient inévitable, le fichier doit dire de quelle version il est. Le lecteur sait alors s'il peut lire, s'il doit convertir, ou s'il doit refuser. Presque tous les formats autour de Magpie le font.</p>
+
+  <svg viewBox="0 0 600 222" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="222" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.4" fill="#4A4A68" text-anchor="start" font-weight="700">Où les formats autour de Magpie écrivent leur version (relevé dans les fichiers du dépôt, mesuré)</text>
+<rect x="16" y="36" width="568" height="19" rx="3" fill="#fff"/>
+<text x="26" y="49" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">.gh / .ghx</text>
+<text x="170" y="49" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">ArchiveVersion 0.2.2 · plugin_version 1.0.8</text>
+<text x="420" y="49" font-size="7.2" fill="#6B7378" text-anchor="start">item du chunk Root, type 80</text>
+<rect x="16" y="58" width="568" height="19" rx="3" fill="#ECECF2"/>
+<text x="26" y="71" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">XML de GH_IO</text>
+<text x="170" y="71" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">« GH_IO.dll {0.2.0002} »</text>
+<text x="420" y="71" font-size="7.2" fill="#6B7378" text-anchor="start">commentaire, 32 graphes sur 32</text>
+<rect x="16" y="80" width="568" height="19" rx="3" fill="#fff"/>
+<text x="26" y="93" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">.3dm</text>
+<text x="170" y="93" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">« 3D Geometry File Format       60 » ou 80</text>
+<text x="420" y="93" font-size="7.2" fill="#6B7378" text-anchor="start">les 32 premiers octets</text>
+<rect x="16" y="102" width="568" height="19" rx="3" fill="#ECECF2"/>
+<text x="26" y="115" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">géométrie d'exercice</text>
+<text x="170" y="115" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">ON_Version = 5</text>
+<text x="420" y="115" font-size="7.2" fill="#6B7378" text-anchor="start">item du chunk MagpieGepmetry</text>
+<rect x="16" y="124" width="568" height="19" rx="3" fill="#fff"/>
+<text x="26" y="137" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">ghstyle.schema.json</text>
+<text x="170" y="137" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">$schema …/draft/2020-12/schema</text>
+<text x="420" y="137" font-size="7.2" fill="#6B7378" text-anchor="start">ligne 2, SnapSet</text>
+<rect x="16" y="146" width="568" height="19" rx="3" fill="#ECECF2"/>
+<text x="26" y="159" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">exercice Magpie (.json)</text>
+<text x="170" y="159" font-size="7.4" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">aucune</text>
+<text x="420" y="159" font-size="7.2" fill="#6B7378" text-anchor="start">la forme se déduit des clés présentes</text>
+<text x="16" y="184" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Une version écrite permet au lecteur de choisir : lire, convertir (migrer), ou refuser avec un message clair.</text>
+<text x="16" y="200" font-size="7.6" fill="#2B2F33" text-anchor="start">Sans elle, il devine d'après ce qu'il trouve, comme le chargeur de Magpie aujourd'hui, et ne peut pas reconnaître un fichier trop récent.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, migrer à la lecture</span>int version = json.Value&lt;int?&gt;("FormatVersion") ?? 1;      // absent : la forme d'avant
+if (version &gt; VersionConnue) throw new FormatException("Exercice écrit par un Magpie plus récent.");
+if (version &lt; 2) MigrerV1VersV2(json);                          // une étape par version</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Une étape par version</h3>
+      <p>Chaque migration ne connaît que deux versions voisines. Un fichier v1 passe par v1→v2 puis v2→v3. On n'écrit jamais de conversion v1→v3 directe : il en faudrait une par couple.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Le fichier trop récent</h3>
+      <p>C'est le seul cas qu'un lecteur ne peut pas réparer. Avec un numéro, il dit « mettez à jour Magpie » ; sans numéro, il lit de travers. Le .3dm s'en sert : sa version, en tête, dit quel Rhino au minimum peut l'ouvrir (déduit de l'usage de Rhino).</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Changer la version à chaque livraison du programme. La version du format ne bouge que quand le format change ; plugin_version 1.0.8 et ArchiveVersion 0.2.2 sont deux numéros distincts dans un même .gh.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 120 · Faire évoluer un format</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 120</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>ValidationMode, un format qui le sait</h2>
+  <p style="max-width:165mm">Après ac278b5, l'enum porte sa règle en commentaire, et le dépôt écrit les noms plutôt que les numéros.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">magpie/plugin/Core/ValidationMode.cs</span></div>
+<div class="l k1"><span class="n">7</span>// Ce type est un format de fichier, à deux titres.<span class="rep r1">1</span></div>
+<div class="l k2"><span class="n">15</span>// … Tout nouveau membre s'ajoute donc À LA FIN.<span class="rep r2">2</span></div>
+<div class="l k3"><span class="n">21</span>ExactOrderedListText,   // textes, dans cet ordre exact<span class="rep r3">3</span></div>
+<div class="l"><span class="cm">magpie/plugin/Core/MagpieRepository.cs · GeometrySerializer.cs</span></div>
+<div class="l k4"><span class="n">34</span>    Converters = { new StringEnumConverter() }<span class="rep r4">4</span></div>
+<div class="l k5"><span class="n">13</span>private const string ChunkName = "MagpieGepmetry";<span class="rep r5">5</span></div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Le statut</b>Dit en tête.</li>
+      <li><span class="rep r2">2</span><b>La règle</b>À la fin.</li>
+      <li><span class="rep r3">3</span><b>Les ajouts</b>Ordinaux 5, 6.</li>
+      <li><span class="rep r4">4</span><b>Des noms</b>Plus de numéros.</li>
+      <li><span class="rep r5">5</span><b>Coquille gardée</b>Format figé.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À surveiller · des exercices sans version</span>
+    Les 58 exercices ont quatre formes, reconnues seulement aux clés présentes (mesuré), et aucun champ ne dit leur version. Les trois évolutions passées étaient additives ; la suivante pourrait ne pas l'être, et ni le plugin ni le web ne sauront reconnaître un fichier trop récent. Déduit : un champ FormatVersion, absent valant 1, coûterait une ligne aujourd'hui et une migration propre demain. Le nom « MagpieGepmetry », présent dans les 8 géométries (mesuré), est déjà traité ainsi (magpie_guideline_dev.md:1091). Relevé sans rien modifier.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 120 · Faire évoluer un format</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 120</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Font partie d'un format, une fois écrits… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>le nom d'un membre d'enum</li><li><span>B</span>le nom d'une variable locale</li><li><span>C</span>un commentaire du code</li><li><span>D</span>le nom d'un chunk</li></ul></div>
+
+    <div class="q"><div class="enonce">{"Mode": 1} relu par l'enum de 6fbb234 donne…</div><ul>
+      <li><span>A</span>SetEquality</li><li><span>B</span>null</li><li><span>C</span>ExactOrderedListText, sans erreur</li><li><span>D</span>une exception</li></ul></div>
+
+    <div class="q"><div class="enonce">{"Mode": "ExactOrderedList"} relu par 6fbb234…</div><ul>
+      <li><span>A</span>donne 0</li><li><span>B</span>lève une exception</li><li><span>C</span>donne ExactOrderedListNum</li><li><span>D</span>est ignoré</li></ul></div>
+
+    <div class="q"><div class="enonce">Le plus dangereux des deux défauts est…</div><ul>
+      <li><span>A</span>les deux également</li><li><span>B</span>le numéro décalé, silencieux</li><li><span>C</span>le nom disparu</li><li><span>D</span>aucun</li></ul></div>
+
+    <div class="q"><div class="enonce">Un nouveau membre d'enum s'ajoute…</div><ul>
+      <li><span>A</span>par ordre alphabétique</li><li><span>B</span>au début</li><li><span>C</span>n'importe où</li><li><span>D</span>à la fin</li></ul></div>
+
+    <div class="q"><div class="enonce">Sans StringEnumConverter, Newtonsoft écrit une enum…</div><ul>
+      <li><span>A</span>en minuscules</li><li><span>B</span>par son nom</li><li><span>C</span>par son numéro</li><li><span>D</span>pas du tout</li></ul></div>
+
+    <div class="q"><div class="enonce">Un champ facultatif ajouté est sûr si sa valeur par défaut…</div><ul>
+      <li><span>A</span>vaut null</li><li><span>B</span>est aléatoire</li><li><span>C</span>redonne l'ancien comportement</li><li><span>D</span>vaut zéro</li></ul></div>
+
+    <div class="q"><div class="enonce">Combien de formes d'exercice coexistent dans le dépôt ?</div><ul>
+      <li><span>A</span>2</li><li><span>B</span>58</li><li><span>C</span>1</li><li><span>D</span>4</li></ul></div>
+
+    <div class="q"><div class="enonce">Réutiliser un champ pour un sens nouveau…</div><ul>
+      <li><span>A</span>fausse les vieux fichiers en silence</li><li><span>B</span>lève une erreur</li><li><span>C</span>exige un BOM</li><li><span>D</span>est sûr</li></ul></div>
+
+    <div class="q"><div class="enonce">Le seul cas qu'un lecteur ne peut pas réparer…</div><ul>
+      <li><span>A</span>un fichier trop récent</li><li><span>B</span>un champ absent</li><li><span>C</span>un champ en trop</li><li><span>D</span>un fichier ancien</li></ul></div>
+
+    <div class="q"><div class="enonce">Dans un .gh, ArchiveVersion et plugin_version…</div><ul>
+      <li><span>A</span>sont deux numéros distincts</li><li><span>B</span>sont absents</li><li><span>C</span>sont le même</li><li><span>D</span>sont des dates</li></ul></div>
+
+    <div class="q"><div class="enonce">« MagpieGepmetry » est conservé parce que…</div><ul>
+      <li><span>A</span>c'est l'orthographe correcte</li><li><span>B</span>il est écrit dans les géométries enregistrées</li><li><span>C</span>personne ne l'a vu</li><li><span>D</span>Grasshopper l'impose</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 120 · Faire évoluer un format</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 120</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · A et D.</b> Ce qui est écrit sur disque.</div>
+    <div><b>02 · C.</b> Le 1 a changé de sens.</div>
+    <div><b>03 · B.</b> Le nom n'existe plus.</div>
+    <div><b>04 · B.</b> Personne ne le voit.</div>
+    <div><b>05 · D.</b> ValidationMode.cs:15.</div>
+    <div><b>06 · C.</b> D'où le convertisseur.</div>
+    <div><b>07 · C.</b> Sinon, rien d'additif.</div>
+    <div><b>08 · D.</b> 32, 18, 5 et 3.</div>
+    <div><b>09 · A.</b> Aucun lecteur ne devine.</div>
+    <div><b>10 · A.</b> Il faut un numéro.</div>
+    <div><b>11 · A.</b> 0.2.2 et 1.0.8.</div>
+    <div><b>12 · B.</b> 8 géométries sur 8.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 34, « SQLite dans Node ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">Membre = 5</td><td>fixer le numéro écrit d'un membre</td><td>page 2</td></tr>
+      <tr><td class="c">new StringEnumConverter()</td><td>écrire les noms, lire les deux</td><td>MagpieRepository.cs:34</td></tr>
+      <tr><td class="c">reader.ItemExists("Cle")</td><td>tolérer un champ absent (GH_IO)</td><td>ConceptionListe.cs:275</td></tr>
+      <tr><td class="c">"FormatVersion" ?? 1</td><td>dater un fichier, absent = 1</td><td>page 4</td></tr>
+      <tr><td class="c">git show c:fichier</td><td>relire une version passée</td><td>schéma 1</td></tr>
+      <tr><td class="c">MigrerV1VersV2(json)</td><td>une étape de migration</td><td>page 4</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Compatibilité ascendante</dt><dd>Le nouveau programme relit les anciens fichiers.</dd>
+    <dt>Compatibilité descendante</dt><dd>L'ancien programme se comporte bien devant un fichier neuf.</dd>
+    <dt>Changement additif</dt><dd>Un ajout facultatif dont le défaut redonne l'ancien comportement.</dd>
+    <dt>Ordinal</dt><dd>Le numéro d'un membre d'enum, écrit à la place de son nom.</dd>
+    <dt>Migration</dt><dd>La conversion d'un fichier d'une version vers la suivante.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 34</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 120 · Faire évoluer un format</div>
+</section>
+
+</body>
+</html>

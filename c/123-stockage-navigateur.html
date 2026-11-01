@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>123 · Le stockage du navigateur</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-8">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 123</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Le stockage du navigateur</h1>
+  <p class="chapeau">Recharger la page efface la mémoire de JavaScript. Pour retrouver un parcours là où on l'a laissé, il faut ranger ses données dans un magasin que le navigateur garde sur disque. Il en offre plusieurs, chacun lié à une <b>origine</b>, avec ses limites : taille, types acceptés, partage entre onglets.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>117</b>, <b>121</b></span>
+    <span class="pastille">Exemples · <b>Magpie</b> web, useParcours</span>
+  </div>
+
+  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+    <svg viewBox="0 0 600 196" width="100%">
+<rect x="4" y="4" width="592" height="134" rx="6" fill="none" stroke="#7A5A12" stroke-width="1.2" stroke-dasharray="5 3"/>
+<text x="16" y="20" font-size="8.2" fill="#7A5A12" text-anchor="start" font-weight="700">Une origine, par exemple http://localhost:5173 : schéma + hôte + port</text>
+<rect x="14" y="32" width="106" height="94" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
+<text x="67" y="52" font-size="9" fill="#E65100" text-anchor="middle" font-weight="700">Cookies</text>
+<text x="67" y="74" font-size="7.4" fill="#2B2F33" text-anchor="middle">envoyés au serveur</text>
+<text x="67" y="89" font-size="7.4" fill="#2B2F33" text-anchor="middle">à chaque requête</text>
+<text x="67" y="104" font-size="7.4" fill="#2B2F33" text-anchor="middle">≈ 4 Ko chacun</text>
+<rect x="130" y="32" width="106" height="94" rx="4" fill="#F4EEDF" stroke="#7A5A12" stroke-width="1.2"/>
+<text x="183" y="52" font-size="9" fill="#7A5A12" text-anchor="middle" font-weight="700">localStorage</text>
+<text x="183" y="74" font-size="7.4" fill="#2B2F33" text-anchor="middle">chaînes, synchrone</text>
+<text x="183" y="89" font-size="7.4" fill="#2B2F33" text-anchor="middle">partagé entre onglets</text>
+<text x="183" y="104" font-size="7.4" fill="#2B2F33" text-anchor="middle">5 Mi caractères</text>
+<rect x="246" y="32" width="106" height="94" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
+<text x="299" y="52" font-size="9" fill="#7B1FA2" text-anchor="middle" font-weight="700">sessionStorage</text>
+<text x="299" y="74" font-size="7.4" fill="#2B2F33" text-anchor="middle">chaînes, synchrone</text>
+<text x="299" y="89" font-size="7.4" fill="#2B2F33" text-anchor="middle">un par onglet</text>
+<text x="299" y="104" font-size="7.4" fill="#2B2F33" text-anchor="middle">perdu à la fermeture</text>
+<rect x="362" y="32" width="106" height="94" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="415" y="52" font-size="9" fill="#1565C0" text-anchor="middle" font-weight="700">IndexedDB</text>
+<text x="415" y="74" font-size="7.4" fill="#2B2F33" text-anchor="middle">objets, asynchrone</text>
+<text x="415" y="89" font-size="7.4" fill="#2B2F33" text-anchor="middle">transactions, index</text>
+<text x="415" y="104" font-size="7.4" fill="#2B2F33" text-anchor="middle">quota bien plus grand</text>
+<rect x="478" y="32" width="106" height="94" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="531" y="52" font-size="9" fill="#2E7D32" text-anchor="middle" font-weight="700">Cache API</text>
+<text x="531" y="74" font-size="7.4" fill="#2B2F33" text-anchor="middle">réponses HTTP</text>
+<text x="531" y="89" font-size="7.4" fill="#2B2F33" text-anchor="middle">pour le hors-ligne</text>
+<text x="531" y="104" font-size="7.4" fill="#2B2F33" text-anchor="middle">avec un service worker</text>
+<text x="10" y="160" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">Chaque origine a ses propres magasins : http://127.0.0.1 ne voit rien de ce que localhost a rangé (mesuré).</text>
+<text x="10" y="180" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Magpie web n'utilise que localStorage : la progression des parcours et le choix d'affichage des volets.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Ce qui doit survivre à un rechargement se range par origine, sous forme de chaînes pour localStorage, d'objets pour IndexedDB, et peut toujours disparaître.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Un tiroir de bureau par client. Petit, rapide à ouvrir, mais on n'y glisse que des feuilles ; pour les gros dossiers, il y a l'armoire, qu'on ouvre en prenant un ticket.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>choisir le bon magasin ;</li>
+        <li>estimer ce qui tient dans le quota ;</li>
+        <li>gérer plusieurs onglets ;</li>
+        <li>échouer sans casser la page.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À retenir</span>
+    Le stockage du navigateur est un cache, pas une base de données : l'utilisateur peut l'effacer, le navigateur aussi. Ce qui ne doit jamais se perdre vit aussi sur le serveur.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 123 · Le stockage du navigateur</div>
+</section>
+
+<!-- ============ PAGE 2 · LE QUOTA ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 123</b></div>
+  <p class="rubrique">Schéma 1 · Le quota</p>
+  <h2>Cinq millions de caractères</h2>
+  <p style="max-width:165mm">localStorage ne range que des chaînes, et sa taille est limitée par origine. On l'a rempli jusqu'à l'erreur, avec trois sortes de caractères, puis on a mesuré ce que pèse une progression Magpie.</p>
+
+  <svg viewBox="0 0 600 216" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="216" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8" fill="#7A5A12" text-anchor="start" font-weight="700">localStorage rempli jusqu'à QuotaExceededError, clés et valeurs comptées en caractères (Chromium, mesuré)</text>
+<text x="16" y="45" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">des « a »</text>
+<rect x="190" y="34" width="380" height="14" rx="2" fill="#7A5A12"/>
+<text x="198" y="45" font-size="7.6" fill="#fff" text-anchor="start" font-weight="700">5 242 880 unités UTF-16</text>
+<text x="16" y="65" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">des « é »</text>
+<rect x="190" y="54" width="380" height="14" rx="2" fill="#7A5A12"/>
+<text x="198" y="65" font-size="7.6" fill="#fff" text-anchor="start" font-weight="700">5 242 880 unités UTF-16</text>
+<text x="16" y="85" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">des émojis (2 unités chacun)</text>
+<rect x="190" y="74" width="380" height="14" rx="2" fill="#7A5A12"/>
+<text x="198" y="85" font-size="7.6" fill="#fff" text-anchor="start" font-weight="700">5 242 879 unités UTF-16</text>
+<text x="16" y="112" font-size="8" fill="#7A5A12" text-anchor="start" font-weight="700">Une progression Magpie de 10, 50 ou 200 nœuds, en JSON, avec les fiches du vrai catalogue (mesuré)</text>
+<text x="16" y="133" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">10 nœuds</text>
+<rect x="190" y="122" width="2.0" height="13" rx="2" fill="#1565C0"/>
+<text x="198" y="132" font-size="7.6" fill="#1565C0" text-anchor="start" font-weight="700">13 522 caractères · 0,3 % du quota</text>
+<text x="16" y="151" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">50 nœuds</text>
+<rect x="190" y="140" width="5.7" height="13" rx="2" fill="#1565C0"/>
+<text x="201.6959991455078" y="150" font-size="7.6" fill="#1565C0" text-anchor="start" font-weight="700">78 588 caractères · 1,5 % du quota</text>
+<text x="16" y="169" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">200 nœuds</text>
+<rect x="190" y="158" width="23.2" height="13" rx="2" fill="#1565C0"/>
+<text x="219.19343185424805" y="168" font-size="7.6" fill="#1565C0" text-anchor="start" font-weight="700">320 001 caractères · 6,1 % du quota</text>
+<text x="16" y="192" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Le quota compte des caractères, pas des octets : un « é » coûte autant qu'un « a ». Environ 5 Mi par origine.</text>
+<text x="16" y="207" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Firefox et Safari ont des limites voisines, à vérifier sur chacun : seul Chromium a été mesuré ici.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript, mesurer ce qu'on occupe</span>let n = 0;
+for (let i = 0; i &lt; localStorage.length; i++) {
+  const k = localStorage.key(i);
+  n += k.length + localStorage.getItem(k).length;
+}
+console.log(n, "caractères occupés sur environ 5 242 880");</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Des chaînes seulement</h3>
+      <p>On passe par JSON. Mesuré : JSON.stringify change une Date en texte, une Map en <code>{}</code>, NaN et Infinity en null. Relire ne rend donc pas toujours l'objet de départ.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Échouer sans casser</h3>
+      <p>Plein, setItem lève QuotaExceededError. Magpie entoure chaque lecture et chaque écriture d'un try (useParcours.js:18 à 30) : la page continue, la progression reste en mémoire.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Ranger un objet sans le sérialiser. <code>localStorage.setItem(k, objet)</code> ne lève aucune erreur : il range la chaîne « [object Object] », et la relecture rend ce texte au lieu des données.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 123 · Le stockage du navigateur</div>
+</section>
+
+<!-- ============ PAGE 3 · ORIGINES ET ONGLETS ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 123</b></div>
+  <p class="rubrique">Schéma 2 · Origines et onglets</p>
+  <h2>Qui voit quoi</h2>
+  <p style="max-width:165mm">Tous les onglets d'une même origine partagent le même localStorage. Ils ne se préviennent que par un événement, que le code doit écouter. Sinon, chacun écrase le travail de l'autre.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#7A5A12" text-anchor="start" font-weight="700">Après un setItem dans l'onglet A, qui voit quoi ? (Chromium, mesuré)</text>
+<rect x="10" y="32" width="136" height="66" rx="4" fill="#fff" stroke="#7A5A12" stroke-width="1.2"/>
+<text x="78" y="47" font-size="8.6" fill="#7A5A12" text-anchor="middle" font-weight="700">Onglet A</text>
+<text x="78" y="60" font-size="7.2" fill="#6B7378" text-anchor="middle" class="mono" style="font-size:7.2px">localhost:8123</text>
+<text x="78" y="76" font-size="7.4" fill="#2B2F33" text-anchor="middle">écrit, ne reçoit</text>
+<text x="78" y="89" font-size="7.4" fill="#2B2F33" text-anchor="middle">aucun événement</text>
+<rect x="158" y="32" width="136" height="66" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="226" y="47" font-size="8.6" fill="#2E7D32" text-anchor="middle" font-weight="700">Onglet B</text>
+<text x="226" y="60" font-size="7.2" fill="#6B7378" text-anchor="middle" class="mono" style="font-size:7.2px">localhost:8123</text>
+<text x="226" y="76" font-size="7.4" fill="#2B2F33" text-anchor="middle">reçoit storage : clé,</text>
+<text x="226" y="89" font-size="7.4" fill="#2B2F33" text-anchor="middle">ancienne, nouvelle valeur</text>
+<rect x="306" y="32" width="136" height="66" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="374" y="47" font-size="8.6" fill="#C62828" text-anchor="middle" font-weight="700">Onglet C</text>
+<text x="374" y="60" font-size="7.2" fill="#6B7378" text-anchor="middle" class="mono" style="font-size:7.2px">127.0.0.1:8123</text>
+<text x="374" y="76" font-size="7.4" fill="#2B2F33" text-anchor="middle">lit null :</text>
+<text x="374" y="89" font-size="7.4" fill="#2B2F33" text-anchor="middle">autre origine</text>
+<rect x="454" y="32" width="136" height="66" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="522" y="47" font-size="8.6" fill="#C62828" text-anchor="middle" font-weight="700">Autre contexte</text>
+<text x="522" y="60" font-size="7.2" fill="#6B7378" text-anchor="middle" class="mono" style="font-size:7.2px">comme une fenêtre privée</text>
+<text x="522" y="76" font-size="7.4" fill="#2B2F33" text-anchor="middle">lit null :</text>
+<text x="522" y="89" font-size="7.4" fill="#2B2F33" text-anchor="middle">magasin séparé</text>
+<line x1="147" y1="50" x2="157" y2="50" stroke="#2E7D32" stroke-width="1.4"/><polygon points="157,50 150.6,52.7 150.6,47.3" fill="#2E7D32"/>
+<text x="16" y="120" font-size="8" fill="#7A5A12" text-anchor="start" font-weight="700">Deux onglets, la même clé, l'objet entier réécrit à chaque fois (simulation du schéma de Magpie, mesuré)</text>
+<rect x="16" y="130" width="124" height="24" rx="4" fill="#fff" stroke="#7A5A12" stroke-width="1.2"/>
+<text x="78.0" y="144.66666666666666" font-size="8" fill="#7A5A12" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">A lit {}</text>
+<line x1="141" y1="142" x2="159" y2="142" stroke="#6B7378" stroke-width="1.2"/><polygon points="159,142 152.6,144.7 152.6,139.3" fill="#6B7378"/>
+<rect x="160" y="130" width="124" height="24" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="222.0" y="144.66666666666666" font-size="8" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">B lit {}</text>
+<line x1="285" y1="142" x2="303" y2="142" stroke="#6B7378" stroke-width="1.2"/><polygon points="303,142 296.6,144.7 296.6,139.3" fill="#6B7378"/>
+<rect x="304" y="130" width="124" height="24" rx="4" fill="#fff" stroke="#7A5A12" stroke-width="1.2"/>
+<text x="366.0" y="144.66666666666666" font-size="8" fill="#7A5A12" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">A écrit { ex01 }</text>
+<line x1="429" y1="142" x2="447" y2="142" stroke="#6B7378" stroke-width="1.2"/><polygon points="447,142 440.6,144.7 440.6,139.3" fill="#6B7378"/>
+<rect x="448" y="130" width="124" height="24" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="510.0" y="144.66666666666666" font-size="8" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">B écrit { ex02 }</text>
+<text x="16" y="176" font-size="8" fill="#C62828" text-anchor="start" font-weight="700">Reste { ex02 } : le graphe de ex01 est perdu, sans erreur ni avertissement. Le dernier qui écrit gagne.</text>
+<text x="16" y="196" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Écouter storage permettrait à B de relire avant d'écrire ; Magpie web ne l'écoute nulle part (recherche dans src/).</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript, suivre ce qu'un autre onglet a écrit</span>addEventListener("storage", (e) =&gt; {
+  if (e.key === cle &amp;&amp; e.newValue) progression = JSON.parse(e.newValue);   // un autre onglet a écrit
+});</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>sessionStorage</h3>
+      <p>Même interface, mais un magasin par onglet : il survit au rechargement, pas à la fermeture. Utile pour un brouillon propre à un onglet, inutile pour reprendre un parcours le lendemain.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Navigation privée</h3>
+      <p>Un contexte séparé part d'un magasin vide (mesuré) et le perd en fermant. Certains navigateurs refusaient même d'écrire : c'est le cas que prévoit le commentaire de useParcours.js:29.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Ouvrir le même parcours dans deux onglets. Chacun garde sa copie en mémoire et réécrit l'objet entier : le dernier qui enregistre efface ce que l'autre a fait, sans le dire.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 123 · Le stockage du navigateur</div>
+</section>
+
+<!-- ============ PAGE 4 · INDEXEDDB ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 123</b></div>
+  <p class="rubrique">Schéma 3 · L'autre magasin</p>
+  <h2>localStorage ou IndexedDB</h2>
+  <p style="max-width:165mm">IndexedDB range des objets entiers, sans passer par du texte, et sans bloquer le fil principal. En échange, tout y est asynchrone. On a rangé la même progression dans les deux.</p>
+
+  <svg viewBox="0 0 600 222" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="222" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#7A5A12" text-anchor="start" font-weight="700">La même progression de 200 nœuds (320 001 caractères) dans les deux magasins (Chromium, mesuré)</text>
+<text x="116" y="42" font-size="8.6" fill="#7A5A12" text-anchor="start" font-weight="700">localStorage</text>
+<text x="356" y="42" font-size="8.6" fill="#1565C0" text-anchor="start" font-weight="700">IndexedDB</text>
+<rect x="10" y="52" width="580" height="20" fill="#fff" opacity=".55"/>
+<text x="16" y="66" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Écrire</text>
+<text x="116" y="66" font-size="7.8" fill="#2B2F33" text-anchor="start">1,84 ms, fil principal bloqué</text>
+<text x="356" y="66" font-size="7.8" fill="#2B2F33" text-anchor="start">6,2 ms jusqu'à la fin, sans bloquer</text>
+<text x="16" y="86" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Relire</text>
+<text x="116" y="86" font-size="7.8" fill="#2B2F33" text-anchor="start">1,14 ms, JSON.parse compris</text>
+<text x="356" y="86" font-size="7.8" fill="#2B2F33" text-anchor="start">objet rendu tel quel</text>
+<rect x="10" y="92" width="580" height="20" fill="#fff" opacity=".55"/>
+<text x="16" y="106" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Types</text>
+<text x="116" y="106" font-size="7.8" fill="#2B2F33" text-anchor="start">chaînes : il faut JSON.stringify</text>
+<text x="356" y="106" font-size="7.8" fill="#2B2F33" text-anchor="start">objets, Date, Map, Blob…</text>
+<text x="16" y="126" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Sur disque</text>
+<text x="116" y="126" font-size="7.8" fill="#2B2F33" text-anchor="start">320 001 caractères comptés</text>
+<text x="356" y="126" font-size="7.8" fill="#2B2F33" text-anchor="start">70 302 octets (storage.estimate)</text>
+<rect x="10" y="132" width="580" height="20" fill="#fff" opacity=".55"/>
+<text x="16" y="146" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Quota</text>
+<text x="116" y="146" font-size="7.8" fill="#2B2F33" text-anchor="start">5 242 880 caractères</text>
+<text x="356" y="146" font-size="7.8" fill="#2B2F33" text-anchor="start">931 Mo ici, selon le disque</text>
+<text x="16" y="176" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Quelques centaines de Ko écrits de temps en temps : localStorage suffit. Au-delà, ou pour du binaire : IndexedDB.</text>
+<text x="16" y="194" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Écriture et relecture localStorage : moyenne de 20 essais. IndexedDB : un seul essai. Chromium sans interface.</text>
+<text x="16" y="209" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">70 302 octets : Chromium compresse ce qu'il range dans IndexedDB ; le quota de 931 Mo dépend de la place libre.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript, ranger un graphe dans IndexedDB</span>const db = await new Promise((ok) =&gt; { const r = indexedDB.open("magpie", 1);
+  r.onupgradeneeded = () =&gt; r.result.createObjectStore("graphes"); r.onsuccess = () =&gt; ok(r.result); });
+db.transaction("graphes", "readwrite").objectStore("graphes").put(graphe, idExercice);</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Durer</h3>
+      <p>Par défaut, le stockage est « au mieux » : si le disque manque de place, le navigateur peut l'effacer. <code>navigator.storage.persist()</code> demande à le garder ; le navigateur peut refuser.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Savoir où on en est</h3>
+      <p><code>navigator.storage.estimate()</code> rend l'usage et le quota de l'origine, magasin par magasin. Il compte IndexedDB et le cache, mais pas localStorage, qui a sa propre limite.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Écrire dans localStorage à chaque pointermove. Chaque écriture sérialise et bloque le fil : quelques millisecondes soixante fois par seconde deviennent une saccade. Magpie attend 500 ms de calme (App.jsx:54).
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 123 · Le stockage du navigateur</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 123</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>La progression des parcours dans Magpie web</h2>
+  <p style="max-width:165mm">Une clé par parcours, un objet entier réécrit, un index borné à la relecture.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">magpie/web/src/hooks/useParcours.js</span></div>
+<div class="l k1"><span class="n">15</span>const storageKey = (parcoursId) =&gt; `magpie:parcours:…`;<span class="rep r1">1</span></div>
+<div class="l k2"><span class="n">19</span>  return JSON.parse(localStorage.getItem(…)) || null;<span class="rep r2">2</span></div>
+<div class="l k3"><span class="n">27</span>  localStorage.setItem(…, JSON.stringify(progress));<span class="rep r3">3</span></div>
+<div class="l k4"><span class="n">76</span>  const index = Math.min(Math.max(…, 0), data.length);<span class="rep r4">4</span></div>
+<div class="l"><span class="cm">magpie/web/src/graphEditor.jsx</span></div>
+<div class="l k5"><span class="n">73</span>  nodes: …map(({ …, data: { runtime, ...data } }) =&gt; …),<span class="rep r5">5</span></div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Une clé</b>Par parcours.</li>
+      <li><span class="rep r2">2</span><b>Relire</b>Absent : null.</li>
+      <li><span class="rep r3">3</span><b>Tout réécrire</b>À chaque fois.</li>
+      <li><span class="rep r4">4</span><b>Borner</b>Index périmé.</li>
+      <li><span class="rep r5">5</span><b>Ce qu'on garde</b>Sauf runtime.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À surveiller · chaque nœud range sa fiche du catalogue</span>
+    Un composant ajouté porte sa fiche entière (graphEditor.jsx:179), que storableGraph garde. Mesuré avec le vrai catalog.json : 200 nœuds font 320 001 caractères, dont 77 % de fiches ; 74 325 avec le seul typeGuid. Déduit : environ seize exercices de cette taille remplissent le quota, puis l'écriture échoue en silence ; et un nœud relu garde une fiche peut-être périmée. Relevé sans rien modifier.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 123 · Le stockage du navigateur</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 123</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Le quota de localStorage mesuré dans Chromium…</div><ul>
+      <li><span>A</span>4 Ko</li><li><span>B</span>5 Go</li><li><span>C</span>illimité</li><li><span>D</span>5 242 880 caractères par origine</li></ul></div>
+
+    <div class="q"><div class="enonce">Remplir le quota avec des « é » plutôt que des « a »…</div><ul>
+      <li><span>A</span>donne le même nombre de caractères</li><li><span>B</span>le double</li><li><span>C</span>la moitié</li><li><span>D</span>lève une erreur</li></ul></div>
+
+    <div class="q"><div class="enonce">localStorage range…</div><ul>
+      <li><span>A</span>des fichiers</li><li><span>B</span>des objets</li><li><span>C</span>des nombres typés</li><li><span>D</span>des chaînes</li></ul></div>
+
+    <div class="q"><div class="enonce">JSON.stringify d'une Map donne…</div><ul>
+      <li><span>A</span>un tableau de paires</li><li><span>B</span>{}</li><li><span>C</span>une erreur</li><li><span>D</span>la Map entière</li></ul></div>
+
+    <div class="q"><div class="enonce">Font partie de l'origine… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>le port</li><li><span>B</span>l'hôte</li><li><span>C</span>le chemin</li><li><span>D</span>le titre de la page</li></ul></div>
+
+    <div class="q"><div class="enonce">L'événement storage arrive…</div><ul>
+      <li><span>A</span>dans l'onglet qui écrit</li><li><span>B</span>jamais</li><li><span>C</span>dans les autres onglets de la même origine</li><li><span>D</span>dans toutes les origines</li></ul></div>
+
+    <div class="q"><div class="enonce">Deux onglets réécrivent l'objet entier sous la même clé…</div><ul>
+      <li><span>A</span>les deux sont fusionnés</li><li><span>B</span>le dernier qui écrit gagne</li><li><span>C</span>le premier gagne</li><li><span>D</span>le second lève une erreur</li></ul></div>
+
+    <div class="q"><div class="enonce">Un setItem sur un magasin plein…</div><ul>
+      <li><span>A</span>lève SyntaxError</li><li><span>B</span>efface la plus vieille clé</li><li><span>C</span>ne fait rien</li><li><span>D</span>lève QuotaExceededError</li></ul></div>
+
+    <div class="q"><div class="enonce">Écrire 320 001 caractères dans localStorage a pris…</div><ul>
+      <li><span>A</span>0 ms</li><li><span>B</span>environ 1,8 ms, fil principal bloqué</li><li><span>C</span>du temps en arrière-plan</li><li><span>D</span>1 s</li></ul></div>
+
+    <div class="q"><div class="enonce">IndexedDB…</div><ul>
+      <li><span>A</span>est asynchrone et range des objets</li><li><span>B</span>est synchrone</li><li><span>C</span>ne range que des chaînes</li><li><span>D</span>est limité à 4 Ko</li></ul></div>
+
+    <div class="q"><div class="enonce">Magpie range la progression sous…</div><ul>
+      <li><span>A</span>une clé par parcours</li><li><span>B</span>une clé par exercice</li><li><span>C</span>un cookie</li><li><span>D</span>IndexedDB</li></ul></div>
+
+    <div class="q"><div class="enonce">Dans 200 nœuds Magpie rangés, les fiches du catalogue pèsent…</div><ul>
+      <li><span>A</span>100 %</li><li><span>B</span>environ 5 %</li><li><span>C</span>environ 77 %</li><li><span>D</span>rien</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 123 · Le stockage du navigateur</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 123</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · D.</b> Clés et valeurs comprises.</div>
+    <div><b>02 · A.</b> On compte des caractères.</div>
+    <div><b>03 · D.</b> D'où JSON.</div>
+    <div><b>04 · B.</b> Mesuré, page 2.</div>
+    <div><b>05 · A et B.</b> Avec le schéma.</div>
+    <div><b>06 · C.</b> Pas dans celui qui écrit.</div>
+    <div><b>07 · B.</b> Sans erreur.</div>
+    <div><b>08 · D.</b> D'où le try de Magpie.</div>
+    <div><b>09 · B.</b> 1,84 ms, synchrone.</div>
+    <div><b>10 · A.</b> Clonage structuré.</div>
+    <div><b>11 · A.</b> useParcours.js:15.</div>
+    <div><b>12 · C.</b> 320 001 contre 74 325.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 124, « Les workers ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">localStorage.setItem(k, v)</td><td>ranger une chaîne, en synchrone</td><td>useParcours.js:27</td></tr>
+      <tr><td class="c">JSON.parse(getItem(k)) || null</td><td>relire, null si absent</td><td>useParcours.js:19</td></tr>
+      <tr><td class="c">addEventListener("storage", f)</td><td>suivre les autres onglets</td><td>page 3</td></tr>
+      <tr><td class="c">indexedDB.open(nom, version)</td><td>ouvrir le magasin d'objets</td><td>page 4</td></tr>
+      <tr><td class="c">navigator.storage.estimate()</td><td>usage et quota de l'origine</td><td>page 4</td></tr>
+      <tr><td class="c">navigator.storage.persist()</td><td>demander à ne pas être effacé</td><td>page 4</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Origine</dt><dd>Le schéma, l'hôte et le port d'une page ; l'unité de partage du stockage.</dd>
+    <dt>Quota</dt><dd>La place qu'un magasin accorde à une origine.</dd>
+    <dt>Sérialiser</dt><dd>Changer un objet en texte pour le ranger, ici avec JSON.</dd>
+    <dt>Clonage structuré</dt><dd>La copie d'objets que fait IndexedDB, sans passer par du texte.</dd>
+    <dt>Stockage au mieux</dt><dd>Gardé tant que le navigateur n'a pas besoin de la place.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 124</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 123 · Le stockage du navigateur</div>
+</section>
+
+</body>
+</html>

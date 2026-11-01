@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>38 · Des capsules natives dans le navigateur</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-8">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 38</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Des capsules natives dans le navigateur</h1>
+  <p class="chapeau">Sur le canvas web de Magpie, un composant Grasshopper a exactement l'allure qu'il a dans Grasshopper. Le web ne le redessine pas : il affiche une <b>image</b> que Grasshopper a peinte lui-même, et pose dessus des poignées invisibles aux coordonnées que Grasshopper a mesurées.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>19</b>, <b>20</b>, <b>31</b> et <b>32</b></span>
+    <span class="pastille">Exemples · <b>outils/export-capsules.cs</b>, <b>src/data/capsules.json</b>, <b>src/GenericNode.jsx</b> (Magpie web)</span>
+  </div>
+
+  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+    <svg viewBox="0 0 600 176" width="100%">
+<rect x="6" y="20" width="168" height="136" rx="6" fill="#fff" stroke="#7B1FA2" stroke-width="1.3"/>
+<text x="90" y="40" font-size="9.2" fill="#7B1FA2" text-anchor="middle" font-weight="700">Rhino 8 + Grasshopper</text>
+<text x="90" y="58" font-size="8.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.4px">export-capsules.cs</text>
+<rect x="52" y="74" width="76" height="50" rx="6.0" fill="#D8D8D8" stroke="#2B2F33" stroke-width="1.2"/>
+<rect x="81.0" y="77.0" width="18.0" height="44.0" rx="3.0" fill="#2B2F33"/>
+<text x="92.4" y="99.0" font-size="6.4" fill="#fff" font-weight="700" text-anchor="middle" transform="rotate(-90 92.4 99.0)">Closed</text>
+<text x="59.0" y="102.0" font-size="6.4" fill="#2B2F33" text-anchor="start">C</text>
+<circle cx="52" cy="99.0" r="3.0" fill="#fff" stroke="#2B2F33" stroke-width="1.0"/>
+<text x="121.0" y="93.66666666666667" font-size="6.4" fill="#2B2F33" text-anchor="end">C</text>
+<circle cx="128" cy="90.66666666666667" r="3.0" fill="#fff" stroke="#2B2F33" stroke-width="1.0"/>
+<text x="121.0" y="110.33333333333334" font-size="6.4" fill="#2B2F33" text-anchor="end">P</text>
+<circle cx="128" cy="107.33333333333334" r="3.0" fill="#fff" stroke="#2B2F33" stroke-width="1.0"/>
+<text x="90" y="146" font-size="8" fill="#6B7378" text-anchor="middle" font-style="italic">peint par Grasshopper</text>
+<line x1="176" y1="70" x2="214" y2="56" stroke="#6B7378" stroke-width="1.4"/><polygon points="214,56 208.9,60.8 207.0,55.7" fill="#6B7378"/>
+<line x1="176" y1="110" x2="214" y2="124" stroke="#6B7378" stroke-width="1.4"/><polygon points="214,124 207.0,124.3 208.9,119.2" fill="#6B7378"/>
+<rect x="216" y="28" width="168" height="52" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.3"/>
+<text x="300.0" y="51.0" font-size="8.6" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">public/capsules/</text>
+<text x="300.0" y="65.0" font-size="8.2" fill="#2B2F33" text-anchor="middle">&lt;typeGuid&gt;.png, à 3×</text>
+<rect x="216" y="98" width="168" height="52" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.3"/>
+<text x="300.0" y="121.0" font-size="8.6" fill="#E65100" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">src/data/capsules.json</text>
+<text x="300.0" y="135.0" font-size="8.2" fill="#2B2F33" text-anchor="middle">taille, poignées</text>
+<line x1="386" y1="54" x2="424" y2="80" stroke="#6B7378" stroke-width="1.4"/><polygon points="424,80 417.1,78.6 420.2,74.1" fill="#6B7378"/>
+<line x1="386" y1="124" x2="424" y2="100" stroke="#6B7378" stroke-width="1.4"/><polygon points="424,100 420.0,105.7 417.1,101.1" fill="#6B7378"/>
+<rect x="426" y="20" width="168" height="136" rx="6" fill="#fff" stroke="#7A5A12" stroke-width="1.3"/>
+<text x="510" y="40" font-size="9.2" fill="#7A5A12" text-anchor="middle" font-weight="700">Navigateur</text>
+<text x="510" y="58" font-size="8.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.4px">GenericNode.jsx</text>
+<rect x="472" y="74" width="76" height="50" rx="6.0" fill="#D8D8D8" stroke="#2B2F33" stroke-width="1.2"/>
+<rect x="501.0" y="77.0" width="18.0" height="44.0" rx="3.0" fill="#2B2F33"/>
+<text x="512.4" y="99.0" font-size="6.4" fill="#fff" font-weight="700" text-anchor="middle" transform="rotate(-90 512.4 99.0)">Closed</text>
+<text x="479.0" y="102.0" font-size="6.4" fill="#2B2F33" text-anchor="start">C</text>
+<circle cx="472" cy="99.0" r="3.0" fill="#fff" stroke="#2B2F33" stroke-width="1.0"/>
+<text x="541.0" y="93.66666666666667" font-size="6.4" fill="#2B2F33" text-anchor="end">C</text>
+<circle cx="548" cy="90.66666666666667" r="3.0" fill="#fff" stroke="#2B2F33" stroke-width="1.0"/>
+<text x="541.0" y="110.33333333333334" font-size="6.4" fill="#2B2F33" text-anchor="end">P</text>
+<circle cx="548" cy="107.33333333333334" r="3.0" fill="#fff" stroke="#2B2F33" stroke-width="1.0"/>
+<circle cx="472" cy="99" r="6" fill="none" stroke="#2E7D32" stroke-width="1.4" stroke-dasharray="2 2"/>
+<circle cx="548" cy="90.7" r="6" fill="none" stroke="#2E7D32" stroke-width="1.4" stroke-dasharray="2 2"/>
+<circle cx="548" cy="107.3" r="6" fill="none" stroke="#2E7D32" stroke-width="1.4" stroke-dasharray="2 2"/>
+<text x="510" y="146" font-size="8" fill="#6B7378" text-anchor="middle" font-style="italic">image + poignées invisibles</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Une fois pour toutes, un script lancé dans Rhino fait peindre à Grasshopper chaque composant du catalogue dans une image, et note où sont ses poignées ; le navigateur n'a plus qu'à afficher l'image et à accrocher les fils aux bons endroits.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Un décor de théâtre photographié plutôt que repeint : la photo est fidèle au détail près, et un plan indique où sont les portes par lesquelles les acteurs entrent et sortent.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>suivre le rendu d'une capsule dans export-capsules.cs ;</li>
+        <li>lire une entrée de capsules.json ;</li>
+        <li>dire comment GenericNode pose les poignées sur l'image ;</li>
+        <li>choisir entre éditeur HTML, image et capsule compacte.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:5mm">
+    <span class="titre">À retenir</span>
+    724 capsules pour 727 composants au catalogue. Les trois absents sont des échecs attendus (lignes 12–13) : Group n'est pas un composant posable, Digit Scroller et Cherry Picker sont des contrôles interactifs. Number Slider, Boolean Toggle et Panel, qu'on manipule, sont dessinés en HTML.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 38 · Des capsules natives dans le navigateur</div>
+</section>
+
+<!-- ============ PAGE 2 · LE RENDU DANS RHINO ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 38</b></div>
+  <p class="rubrique">Schéma 1 · Faire peindre Grasshopper</p>
+  <h2>Un document par composant, une image par document</h2>
+  <p style="max-width:165mm">Le script lit les <code>typeGuid</code> du catalogue web, puis, pour chacun, crée le composant, le pose seul dans un document neuf, mesure son cadre, et demande au canvas de Grasshopper une image haute résolution de ce cadre.</p>
+
+  <svg viewBox="0 0 600 150" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="150" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="12" fill="#7A5A12" text-anchor="start" font-weight="700">Pour chaque typeGuid du catalogue</text>
+<rect x="14" y="40" width="76" height="80" rx="4" fill="#fff" stroke="#7A5A12"/>
+<circle cx="52" cy="56" r="9" fill="#7A5A12"/><text x="52" y="59.5" font-size="8.6" fill="#fff" text-anchor="middle" font-weight="700">1</text>
+<text x="52" y="82" font-size="6.8" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.8px">EmitObject</text>
+<text x="52" y="96" font-size="7.6" fill="#6B7378" text-anchor="middle">créer</text>
+<text x="52" y="112" font-size="7.2" fill="#7A5A12" text-anchor="middle">l. 39</text>
+<line x1="90" y1="80" x2="96" y2="80" stroke="#6B7378" stroke-width="1"/><polygon points="96,80 89.6,82.7 89.6,77.3" fill="#6B7378"/>
+<rect x="96" y="40" width="76" height="80" rx="4" fill="#fff" stroke="#7A5A12"/>
+<circle cx="134" cy="56" r="9" fill="#7A5A12"/><text x="134" y="59.5" font-size="8.6" fill="#fff" text-anchor="middle" font-weight="700">2</text>
+<text x="134" y="82" font-size="6.8" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.8px">Optional</text>
+<text x="134" y="96" font-size="7.6" fill="#6B7378" text-anchor="middle">tout facultatif</text>
+<text x="134" y="112" font-size="7.2" fill="#7A5A12" text-anchor="middle">l. 45–57</text>
+<line x1="172" y1="80" x2="178" y2="80" stroke="#6B7378" stroke-width="1"/><polygon points="178,80 171.6,82.7 171.6,77.3" fill="#6B7378"/>
+<rect x="178" y="40" width="76" height="80" rx="4" fill="#fff" stroke="#7A5A12"/>
+<circle cx="216" cy="56" r="9" fill="#7A5A12"/><text x="216" y="59.5" font-size="8.6" fill="#fff" text-anchor="middle" font-weight="700">3</text>
+<text x="216" y="82" font-size="6.8" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.8px">AddObject</text>
+<text x="216" y="96" font-size="7.6" fill="#6B7378" text-anchor="middle">document neuf</text>
+<text x="216" y="112" font-size="7.2" fill="#7A5A12" text-anchor="middle">l. 60–63</text>
+<line x1="254" y1="80" x2="260" y2="80" stroke="#6B7378" stroke-width="1"/><polygon points="260,80 253.6,82.7 253.6,77.3" fill="#6B7378"/>
+<rect x="260" y="40" width="76" height="80" rx="4" fill="#fff" stroke="#7A5A12"/>
+<circle cx="298" cy="56" r="9" fill="#7A5A12"/><text x="298" y="59.5" font-size="8.6" fill="#fff" text-anchor="middle" font-weight="700">4</text>
+<text x="298" y="82" font-size="6.8" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.8px">Bounds</text>
+<text x="298" y="96" font-size="7.6" fill="#6B7378" text-anchor="middle">mesurer</text>
+<text x="298" y="112" font-size="7.2" fill="#7A5A12" text-anchor="middle">l. 64</text>
+<line x1="336" y1="80" x2="342" y2="80" stroke="#6B7378" stroke-width="1"/><polygon points="342,80 335.6,82.7 335.6,77.3" fill="#6B7378"/>
+<rect x="342" y="40" width="76" height="80" rx="4" fill="#fff" stroke="#7A5A12"/>
+<circle cx="380" cy="56" r="9" fill="#7A5A12"/><text x="380" y="59.5" font-size="8.6" fill="#fff" text-anchor="middle" font-weight="700">5</text>
+<text x="380" y="82" font-size="6.8" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.8px">Enabled = false</text>
+<text x="380" y="96" font-size="7.6" fill="#6B7378" text-anchor="middle">état neutre</text>
+<text x="380" y="112" font-size="7.2" fill="#7A5A12" text-anchor="middle">l. 70–75</text>
+<line x1="418" y1="80" x2="424" y2="80" stroke="#6B7378" stroke-width="1"/><polygon points="424,80 417.6,82.7 417.6,77.3" fill="#6B7378"/>
+<rect x="424" y="40" width="76" height="80" rx="4" fill="#fff" stroke="#7A5A12"/>
+<circle cx="462" cy="56" r="9" fill="#7A5A12"/><text x="462" y="59.5" font-size="8.6" fill="#fff" text-anchor="middle" font-weight="700">6</text>
+<text x="462" y="82" font-size="6.8" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.8px">HiResImageTile</text>
+<text x="462" y="96" font-size="7.6" fill="#6B7378" text-anchor="middle">peindre ×3</text>
+<text x="462" y="112" font-size="7.2" fill="#7A5A12" text-anchor="middle">l. 76–82</text>
+<line x1="500" y1="80" x2="506" y2="80" stroke="#6B7378" stroke-width="1"/><polygon points="506,80 499.6,82.7 499.6,77.3" fill="#6B7378"/>
+<rect x="506" y="40" width="76" height="80" rx="4" fill="#fff" stroke="#7A5A12"/>
+<circle cx="544" cy="56" r="9" fill="#7A5A12"/><text x="544" y="59.5" font-size="8.6" fill="#fff" text-anchor="middle" font-weight="700">7</text>
+<text x="544" y="82" font-size="6.8" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.8px">capsules.json</text>
+<text x="544" y="96" font-size="7.6" fill="#6B7378" text-anchor="middle">noter poignées</text>
+<text x="544" y="112" font-size="7.2" fill="#7A5A12" text-anchor="middle">l. 88–110</text>
+<text x="14" y="140" font-size="8.4" fill="#6B7378" text-anchor="start" font-style="italic">Un échec n'arrête rien : il est noté, et le composant suivant est traité (ligne 113).</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">outils/export-capsules.cs · 76–82</span>var vp = Activator.CreateInstance(vpType);
+set(vp, "Width", (int)Math.Ceiling((b.Width + 2 * margin) * zoom));
+set(vp, "Height", (int)Math.Ceiling((b.Height + 2 * margin) * zoom));
+set(vp, "Zoom", zoom);
+set(vp, "MidPoint", new System.Drawing.PointF(b.X + b.Width / 2, b.Y + b.Height / 2));
+using (var bmp = (System.Drawing.Bitmap)canvasType.GetMethod("GenerateHiResImageTile")
+                     .Invoke(canvas, new object[] { vp, System.Drawing.Color.Transparent }))
+    bmp.Save(imgDir + guid + ".png", System.Drawing.Imaging.ImageFormat.Png);</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Tout par réflexion</h3>
+      <p>Le script s'exécute dans Rhino 8, par le MCP Rhino (<code>execute_rhinocommon_csharp_code</code>). Ce contexte ne référence pas Grasshopper : le script retrouve l'assembly chargée (ligne 15), puis chaque type, propriété et méthode par son nom (cours 27).</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Un état neutre, figé</h3>
+      <p>Le canvas calcule ce qu'il dessine. Une entrée obligatoire vide teinterait la capsule en orange, et ce serait dans l'image pour toujours. Les entrées passent donc facultatives (lignes 45–57), le document est désactivé et les messages effacés (70–75).</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Ajouter un composant au catalogue sans relancer l'export (ligne 9 : « À relancer quand le catalogue change »). Il n'a pas d'entrée dans <code>capsules.json</code> : le web le dessine alors en capsule compacte, sans erreur, et la différence passe inaperçue.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 38 · Des capsules natives dans le navigateur</div>
+</section>
+
+<!-- ============ PAGE 3 · CAPSULES.JSON ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 38</b></div>
+  <p class="rubrique">Schéma 2 · La taille et les poignées</p>
+  <h2>Des unités Grasshopper, depuis le coin de l'image</h2>
+  <p style="max-width:165mm">Pour chaque composant, <code>capsules.json</code> donne la taille de l'image et la position de chaque poignée. Les nombres sont en unités du canvas Grasshopper au zoom 1, comptés depuis le coin haut-gauche de l'image, marge comprise.</p>
+
+  <svg viewBox="0 0 600 226" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="226" fill="#EFE9E1"/>
+<rect x="60" y="26" width="200.20000000000002" height="145.6" fill="#fff" stroke="#6B7378" stroke-dasharray="4 3"/>
+<rect x="80.8" y="41.6" width="158.60000000000002" height="114.4" rx="10" fill="#D8D8D8" stroke="#2B2F33" stroke-width="1.8"/>
+<rect x="146.1" y="46.6" width="28" height="104.4" rx="4" fill="#2B2F33"/>
+<text x="164.1" y="98.8" font-size="11" fill="#fff" font-weight="700" text-anchor="middle" transform="rotate(-90 164.1 98.8)">Closed</text>
+<text x="88.8" y="102.8" font-size="9" fill="#2B2F33" text-anchor="start">Curve</text>
+<text x="231.4" y="76.80000000000001" font-size="9" fill="#2B2F33" text-anchor="end">Closed</text>
+<text x="231.4" y="128.8" font-size="9" fill="#2B2F33" text-anchor="end">Periodic</text>
+<text x="56" y="30" font-size="8" fill="#7A5A12" text-anchor="end" font-weight="700" class="mono" style="font-size:8px">(0, 0)</text>
+<circle cx="80.8" cy="98.8" r="5" fill="#fff" stroke="#1565C0" stroke-width="2"/>
+<circle cx="239.4" cy="72.80000000000001" r="5" fill="#fff" stroke="#E65100" stroke-width="2"/>
+<circle cx="239.4" cy="124.8" r="5" fill="#fff" stroke="#E65100" stroke-width="2"/>
+<text x="80.8" y="122.8" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">(8, 28)</text>
+<text x="249.4" y="66.80000000000001" font-size="8" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">(69, 18)</text>
+<text x="249.4" y="138.8" font-size="8" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">(69, 38)</text>
+<line x1="60" y1="185.6" x2="260.20000000000005" y2="185.6" stroke="#7A5A12"/><text x="160.10000000000002" y="198.6" font-size="8.4" fill="#7A5A12" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">width 77</text>
+<line x1="60" y1="181.6" x2="60" y2="189.6" stroke="#7A5A12"/><line x1="260.20000000000005" y1="181.6" x2="260.20000000000005" y2="189.6" stroke="#7A5A12"/>
+<line x1="46" y1="26" x2="46" y2="171.6" stroke="#7A5A12"/><text x="42" y="98.8" font-size="8.4" fill="#7A5A12" text-anchor="end" font-weight="700" class="mono" style="font-size:8.4px">56</text>
+<text x="67.8" y="37.6" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">marge 6</text>
+<text x="440" y="50" font-size="9.2" fill="#7A5A12" text-anchor="start" font-weight="700">Une unité GH = un pixel CSS</text>
+<text x="440" y="68" font-size="8.4" fill="#2B2F33" text-anchor="start">la capsule occupe 77 × 56 pixels</text>
+<text x="440" y="82" font-size="8.4" fill="#2B2F33" text-anchor="start">sur le canvas web au zoom 1</text>
+<text x="440" y="110" font-size="9.2" fill="#7A5A12" text-anchor="start" font-weight="700">L'image en a trois fois plus</text>
+<text x="440" y="128" font-size="8.4" fill="#2B2F33" text-anchor="start">231 × 168 pixels, en réserve</text>
+<text x="440" y="142" font-size="8.4" fill="#2B2F33" text-anchor="start">pour les zooms avant</text>
+<text x="440" y="170" font-size="8" fill="#6B7378" text-anchor="start" font-style="italic">Pointillés : le cadre de l'image,</text>
+<text x="440" y="182" font-size="8" fill="#6B7378" text-anchor="start" font-style="italic">cadre Grasshopper + 6 de chaque côté.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">src/data/capsules.json · 2</span>"323f3245-af49-4489-8677-7a2c73664077": { "width": 77, "height": 56,
+  "inputs": [{ "name": "Curve", "x": 8, "y": 28 }],
+  "outputs": [{ "name": "Closed", "x": 69, "y": 18 }, { "name": "Periodic", "x": 69, "y": 38 }] },</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Trois fois plus de pixels</h3>
+      <p>L'image est peinte au zoom 3 (ligne 24) : 231 × 168 pixels pour une capsule de 77 × 56. Le web l'affiche à 77 × 56 ; quand on zoome le canvas, il reste deux pixels en réserve sur trois, et le dessin reste net.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Compter depuis l'image</h3>
+      <p>Grasshopper donne la poignée en coordonnées du canvas. Le script retire le coin du cadre et ajoute la marge (ligne 88) : <code>x = poignée.X − cadre.X + 6</code>. La largeur, elle, vaut le cadre plus deux marges (ligne 110).</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Régénérer les images sans le JSON, ou l'inverse. Les poignées web sont invisibles (styles.css, lignes 869–878) : si les deux fichiers ne viennent pas du même export, les fils s'accrochent à côté des poignées dessinées, et rien ne le signale. Le script écrit toujours les deux ensemble.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 38 · Des capsules natives dans le navigateur</div>
+</section>
+
+<!-- ============ PAGE 4 · DANS LE NAVIGATEUR ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 38</b></div>
+  <p class="rubrique">Schéma 3 · Trois façons de dessiner un nœud</p>
+  <h2>Éditeur, image ou capsule compacte</h2>
+  <p style="max-width:165mm"><code>GenericNode</code> choisit, pour chaque nœud du graphe, comment le dessiner. Ce qui se manipule est en HTML ; ce qui est figé et a une capsule s'affiche en image ; le reste prend une capsule compacte.</p>
+
+  <svg viewBox="0 0 600 200" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="200" fill="#EFE9E1"/>
+<rect x="16" y="14" width="180" height="176" rx="5" fill="#fff" stroke="#1565C0" stroke-width="1.4"/>
+<rect x="16" y="14" width="180" height="22" rx="5" fill="#1565C0"/>
+<text x="26" y="29" font-size="9.4" fill="#fff" text-anchor="start" font-weight="700">Éditeur HTML</text>
+<text x="26" y="52" font-size="8.4" fill="#6B7378" text-anchor="start" font-style="italic">on le manipule</text>
+<text x="26" y="162" font-size="8.2" fill="#2B2F33" text-anchor="start">Number Slider, Toggle, Panel</text>
+<text x="26" y="178" font-size="7.8" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">NATIVE_EDITORS</text>
+<rect x="210" y="14" width="180" height="176" rx="5" fill="#fff" stroke="#2E7D32" stroke-width="1.4"/>
+<rect x="210" y="14" width="180" height="22" rx="5" fill="#2E7D32"/>
+<text x="220" y="29" font-size="9.4" fill="#fff" text-anchor="start" font-weight="700">Image native</text>
+<text x="220" y="52" font-size="8.4" fill="#6B7378" text-anchor="start" font-style="italic">figé, capsule exportée</text>
+<text x="220" y="162" font-size="8.2" fill="#2B2F33" text-anchor="start">le cas le plus courant</text>
+<text x="220" y="178" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">CAPSULES[typeGuid]</text>
+<rect x="404" y="14" width="180" height="176" rx="5" fill="#fff" stroke="#6D4C41" stroke-width="1.4"/>
+<rect x="404" y="14" width="180" height="22" rx="5" fill="#6D4C41"/>
+<text x="414" y="29" font-size="9.4" fill="#fff" text-anchor="start" font-weight="700">Capsule compacte</text>
+<text x="414" y="52" font-size="8.4" fill="#6B7378" text-anchor="start" font-style="italic">le reste</text>
+<text x="414" y="162" font-size="8.2" fill="#2B2F33" text-anchor="start">sans capsule, ou opaque</text>
+<text x="414" y="178" font-size="7.8" fill="#6D4C41" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">dessin HTML, nom vertical</text>
+<rect x="32" y="84" width="148" height="22" rx="4" fill="#E6E6E6" stroke="#2B2F33"/>
+<line x1="44" y1="95" x2="160" y2="95" stroke="#2B2F33"/><rect x="100" y="88" width="8" height="14" rx="2" fill="#2B2F33"/>
+<text x="166" y="99" font-size="8" fill="#2B2F33" text-anchor="start">4</text>
+<rect x="260" y="70" width="80" height="56" rx="6.6000000000000005" fill="#D8D8D8" stroke="#2B2F33" stroke-width="1.32"/>
+<rect x="290.1" y="73.3" width="19.8" height="49.4" rx="3.3000000000000003" fill="#2B2F33"/>
+<text x="302.64" y="98.0" font-size="7.040000000000001" fill="#fff" font-weight="700" text-anchor="middle" transform="rotate(-90 302.64 98.0)">Closed</text>
+<text x="267.7" y="101.0" font-size="7.040000000000001" fill="#2B2F33" text-anchor="start">C</text>
+<circle cx="260" cy="98.0" r="3.3000000000000003" fill="#fff" stroke="#2B2F33" stroke-width="1.1"/>
+<text x="332.3" y="91.66666666666667" font-size="7.040000000000001" fill="#2B2F33" text-anchor="end">C</text>
+<circle cx="340" cy="88.66666666666667" r="3.3000000000000003" fill="#fff" stroke="#2B2F33" stroke-width="1.1"/>
+<text x="332.3" y="110.33333333333334" font-size="7.040000000000001" fill="#2B2F33" text-anchor="end">P</text>
+<circle cx="340" cy="107.33333333333334" r="3.3000000000000003" fill="#fff" stroke="#2B2F33" stroke-width="1.1"/>
+<rect x="460" y="70" width="64" height="62" rx="6" fill="#fff" stroke="#2B2F33" stroke-dasharray="4 3"/>
+<text x="492" y="101" font-size="8" fill="#2B2F33" text-anchor="middle" transform="rotate(-90 492 101)" font-weight="700">Opaque</text>
+<circle cx="524" cy="90" r="3.4" fill="#fff" stroke="#2B2F33"/>
+<circle cx="524" cy="112" r="3.4" fill="#fff" stroke="#2B2F33"/>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">src/styles.css · 887–902, extraits</span>.magpie-capsule-tint {
+  position: absolute;
+  inset: 0;
+  mask-size: 100% 100%;
+  mix-blend-mode: multiply;
+}
+.magpie-capsule.is-warning .magpie-capsule-tint { background: #f2a33a; }
+.magpie-capsule.is-error .magpie-capsule-tint { background: #e0503e; }</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>L'image sert de masque</h3>
+      <p>Pour teinter une capsule en orange ou en rouge, GenericNode pose une couche de couleur dont le masque est la même image (ligne 127). La couleur ne couvre que la forme du composant, pas le rectangle, et <code>multiply</code> la mêle au dessin.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Le vert de la sélection</h3>
+      <p>Grasshopper teinte en vert un composant sélectionné. Le web dessine un contour vert qui épouse l'image : quatre <code>drop-shadow</code> décalés, sans flou (styles.css, 862–867). Aperçu coupé : l'image est assombrie (<code>brightness(0.72)</code>).</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Chercher la capsule d'un composant fourni par l'exercice et conservé tel quel (un objet opaque). <code>GenericNode</code> l'écarte exprès (<code>!catalogEntry.isOpaque</code>, ligne 104) : il prend la capsule compacte en pointillés, pour dire « câblable, mais pas modifiable ».
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 38 · Des capsules natives dans le navigateur</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 38</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>GenericNode : l'image et ses poignées</h2>
+  <p style="max-width:165mm">Le cas « capsule » de <code>GenericNode.jsx</code>. Le nœud prend la taille donnée par le JSON, affiche l'image, et pose une poignée React Flow sur chaque poignée dessinée.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l k1"><span class="n">104</span><span class="kw">const</span> capsule = !catalogEntry.isOpaque<span class="rep r1">1</span></div>
+<div class="l k1"><span class="n"> </span>  &amp;&amp; CAPSULES[catalogEntry.typeGuid];</div>
+<div class="l"><span class="n">105</span><span class="kw">if</span> (capsule) {</div>
+<div class="l k2"><span class="n">106</span>  <span class="kw">const</span> ports = (list, fallback) =&gt; list.length<span class="rep r2">2</span></div>
+<div class="l k2"><span class="n">107</span>    ? list.map((p, i) =&gt;</div>
+<div class="l k2"><span class="n"> </span>        ({ id: p.name, grip: capsule[fallback][i] }))</div>
+<div class="l k2"><span class="n"> </span>    : [];</div>
+<div class="l"><span class="n">108</span>  <span class="kw">const</span> ins = hasPorts</div>
+<div class="l"><span class="n"> </span>    ? ports(catalogEntry.inputs, <span class="st">"inputs"</span>) : …;</div>
+<div class="l k3"><span class="n">113</span>  style={{ width: capsule.width,<span class="rep r3">3</span></div>
+<div class="l k3"><span class="n"> </span>           height: capsule.height }}</div>
+<div class="l k4"><span class="n">117</span>  &lt;img src={<span class="st">`/capsules/${…typeGuid}.png`</span>}<span class="rep r4">4</span></div>
+<div class="l k4"><span class="n"> </span>       alt={label} draggable={<span class="kw">false</span>} /&gt;</div>
+<div class="l k5"><span class="n">127</span>  &lt;span className=<span class="st">"magpie-capsule-tint"</span><span class="rep r5">5</span></div>
+<div class="l k5"><span class="n"> </span>    style={{ maskImage: <span class="st">`url(/capsules/…png)`</span> }} /&gt;</div>
+<div class="l k6"><span class="n">131</span>  &lt;<span class="ty">Handle</span> type=<span class="st">"target"</span> id={id}<span class="rep r6">6</span></div>
+<div class="l k6"><span class="n"> </span>    className=<span class="st">"magpie-capsule-grip"</span></div>
+<div class="l k6"><span class="n">132</span>    style={{ left: grip.x, top: grip.y }} /&gt;</div>
+<div class="l k7"><span class="n">145</span><span class="cm">// Tous les autres : capsule compacte</span><span class="rep r7">7</span></div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Avoir une capsule</b>Un objet opaque n'en prend jamais.</li>
+      <li><span class="rep r2">2</span><b>Apparier par rang</b>Le i-ième port du catalogue reçoit la i-ième poignée exportée.</li>
+      <li><span class="rep r3">3</span><b>La taille du JSON</b>En pixels CSS égaux aux unités GH.</li>
+      <li><span class="rep r4">4</span><b>L'image native</b>Elle porte tout le dessin, sans clic.</li>
+      <li><span class="rep r5">5</span><b>La teinte d'état</b>Masquée par la forme de l'image.</li>
+      <li><span class="rep r6">6</span><b>La poignée invisible</b>Centrée sur la poignée dessinée.</li>
+      <li><span class="rep r7">7</span><b>Sinon</b>Le dessin compact, en HTML.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">Pourquoi par rang</span>
+    Le script écrit les poignées dans l'ordre des paramètres de Grasshopper (lignes 95–101), qui est aussi celui du catalogue. Les noms du JSON ne servent qu'à la relecture : <code>GenericNode</code> donne à chaque poignée le nom du port du catalogue, celui que les fils du graphe référencent.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 38 · Des capsules natives dans le navigateur</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 38</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Qui dessine l'image d'une capsule ?</div><ul>
+      <li><span>A</span>le navigateur, en SVG</li><li><span>B</span>React Flow</li><li><span>C</span>Grasshopper, par GenerateHiResImageTile</li><li><span>D</span>un graphiste</li></ul></div>
+
+    <div class="q"><div class="enonce">Où s'exécute export-capsules.cs ?</div><ul>
+      <li><span>A</span>dans Rhino 8, Grasshopper chargé</li><li><span>B</span>dans Node</li><li><span>C</span>dans le navigateur</li><li><span>D</span>dans Rhino Compute en ligne</li></ul></div>
+
+    <div class="q"><div class="enonce">Pourquoi passer toutes les entrées en facultatives avant le rendu ?</div><ul>
+      <li><span>A</span>pour aller plus vite</li><li><span>B</span>pour avoir des poignées</li><li><span>C</span>pour le JSON</li><li><span>D</span>pour ne pas figer une teinte orange dans l'image</li></ul></div>
+
+    <div class="q"><div class="enonce">Une capsule de 77 × 56 donne une image de…</div><ul>
+      <li><span>A</span>77 × 56 pixels</li><li><span>B</span>231 × 168 pixels</li><li><span>C</span>154 × 112 pixels</li><li><span>D</span>une taille variable</li></ul></div>
+
+    <div class="q"><div class="enonce">Les x et y d'une poignée dans capsules.json sont comptés…</div><ul>
+      <li><span>A</span>depuis l'origine du canvas</li><li><span>B</span>en pixels de l'image</li><li><span>C</span>depuis le coin haut-gauche de l'image, en unités GH</li><li><span>D</span>depuis le centre</li></ul></div>
+
+    <div class="q"><div class="enonce">Un composant ajouté au catalogue sans relancer l'export…</div><ul>
+      <li><span>A</span>s'affiche en capsule compacte</li><li><span>B</span>fait planter la page</li><li><span>C</span>est invisible</li><li><span>D</span>prend l'image d'un autre</li></ul></div>
+
+    <div class="q"><div class="enonce">Number Slider, Boolean Toggle et Panel sont dessinés…</div><ul>
+      <li><span>A</span>par une image</li><li><span>B</span>en capsule compacte</li><li><span>C</span>par Rhino Compute</li><li><span>D</span>en HTML, puisqu'on les manipule</li></ul></div>
+
+    <div class="q"><div class="enonce">GenericNode associe poignées et ports…</div><ul>
+      <li><span>A</span>par nom</li><li><span>B</span>par rang : le i-ième port, la i-ième poignée</li><li><span>C</span>au hasard</li><li><span>D</span>par couleur</li></ul></div>
+
+    <div class="q"><div class="enonce">La teinte d'erreur ne couvre que la forme du composant car…</div><ul>
+      <li><span>A</span>l'image elle-même sert de masque</li><li><span>B</span>elle est dessinée par Grasshopper</li><li><span>C</span>le PNG est rouge</li><li><span>D</span>border-radius</li></ul></div>
+
+    <div class="q"><div class="enonce">Un objet opaque fourni par l'exercice s'affiche…</div><ul>
+      <li><span>A</span>en image native</li><li><span>B</span>en éditeur HTML</li><li><span>C</span>en capsule compacte en pointillés</li><li><span>D</span>pas du tout</li></ul></div>
+
+    <div class="q"><div class="enonce">Restent sans capsule : <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>Group</li><li><span>B</span>Digit Scroller</li><li><span>C</span>Cherry Picker</li><li><span>D</span>Number Slider</li></ul></div>
+
+    <div class="q"><div class="enonce">Pourquoi Grasshopper est-il appelé par réflexion ?</div><ul>
+      <li><span>A</span>pour la sécurité</li><li><span>B</span>le contexte d'exécution ne le référence pas</li><li><span>C</span>c'est plus rapide</li><li><span>D</span>pour le zoom</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 38 · Des capsules natives dans le navigateur</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 38</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · C.</b> Le canvas de Grasshopper, hors écran.</div>
+    <div><b>02 · A.</b> Par le MCP Rhino, ligne 10.</div>
+    <div><b>03 · D.</b> L'état serait figé à jamais.</div>
+    <div><b>04 · B.</b> Zoom 3, ligne 24.</div>
+    <div><b>05 · C.</b> Cadre retiré, marge ajoutée.</div>
+    <div><b>06 · A.</b> Absent du JSON, donc le dessin compact.</div>
+    <div><b>07 · D.</b> NATIVE_EDITORS, nodeEditors.jsx:315.</div>
+    <div><b>08 · B.</b> capsule[fallback][i].</div>
+    <div><b>09 · A.</b> maskImage, ligne 127.</div>
+    <div><b>10 · C.</b> Écarté par !isOpaque.</div>
+    <div><b>11 · A, B et C.</b> Les trois échecs attendus.</div>
+    <div><b>12 · B.</b> Il retrouve l'assembly chargée.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis la page 4 et GenericNode page 5. <b>10 à 12</b> : passe au cours 39, « Une application web installable ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">server.EmitObject(new Guid(guid))</td><td>créer le composant</td><td>export-capsules.cs:39</td></tr>
+      <tr><td class="c">GenerateHiResImageTile(vp, Transparent)</td><td>peindre l'image</td><td>export-capsules.cs:81</td></tr>
+      <tr><td class="c">g.X - b.X + margin</td><td>poignée depuis l'image</td><td>export-capsules.cs:88</td></tr>
+      <tr><td class="c">CAPSULES[catalogEntry.typeGuid]</td><td>trouver la capsule</td><td>GenericNode.jsx:104</td></tr>
+      <tr><td class="c">style={{ left: grip.x, top: grip.y }}</td><td>poser la poignée</td><td>GenericNode.jsx:132</td></tr>
+      <tr><td class="c">maskImage: url(…png)</td><td>teinter la seule forme</td><td>GenericNode.jsx:127</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Capsule</dt><dd>La forme arrondie d'un composant Grasshopper, avec ses poignées.</dd>
+    <dt>Poignée (grip)</dt><dd>Le petit demi-cercle où un fil entre ou sort.</dd>
+    <dt>Réflexion</dt><dd>Trouver et appeler types et méthodes par leur nom, à l'exécution.</dd>
+    <dt>Masque CSS</dt><dd>Une image dont la transparence découpe ce qu'on voit d'un élément.</dd>
+    <dt>Rendu hors écran</dt><dd>Une peinture faite dans une image, sans fenêtre visible.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 39</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 38 · Des capsules natives dans le navigateur</div>
+</section>
+
+</body>
+</html>

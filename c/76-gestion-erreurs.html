@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>76 · La gestion des erreurs</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-11">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 76</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>La gestion des erreurs</h1>
+  <p class="chapeau">Un programme utile rencontre des fichiers abîmés, des réseaux coupés, des saisies absurdes. Gérer les erreurs, ce n'est pas les faire taire : c'est décider, pour chacune, <b>qui</b> la traite, <b>ce qu'on dit</b> et à qui, et dans quel <b>état</b> on laisse les choses. Le reste du programme peut alors compter sur ce qui a réussi.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>59</b> et <b>75</b></span>
+    <span class="pastille">Exemples · <b>ImportParcours</b>, <b>MagpieParcoursLauncher</b>, <b>compute-proxy</b> (Magpie)</span>
+  </div>
+
+  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+    <svg viewBox="0 0 600 196" width="100%">
+<rect x="150" y="8" width="300" height="42" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="300" y="26" font-size="9" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">ZipFile / JObject.Parse</text>
+<text x="300" y="41" font-size="7.6" fill="#2B2F33" text-anchor="middle">constate : « pas un zip », « JSON invalide »</text>
+<text x="462" y="33" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">ne sait pas qui l'appelle</text>
+<line x1="130" y1="48" x2="130" y2="66" stroke="#C62828" stroke-width="1.6"/><polygon points="130,66 127.3,59.6 132.7,59.6" fill="#C62828"/>
+<rect x="150" y="60" width="300" height="42" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
+<text x="300" y="78" font-size="9" fill="#7B1FA2" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">ImportParcours.Importer</text>
+<text x="300" y="93" font-size="7.6" fill="#2B2F33" text-anchor="middle">traduit : InvalidDataException lisible</text>
+<text x="462" y="85" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">sait ce qu'est un parcours</text>
+<line x1="130" y1="100" x2="130" y2="118" stroke="#C62828" stroke-width="1.6"/><polygon points="130,118 127.3,111.6 132.7,111.6" fill="#C62828"/>
+<rect x="150" y="112" width="300" height="42" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="300" y="130" font-size="9" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">MagpieParcoursLauncher</text>
+<text x="300" y="145" font-size="7.6" fill="#2B2F33" text-anchor="middle">décide : bulle « Import impossible »</text>
+<text x="462" y="137" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">sait qu'un humain attend</text>
+<text x="122" y="60" font-size="7.6" fill="#C62828" text-anchor="end" font-weight="700">remonte</text>
+<text x="122" y="112" font-size="7.6" fill="#C62828" text-anchor="end" font-weight="700">remonte</text>
+<text x="300" y="184" font-size="8" fill="#4F46B8" text-anchor="middle" font-weight="700">On attrape une erreur là où l'on sait en faire quelque chose d'utile, pas là où elle apparaît.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Le code qui constate une erreur la signale ; le code qui la comprend la traduit ; le code qui sait ce que l'utilisateur attend décide quoi lui dire. Entre les deux, une exception remonte d'elle-même la pile d'appels.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Un colis refusé à la livraison. Le livreur constate (« adresse introuvable »), le service client traduit (« votre adresse semble incomplète »), et c'est toi qui décides de corriger ou d'annuler. Le livreur ne t'appelle pas pour en discuter.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>distinguer erreur attendue et bug ;</li>
+        <li>attraper au bon endroit ;</li>
+        <li>traduire une exception technique ;</li>
+        <li>choisir entre exception, booléen, null et résultat.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:5mm">
+    <span class="titre">À retenir</span>
+    Une exception non attrapée n'est pas un échec de la gestion d'erreurs : c'en est souvent la bonne fin, pour un bug. Le vrai échec, c'est l'erreur attrapée puis oubliée, qui laisse le programme continuer dans un état faux.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 76 · La gestion des erreurs</div>
+</section>
+
+<!-- ============ PAGE 2 · ATTENDU OU IMPRÉVU ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 76</b></div>
+  <p class="rubrique">Schéma 1 · Attendu ou imprévu</p>
+  <h2>Deux familles, deux traitements</h2>
+  <p style="max-width:165mm">Un fichier mal formé fait partie de la vie d'un programme d'import : on l'attend, on le décrit, on continue. Une référence nulle dans ton propre code est un bug : aucun message soigné ne le répare, il faut qu'il se voie.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<text x="150" y="22" font-size="9.4" fill="#1565C0" text-anchor="middle" font-weight="700">L'erreur attendue</text>
+<text x="450" y="22" font-size="9.4" fill="#C62828" text-anchor="middle" font-weight="700">Le bug</text>
+<line x1="300" y1="12" x2="300" y2="204" stroke="#CFC6B8" stroke-dasharray="3 3"/>
+<text x="150" y="46" font-size="8" fill="#2B2F33" text-anchor="middle">un fichier abîmé, un réseau coupé,</text>
+<text x="450" y="46" font-size="8" fill="#2B2F33" text-anchor="middle">une référence nulle, un index hors</text>
+<text x="150" y="66" font-size="8" fill="#2B2F33" text-anchor="middle">une saisie hors bornes</text>
+<text x="450" y="66" font-size="8" fill="#2B2F33" text-anchor="middle">limites, un cas oublié</text>
+<text x="150" y="106" font-size="8" fill="#2B2F33" text-anchor="middle" font-weight="700">fait partie du métier : on la prévoit</text>
+<text x="450" y="106" font-size="8" fill="#2B2F33" text-anchor="middle" font-weight="700">le programme est faux à cet endroit</text>
+<text x="150" y="126" font-size="8" fill="#2B2F33" text-anchor="middle">message écrit pour l'utilisateur</text>
+<text x="450" y="126" font-size="8" fill="#2B2F33" text-anchor="middle">message technique, pour toi</text>
+<text x="150" y="146" font-size="8" fill="#2B2F33" text-anchor="middle">on continue, l'état reste juste</text>
+<text x="450" y="146" font-size="8" fill="#2B2F33" text-anchor="middle">laisser remonter, tout journaliser</text>
+<rect x="40" y="168" width="220" height="26" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="150.0" y="183.6" font-size="7.8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.8px">HttpError(400, …, "INVALID_JSON")</text>
+<rect x="340" y="168" width="220" height="26" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="450.0" y="183.6" font-size="7.8" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.8px">TypeError · NullReferenceException</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/compute-proxy.mjs · lignes 84 à 98, resserrées et commentées</span>class HttpError extends Error {
+  constructor(status, message, code) {
+    super(message);
+    this.status = status;   // 400, 502, 504… : pour le client HTTP
+    this.code = code;       // "INVALID_JSON" : stable, pour un programme
+  }
+}
+function parseJsonBody(body) {
+  try { return JSON.parse(body); }
+  catch { throw new HttpError(400, "Corps de requête JSON invalide.", "INVALID_JSON"); }
+}</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Une classe pour l'attendu</h3>
+      <p><code>HttpError</code> marque les erreurs prévues, présente sur 23 lignes du fichier. Son <b>code</b> ne change pas quand on reformule le message ; un programme peut donc s'y fier, comme le navigateur de l'élève.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Message propre, détail caché</h3>
+      <p>Le message natif de <code>JSON.parse("{nodes:")</code> est « Expected property name or '}' in JSON at position 1 » (mesuré) : exact, mais pas pour un client. <code>parseJsonBody</code> le remplace par une phrase et un code.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Un <code>catch (Exception)</code> autour de tout, « par sécurité ». Il attrape aussi les bugs, leur donne l'apparence d'une erreur attendue, et la pile disparaît. On attrape les types qu'on sait traiter, et on laisse passer le reste.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 76 · La gestion des erreurs</div>
+</section>
+
+<!-- ============ PAGE 3 · TRADUIRE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 76</b></div>
+  <p class="rubrique">Schéma 2 · Traduire à la frontière</p>
+  <h2>De la bibliothèque à l'humain</h2>
+  <p style="max-width:165mm">Une bibliothèque JSON ne sait pas qu'elle lit un parcours Magpie ; elle dit ce qu'elle voit. La couche qui sait de quoi il s'agit <b>traduit</b> l'exception dans son vocabulaire à elle. La couche d'interface, enfin, choisit la forme : une bulle, une boîte de dialogue, une réponse HTTP.</p>
+
+  <svg viewBox="0 0 600 200" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="200" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">Un JSON abîmé dans un paquet .mgp, de la bibliothèque à l'élève</text>
+<rect x="16" y="34" width="170" height="40" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="101" y="51" font-size="8" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">Newtonsoft</text>
+<text x="101" y="65" font-size="7.6" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.6px">JsonException</text>
+<text x="200" y="59" font-size="8.2" fill="#2B2F33" text-anchor="start">« Unexpected character encountered… »</text>
+<line x1="101" y1="75" x2="101" y2="83" stroke="#6B7378" stroke-width="1.2"/><polygon points="101,83 98.3,76.6 103.7,76.6" fill="#6B7378"/>
+<rect x="16" y="84" width="170" height="40" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
+<text x="101" y="101" font-size="8" fill="#7B1FA2" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">ImportParcours.cs:111</text>
+<text x="101" y="115" font-size="7.6" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.6px">InvalidDataException</text>
+<text x="200" y="109" font-size="8.2" fill="#2B2F33" text-anchor="start">« le manifeste du paquet est illisible. »</text>
+<line x1="101" y1="125" x2="101" y2="133" stroke="#6B7378" stroke-width="1.2"/><polygon points="101,133 98.3,126.6 103.7,126.6" fill="#6B7378"/>
+<rect x="16" y="134" width="170" height="40" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="101" y="151" font-size="8" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">Launcher.cs:216</text>
+<text x="101" y="165" font-size="7.6" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.6px">bulle Error</text>
+<text x="200" y="159" font-size="8.2" fill="#2B2F33" text-anchor="start">« Import impossible : le manifeste… »</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/plugin/Student/MagpieParcoursLauncher.cs · lignes 214 à 219, commentaire ajouté</span>catch (Exception ex) when (ex is InvalidDataException || ex is IOException
+                          || ex is UnauthorizedAccessException)
+{
+    Signaler(GH_RuntimeMessageLevel.Error, $"Import impossible : {ex.Message}");
+    return;
+}
+if (r == null) return;     // annulé par l'utilisateur : pas une erreur</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Le filtre when</h3>
+      <p><code>catch (…) when (condition)</code> n'attrape que si la condition est vraie ; sinon l'exception continue comme si le <code>catch</code> n'existait pas, pile intacte. Ici : trois types attendus, et tout le reste remonte.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Garder la cause</h3>
+      <p>En traduisant, on peut garder l'exception d'origine : <code>throw new InvalidDataException("…", ex)</code>. Elle reste lisible dans <code>InnerException</code> et dans <code>ex.ToString()</code>, pour le journal (cours 75).</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    <code>throw ex;</code> au lieu de <code>throw;</code> pour relancer une exception attrapée. En C#, la première forme repart de la ligne courante et efface la pile d'origine ; la seconde la conserve. Pour relancer telle quelle, on écrit <code>throw;</code> seul.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 76 · La gestion des erreurs</div>
+</section>
+
+<!-- ============ PAGE 4 · LES FORMES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 76</b></div>
+  <p class="rubrique">Schéma 3 · Signaler sans exception</p>
+  <h2>Choisir la forme de l'échec</h2>
+  <p style="max-width:165mm">L'exception n'est pas la seule manière de dire qu'une chose a échoué. Elle convient au cas <b>anormal</b> pour l'appelant. Quand l'échec est courant, ou qu'il n'est qu'à moitié un échec, une valeur de retour le dit mieux et coûte moins cher.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">Quatre manières de dire « ça n'a pas marché », toutes dans tes projets</text>
+<rect x="16" y="32" width="568" height="36" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="28" y="47" font-size="8.8" fill="#C62828" text-anchor="start" font-weight="700">lever une exception</text>
+<text x="28" y="61" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">le cas est anormal pour l'appelant</text>
+<text x="574" y="54" font-size="7.6" fill="#2B2F33" text-anchor="end" class="mono" style="font-size:7.6px">throw new InvalidDataException(…)</text>
+<rect x="16" y="76" width="568" height="36" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
+<text x="28" y="91" font-size="8.8" fill="#7B1FA2" text-anchor="start" font-weight="700">rendre un booléen</text>
+<text x="28" y="105" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">l'échec est courant et sans détail</text>
+<text x="574" y="98" font-size="7.6" fill="#2B2F33" text-anchor="end" class="mono" style="font-size:7.6px">if (!DA.GetDataTree(0, out p)) return;</text>
+<rect x="16" y="120" width="568" height="36" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
+<text x="28" y="135" font-size="8.8" fill="#E65100" text-anchor="start" font-weight="700">rendre null</text>
+<text x="28" y="149" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">« rien », ici : l'utilisateur a annulé</text>
+<text x="574" y="142" font-size="7.6" fill="#2B2F33" text-anchor="end" class="mono" style="font-size:7.6px">Importer(…) rend null si annulé</text>
+<rect x="16" y="164" width="568" height="36" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="28" y="179" font-size="8.8" fill="#2E7D32" text-anchor="start" font-weight="700">rendre un résultat</text>
+<text x="28" y="193" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">un succès partiel à décrire</text>
+<text x="574" y="186" font-size="7.6" fill="#2B2F33" text-anchor="end" class="mono" style="font-size:7.6px">r.ExercicesManquants · Warning</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C# et JavaScript</span>if (int.TryParse(texte, out int n)) Utiliser(n);   // l'échec est un cas normal
+else Avertir("Ce n'est pas un nombre entier.");
+Number("12abc")            // NaN (mesuré) : à tester avec Number.isNaN
+const r = await Promise.allSettled(taches);   // succès et échecs, côte à côte</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Nettoyer quoi qu'il arrive</h3>
+      <p><code>finally</code> s'exécute après le <code>try</code>, qu'il ait réussi, levé une exception ou fait <code>return</code>. C'est la place des nettoyages : dossier temporaire, fichier ouvert, verrou (cours 67). <code>using</code> en est la forme courte.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Le catch vide, justifié</h3>
+      <p>Avaler une exception peut être juste, si l'échec est sans conséquence. Alors on le dit dans le code : pourquoi on l'ignore, et pourquoi ce n'est pas grave. Le prochain lecteur ne prendra pas ce silence pour un oubli.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Rendre <code>null</code> pour plusieurs raisons différentes : fichier absent, fichier vide, annulation. L'appelant ne peut plus distinguer, et finit par tout traiter pareil. <code>null</code> pour un seul sens, une exception ou un résultat détaillé pour le reste.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 76 · La gestion des erreurs</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 76</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>L'import de parcours, un cas d'école</h2>
+  <p style="max-width:165mm">L'import d'un parcours dans Magpie réunit presque toutes les formes du cours : des exceptions traduites, un filtre <code>when</code>, <code>null</code> pour l'annulation, un résultat pour le succès partiel, et un nettoyage en <code>finally</code>.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">magpie/web/compute-proxy.mjs</span></div>
+<div class="l k1"><span class="n">84</span><span class="kw">class</span> HttpError <span class="kw">extends</span> Error {<span class="rep r1">1</span></div>
+<div class="l k1"><span class="n">96</span><span class="kw">throw new</span> HttpError(400, <span class="st">"…"</span>, <span class="st">"INVALID_JSON"</span>);</div>
+<div class="l"><span class="cm">magpie/plugin/Core/ImportParcours.cs</span></div>
+<div class="l k2"><span class="n">76</span><span class="kw">finally</span><span class="rep r2">2</span></div>
+<div class="l k2"><span class="n">80</span><span class="kw">try</span> { Directory.Delete(…); } <span class="kw">catch</span> { <span class="cm">/* … */</span> }</div>
+<div class="l k3"><span class="n">111</span><span class="kw">catch</span> (JsonException) { <span class="kw">throw new</span> InvalidData…<span class="rep r3">3</span></div>
+<div class="l"><span class="cm">magpie/plugin/Student/MagpieParcoursLauncher.cs</span></div>
+<div class="l k4"><span class="n">214</span><span class="kw">catch</span> (Exception ex) <span class="kw">when</span> (ex <span class="kw">is</span> InvalidData…<span class="rep r4">4</span></div>
+<div class="l k4"><span class="n">216</span>Signaler(…Error, <span class="st">$"Import impossible : …"</span>);</div>
+<div class="l k5"><span class="n">219</span><span class="kw">if</span> (r == <span class="kw">null</span>) <span class="kw">return</span>;<span class="rep r5">5</span></div>
+<div class="l k5"><span class="n">221</span>Signaler(r.ExercicesManquants.Count == 0 ? …</div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>L'erreur prévue</b>Un statut, un message, un code stable.</li>
+      <li><span class="rep r2">2</span><b>Le nettoyage</b>Et un catch vide qui dit pourquoi.</li>
+      <li><span class="rep r3">3</span><b>La traduction</b>Le vocabulaire du parcours, pas de JSON.</li>
+      <li><span class="rep r4">4</span><b>Trois types, pas plus</b>Les bugs remontent.</li>
+      <li><span class="rep r5">5</span><b>Annulé, ou incomplet</b>null ; puis Remark ou Warning.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À surveiller · le message d'un bug envoyé au navigateur</span>
+    Le filet final (compute-proxy.mjs:723–728) traite de la même façon une <code>HttpError</code> et une erreur imprévue : dans les deux cas, <code>err.message</code> part dans la réponse. Pour un bug, l'élève recevrait par exemple « Cannot read properties of undefined (reading 'rayon') », qui ne l'aide pas et décrit l'intérieur du serveur. Garder le message pour les <code>HttpError</code>, et pour le reste un texte générique, le détail allant au journal, séparerait les deux familles du schéma 1.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 76 · La gestion des erreurs</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 76</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">On attrape une exception…</div><ul>
+      <li><span>A</span>là où l'on sait en faire quelque chose d'utile</li><li><span>B</span>nulle part</li><li><span>C</span>dans Main, toujours</li><li><span>D</span>là où elle apparaît</li></ul></div>
+
+    <div class="q"><div class="enonce">Sont des erreurs attendues : <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>une NullReferenceException dans ton code</li><li><span>B</span>un fichier .mgp abîmé</li><li><span>C</span>un index hors limites dans ta boucle</li><li><span>D</span>un serveur de calcul injoignable</li></ul></div>
+
+    <div class="q"><div class="enonce">Le <code>code</code> d'une HttpError sert à…</div><ul>
+      <li><span>A</span>chiffrer le message</li><li><span>B</span>donner une étiquette stable à un programme</li><li><span>C</span>rien</li><li><span>D</span>remplacer le statut HTTP</li></ul></div>
+
+    <div class="q"><div class="enonce"><code>catch (Exception ex) when (ex is IOException)</code>, face à une NullReferenceException…</div><ul>
+      <li><span>A</span>arrête Rhino</li><li><span>B</span>l'attrape</li><li><span>C</span>la laisse remonter, pile intacte</li><li><span>D</span>la transforme en IOException</li></ul></div>
+
+    <div class="q"><div class="enonce">Pour relancer une exception sans perdre sa pile :</div><ul>
+      <li><span>A</span>throw new Exception();</li><li><span>B</span>throw;</li><li><span>C</span>throw ex;</li><li><span>D</span>return ex;</li></ul></div>
+
+    <div class="q"><div class="enonce">Garder la cause en traduisant :</div><ul>
+      <li><span>A</span>throw new InvalidDataException("…", ex)</li><li><span>B</span>Console.WriteLine(ex)</li><li><span>C</span>throw new InvalidDataException("…")</li><li><span>D</span>catch { }</li></ul></div>
+
+    <div class="q"><div class="enonce"><code>finally</code> s'exécute…</div><ul>
+      <li><span>A</span>avant le try</li><li><span>B</span>seulement après un succès</li><li><span>C</span>seulement après une exception</li><li><span>D</span>après succès, exception ou return</li></ul></div>
+
+    <div class="q"><div class="enonce">Lire un entier tapé par l'utilisateur, l'échec étant courant :</div><ul>
+      <li><span>A</span>Convert.ToInt32 sans test</li><li><span>B</span>(int)texte</li><li><span>C</span>int.TryParse</li><li><span>D</span>int.Parse dans un try</li></ul></div>
+
+    <div class="q"><div class="enonce"><code>Number("12abc")</code> vaut (mesuré)…</div><ul>
+      <li><span>A</span>une exception</li><li><span>B</span>12</li><li><span>C</span>NaN</li><li><span>D</span>0</li></ul></div>
+
+    <div class="q"><div class="enonce">Importer rend null quand…</div><ul>
+      <li><span>A</span>l'utilisateur refuse de remplacer le parcours</li><li><span>B</span>le zip est abîmé</li><li><span>C</span>un exercice manque</li><li><span>D</span>le fichier n'existe plus</li></ul></div>
+
+    <div class="q"><div class="enonce">Un parcours importé avec des exercices manquants donne…</div><ul>
+      <li><span>A</span>un Remark</li><li><span>B</span>null</li><li><span>C</span>une exception</li><li><span>D</span>un Warning qui les nomme</li></ul></div>
+
+    <div class="q"><div class="enonce">Le risque de compute-proxy.mjs:728 pour une erreur imprévue :</div><ul>
+      <li><span>A</span>arrêter le serveur</li><li><span>B</span>envoyer un message technique au navigateur</li><li><span>C</span>perdre le statut 500</li><li><span>D</span>aucun</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 76 · La gestion des erreurs</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 76</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · A.</b> Pas forcément là où elle naît.</div>
+    <div><b>02 · B et D.</b> Les deux autres sont des bugs.</div>
+    <div><b>03 · B.</b> Le message peut changer, pas lui.</div>
+    <div><b>04 · C.</b> Le filtre est faux : elle passe.</div>
+    <div><b>05 · B.</b> throw ex repart de la ligne courante.</div>
+    <div><b>06 · A.</b> Lisible dans InnerException.</div>
+    <div><b>07 · D.</b> ImportParcours.cs:76.</div>
+    <div><b>08 · C.</b> Un booléen, sans exception.</div>
+    <div><b>09 · C.</b> Tout le texte doit être un nombre.</div>
+    <div><b>10 · A.</b> ImportParcours.cs:70.</div>
+    <div><b>11 · D.</b> MagpieParcoursLauncher.cs:221–224.</div>
+    <div><b>12 · B.</b> err.message part tel quel.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 77, « La configuration ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">class HttpError extends Error</td><td>une famille d'erreurs prévues</td><td>compute-proxy.mjs:84</td></tr>
+      <tr><td class="c">catch (JsonException) { throw … }</td><td>traduire dans son vocabulaire</td><td>ImportParcours.cs:111</td></tr>
+      <tr><td class="c">catch (Exception ex) when (…)</td><td>n'attraper que l'attendu</td><td>MagpieParcoursLauncher.cs:214</td></tr>
+      <tr><td class="c">finally { … }</td><td>nettoyer dans tous les cas</td><td>ImportParcours.cs:76</td></tr>
+      <tr><td class="c">throw;</td><td>relancer sans perdre la pile</td><td>page 3</td></tr>
+      <tr><td class="c">int.TryParse(texte, out n)</td><td>l'échec rendu en booléen</td><td>exemple autonome, page 4</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Exception</dt><dd>Un objet qui interrompt le cours normal et remonte la pile jusqu'à un catch.</dd>
+    <dt>Erreur attendue</dt><dd>Un échec prévu par le métier, qu'on décrit et dont on se remet.</dd>
+    <dt>Filtre d'exception</dt><dd>La clause when qui décide si un catch s'applique.</dd>
+    <dt>Traduction</dt><dd>Remplacer une exception technique par une exception du domaine, cause gardée.</dd>
+    <dt>finally</dt><dd>Le bloc qui s'exécute à la sortie du try, quelle qu'en soit la manière.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 77</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 76 · La gestion des erreurs</div>
+</section>
+
+</body>
+</html>

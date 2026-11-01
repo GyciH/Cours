@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>85 · Les maillages</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-7">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 85</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Les maillages</h1>
+  <p class="chapeau">Rhino pense en surfaces NURBS, exactes et lisses. Une carte graphique, elle, ne dessine que des <b>triangles</b>. Entre les deux, il y a le <b>maillage</b> : une liste de points, les sommets, et une liste de faces qui les relient. Tout ce que tu vois dans une vue 3D, chez Rhino comme dans l'aperçu de Magpie, est d'abord devenu un maillage.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>09</b> et <b>32</b></span>
+    <span class="pastille">Exemples · <b>apercu.mjs</b>, <b>Viewer3D.jsx</b> (Magpie web)</span>
+  </div>
+
+  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+    <svg viewBox="0 0 600 206" width="100%">
+<polygon points="60,150 200,150 200,30" fill="#E6F0FA" stroke="#1D6FB8" stroke-width="1.5"/>
+<polygon points="200,30 60,30 60,150" fill="#F0EDE6" stroke="#1D6FB8" stroke-width="1.5"/>
+<text x="160" y="120" font-size="10" fill="#1D6FB8" text-anchor="middle" font-weight="700">T0</text>
+<text x="100" y="66" font-size="10" fill="#6B7378" text-anchor="middle" font-weight="700">T1</text>
+<circle cx="60" cy="150" r="9" fill="#1D6FB8"/>
+<text x="60" y="153.5" font-size="9" fill="#fff" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">0</text>
+<circle cx="200" cy="150" r="9" fill="#1D6FB8"/>
+<text x="200" y="153.5" font-size="9" fill="#fff" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">1</text>
+<circle cx="200" cy="30" r="9" fill="#1D6FB8"/>
+<text x="200" y="33.5" font-size="9" fill="#fff" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">2</text>
+<circle cx="60" cy="30" r="9" fill="#1D6FB8"/>
+<text x="60" y="33.5" font-size="9" fill="#fff" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">3</text>
+<text x="130" y="184" font-size="7.8" fill="#6B7378" text-anchor="middle" font-style="italic">un quad = deux triangles qui partagent la diagonale 0–2</text>
+<text x="250" y="46" font-size="8.4" fill="#1D6FB8" text-anchor="start" font-weight="700">positions (Float32Array, 3 nombres par sommet)</text>
+<rect x="250" y="54" width="78" height="24" rx="4" fill="#E6F0FA" stroke="#1D6FB8" stroke-width="1.2"/>
+<text x="289.0" y="69.0" font-size="9" fill="#1D6FB8" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">0, 0, 0</text>
+<text x="289" y="92" font-size="7.6" fill="#6B7378" text-anchor="middle">sommet 0</text>
+<rect x="334" y="54" width="78" height="24" rx="4" fill="#E6F0FA" stroke="#1D6FB8" stroke-width="1.2"/>
+<text x="373.0" y="69.0" font-size="9" fill="#1D6FB8" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">1, 0, 0</text>
+<text x="373" y="92" font-size="7.6" fill="#6B7378" text-anchor="middle">sommet 1</text>
+<rect x="418" y="54" width="78" height="24" rx="4" fill="#E6F0FA" stroke="#1D6FB8" stroke-width="1.2"/>
+<text x="457.0" y="69.0" font-size="9" fill="#1D6FB8" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">1, 1, 0</text>
+<text x="457" y="92" font-size="7.6" fill="#6B7378" text-anchor="middle">sommet 2</text>
+<rect x="502" y="54" width="78" height="24" rx="4" fill="#E6F0FA" stroke="#1D6FB8" stroke-width="1.2"/>
+<text x="541.0" y="69.0" font-size="9" fill="#1D6FB8" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">0, 1, 0</text>
+<text x="541" y="92" font-size="7.6" fill="#6B7378" text-anchor="middle">sommet 3</text>
+<text x="250" y="122" font-size="8.4" fill="#1D6FB8" text-anchor="start" font-weight="700">indices (Uint32Array, 3 par triangle)</text>
+<rect x="250" y="130" width="110" height="24" rx="4" fill="#fff" stroke="#1D6FB8" stroke-width="1.2"/>
+<text x="305.0" y="145.0" font-size="9" fill="#1D6FB8" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">0, 1, 2</text>
+<text x="305" y="168" font-size="7.6" fill="#6B7378" text-anchor="middle" font-weight="700">T0</text>
+<rect x="370" y="130" width="110" height="24" rx="4" fill="#fff" stroke="#1D6FB8" stroke-width="1.2"/>
+<text x="425.0" y="145.0" font-size="9" fill="#1D6FB8" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">2, 3, 0</text>
+<text x="425" y="168" font-size="7.6" fill="#6B7378" text-anchor="middle" font-weight="700">T1</text>
+<text x="250" y="190" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Indices mesurés : rhino3dm 8.35, toThreejsJSON d'un quad (0, 1, 2, 3).</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Un maillage, ce sont deux tableaux : les coordonnées des sommets, et pour chaque triangle les numéros de ses trois sommets.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Un jeu de « relier les points ». La page donne les points numérotés ; la consigne dit seulement « relie 0, 1 et 2, puis 2, 3 et 0 ». Les points servent à plusieurs traits, mais ne sont imprimés qu'une fois.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>lire un maillage indexé ;</li>
+        <li>dire pourquoi un cube a 8 ou 36 sommets ;</li>
+        <li>repérer le piège du quad non plan ;</li>
+        <li>estimer le poids d'un maillage.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À retenir</span>
+    Un maillage n'est qu'une approximation de la surface. Plus il a de triangles, plus il est fidèle, et plus il est lourd à envoyer et à dessiner. Toute vue 3D fixe un compromis entre ces deux exigences.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 85 · Les maillages</div>
+</section>
+
+<!-- ============ PAGE 2 · SOMMETS ET INDICES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 85</b></div>
+  <p class="rubrique">Schéma 1 · Sommets et indices</p>
+  <h2>Partager les sommets</h2>
+  <p style="max-width:165mm">Un coin de cube appartient à trois faces. On peut l'écrire une fois et le citer trois fois par son numéro : c'est un maillage <b>indexé</b>. On peut aussi recopier les coordonnées dans chaque triangle : c'est plus simple à lire pour la carte, mais deux à quatre fois plus gros.</p>
+
+  <svg viewBox="0 0 600 222" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="222" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#1D6FB8" text-anchor="start" font-weight="700">Un cube : 6 faces carrées, 12 triangles (mesuré avec rhino3dm et Three.js)</text>
+<text x="145" y="46" font-size="8.6" fill="#2E7D32" text-anchor="middle" font-weight="700">indexé : sommets partagés</text>
+<line x1="100" y1="170" x2="170" y2="170" stroke="#2E7D32" stroke-width="1.3"/>
+<line x1="130" y1="140" x2="200" y2="140" stroke="#2E7D32" stroke-width="1" stroke-dasharray="3 2"/>
+<line x1="100" y1="170" x2="130" y2="140" stroke="#2E7D32" stroke-width="1"/>
+<line x1="170" y1="170" x2="170" y2="100" stroke="#2E7D32" stroke-width="1.3"/>
+<line x1="200" y1="140" x2="200" y2="70" stroke="#2E7D32" stroke-width="1" stroke-dasharray="3 2"/>
+<line x1="170" y1="170" x2="200" y2="140" stroke="#2E7D32" stroke-width="1"/>
+<line x1="170" y1="100" x2="100" y2="100" stroke="#2E7D32" stroke-width="1.3"/>
+<line x1="200" y1="70" x2="130" y2="70" stroke="#2E7D32" stroke-width="1" stroke-dasharray="3 2"/>
+<line x1="170" y1="100" x2="200" y2="70" stroke="#2E7D32" stroke-width="1"/>
+<line x1="100" y1="100" x2="100" y2="170" stroke="#2E7D32" stroke-width="1.3"/>
+<line x1="130" y1="70" x2="130" y2="140" stroke="#2E7D32" stroke-width="1" stroke-dasharray="3 2"/>
+<line x1="100" y1="100" x2="130" y2="70" stroke="#2E7D32" stroke-width="1"/>
+<circle cx="100" cy="170" r="4" fill="#2E7D32"/>
+<circle cx="170" cy="170" r="4" fill="#2E7D32"/>
+<circle cx="170" cy="100" r="4" fill="#2E7D32"/>
+<circle cx="100" cy="100" r="4" fill="#2E7D32"/>
+<circle cx="130" cy="140" r="4" fill="#2E7D32"/>
+<circle cx="200" cy="140" r="4" fill="#2E7D32"/>
+<circle cx="200" cy="70" r="4" fill="#2E7D32"/>
+<circle cx="130" cy="70" r="4" fill="#2E7D32"/>
+<text x="145" y="194" font-size="10" fill="#2E7D32" text-anchor="middle" font-weight="700">8 sommets</text>
+<text x="145" y="210" font-size="7.8" fill="#6B7378" text-anchor="middle" font-style="italic">chaque coin sert à 3 faces</text>
+<text x="435" y="46" font-size="8.6" fill="#E65100" text-anchor="middle" font-weight="700">non indexé : 3 sommets par triangle</text>
+<line x1="390" y1="170" x2="460" y2="170" stroke="#E65100" stroke-width="1.3"/>
+<line x1="420" y1="140" x2="490" y2="140" stroke="#E65100" stroke-width="1" stroke-dasharray="3 2"/>
+<line x1="390" y1="170" x2="420" y2="140" stroke="#E65100" stroke-width="1"/>
+<line x1="460" y1="170" x2="460" y2="100" stroke="#E65100" stroke-width="1.3"/>
+<line x1="490" y1="140" x2="490" y2="70" stroke="#E65100" stroke-width="1" stroke-dasharray="3 2"/>
+<line x1="460" y1="170" x2="490" y2="140" stroke="#E65100" stroke-width="1"/>
+<line x1="460" y1="100" x2="390" y2="100" stroke="#E65100" stroke-width="1.3"/>
+<line x1="490" y1="70" x2="420" y2="70" stroke="#E65100" stroke-width="1" stroke-dasharray="3 2"/>
+<line x1="460" y1="100" x2="490" y2="70" stroke="#E65100" stroke-width="1"/>
+<line x1="390" y1="100" x2="390" y2="170" stroke="#E65100" stroke-width="1.3"/>
+<line x1="420" y1="70" x2="420" y2="140" stroke="#E65100" stroke-width="1" stroke-dasharray="3 2"/>
+<line x1="390" y1="100" x2="420" y2="70" stroke="#E65100" stroke-width="1"/>
+<circle cx="386" cy="170" r="2.6" fill="#E65100"/>
+<circle cx="394" cy="170" r="2.6" fill="#E65100"/>
+<circle cx="390" cy="166" r="2.6" fill="#E65100"/>
+<circle cx="456" cy="170" r="2.6" fill="#E65100"/>
+<circle cx="464" cy="170" r="2.6" fill="#E65100"/>
+<circle cx="460" cy="166" r="2.6" fill="#E65100"/>
+<circle cx="456" cy="100" r="2.6" fill="#E65100"/>
+<circle cx="464" cy="100" r="2.6" fill="#E65100"/>
+<circle cx="460" cy="96" r="2.6" fill="#E65100"/>
+<circle cx="386" cy="100" r="2.6" fill="#E65100"/>
+<circle cx="394" cy="100" r="2.6" fill="#E65100"/>
+<circle cx="390" cy="96" r="2.6" fill="#E65100"/>
+<circle cx="416" cy="140" r="2.6" fill="#E65100"/>
+<circle cx="424" cy="140" r="2.6" fill="#E65100"/>
+<circle cx="420" cy="136" r="2.6" fill="#E65100"/>
+<circle cx="486" cy="140" r="2.6" fill="#E65100"/>
+<circle cx="494" cy="140" r="2.6" fill="#E65100"/>
+<circle cx="490" cy="136" r="2.6" fill="#E65100"/>
+<circle cx="486" cy="70" r="2.6" fill="#E65100"/>
+<circle cx="494" cy="70" r="2.6" fill="#E65100"/>
+<circle cx="490" cy="66" r="2.6" fill="#E65100"/>
+<circle cx="416" cy="70" r="2.6" fill="#E65100"/>
+<circle cx="424" cy="70" r="2.6" fill="#E65100"/>
+<circle cx="420" cy="66" r="2.6" fill="#E65100"/>
+<text x="435" y="194" font-size="10" fill="#E65100" text-anchor="middle" font-weight="700">36 sommets</text>
+<text x="435" y="210" font-size="7.8" fill="#6B7378" text-anchor="middle" font-style="italic">chaque coin répété 3 à 6 fois (4,5 en moyenne)</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/src/Viewer3D.jsx · lignes 38 à 41 (lignes coupées)</span>const geometry = new THREE.BufferGeometry();
+geometry.setAttribute("position", new THREE.BufferAttribute(
+  decode(Float32Array, m.positions), 3));
+geometry.setIndex(new THREE.BufferAttribute(
+  decode(Uint32Array, m.indices), 1));
+geometry.computeVertexNormals();</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Des tableaux typés</h3>
+      <p>Les positions sont des <code>Float32Array</code> (4 octets par nombre), les indices des <code>Uint32Array</code>. Un index sur 16 bits s'arrête à 65 535 sommets ; Magpie prend 32 bits, ce qui suffit à n'importe quel aperçu.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>L'ordre des trois sommets</h3>
+      <p>Tourner 0, 1, 2 dans le sens inverse des aiguilles d'une montre désigne la face « avant » pour Three.js. Magpie peint les deux côtés (<code>side: THREE.DoubleSide</code>, Viewer3D.jsx:28) : une face retournée reste visible.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Croire qu'on peut toujours partager les sommets. Un coin de cube a trois normales, une par face. Pour qu'il paraisse vif, il faut trois sommets distincts au même endroit ; partagé, il paraît arrondi. C'est l'objet du cours 86.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 85 · Les maillages</div>
+</section>
+
+<!-- ============ PAGE 3 · DU QUAD AU TRIANGLE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 85</b></div>
+  <p class="rubrique">Schéma 2 · De la surface au triangle</p>
+  <h2>Tout finit en triangles</h2>
+  <p style="max-width:165mm">Rhino accepte des faces à quatre côtés, les <b>quads</b>. La carte graphique, non : chaque quad est coupé en deux triangles le long d'une diagonale. Et une surface NURBS doit d'abord être maillée, avec une densité qui dépend de sa courbure et de la tolérance demandée.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#1D6FB8" text-anchor="start" font-weight="700">Un quad non plan (un coin relevé) : chaque diagonale donne une autre surface</text>
+<polygon points="60,150 250,40 210,150" fill="#E6F0FA" stroke="#2E7D32" stroke-width="1.3"/>
+<polygon points="60,150 250,40 100,60" fill="#F0EDE6" stroke="#2E7D32" stroke-width="1.3"/>
+<line x1="60" y1="150" x2="250" y2="40" stroke="#2E7D32" stroke-width="2.4"/>
+<circle cx="60" cy="150" r="9" fill="#2E7D32"/>
+<text x="60" y="153.5" font-size="9" fill="#fff" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">0</text>
+<circle cx="210" cy="150" r="9" fill="#2E7D32"/>
+<text x="210" y="153.5" font-size="9" fill="#fff" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">1</text>
+<circle cx="250" cy="40" r="9" fill="#2E7D32"/>
+<text x="250" y="43.5" font-size="9" fill="#fff" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">2</text>
+<circle cx="100" cy="60" r="9" fill="#2E7D32"/>
+<text x="100" y="63.5" font-size="9" fill="#fff" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">3</text>
+<text x="155" y="182" font-size="8.4" fill="#2E7D32" text-anchor="middle" font-weight="700">diagonale 0–2 : le pli suit 0–2</text>
+<polygon points="490,150 380,60 340,150" fill="#E6F0FA" stroke="#E65100" stroke-width="1.3"/>
+<polygon points="490,150 380,60 530,40" fill="#F0EDE6" stroke="#E65100" stroke-width="1.3"/>
+<line x1="490" y1="150" x2="380" y2="60" stroke="#E65100" stroke-width="2.4"/>
+<circle cx="340" cy="150" r="9" fill="#E65100"/>
+<text x="340" y="153.5" font-size="9" fill="#fff" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">0</text>
+<circle cx="490" cy="150" r="9" fill="#E65100"/>
+<text x="490" y="153.5" font-size="9" fill="#fff" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">1</text>
+<circle cx="530" cy="40" r="9" fill="#E65100"/>
+<text x="530" y="43.5" font-size="9" fill="#fff" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">2</text>
+<circle cx="380" cy="60" r="9" fill="#E65100"/>
+<text x="380" y="63.5" font-size="9" fill="#fff" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">3</text>
+<text x="435" y="182" font-size="8.4" fill="#E65100" text-anchor="middle" font-weight="700">diagonale 1–3 : le pli suit 1–3</text>
+<text x="16" y="204" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Le coin 2 est plus haut que le plan des trois autres. Schéma qualitatif : la forme exacte dépend des quatre hauteurs.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/apercu.mjs · lignes 187 à 198 (extrait)</span>function readMesh(rhino, d) {
+  const mesh = rhino.CommonObject.decode(d);
+  if (!(mesh instanceof rhino.Mesh)) { … return null; }
+  try {
+    const { data } = mesh.toThreejsJSON();
+    return { positions: data.attributes.position.array,
+             indices: data.index?.array ?? [] };
+  } finally { mesh.delete(); }
+}</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Qui maille ?</h3>
+      <p>Ni le navigateur ni le serveur web : c'est Rhino Compute. Chaque sortie prévisualisée est câblée sur un paramètre Mesh caché, que Grasshopper remplit en convertissant Brep, Box ou Extrusion (apercu.mjs:5–8). Le serveur ne fait que relire ce maillage.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Libérer la mémoire</h3>
+      <p>rhino3dm vit dans WebAssembly : ses objets ne sont pas ramassés par le ramasse-miettes de JavaScript. D'où le <code>mesh.delete()</code> dans le <code>finally</code>, appelé même si la conversion échoue (cours 58).</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Le quad non plan. Si les quatre sommets ne sont pas dans un même plan, les deux diagonales donnent deux surfaces différentes, et deux logiciels peuvent choisir l'une ou l'autre. Une face qui « change de pli » à l'export vient souvent de là.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 85 · Les maillages</div>
+</section>
+
+<!-- ============ PAGE 4 · LE POIDS ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 85</b></div>
+  <p class="rubrique">Schéma 3 · Le poids d'un maillage</p>
+  <h2>Compter avant d'envoyer</h2>
+  <p style="max-width:165mm">Sur une grille régulière, il y a à peu près deux fois plus de triangles que de sommets. Un triangle indexé coûte donc environ 18 octets : la moitié d'un sommet (6 octets) et trois indices (12 octets). Le même triangle non indexé en coûte 36.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#1D6FB8" text-anchor="start" font-weight="700">Une grille de n × n quads, triangulée par rhino3dm, puis comptée (mesuré)</text>
+<text x="40" y="44" font-size="8" fill="#6B7378" text-anchor="middle" font-weight="700">n</text>
+<text x="110" y="44" font-size="8" fill="#6B7378" text-anchor="middle" font-weight="700">sommets</text>
+<text x="200" y="44" font-size="8" fill="#6B7378" text-anchor="middle" font-weight="700">triangles</text>
+<text x="300" y="44" font-size="8" fill="#6B7378" text-anchor="middle" font-weight="700">indexé</text>
+<text x="400" y="44" font-size="8" fill="#6B7378" text-anchor="middle" font-weight="700">non indexé</text>
+<text x="510" y="44" font-size="8" fill="#6B7378" text-anchor="middle" font-weight="700">indexé, base64</text>
+<rect x="16" y="52" width="568" height="24" rx="3" fill="#fff"/>
+<text x="40" y="68" font-size="9" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:9px">10</text>
+<text x="110" y="68" font-size="9" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:9px">121</text>
+<text x="200" y="68" font-size="9" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:9px">200</text>
+<text x="300" y="68" font-size="9" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:9px">3,8 ko</text>
+<text x="400" y="68" font-size="9" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:9px">7,2 ko</text>
+<text x="510" y="68" font-size="9" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:9px">5,1 ko</text>
+<rect x="16" y="80" width="568" height="24" rx="3" fill="#fff"/>
+<text x="40" y="96" font-size="9" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:9px">100</text>
+<text x="110" y="96" font-size="9" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:9px">10 201</text>
+<text x="200" y="96" font-size="9" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:9px">20 000</text>
+<text x="300" y="96" font-size="9" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:9px">362 ko</text>
+<text x="400" y="96" font-size="9" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:9px">720 ko</text>
+<text x="510" y="96" font-size="9" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:9px">483 ko</text>
+<rect x="16" y="108" width="568" height="24" rx="3" fill="#E6F0FA"/>
+<text x="40" y="124" font-size="9" fill="#1D6FB8" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">316</text>
+<text x="110" y="124" font-size="9" fill="#1D6FB8" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">100 489</text>
+<text x="200" y="124" font-size="9" fill="#1D6FB8" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">199 712</text>
+<text x="300" y="124" font-size="9" fill="#1D6FB8" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">3,60 Mo</text>
+<text x="400" y="124" font-size="9" fill="#1D6FB8" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">7,19 Mo</text>
+<text x="510" y="124" font-size="9" fill="#1D6FB8" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">4,80 Mo</text>
+<text x="16" y="160" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">Indexé : 12 octets par sommet + 12 par triangle, soit environ 18 octets par triangle ; non indexé : 36.</text>
+<text x="16" y="178" font-size="7.8" fill="#2B2F33" text-anchor="start">La dernière ligne frôle le plafond de 200 000 triangles de Magpie (apercu.mjs:22) ; ses octets bruts restent sous les 5 Mo.</text>
+<text x="16" y="196" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Ici 1 Mo = 1 000 000 octets ; MAX_BYTES vaut 5 × 1024 × 1024 = 5 242 880 octets. Base64 : 4 caractères pour 3 octets.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/apercu.mjs · lignes 21 à 23 et 250 (ligne coupée)</span>// Plafonds d'une réponse : au-delà, l'aperçu est tronqué (et le dit).
+export const MAX_TRIANGLES = 200_000;
+export const MAX_BYTES = 5 * 1024 * 1024;
+if (mesh &amp;&amp; fits(mesh.indices.length / 3,
+    mesh.positions.length * 4 + mesh.indices.length * 4)) {</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Tronquer, et le dire</h3>
+      <p>Au-delà des plafonds, le serveur cesse d'ajouter des maillages et marque la réponse <code>truncated</code>. La vue affiche alors « Aperçu tronqué : trop de géométrie » (Viewer3D.jsx:220) : l'élève sait que l'image est incomplète.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Le voyage en base64</h3>
+      <p>Les tableaux voyagent dans du JSON, encodés en base64 : 4 caractères pour 3 octets, soit un tiers de plus. Le navigateur les décode (Viewer3D.jsx:19–24) et les remet dans des tableaux typés, sans conversion de nombres.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Envoyer des nombres en texte décimal (« 0.123456789 »). Un Float32 tient en 4 octets ; écrit en JSON, il en prend souvent 10 ou plus, et il faut le relire caractère par caractère. Les tableaux binaires en base64 sont plus petits et plus rapides à décoder.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 85 · Les maillages</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 85</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>De Compute à l'écran, en quatre étapes</h2>
+  <p style="max-width:165mm">Magpie web fait voyager la géométrie de l'élève de Rhino Compute jusqu'à Three.js. Chaque étape a son rôle : mailler, convertir, compter, décoder. Cuttlefish, de son côté, construit ses maillages directement en RhinoCommon (Meshing.cs).</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">magpie/web/apercu.mjs</span></div>
+<div class="l k1"><span class="n">194</span><span class="kw">const</span> { data } = mesh.toThreejsJSON();<span class="rep r1">1</span></div>
+<div class="l k2"><span class="n">212</span><span class="kw">if</span> (triangles + tris &gt; maxTriangles || bytes + …)<span class="rep r2">2</span></div>
+<div class="l k3"><span class="n">251</span>meshes.push({ positions: b64(Float32Array, …), …<span class="rep r3">3</span></div>
+<div class="l"><span class="cm">magpie/web/src/Viewer3D.jsx</span></div>
+<div class="l k4"><span class="n">23</span><span class="kw">return new</span> Typed(bytes.buffer);<span class="rep r4">4</span></div>
+<div class="l k5"><span class="n">40</span>geometry.setIndex(<span class="kw">new</span> THREE.BufferAttribute(…, 1));<span class="rep r5">5</span></div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Convertir</b>Quads coupés en triangles.</li>
+      <li><span class="rep r2">2</span><b>Compter</b>Triangles et octets.</li>
+      <li><span class="rep r3">3</span><b>Encoder</b>Binaire, puis base64.</li>
+      <li><span class="rep r4">4</span><b>Décoder</b>Sans conversion.</li>
+      <li><span class="rep r5">5</span><b>Indexer</b>Sommets partagés.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À surveiller · un plafond compté avant l'encodage</span>
+    Le commentaire de la ligne 21 parle des « plafonds d'une réponse », mais <code>fits</code> additionne les octets bruts (ligne 250), avant le passage en base64. Une réponse au plafond de 5 242 880 octets bruts pèse donc environ 7 Mo de texte, plus l'enveloppe JSON. Ce n'est pas un défaut si le plafond vise la mémoire du navigateur ; s'il vise le réseau, il faudrait compter les octets encodés (× 4/3).
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 85 · Les maillages</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 85</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Une carte graphique dessine directement…</div><ul>
+      <li><span>A</span>des Breps</li><li><span>B</span>des triangles</li><li><span>C</span>des quads</li><li><span>D</span>des surfaces NURBS</li></ul></div>
+
+    <div class="q"><div class="enonce">Dans un maillage indexé, un triangle est décrit par…</div><ul>
+      <li><span>A</span>une couleur</li><li><span>B</span>neuf coordonnées</li><li><span>C</span>trois numéros de sommets</li><li><span>D</span>une normale</li></ul></div>
+
+    <div class="q"><div class="enonce">Un cube non indexé compte (mesuré)…</div><ul>
+      <li><span>A</span>36 sommets</li><li><span>B</span>24 sommets</li><li><span>C</span>12 sommets</li><li><span>D</span>8 sommets</li></ul></div>
+
+    <div class="q"><div class="enonce">Le quad (0, 1, 2, 3) devient, avec rhino3dm (mesuré)…</div><ul>
+      <li><span>A</span>0, 1, 3 et 1, 2, 3</li><li><span>B</span>0, 1, 2 et 2, 3, 0</li><li><span>C</span>un seul triangle</li><li><span>D</span>quatre triangles</li></ul></div>
+
+    <div class="q"><div class="enonce">Un quad non plan… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>est refusé par la carte</li><li><span>B</span>peut changer de pli d'un logiciel à l'autre</li><li><span>C</span>reste toujours plat</li><li><span>D</span>donne deux surfaces selon la diagonale</li></ul></div>
+
+    <div class="q"><div class="enonce">Qui maille les surfaces de l'aperçu Magpie ?</div><ul>
+      <li><span>A</span>le navigateur</li><li><span>B</span>Rhino Compute</li><li><span>C</span>Three.js</li><li><span>D</span>la carte graphique</li></ul></div>
+
+    <div class="q"><div class="enonce">Pourquoi <code>mesh.delete()</code> dans un <code>finally</code> ?</div><ul>
+      <li><span>A</span>pour aller plus vite</li><li><span>B</span>pour effacer l'écran</li><li><span>C</span>Three.js l'exige</li><li><span>D</span>la mémoire WebAssembly n'est pas ramassée seule</li></ul></div>
+
+    <div class="q"><div class="enonce">Un triangle indexé sur une grande grille coûte environ…</div><ul>
+      <li><span>A</span>18 octets</li><li><span>B</span>4 octets</li><li><span>C</span>36 octets</li><li><span>D</span>100 octets</li></ul></div>
+
+    <div class="q"><div class="enonce">Le plafond de triangles de l'aperçu Magpie vaut…</div><ul>
+      <li><span>A</span>65 535</li><li><span>B</span>5 Mo</li><li><span>C</span>200 000</li><li><span>D</span>1 million</li></ul></div>
+
+    <div class="q"><div class="enonce">Un index sur 16 bits limite le maillage à…</div><ul>
+      <li><span>A</span>255 sommets</li><li><span>B</span>4 milliards</li><li><span>C</span>aucune limite</li><li><span>D</span>65 535 sommets</li></ul></div>
+
+    <div class="q"><div class="enonce">Le base64 grossit les données d'environ…</div><ul>
+      <li><span>A</span>le double</li><li><span>B</span>rien</li><li><span>C</span>un tiers</li><li><span>D</span>la moitié</li></ul></div>
+
+    <div class="q"><div class="enonce"><code>side: THREE.DoubleSide</code> sert à…</div><ul>
+      <li><span>A</span>lisser les normales</li><li><span>B</span>doubler les triangles</li><li><span>C</span>activer la transparence</li><li><span>D</span>voir une face retournée</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 85 · Les maillages</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 85</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · B.</b> Tout le reste est d'abord maillé.</div>
+    <div><b>02 · C.</b> Les coordonnées sont dans l'autre tableau.</div>
+    <div><b>03 · A.</b> 12 triangles × 3.</div>
+    <div><b>04 · B.</b> La diagonale 0–2.</div>
+    <div><b>05 · B et D.</b> Page 3.</div>
+    <div><b>06 · B.</b> Par un paramètre Mesh caché.</div>
+    <div><b>07 · D.</b> apercu.mjs:196–198.</div>
+    <div><b>08 · A.</b> 6 + 12 octets.</div>
+    <div><b>09 · C.</b> apercu.mjs:22.</div>
+    <div><b>10 · D.</b> 2¹⁶ − 1.</div>
+    <div><b>11 · C.</b> 4 caractères pour 3 octets.</div>
+    <div><b>12 · D.</b> Viewer3D.jsx:28.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 86, « Normales et éclairage ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">mesh.toThreejsJSON()</td><td>maillage Rhino → tableaux pour Three.js</td><td>apercu.mjs:194</td></tr>
+      <tr><td class="c">mesh.delete()</td><td>libérer un objet rhino3dm</td><td>apercu.mjs:197</td></tr>
+      <tr><td class="c">new BufferAttribute(arr, 3)</td><td>des sommets, trois nombres chacun</td><td>Viewer3D.jsx:39</td></tr>
+      <tr><td class="c">geometry.setIndex(…)</td><td>des triangles par numéros de sommets</td><td>Viewer3D.jsx:40</td></tr>
+      <tr><td class="c">MAX_TRIANGLES, MAX_BYTES</td><td>les plafonds de l'aperçu</td><td>apercu.mjs:22–23</td></tr>
+      <tr><td class="c">THREE.DoubleSide</td><td>peindre les deux côtés d'une face</td><td>Viewer3D.jsx:28</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Maillage</dt><dd>Une surface approchée par des faces planes reliant des sommets.</dd>
+    <dt>Sommet</dt><dd>Un point du maillage, avec ses coordonnées et parfois sa normale.</dd>
+    <dt>Maillage indexé</dt><dd>Des triangles décrits par les numéros de sommets partagés.</dd>
+    <dt>Quad</dt><dd>Une face à quatre sommets, coupée en deux triangles pour l'affichage.</dd>
+    <dt>Base64</dt><dd>Un codage de données binaires en texte, 4 caractères pour 3 octets.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 86</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 85 · Les maillages</div>
+</section>
+
+</body>
+</html>

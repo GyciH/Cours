@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>145 · Le hasard reproductible</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-5">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 5A</b> · Le hasard et les motifs</span><b>Cours 145</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Le hasard reproductible</h1>
+  <p class="chapeau">Un générateur de hasard, dans un ordinateur, n'a rien de hasardeux : c'est une suite calculée à partir d'un nombre de départ, la graine. C'est une chance. Avec la même graine, un dessin génératif se retrouve à l'identique demain, sur une autre machine. Encore faut-il choisir, transmettre et consommer cette graine avec soin.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>67</b>, <b>131</b></span>
+    <span class="pastille">Exemples · <b>Cuttlefish</b>, <b>SnapSet</b></span>
+  </div>
+
+  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+    <svg viewBox="0 0 600 204" width="100%">
+<rect x="10" y="20" width="110" height="30" rx="4" fill="#FCE4EC" stroke="#AD1457" stroke-width="1.2"/>
+<text x="65.0" y="37.8" font-size="8.4" fill="#AD1457" text-anchor="middle" font-weight="700">graine 42</text>
+<line x1="122" y1="35" x2="160" y2="35" stroke="#AD1457" stroke-width="1.2"/><polygon points="160,35 153.6,37.7 153.6,32.3" fill="#AD1457"/>
+<rect x="162" y="20" width="120" height="30" rx="4" fill="#fff" stroke="#AD1457" stroke-width="1.2"/>
+<text x="222.0" y="37.8" font-size="8.4" fill="#AD1457" text-anchor="middle" font-weight="700">état interne</text>
+<line x1="284" y1="35" x2="316" y2="35" stroke="#6B7378" stroke-width="0.9"/><polygon points="316,35 309.6,37.7 309.6,32.3" fill="#6B7378"/>
+<rect x="316" y="24" width="40" height="22" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="336.0" y="37.733333333333334" font-size="8.2" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.2px">66</text>
+<line x1="354" y1="35" x2="372" y2="35" stroke="#6B7378" stroke-width="0.9"/><polygon points="372,35 365.6,37.7 365.6,32.3" fill="#6B7378"/>
+<rect x="372" y="24" width="40" height="22" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="392.0" y="37.733333333333334" font-size="8.2" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.2px">14</text>
+<line x1="410" y1="35" x2="428" y2="35" stroke="#6B7378" stroke-width="0.9"/><polygon points="428,35 421.6,37.7 421.6,32.3" fill="#6B7378"/>
+<rect x="428" y="24" width="40" height="22" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="448.0" y="37.733333333333334" font-size="8.2" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.2px">12</text>
+<line x1="466" y1="35" x2="484" y2="35" stroke="#6B7378" stroke-width="0.9"/><polygon points="484,35 477.6,37.7 477.6,32.3" fill="#6B7378"/>
+<rect x="484" y="24" width="40" height="22" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="504.0" y="37.733333333333334" font-size="8.2" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.2px">52</text>
+<line x1="522" y1="35" x2="540" y2="35" stroke="#6B7378" stroke-width="0.9"/><polygon points="540,35 533.6,37.7 533.6,32.3" fill="#6B7378"/>
+<rect x="540" y="24" width="40" height="22" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="560.0" y="37.733333333333334" font-size="8.2" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.2px">16</text>
+<text x="316" y="62" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Next(100), cinq fois : la même suite pour deux Random(42) (mesuré)</text>
+<rect x="10" y="90" width="110" height="30" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="65.0" y="107.8" font-size="8.4" fill="#6B7378" text-anchor="middle" font-weight="700">sans graine</text>
+<line x1="122" y1="105" x2="160" y2="105" stroke="#6B7378" stroke-width="1.2"/><polygon points="160,105 153.6,107.7 153.6,102.3" fill="#6B7378"/>
+<rect x="162" y="90" width="120" height="30" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="222.0" y="107.8" font-size="8.4" fill="#6B7378" text-anchor="middle" font-weight="700">graine tirée</text>
+<text x="300" y="102" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">1 000 new Random() créés d'affilée : 1 000 premières valeurs</text>
+<text x="300" y="116" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">distinctes sous .NET 8 (mesuré).</text>
+<text x="10" y="150" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">Un générateur pseudo-aléatoire est une fonction : même état de départ, même suite, sur toute machine.</text>
+<text x="10" y="166" font-size="7.6" fill="#2B2F33" text-anchor="start">Avec graine, .NET 8 garde l'ancien algorithme (Net5CompatSeedImpl) ; sans graine, il prend xoshiro256** (XoshiroImpl).</text>
+<text x="10" y="184" font-size="7.2" fill="#6B7378" text-anchor="start" font-style="italic">Types internes lus par réflexion sur .NET 8 (mesuré).</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Une graine fixe rend le hasard rejouable ; tout ce qui modifie l'ordre des tirages, un fil de plus, un tirage sauté, change pourtant la suite.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Un jeu de cartes mélangé une fois pour toutes et photographié : on peut redistribuer la même main, à condition de tirer les cartes dans le même ordre.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>donner une graine et la garder stable ;</li>
+        <li>éviter les graines consécutives ;</li>
+        <li>tirer depuis plusieurs fils ;</li>
+        <li>attacher un tirage à son élément.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À retenir</span>
+    Dans un composant Grasshopper, une graine en entrée est un engagement : même entrée, même dessin. Sans graine, chaque recalcul redessine autre chose.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 145 · Le hasard reproductible</div>
+</section>
+
+<!-- ============ PAGE 2 · GRAINES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 5A</b> · Le hasard et les motifs</span><b>Cours 145</b></div>
+  <p class="rubrique">Schéma 1 · Choisir les graines</p>
+  <h2>Des graines voisines, des débuts voisins</h2>
+  <p style="max-width:165mm">Il est tentant de créer un générateur par élément avec la graine G + k. Avec l'algorithme hérité qu'utilise .NET pour les graines, les premiers tirages de ces générateurs sont liés entre eux.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#AD1457" text-anchor="start" font-weight="700">new Random(G + k) pour k = 0, 1, 2… : le premier tirage de chaque générateur (G = 20261015, mesuré)</text>
+<rect x="30" y="50.3" width="30" height="59.7" fill="#AD1457" opacity=".75"/>
+<text x="45" y="124" font-size="7" fill="#2B2F33" text-anchor="middle" font-weight="700">0,853</text>
+<text x="45" y="136" font-size="6.8" fill="#6B7378" text-anchor="middle">k=0</text>
+<rect x="84" y="83.7" width="30" height="26.3" fill="#AD1457" opacity=".75"/>
+<text x="99" y="124" font-size="7" fill="#2B2F33" text-anchor="middle" font-weight="700">0,376</text>
+<text x="99" y="136" font-size="6.8" fill="#6B7378" text-anchor="middle">k=1</text>
+<rect x="138" y="47.1" width="30" height="62.9" fill="#AD1457" opacity=".75"/>
+<text x="153" y="124" font-size="7" fill="#2B2F33" text-anchor="middle" font-weight="700">0,898</text>
+<text x="153" y="136" font-size="6.8" fill="#6B7378" text-anchor="middle">k=2</text>
+<rect x="192" y="80.5" width="30" height="29.5" fill="#AD1457" opacity=".75"/>
+<text x="207" y="124" font-size="7" fill="#2B2F33" text-anchor="middle" font-weight="700">0,421</text>
+<text x="207" y="136" font-size="6.8" fill="#6B7378" text-anchor="middle">k=3</text>
+<rect x="246" y="44.0" width="30" height="66.0" fill="#AD1457" opacity=".75"/>
+<text x="261" y="124" font-size="7" fill="#2B2F33" text-anchor="middle" font-weight="700">0,943</text>
+<text x="261" y="136" font-size="6.8" fill="#6B7378" text-anchor="middle">k=4</text>
+<rect x="300" y="77.4" width="30" height="32.6" fill="#AD1457" opacity=".75"/>
+<text x="315" y="124" font-size="7" fill="#2B2F33" text-anchor="middle" font-weight="700">0,466</text>
+<text x="315" y="136" font-size="6.8" fill="#6B7378" text-anchor="middle">k=5</text>
+<rect x="354" y="40.8" width="30" height="69.2" fill="#AD1457" opacity=".75"/>
+<text x="369" y="124" font-size="7" fill="#2B2F33" text-anchor="middle" font-weight="700">0,988</text>
+<text x="369" y="136" font-size="6.8" fill="#6B7378" text-anchor="middle">k=6</text>
+<rect x="408" y="74.3" width="30" height="35.7" fill="#AD1457" opacity=".75"/>
+<text x="423" y="124" font-size="7" fill="#2B2F33" text-anchor="middle" font-weight="700">0,510</text>
+<text x="423" y="136" font-size="6.8" fill="#6B7378" text-anchor="middle">k=7</text>
+<rect x="462" y="107.7" width="30" height="2.3" fill="#AD1457" opacity=".75"/>
+<text x="477" y="124" font-size="7" fill="#2B2F33" text-anchor="middle" font-weight="700">0,033</text>
+<text x="477" y="136" font-size="6.8" fill="#6B7378" text-anchor="middle">k=8</text>
+<rect x="516" y="71.2" width="30" height="38.9" fill="#AD1457" opacity=".75"/>
+<text x="531" y="124" font-size="7" fill="#2B2F33" text-anchor="middle" font-weight="700">0,555</text>
+<text x="531" y="136" font-size="6.8" fill="#6B7378" text-anchor="middle">k=9</text>
+<text x="16" y="158" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">D'une graine à la suivante, le premier NextDouble avance d'un pas fixe, 0,52243 modulo 1 : une progression,</text>
+<text x="16" y="174" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">pas du hasard. Random(k).Next(2) pour k = 0 à 39 : 1010101010101101010101010101010101001010.</text>
+<text x="16" y="196" font-size="7.2" fill="#6B7378" text-anchor="start" font-style="italic">Les cinq premiers tirages montrent le même pas constant. Les 243 suites de 5 tirages de Next(3) restent toutes atteintes en 1 500 graines.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, un générateur maître qui distribue les graines</span>var maitre = new Random(graine);
+var graines = Enumerable.Range(0, n).Select(_ =&gt; maitre.Next()).ToArray();   // puis new Random(graines[k])</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Pourquoi ce pas fixe</h3>
+      <p>L'algorithme hérité (Knuth, soustractif) dérive son état de la graine par une suite d'opérations simples : une graine plus grande d'un cran décale tout d'une quantité presque constante (déduit des mesures).</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Grave ou pas</h3>
+      <p>Pour un test qui essaie 1 500 graines, la couverture reste bonne : toutes les petites suites ont été atteintes. Pour colorier mille cellules, une couleur par graine k, le motif se verrait.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Tirer pile ou face avec new Random(k).Next(2) pour k = 0, 1, 2… On obtient 1, 0, 1, 0… presque sans faute : 40 graines ont donné une alternance quasi parfaite (mesuré).
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 145 · Le hasard reproductible</div>
+</section>
+
+<!-- ============ PAGE 3 · FILS ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 5A</b> · Le hasard et les motifs</span><b>Cours 145</b></div>
+  <p class="rubrique">Schéma 2 · Plusieurs fils</p>
+  <h2>Un Random partagé finit par ne rendre que des zéros</h2>
+  <p style="max-width:165mm">Random garde son état dans des champs ordinaires, sans verrou. Deux fils qui tirent en même temps peuvent l'écrire à moitié chacun ; il ne s'en remet pas.</p>
+
+  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#AD1457" text-anchor="start" font-weight="700">Un Random(1) appelé par 8 fils à la fois (8 millions de tirages), puis 1 000 tirages (trois séries, mesuré)</text>
+<rect x="16" y="34" width="270" height="26" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="151.0" y="49.6" font-size="7.8" fill="#C62828" text-anchor="middle" font-weight="700">new Random(1) partagé : 1 000 zéros sur 1 000</text>
+<rect x="300" y="34" width="280" height="26" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="440.0" y="49.6" font-size="7.8" fill="#2E7D32" text-anchor="middle" font-weight="700">Random.Shared : 0 zéro</text>
+<text x="16" y="82" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">un tirage Next(1000)</text>
+<text x="260" y="82" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">durée</text>
+<text x="420" y="82" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">usage</text>
+<rect x="10" y="90" width="580" height="18" fill="#fff" opacity=".55"/>
+<text x="16" y="103" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">Random avec graine</text>
+<text x="260" y="103" font-size="7.6" fill="#AD1457" text-anchor="start" font-weight="700">6,1 à 10,5 ns</text>
+<text x="420" y="103" font-size="7.6" fill="#2B2F33" text-anchor="start">reproductible, un seul fil</text>
+<text x="16" y="121" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">Random sans graine</text>
+<text x="260" y="121" font-size="7.6" fill="#AD1457" text-anchor="start" font-weight="700">6,5 à 15,9 ns</text>
+<text x="420" y="121" font-size="7.6" fill="#2B2F33" text-anchor="start">un seul fil</text>
+<rect x="10" y="126" width="580" height="18" fill="#fff" opacity=".55"/>
+<text x="16" y="139" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">Random.Shared</text>
+<text x="260" y="139" font-size="7.6" fill="#AD1457" text-anchor="start" font-weight="700">9,7 à 13,1 ns</text>
+<text x="420" y="139" font-size="7.6" fill="#2B2F33" text-anchor="start">tous les fils, pas de graine</text>
+<text x="16" y="157" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">RandomNumberGenerator.GetInt32</text>
+<text x="260" y="157" font-size="7.6" fill="#AD1457" text-anchor="start" font-weight="700">1 096 à 1 476 ns</text>
+<text x="420" y="157" font-size="7.6" fill="#2B2F33" text-anchor="start">secrets, jetons</text>
+<text x="16" y="180" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Random n'est pas fait pour plusieurs fils : son état se corrompt sans exception, et il ne rend plus que des zéros.</text>
+<text x="16" y="194" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Random.Shared est protégé, mais n'accepte pas de graine : il ne sert pas à reproduire.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, un générateur par tâche, graines tirées d'avance</span>var graines = Enumerable.Range(0, n).Select(_ =&gt; maitre.Next()).ToArray();
+Parallel.For(0, n, i =&gt; { var r = new Random(graines[i]); Traiter(i, r); });   // reproductible et sûr</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Pourquoi tirer d'avance</h3>
+      <p>L'ordre dans lequel les fils s'exécutent change d'une exécution à l'autre. Une graine par élément, fixée avant de paralléliser, rend chaque résultat indépendant de cet ordre.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Hasard ou secret</h3>
+      <p>Pour un mot de passe, un jeton, un sel : RandomNumberGenerator, cent fois plus lent mais imprévisible. Random est fait pour être rejoué, donc deviné (cours 63).</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Utiliser un Random de classe dans un Parallel.For. Après 8 millions de tirages concurrents, 1 000 tirages sur 1 000 valaient zéro, trois fois de suite, sans aucune exception (mesuré).
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 145 · Le hasard reproductible</div>
+</section>
+
+<!-- ============ PAGE 4 · CONSOMMER ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 5A</b> · Le hasard et les motifs</span><b>Cours 145</b></div>
+  <p class="rubrique">Schéma 3 · Consommer les tirages</p>
+  <h2>Un tirage par élément, toujours</h2>
+  <p style="max-width:165mm">Le hasard rejouable suppose que chaque élément reçoive toujours le même tirage. Il suffit qu'un tirage dépende d'une condition pour que tous les suivants glissent d'un cran.</p>
+
+  <svg viewBox="0 0 600 196" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="196" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#AD1457" text-anchor="start" font-weight="700">100 cellules, un angle chacune ; la cellule 10 devient invalide et est sautée (Random(7), mesuré)</text>
+<rect x="30" y="40" width="20" height="20" fill="#2E7D32" opacity="0.8"/>
+<rect x="30" y="90" width="20" height="20" fill="#2E7D32" opacity="0.8"/>
+<rect x="56" y="40" width="20" height="20" fill="#2E7D32" opacity="0.8"/>
+<rect x="56" y="90" width="20" height="20" fill="#2E7D32" opacity="0.8"/>
+<rect x="82" y="40" width="20" height="20" fill="#2E7D32" opacity="0.8"/>
+<rect x="82" y="90" width="20" height="20" fill="#2E7D32" opacity="0.8"/>
+<rect x="108" y="40" width="20" height="20" fill="#2E7D32" opacity="0.8"/>
+<rect x="108" y="90" width="20" height="20" fill="#2E7D32" opacity="0.8"/>
+<rect x="134" y="40" width="20" height="20" fill="#2E7D32" opacity="0.8"/>
+<rect x="134" y="90" width="20" height="20" fill="#2E7D32" opacity="0.8"/>
+<rect x="160" y="40" width="20" height="20" fill="#2E7D32" opacity="0.8"/>
+<rect x="160" y="90" width="20" height="20" fill="#2E7D32" opacity="0.8"/>
+<rect x="186" y="40" width="20" height="20" fill="#2E7D32" opacity="0.8"/>
+<rect x="186" y="90" width="20" height="20" fill="#2E7D32" opacity="0.8"/>
+<rect x="212" y="40" width="20" height="20" fill="#2E7D32" opacity="0.8"/>
+<rect x="212" y="90" width="20" height="20" fill="#2E7D32" opacity="0.8"/>
+<rect x="238" y="40" width="20" height="20" fill="#2E7D32" opacity="0.8"/>
+<rect x="238" y="90" width="20" height="20" fill="#2E7D32" opacity="0.8"/>
+<rect x="264" y="40" width="20" height="20" fill="#2E7D32" opacity="0.8"/>
+<rect x="264" y="90" width="20" height="20" fill="#2E7D32" opacity="0.8"/>
+<rect x="290" y="40" width="20" height="20" fill="#6B7378" opacity="0.4"/>
+<rect x="290" y="90" width="20" height="20" fill="#6B7378" opacity="0.4"/>
+<rect x="316" y="40" width="20" height="20" fill="#C62828" opacity="0.8"/>
+<rect x="316" y="90" width="20" height="20" fill="#2E7D32" opacity="0.8"/>
+<rect x="342" y="40" width="20" height="20" fill="#C62828" opacity="0.8"/>
+<rect x="342" y="90" width="20" height="20" fill="#2E7D32" opacity="0.8"/>
+<rect x="368" y="40" width="20" height="20" fill="#C62828" opacity="0.8"/>
+<rect x="368" y="90" width="20" height="20" fill="#2E7D32" opacity="0.8"/>
+<rect x="394" y="40" width="20" height="20" fill="#C62828" opacity="0.8"/>
+<rect x="394" y="90" width="20" height="20" fill="#2E7D32" opacity="0.8"/>
+<rect x="420" y="40" width="20" height="20" fill="#C62828" opacity="0.8"/>
+<rect x="420" y="90" width="20" height="20" fill="#2E7D32" opacity="0.8"/>
+<rect x="446" y="40" width="20" height="20" fill="#C62828" opacity="0.8"/>
+<rect x="446" y="90" width="20" height="20" fill="#2E7D32" opacity="0.8"/>
+<rect x="472" y="40" width="20" height="20" fill="#C62828" opacity="0.8"/>
+<rect x="472" y="90" width="20" height="20" fill="#2E7D32" opacity="0.8"/>
+<rect x="498" y="40" width="20" height="20" fill="#C62828" opacity="0.8"/>
+<rect x="498" y="90" width="20" height="20" fill="#2E7D32" opacity="0.8"/>
+<rect x="524" y="40" width="20" height="20" fill="#C62828" opacity="0.8"/>
+<rect x="524" y="90" width="20" height="20" fill="#2E7D32" opacity="0.8"/>
+<text x="560" y="54" font-size="10" fill="#C62828" text-anchor="start" font-weight="700">…</text>
+<text x="560" y="104" font-size="10" fill="#2E7D32" text-anchor="start" font-weight="700">…</text>
+<text x="30" y="76" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">tirer seulement pour les cellules valides : les 89 angles suivants changent</text>
+<text x="30" y="126" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">tirer pour chaque cellule, valide ou non : 0 angle change</text>
+<text x="16" y="156" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Un tirage sauté décale toute la suite. Tirer toujours, et jeter la valeur au besoin, garde chaque tirage</text>
+<text x="16" y="172" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">attaché à son élément : modifier une cellule ne bouleverse pas les autres.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, tirer d'abord, décider ensuite</span>foreach (var cellule in cellules) {
+    double angle = rand.NextDouble() * Math.PI;      // tiré même si la cellule est ignorée
+    if (!Valide(cellule)) continue; Hachurer(cellule, angle); }</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Encore plus robuste</h3>
+      <p>Dériver le tirage de l'identité de l'élément plutôt que de sa place : un hachage de (graine, numéro) ne dépend plus de l'ordre ni du nombre des tirages précédents.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Entre versions de .NET</h3>
+      <p>.NET garde l'ancien algorithme pour les graines, par compatibilité ; la documentation ne promet pourtant pas qu'il en sera toujours ainsi. Pour une suite garantie à vie, on écrit son propre générateur.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Ne tirer que pour les éléments utiles. Une seule cellule sautée a changé les 89 angles suivants sur 100 ; en tirant toujours, aucun (mesuré).
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 145 · Le hasard reproductible</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 5A</b> · Le hasard et les motifs</span><b>Cours 145</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Cuttlefish passe la graine, sauf Dune</h2>
+  <p style="max-width:165mm">Presque tous les composants aléatoires de Cuttlefish exposent une entrée Seed. Hatch tire même pour les cellules ignorées. Les tests de SnapSet rejouent 1 500 graines consécutives.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">cuttlefish/Wander.cs · Dune.cs · Hatch.cs</span></div>
+<div class="l k1"><span class="n">61</span>Random rand = new Random(seed);<span class="rep r1">1</span></div>
+<div class="l k2"><span class="n">55</span>Random rand = new Random();<span class="rep r2">2</span></div>
+<div class="l k3"><span class="n">70</span>// Un angle par cellule, tiré même si … ignorée<span class="rep r3">3</span></div>
+<div class="l k4"><span class="n">71</span>double angle = rand.NextDouble() * Math.PI;<span class="rep r4">4</span></div>
+<div class="l"><span class="cm">SnapSet/tests/ResolutionTests/AplatTests.cs</span></div>
+<div class="l k5"><span class="n">192</span>var r = new Random(Graine + k);<span class="rep r5">5</span></div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Graine</b>En entrée.</li>
+      <li><span class="rep r2">2</span><b>Sans graine</b>Dune.</li>
+      <li><span class="rep r3">3</span><b>Intention</b>Écrite.</li>
+      <li><span class="rep r4">4</span><b>Toujours tiré</b>Avant le test.</li>
+      <li><span class="rep r5">5</span><b>Consécutives</b>1 500 graines.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À surveiller · Dune redessine à chaque recalcul</span>
+    Dune.cs:55 crée son générateur sans graine, et le composant n'a pas d'entrée Seed. Grasshopper recalcule un composant dès qu'une entrée en amont change, ou à la réouverture du fichier : la dune change alors de forme, et un dessin réussi ne se retrouve pas. Wander.cs, son proche parent, a corrigé ce point (ligne 61). Une variante de Random sans graine se trouve aussi dans GridGenerator.cs:90, une classe que rien n'appelle. Pour AplatTests.cs:192, les graines consécutives laissent une bonne couverture (mesuré, page 2). Relevé sans rien modifier.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 145 · Le hasard reproductible</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 5A</b> · Le hasard et les motifs</span><b>Cours 145</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Deux new Random(42) rendent…</div><ul>
+      <li><span>A</span>la même suite</li><li><span>B</span>la même suite, décalée</li><li><span>C</span>une suite au hasard</li><li><span>D</span>des suites différentes</li></ul></div>
+
+    <div class="q"><div class="enonce">Sous .NET 8, new Random() sans graine utilise…</div><ul>
+      <li><span>A</span>xoshiro256**, avec une graine tirée</li><li><span>B</span>le matériel cryptographique à chaque tirage</li><li><span>C</span>toujours la graine 0</li><li><span>D</span>l'heure en millisecondes</li></ul></div>
+
+    <div class="q"><div class="enonce">Le premier NextDouble de Random(G + k), k croissant…</div><ul>
+      <li><span>A</span>croît toujours</li><li><span>B</span>avance d'un pas fixe modulo 1</li><li><span>C</span>reste constant</li><li><span>D</span>est indépendant d'un k à l'autre</li></ul></div>
+
+    <div class="q"><div class="enonce">Pour obtenir n graines indépendantes, on…</div><ul>
+      <li><span>A</span>prend l'heure</li><li><span>B</span>prend toujours G</li><li><span>C</span>prend G + k</li><li><span>D</span>les tire d'un générateur maître</li></ul></div>
+
+    <div class="q"><div class="enonce">Un Random partagé entre 8 fils… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>a fini par ne rendre que des zéros</li><li><span>B</span>reste reproductible</li><li><span>C</span>est protégé par un verrou</li><li><span>D</span>n'a levé aucune exception</li></ul></div>
+
+    <div class="q"><div class="enonce">Random.Shared…</div><ul>
+      <li><span>A</span>accepte une graine</li><li><span>B</span>est plus rapide que tout</li><li><span>C</span>est sûr entre fils mais n'accepte pas de graine</li><li><span>D</span>est cryptographique</li></ul></div>
+
+    <div class="q"><div class="enonce">Pour un jeton secret, on utilise…</div><ul>
+      <li><span>A</span>Random.Shared</li><li><span>B</span>RandomNumberGenerator</li><li><span>C</span>Guid.Empty</li><li><span>D</span>Random(42)</li></ul></div>
+
+    <div class="q"><div class="enonce">RandomNumberGenerator.GetInt32 a coûté environ…</div><ul>
+      <li><span>A</span>cent fois plus que Random</li><li><span>B</span>une seconde</li><li><span>C</span>dix fois moins</li><li><span>D</span>autant</li></ul></div>
+
+    <div class="q"><div class="enonce">Sauter le tirage d'une cellule sur 100 a changé…</div><ul>
+      <li><span>A</span>aucun angle</li><li><span>B</span>les 10 premiers</li><li><span>C</span>un seul angle</li><li><span>D</span>les 89 angles suivants</li></ul></div>
+
+    <div class="q"><div class="enonce">Pour qu'un tirage dépende de l'élément et non de sa place, on peut…</div><ul>
+      <li><span>A</span>trier les éléments</li><li><span>B</span>utiliser Random.Shared</li><li><span>C</span>hacher la graine et le numéro de l'élément</li><li><span>D</span>tirer deux fois</li></ul></div>
+
+    <div class="q"><div class="enonce">Dans Hatch.cs, l'angle est tiré…</div><ul>
+      <li><span>A</span>seulement pour les cellules valides</li><li><span>B</span>avant de savoir si la cellule est valide</li><li><span>C</span>sans graine</li><li><span>D</span>une fois pour toutes</li></ul></div>
+
+    <div class="q"><div class="enonce">Dune.cs crée son générateur…</div><ul>
+      <li><span>A</span>avec Random.Shared</li><li><span>B</span>avec une entrée Seed</li><li><span>C</span>avec la graine 0</li><li><span>D</span>sans graine, d'où un dessin qui change à chaque recalcul</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 145 · Le hasard reproductible</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 5A</b> · Le hasard et les motifs</span><b>Cours 145</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · A.</b> 66 14 12 52 16.</div>
+    <div><b>02 · A.</b> XoshiroImpl.</div>
+    <div><b>03 · B.</b> 0,52243.</div>
+    <div><b>04 · D.</b> Page 2.</div>
+    <div><b>05 · A et D.</b> Mesuré.</div>
+    <div><b>06 · C.</b> Page 3.</div>
+    <div><b>07 · B.</b> Imprévisible.</div>
+    <div><b>08 · A.</b> 1 096 à 1 476 ns.</div>
+    <div><b>09 · D.</b> Mesuré, page 4.</div>
+    <div><b>10 · C.</b> Page 4.</div>
+    <div><b>11 · B.</b> Hatch.cs:70–71.</div>
+    <div><b>12 · D.</b> Dune.cs:55.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 146, « Tirer sans biais ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">new Random(seed)</td><td>une suite rejouable</td><td>Wander.cs:61</td></tr>
+      <tr><td class="c">new Random()</td><td>une suite différente à chaque création</td><td>Dune.cs:55</td></tr>
+      <tr><td class="c">Random.Shared</td><td>un générateur sûr entre fils, sans graine</td><td>page 3</td></tr>
+      <tr><td class="c">RandomNumberGenerator.GetInt32(n)</td><td>un tirage imprévisible, pour les secrets</td><td>page 3</td></tr>
+      <tr><td class="c">maitre.Next()</td><td>distribuer des graines indépendantes</td><td>page 2</td></tr>
+      <tr><td class="c">rand.NextDouble() * Math.PI</td><td>un angle tiré pour chaque élément</td><td>Hatch.cs:71</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Générateur pseudo-aléatoire</dt><dd>Une suite calculée qui imite le hasard à partir d'un état de départ.</dd>
+    <dt>Graine</dt><dd>Le nombre qui fixe l'état de départ d'un générateur.</dd>
+    <dt>Reproductibilité</dt><dd>Obtenir le même résultat à partir des mêmes entrées.</dd>
+    <dt>xoshiro256**</dt><dd>Un générateur moderne et rapide, utilisé par .NET sans graine.</dd>
+    <dt>Générateur maître</dt><dd>Un générateur qui ne sert qu'à tirer les graines des autres.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 146</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 145 · Le hasard reproductible</div>
+</section>
+
+</body>
+</html>

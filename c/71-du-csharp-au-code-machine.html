@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>71 · Du C# au code machine</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-1">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 71</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Du C# au code machine</h1>
+  <p class="chapeau">Le processeur ne comprend pas le C#. Entre le texte que tu écris et les instructions qu'il exécute, il y a deux traductions : le <b>compilateur</b> (Roslyn) transforme le C# en <b>IL</b>, un langage intermédiaire rangé dans le .gha ; puis, dans Rhino, le <b>JIT</b> transforme cet IL en code machine, méthode par méthode, au moment où elle sert pour la première fois.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>04</b> et <b>05</b></span>
+    <span class="pastille">Exemples · <b>ChargeurCore</b>, <b>Directory.Build.props</b> (Magpie), <b>csproj</b> (SnapSet)</span>
+  </div>
+
+  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+    <svg viewBox="0 0 600 176" width="100%">
+<rect x="8" y="24" width="128" height="52" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="72" y="46" font-size="9.4" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:9.4px">Capsule.cs</text>
+<text x="72" y="63" font-size="7.6" fill="#2B2F33" text-anchor="middle">texte C#</text>
+<line x1="138" y1="50" x2="156" y2="50" stroke="#6B7378" stroke-width="1.4"/><polygon points="156,50 149.6,52.7 149.6,47.3" fill="#6B7378"/>
+<text x="147" y="96" font-size="8.4" fill="#6B2C7A" text-anchor="middle" font-weight="700">Roslyn</text>
+<text x="147" y="110" font-size="7.2" fill="#6B7378" text-anchor="middle" font-style="italic">à la compilation</text>
+<rect x="158" y="24" width="128" height="52" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
+<text x="222" y="46" font-size="9.4" fill="#7B1FA2" text-anchor="middle" font-weight="700" class="mono" style="font-size:9.4px">SnapSet.gha</text>
+<text x="222" y="63" font-size="7.6" fill="#2B2F33" text-anchor="middle">métadonnées + IL</text>
+<line x1="288" y1="50" x2="306" y2="50" stroke="#6B7378" stroke-width="1.4"/><polygon points="306,50 299.6,52.7 299.6,47.3" fill="#6B7378"/>
+<text x="297" y="96" font-size="8.4" fill="#6B2C7A" text-anchor="middle" font-weight="700">chargement</text>
+<text x="297" y="110" font-size="7.2" fill="#6B7378" text-anchor="middle" font-style="italic">au démarrage</text>
+<rect x="308" y="24" width="128" height="52" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="372" y="46" font-size="9.4" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:9.4px">dans Rhino</text>
+<text x="372" y="63" font-size="7.6" fill="#2B2F33" text-anchor="middle">chargé en mémoire</text>
+<line x1="438" y1="50" x2="456" y2="50" stroke="#6B7378" stroke-width="1.4"/><polygon points="456,50 449.6,52.7 449.6,47.3" fill="#6B7378"/>
+<text x="447" y="96" font-size="8.4" fill="#6B2C7A" text-anchor="middle" font-weight="700">JIT</text>
+<text x="447" y="110" font-size="7.2" fill="#6B7378" text-anchor="middle" font-style="italic">au 1er appel de chaque méthode</text>
+<rect x="458" y="24" width="128" height="52" rx="4" fill="#fff" stroke="#6B2C7A" stroke-width="1.2"/>
+<text x="522" y="46" font-size="9.4" fill="#6B2C7A" text-anchor="middle" font-weight="700" class="mono" style="font-size:9.4px">code x64</text>
+<text x="522" y="63" font-size="7.6" fill="#2B2F33" text-anchor="middle">instructions du processeur</text>
+<line x1="8" y1="128" x2="592" y2="128" stroke="#CFC6B8" stroke-dasharray="3 3"/>
+<text x="78" y="148" font-size="7.8" fill="#1565C0" text-anchor="middle" font-weight="700">sur ton poste, une fois</text>
+<text x="375" y="148" font-size="7.8" fill="#6B2C7A" text-anchor="middle" font-weight="700">sur la machine de l'utilisateur, à chaque lancement de Rhino</text>
+<text x="300" y="168" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">Le .gha ne contient pas de code machine : il est le même pour un processeur Intel, AMD ou ARM.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Le .gha transporte un code <b>portable</b> et décrit (l'IL et ses métadonnées) ; le code machine n'existe qu'en mémoire, fabriqué sur place par le JIT, pour le processeur qui l'exécute.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Une partition : le compositeur l'écrit une fois (compilation), chaque orchestre la joue avec ses instruments (JIT). La partition ne dépend pas de la salle ; le son, si.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>situer compilation, chargement et JIT ;</li>
+        <li>lire quelques lignes d'IL ;</li>
+        <li>distinguer version du langage et du runtime ;</li>
+        <li>dater une erreur : compilation ou exécution.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:5mm">
+    <span class="titre">À retenir</span>
+    Une assembly (.dll, .gha) est un fichier PE, comme un .exe, qui contient des <b>métadonnées</b> (types, méthodes, version, références) et de l'IL. Les métadonnées se lisent sans rien exécuter : c'est ce qui permet à Grasshopper de lister les composants d'un .gha, et à Magpie de connaître la version d'un Core embarqué.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 71 · Du C# au code machine</div>
+</section>
+
+<!-- ============ PAGE 2 · L'IL ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 71</b></div>
+  <p class="rubrique">Schéma 1 · Une fonction, trois formes</p>
+  <h2>Ce que contient vraiment un .gha</h2>
+  <p style="max-width:165mm">L'IL (Intermediate Language) est le langage commun à C#, F# et VB : tous se compilent vers lui. Il décrit les opérations sur une pile, sans registres ni adresses, ce qui le rend indépendant du processeur. Il reste lisible, et un décompilateur peut en retrouver un C# très proche de l'original.</p>
+
+  <svg viewBox="0 0 600 212" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="212" fill="#EFE9E1"/>
+<text x="104" y="22" font-size="9" fill="#1565C0" text-anchor="middle" font-weight="700">C#</text>
+<rect x="16" y="30" width="176" height="96" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="28" y="52" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px;white-space:pre">static int Somme(int a, int b)</text>
+<text x="28" y="68" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px;white-space:pre">    =&gt; a + b;</text>
+<line x1="194" y1="78" x2="206" y2="78" stroke="#6B7378" stroke-width="1.3"/><polygon points="206,78 199.6,80.7 199.6,75.3" fill="#6B7378"/>
+<text x="296" y="22" font-size="9" fill="#7B1FA2" text-anchor="middle" font-weight="700">IL (dans le .gha)</text>
+<rect x="208" y="30" width="176" height="96" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
+<text x="220" y="52" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px;white-space:pre">ldarg.0</text>
+<text x="220" y="68" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px;white-space:pre">ldarg.1</text>
+<text x="220" y="84" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px;white-space:pre">add</text>
+<text x="220" y="100" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px;white-space:pre">ret</text>
+<line x1="386" y1="78" x2="398" y2="78" stroke="#6B7378" stroke-width="1.3"/><polygon points="398,78 391.6,80.7 391.6,75.3" fill="#6B7378"/>
+<text x="488" y="22" font-size="9" fill="#6B2C7A" text-anchor="middle" font-weight="700">x64 (après le JIT)</text>
+<rect x="400" y="30" width="176" height="96" rx="4" fill="#fff" stroke="#6B2C7A" stroke-width="1.2"/>
+<text x="412" y="52" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px;white-space:pre">lea eax, [rcx+rdx]</text>
+<text x="412" y="68" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px;white-space:pre">ret</text>
+<text x="16" y="150" font-size="8" fill="#2B2F33" text-anchor="start">L'IL est une machine à pile imaginaire : on empile a, on empile b, « add » les remplace par leur somme.</text>
+<text x="16" y="168" font-size="8" fill="#2B2F33" text-anchor="start">Le JIT la traduit pour le vrai processeur : ici, une seule instruction fait l'addition (registres rcx, rdx).</text>
+<text x="16" y="192" font-size="8" fill="#2E7D32" text-anchor="start" font-weight="700">En JavaScript, V8 fait de même. Bytecode réel de somme(a, b) dans Node :  Ldar a1 · Add a0 · Return</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · outils</span>ildasm SnapSet.Conception.gha        # SDK .NET Framework : l'IL, méthode par méthode
+ilspycmd SnapSet.Conception.gha      # ILSpy : retrouve un C# lisible
+sharplab.io                          # en ligne : C#, IL et x64 côte à côte
+node --print-bytecode --print-bytecode-filter=somme somme.js</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Pas de secret dans un .gha</h3>
+      <p>Puisque l'IL se décompile, une clé, un mot de passe ou une logique de correction écrits dans le plugin sont lisibles par qui le veut. C'est la raison pour laquelle Magpie corrige côté serveur (cours 33) et garde ses secrets dans l'environnement (cours 63).</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Debug et Release</h3>
+      <p>En Debug, le compilateur garde chaque variable et ajoute des instructions vides pour que le débogueur s'arrête où tu veux. En Release, il simplifie, et le JIT optimise davantage : on ne mesure les performances qu'en Release.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Croire qu'« obfusquer » ou compiler en Release protège le code. Cela le rend pénible à lire, pas secret. Ce qui doit rester secret ne quitte pas le serveur.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 71 · Du C# au code machine</div>
+</section>
+
+<!-- ============ PAGE 3 · LE JIT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 71</b></div>
+  <p class="rubrique">Schéma 2 · Le JIT</p>
+  <h2>Compiler au dernier moment</h2>
+  <p style="max-width:165mm">Le JIT (just in time) compile une méthode la première fois qu'elle est appelée, puis garde le résultat. Il connaît la machine réelle : il peut utiliser les instructions de ce processeur précis, et observer quelles méthodes servent souvent pour les recompiler mieux. JavaScript suit la même logique, avec un interprète devant.</p>
+
+  <svg viewBox="0 0 600 196" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="196" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#6B2C7A" text-anchor="start" font-weight="700">La même boucle de 10 millions de tours, dans Node (mesuré, 3 essais)</text>
+<text x="16" y="54" font-size="8.4" fill="#C62828" text-anchor="start" font-weight="700">interprète seul (--jitless)</text>
+<rect x="200" y="42" width="363.8" height="10" fill="#C62828"/>
+<text x="569.8" y="51" font-size="7.4" fill="#C62828" text-anchor="start" font-weight="700">535 ms</text>
+<rect x="200" y="56" width="337.96000000000004" height="10" fill="#C62828"/>
+<text x="543.96" y="65" font-size="7.4" fill="#C62828" text-anchor="start" font-weight="700">497 ms</text>
+<rect x="200" y="70" width="332.52000000000004" height="10" fill="#C62828"/>
+<text x="538.52" y="79" font-size="7.4" fill="#C62828" text-anchor="start" font-weight="700">489 ms</text>
+<text x="16" y="108" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700">avec le JIT (par défaut)</text>
+<rect x="200" y="96" width="57.120000000000005" height="10" fill="#2E7D32"/>
+<text x="263.12" y="105" font-size="7.4" fill="#2E7D32" text-anchor="start" font-weight="700">84 ms</text>
+<rect x="200" y="110" width="74.12" height="10" fill="#2E7D32"/>
+<text x="280.12" y="119" font-size="7.4" fill="#2E7D32" text-anchor="start" font-weight="700">109 ms</text>
+<rect x="200" y="124" width="70.72" height="10" fill="#2E7D32"/>
+<text x="276.72" y="133" font-size="7.4" fill="#2E7D32" text-anchor="start" font-weight="700">104 ms</text>
+<text x="16" y="166" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">Environ cinq fois plus rapide une fois compilé en code machine.</text>
+<text x="16" y="184" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">.NET compile toujours ; il compile d'abord vite (niveau 0), puis recompile mieux les méthodes appelées souvent (niveau 1).</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · mesuré pour ce cours</span>function f(n) { let s = 0; for (let i = 0; i &lt; n; i++) s += i * i % 7; return s; }
+f(1e7);
+node jit.js              # ≈ 100 ms
+node --jitless jit.js    # ≈ 500 ms</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Le premier appel coûte</h3>
+      <p>Le temps de compilation est payé au premier appel : c'est une part du délai au chargement d'un plugin, ou au premier clic sur un composant. Les appels suivants sont rapides.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Et sans JIT ?</h3>
+      <p>On peut aussi compiler à l'avance (AOT) : démarrage immédiat, mais un fichier par processeur, et pas de chargement dynamique. Un plugin chargé par Rhino reste donc en IL, compilé par le JIT de Rhino.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Mesurer une seule exécution. La première inclut la compilation, et en .NET le code ne passe au niveau optimisé qu'après une trentaine d'appels. On mesure plusieurs fois, en Release, et on écarte le premier passage.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 71 · Du C# au code machine</div>
+</section>
+
+<!-- ============ PAGE 4 · QUAND LES ERREURS ARRIVENT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 71</b></div>
+  <p class="rubrique">Schéma 3 · Le moment de chaque erreur</p>
+  <h2>Compilé ne veut pas dire chargeable</h2>
+  <p style="max-width:165mm">Le compilateur vérifie le texte, contre les bibliothèques présentes <b>sur ton poste</b>. Chez l'utilisateur, d'autres choses peuvent manquer : une bibliothèque, une version. Ces erreurs-là n'apparaissent qu'au chargement, ou même seulement quand le JIT compile la méthode qui en a besoin.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<rect x="16" y="10" width="568" height="40" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="28" y="27" font-size="8.8" fill="#1565C0" text-anchor="start" font-weight="700">à la compilation</text>
+<text x="28" y="42" font-size="7.8" fill="#2B2F33" text-anchor="start">faute de frappe, type incompatible, avertissement d'analyseur</text>
+<text x="574" y="35" font-size="7.8" fill="#1565C0" text-anchor="end" font-weight="700" class="mono" style="font-size:7.8px">CS0103, CS0029, RS1035</text>
+<rect x="16" y="58" width="568" height="40" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
+<text x="28" y="75" font-size="8.8" fill="#7B1FA2" text-anchor="start" font-weight="700">au chargement</text>
+<text x="28" y="90" font-size="7.8" fill="#2B2F33" text-anchor="start">une bibliothèque référencée introuvable</text>
+<text x="574" y="83" font-size="7.8" fill="#7B1FA2" text-anchor="end" font-weight="700" class="mono" style="font-size:7.8px">FileNotFoundException</text>
+<rect x="16" y="106" width="568" height="40" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
+<text x="28" y="123" font-size="8.8" fill="#E65100" text-anchor="start" font-weight="700">au 1er appel (JIT)</text>
+<text x="28" y="138" font-size="7.8" fill="#2B2F33" text-anchor="start">une méthode qui utilise un type absent ne peut pas être compilée</text>
+<text x="574" y="131" font-size="7.8" fill="#E65100" text-anchor="end" font-weight="700" class="mono" style="font-size:7.8px">le composant écarté</text>
+<rect x="16" y="154" width="568" height="40" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="28" y="171" font-size="8.8" fill="#C62828" text-anchor="start" font-weight="700">à l'exécution</text>
+<text x="28" y="186" font-size="7.8" fill="#2B2F33" text-anchor="start">une donnée imprévue</text>
+<text x="574" y="179" font-size="7.8" fill="#C62828" text-anchor="end" font-weight="700" class="mono" style="font-size:7.8px">NullReferenceException</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · csproj</span>&lt;TargetFramework&gt;net7.0-windows&lt;/TargetFramework&gt;  &lt;!-- les API disponibles --&gt;
+&lt;LangVersion&gt;latest&lt;/LangVersion&gt;                 &lt;!-- les mots du langage --&gt;
+&lt;Optimize&gt;true&lt;/Optimize&gt;                           &lt;!-- Release --&gt;
+&lt;TreatWarningsAsErrors&gt;true&lt;/TreatWarningsAsErrors&gt;</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Deux versions différentes</h3>
+      <p>La version du <b>langage</b> (C# 11, 12…) décide des mots que le compilateur accepte. La version du <b>runtime</b> (.NET 7, .NET Framework 4.8) décide des classes disponibles à l'exécution : c'est elle qu'impose Rhino.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Les analyseurs</h3>
+      <p>Roslyn accepte des extensions qui inspectent le code pendant la compilation et émettent des avertissements (les codes CA, RS…). Elles tournent dans le compilateur : on leur interdit d'écrire des fichiers.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Un composant qui « disparaît » de Grasshopper sans message. Souvent, son constructeur utilise un type d'une bibliothèque introuvable : le JIT ne peut pas le compiler, et Grasshopper l'écarte. Le débogueur attaché à Rhino (cours 47), avec arrêt sur toutes les exceptions, montre laquelle.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 71 · Du C# au code machine</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 71</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Choisir la cible, lire les métadonnées, charger de l'IL</h2>
+  <p style="max-width:165mm">Magpie compile ses plugins pour le runtime de Rhino 8, lit la version d'un Core embarqué sans l'exécuter, puis le charge depuis des octets. Son commentaire le plus instructif décrit un échec que seul le JIT pouvait provoquer.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">Directory.Build.props (Magpie) · csproj (SnapSet)</span></div>
+<div class="l k1"><span class="n">18</span><span class="cm">Rhino 8 Windows: net48, net7.0, net7.0-windows, …</span><span class="rep r1">1</span></div>
+<div class="l k1"><span class="n">21</span>&lt;TargetFrameworks&gt;net7.0-windows;net7.0&lt;/TargetFrameworks&gt;</div>
+<div class="l k1"><span class="n">24</span>&lt;LangVersion&gt;latest&lt;/LangVersion&gt;</div>
+<div class="l"><span class="cm">magpie/plugin/Chargeur/ChargeurCore.cs</span></div>
+<div class="l k2"><span class="n">194</span><span class="kw">using</span> (<span class="kw">var</span> pe = <span class="kw">new</span> PEReader(…(octets)))<span class="rep r2">2</span></div>
+<div class="l k2"><span class="n">195</span>  <span class="kw">return</span> …GetAssemblyDefinition().Version;</div>
+<div class="l k3"><span class="n">112</span><span class="kw">return</span> AssemblyLoadContext.Default.LoadFromStream(…);<span class="rep r3">3</span></div>
+<div class="l k4"><span class="n">69</span><span class="cm">// … Le module initializer .NET, essayé d'abord,</span><span class="rep r4">4</span></div>
+<div class="l k4"><span class="n">70</span><span class="cm">// passe TROP TARD : la compilation du constructeur</span></div>
+<div class="l k4"><span class="n">71</span><span class="cm">// d'un composant demande déjà Core …</span></div>
+<div class="l"><span class="cm">SnapSet/src/SnapSet.Conception/Generation/EcrivainGeneration.cs</span></div>
+<div class="l k5"><span class="n">4</span><span class="cm">// … un générateur chargé en analyseur Roslyn</span><span class="rep r5">5</span></div>
+<div class="l k5"><span class="n">5</span><span class="cm">// n'aurait pas le droit d'écrire (… RS1035).</span></div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>La cible</b>Le runtime que Rhino 8 fournit ; le langage, lui, le plus récent.</li>
+      <li><span class="rep r2">2</span><b>Lire sans charger</b>Les métadonnées donnent la version.</li>
+      <li><span class="rep r3">3</span><b>Charger de l'IL</b>Des octets en mémoire deviennent une assembly.</li>
+      <li><span class="rep r4">4</span><b>Le JIT d'abord</b>Compiler une méthode réclame ses types.</li>
+      <li><span class="rep r5">5</span><b>Pas un analyseur</b>Générer écrit des fichiers : donc dans le .gha.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">Ce que raconte ChargeurCore.cs:66–72</span>
+    Le commentaire relate un constat du 20/10/2026 : des composants écartés en silence. Pour compiler le constructeur d'un composant, le JIT a besoin des types de Magpie.Core ; il les réclame donc <b>avant</b> que le code d'initialisation du module ait tourné. D'où le branchement de la résolution dans <code>PriorityLoad</code>, que Grasshopper exécute avant de créer les composants : un cas réel du piège de la page 4.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 71 · Du C# au code machine</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 71</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Un .gha contient…</div><ul>
+      <li><span>A</span>du code x64</li><li><span>B</span>du JavaScript</li><li><span>C</span>des métadonnées et de l'IL</li><li><span>D</span>le texte C#</li></ul></div>
+
+    <div class="q"><div class="enonce">Le JIT compile une méthode…</div><ul>
+      <li><span>A</span>jamais</li><li><span>B</span>à l'installation</li><li><span>C</span>dans Visual Studio</li><li><span>D</span>à son premier appel</li></ul></div>
+
+    <div class="q"><div class="enonce">L'IL est indépendant…</div><ul>
+      <li><span>A</span>de .NET</li><li><span>B</span>de rien</li><li><span>C</span>de la mémoire disponible</li><li><span>D</span>du processeur</li></ul></div>
+
+    <div class="q"><div class="enonce"><code>ldarg.0 ldarg.1 add ret</code> calcule…</div><ul>
+      <li><span>A</span>leur produit</li><li><span>B</span>rien</li><li><span>C</span>la somme des deux arguments</li><li><span>D</span>le premier</li></ul></div>
+
+    <div class="q"><div class="enonce">Un secret écrit dans un .gha est…</div><ul>
+      <li><span>A</span>effacé à la compilation</li><li><span>B</span>protégé en Release</li><li><span>C</span>chiffré</li><li><span>D</span>lisible par décompilation</li></ul></div>
+
+    <div class="q"><div class="enonce">Mesuré dans ce cours, le JIT de Node rend la boucle…</div><ul>
+      <li><span>A</span>environ 5 fois plus rapide</li><li><span>B</span>identique</li><li><span>C</span>plus lente</li><li><span>D</span>2 % plus rapide</li></ul></div>
+
+    <div class="q"><div class="enonce">Pour mesurer une performance : <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>un seul essai en Debug</li><li><span>B</span>plusieurs fois</li><li><span>C</span>en Release</li><li><span>D</span>écarter le premier passage</li></ul></div>
+
+    <div class="q"><div class="enonce"><code>LangVersion</code> décide…</div><ul>
+      <li><span>A</span>des classes à l'exécution</li><li><span>B</span>des mots acceptés par le compilateur</li><li><span>C</span>du processeur</li><li><span>D</span>de la version de Rhino</li></ul></div>
+
+    <div class="q"><div class="enonce"><code>TargetFramework</code> décide…</div><ul>
+      <li><span>A</span>de la langue</li><li><span>B</span>des API du runtime disponibles</li><li><span>C</span>du nom du .gha</li><li><span>D</span>de la syntaxe</li></ul></div>
+
+    <div class="q"><div class="enonce">PEReader permet de…</div><ul>
+      <li><span>A</span>exécuter l'IL</li><li><span>B</span>lire les métadonnées sans charger</li><li><span>C</span>décompiler en C#</li><li><span>D</span>signer</li></ul></div>
+
+    <div class="q"><div class="enonce">Une bibliothèque absente chez l'utilisateur se révèle…</div><ul>
+      <li><span>A</span>jamais</li><li><span>B</span>à la compilation</li><li><span>C</span>au chargement ou au JIT</li><li><span>D</span>à l'installation</li></ul></div>
+
+    <div class="q"><div class="enonce">Pourquoi le générateur de SnapSet n'est pas un analyseur Roslyn ?</div><ul>
+      <li><span>A</span>un analyseur n'a pas le droit d'écrire de fichier</li><li><span>B</span>sans raison</li><li><span>C</span>trop lent</li><li><span>D</span>pas de C#</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 71 · Du C# au code machine</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 71</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · C.</b> Le code machine vient après.</div>
+    <div><b>02 · D.</b> Puis il garde le résultat.</div>
+    <div><b>03 · D.</b> Une pile, pas de registres.</div>
+    <div><b>04 · C.</b> On empile, on additionne.</div>
+    <div><b>05 · D.</b> ILSpy le retrouve.</div>
+    <div><b>06 · A.</b> ≈ 500 ms contre ≈ 100 ms.</div>
+    <div><b>07 · B, C et D.</b> Jamais un seul essai.</div>
+    <div><b>08 · B.</b> C# 11, 12…</div>
+    <div><b>09 · B.</b> Directory.Build.props:21.</div>
+    <div><b>10 · B.</b> ChargeurCore.cs:194–195.</div>
+    <div><b>11 · C.</b> ChargeurCore.cs:69–71.</div>
+    <div><b>12 · A.</b> EcrivainGeneration.cs:4–5.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : la partie 1 est terminée ; passe à sa fiche récap.
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">&lt;TargetFrameworks&gt;…&lt;/TargetFrameworks&gt;</td><td>le runtime visé</td><td>Directory.Build.props:21</td></tr>
+      <tr><td class="c">&lt;LangVersion&gt;latest&lt;/LangVersion&gt;</td><td>la version du langage</td><td>SnapSet.Constituants.csproj:24</td></tr>
+      <tr><td class="c">new PEReader(flux)</td><td>lire les métadonnées</td><td>ChargeurCore.cs:194</td></tr>
+      <tr><td class="c">LoadFromStream(…)</td><td>charger une assembly depuis des octets</td><td>ChargeurCore.cs:112</td></tr>
+      <tr><td class="c">ildasm, ILSpy, sharplab.io</td><td>voir l'IL et le code machine</td><td>exemple autonome, page 2</td></tr>
+      <tr><td class="c">node --jitless</td><td>comparer interprète et JIT</td><td>exemple autonome, page 3</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>IL</dt><dd>Le langage intermédiaire de .NET, indépendant du processeur, rangé dans les assemblies.</dd>
+    <dt>JIT</dt><dd>Le compilateur qui traduit l'IL en code machine au premier appel de chaque méthode.</dd>
+    <dt>AOT</dt><dd>La compilation en code machine à l'avance, avant la distribution.</dd>
+    <dt>Métadonnées</dt><dd>La description des types, méthodes et références d'une assembly.</dd>
+    <dt>Analyseur</dt><dd>Une extension du compilateur qui inspecte le code et émet des avertissements.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : fiche récap de la partie 1</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 71 · Du C# au code machine</div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>103 · Les objets de Git</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-11">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 103</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Les objets de Git</h1>
+  <p class="chapeau">Sous les commandes, Git est une petite base de données d'objets. Il n'en connaît que trois sortes utiles : le <b>blob</b> (le contenu d'un fichier), l'<b>arbre</b> (un dossier) et le <b>commit</b> (une photo datée de l'arbre racine). Chaque objet est nommé par l'empreinte de son contenu. Tout le reste, branches et historique, s'en déduit.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>06</b> et <b>65</b></span>
+    <span class="pastille">Exemples · le dépôt <b>SnapSet</b>, lu par git cat-file (copie de travail)</span>
+  </div>
+
+  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+    <svg viewBox="0 0 600 206" width="100%">
+<rect x="10" y="14" width="150" height="36" rx="4" fill="#fff" stroke="#4F46B8" stroke-width="1.2"/>
+<rect x="10" y="14" width="150" height="13" rx="4" fill="#4F46B8"/>
+<text x="16" y="24" font-size="7" fill="#fff" text-anchor="start" font-weight="700">commit</text>
+<text x="154" y="24" font-size="6.8" fill="#fff" text-anchor="end" class="mono" style="font-size:6.8px">a557f9f</text>
+<text x="16" y="42" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">« Doc et garde-fous… »</text>
+<rect x="10" y="96" width="150" height="36" rx="4" fill="#fff" stroke="#4F46B8" stroke-width="1.2"/>
+<rect x="10" y="96" width="150" height="13" rx="4" fill="#4F46B8"/>
+<text x="16" y="106" font-size="7" fill="#fff" text-anchor="start" font-weight="700">commit</text>
+<text x="154" y="106" font-size="6.8" fill="#fff" text-anchor="end" class="mono" style="font-size:6.8px">61ee655</text>
+<text x="16" y="124" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">le parent</text>
+<line x1="85" y1="52" x2="85" y2="94" stroke="#4F46B8" stroke-width="1.2"/><polygon points="85,94 82.3,87.6 87.7,87.6" fill="#4F46B8"/>
+<text x="92" y="78" font-size="7" fill="#4F46B8" text-anchor="start" font-weight="700">parent</text>
+<rect x="220" y="14" width="120" height="36" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<rect x="220" y="14" width="120" height="13" rx="4" fill="#1565C0"/>
+<text x="226" y="24" font-size="7" fill="#fff" text-anchor="start" font-weight="700">tree</text>
+<text x="334" y="24" font-size="6.8" fill="#fff" text-anchor="end" class="mono" style="font-size:6.8px">0a838dc</text>
+<text x="226" y="42" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">/  (12 entrées)</text>
+<line x1="162" y1="32" x2="218" y2="32" stroke="#1565C0" stroke-width="1.2"/><polygon points="218,32 211.6,34.7 211.6,29.3" fill="#1565C0"/>
+<text x="190" y="26" font-size="7" fill="#1565C0" text-anchor="middle" font-weight="700">tree</text>
+<rect x="400" y="6" width="190" height="36" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<rect x="400" y="6" width="190" height="13" rx="4" fill="#2E7D32"/>
+<text x="406" y="16" font-size="7" fill="#fff" text-anchor="start" font-weight="700">blob</text>
+<text x="584" y="16" font-size="6.8" fill="#fff" text-anchor="end" class="mono" style="font-size:6.8px">8dd1f8f</text>
+<text x="406" y="34" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">README.md · 4 459 o</text>
+<rect x="400" y="50" width="190" height="36" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<rect x="400" y="50" width="190" height="13" rx="4" fill="#1565C0"/>
+<text x="406" y="60" font-size="7" fill="#fff" text-anchor="start" font-weight="700">tree</text>
+<text x="584" y="60" font-size="6.8" fill="#fff" text-anchor="end" class="mono" style="font-size:6.8px">4e73e21</text>
+<text x="406" y="78" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">schema/</text>
+<rect x="400" y="94" width="190" height="36" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<rect x="400" y="94" width="190" height="13" rx="4" fill="#2E7D32"/>
+<text x="406" y="104" font-size="7" fill="#fff" text-anchor="start" font-weight="700">blob</text>
+<text x="584" y="104" font-size="6.8" fill="#fff" text-anchor="end" class="mono" style="font-size:6.8px">e2518fb</text>
+<text x="406" y="122" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">.gitattributes</text>
+<line x1="342" y1="26" x2="398" y2="22" stroke="#6B7378" stroke-width="1"/><polygon points="398,22 391.8,25.2 391.4,19.7" fill="#6B7378"/>
+<line x1="342" y1="32" x2="398" y2="66" stroke="#6B7378" stroke-width="1"/><polygon points="398,66 391.1,65.0 393.9,60.3" fill="#6B7378"/>
+<line x1="342" y1="40" x2="398" y2="110" stroke="#6B7378" stroke-width="1"/><polygon points="398,110 391.8,106.7 396.1,103.3" fill="#6B7378"/>
+<rect x="400" y="140" width="190" height="36" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<rect x="400" y="140" width="190" height="13" rx="4" fill="#2E7D32"/>
+<text x="406" y="150" font-size="7" fill="#fff" text-anchor="start" font-weight="700">blob</text>
+<text x="584" y="150" font-size="6.8" fill="#fff" text-anchor="end" class="mono" style="font-size:6.8px">…</text>
+<text x="406" y="168" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">schema/Metrique.cs</text>
+<line x1="495" y1="88" x2="495" y2="138" stroke="#6B7378" stroke-width="1"/><polygon points="495,138 492.3,131.6 497.7,131.6" fill="#6B7378"/>
+<text x="10" y="160" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">Un commit désigne un arbre et son parent ;</text>
+<text x="10" y="174" font-size="8.2" fill="#2B2F33" text-anchor="start">un arbre liste des noms, chacun vers un blob</text>
+<text x="10" y="188" font-size="8.2" fill="#2B2F33" text-anchor="start">(un fichier) ou un sous-arbre (un dossier).</text>
+<text x="10" y="202" font-size="7.2" fill="#6B7378" text-anchor="start" font-style="italic">Identifiants réels de SnapSet, abrégés à 7 caractères.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Un commit pointe vers un arbre et vers son parent ; un arbre pointe vers des blobs et d'autres arbres ; chaque nom est l'empreinte de ce qu'il désigne.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Une bibliothèque où chaque livre est classé sous un numéro calculé à partir de son texte. Deux exemplaires identiques reçoivent le même numéro et ne prennent qu'une place ; corriger une virgule donne un autre livre.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>lire un commit, un arbre, un blob ;</li>
+        <li>dire d'où vient un identifiant ;</li>
+        <li>expliquer pourquoi l'historique pèse peu ;</li>
+        <li>prévoir ce que change une réécriture.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À retenir</span>
+    Tout ce cours a été mesuré sur une copie du dépôt SnapSet, faite pour l'occasion : le dépôt d'origine n'a été que lu. Les expériences qui modifient l'histoire ont été faites dans un dépôt d'essai de quatre commits.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 103 · Les objets de Git</div>
+</section>
+
+<!-- ============ PAGE 2 · L'EMPREINTE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 103</b></div>
+  <p class="rubrique">Schéma 1 · Nommé par son contenu</p>
+  <h2>L'identifiant est une empreinte</h2>
+  <p style="max-width:165mm">Git calcule le SHA-1 (cours 65) d'un petit en-tête, le type et la taille, suivi du contenu. Les 40 chiffres hexadécimaux obtenus servent de nom : on parle de stockage <b>adressé par le contenu</b>. Un fichier n'a pas d'identifiant à lui ; c'est son contenu qui en a un.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#4F46B8" text-anchor="start" font-weight="700">L'identifiant d'un blob est le SHA-1 de son contenu, précédé de son type et de sa taille (mesuré sur README.md)</text>
+<rect x="16" y="34" width="190" height="40" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="28" y="52" font-size="8.4" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">"blob 4459\0"</text>
+<text x="28" y="66" font-size="7.6" fill="#2B2F33" text-anchor="start">+ les 4 459 octets du fichier</text>
+<line x1="208" y1="54" x2="248" y2="54" stroke="#6B7378" stroke-width="1.2"/><polygon points="248,54 241.6,56.7 241.6,51.3" fill="#6B7378"/>
+<text x="228" y="48" font-size="7.2" fill="#6B7378" text-anchor="middle" font-weight="700">SHA-1</text>
+<rect x="250" y="34" width="334" height="40" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="262" y="52" font-size="8.2" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8.2px">8dd1f8f227ecc828e5544d4163c551effb31855b</text>
+<text x="262" y="66" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">calculé en Python, et rendu par git rev-parse HEAD:README.md</text>
+<text x="16" y="100" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">Même contenu, même identifiant : un fichier inchangé d'un commit à l'autre n'est rangé qu'une fois.</text>
+<text x="16" y="129" font-size="8" fill="#2B2F33" text-anchor="start">fichiers listés, tous commits de SnapSet confondus</text>
+<rect x="300" y="117" width="300" height="16" fill="#6B7378"/>
+<text x="606.0" y="129" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">5 186</text>
+<text x="16" y="159" font-size="8" fill="#2B2F33" text-anchor="start">blobs réellement rangés</text>
+<rect x="300" y="147" width="35" height="16" fill="#2E7D32"/>
+<text x="340.7088314693405" y="159" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">600</text>
+<text x="16" y="194" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">41 commits, 159 fichiers chacun environ : la plupart ne changent pas d'un commit au suivant.</text>
+<text x="16" y="208" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Un octet de différence, et l'empreinte n'a plus rien de commun : c'est ce qui rend l'histoire infalsifiable sans bruit.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Python, recalculer l'identifiant d'un blob</span>import hashlib, subprocess
+b = subprocess.run(["git", "cat-file", "blob", "HEAD:README.md"], capture_output=True).stdout
+print(hashlib.sha1(b"blob %d\0" % len(b) + b).hexdigest())
+# 8dd1f8f227ecc828e5544d4163c551effb31855b   (comme git rev-parse HEAD:README.md)</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Le nom n'est pas dans le blob</h3>
+      <p>Un blob ne contient que des octets : ni nom de fichier, ni droits, ni date. Le nom vit dans l'arbre qui le cite. Renommer un fichier sans le modifier crée donc un nouvel arbre, mais garde le même blob.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Et SHA-256 ?</h3>
+      <p>SHA-1 n'est plus sûr contre une attaque préparée (cours 65). Git sait détecter les collisions connues, et propose des dépôts en SHA-256 depuis 2020 ; les dépôts de GitHub restent en SHA-1, pour longtemps encore.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Croire que Git range des différences entre versions. Il range des contenus entiers, un blob par version ; les différences n'apparaissent qu'à l'affichage, et, pour gagner de la place, dans les paquets.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 103 · Les objets de Git</div>
+</section>
+
+<!-- ============ PAGE 3 · LES PAQUETS ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 103</b></div>
+  <p class="rubrique">Schéma 2 · Les paquets</p>
+  <h2>Toute l'histoire pèse moins qu'une copie</h2>
+  <p style="max-width:165mm">Un objet neuf est d'abord écrit seul, compressé, dans <code>.git/objects</code>. Puis Git regroupe les objets en <b>paquets</b>, où une version proche d'une autre n'est rangée que comme une liste de différences, un <b>delta</b>. Le stockage reste celui de contenus entiers ; le paquet n'est qu'une façon compacte de les écrire.</p>
+
+  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">Ce que pèse l'histoire de SnapSet : 600 blobs, rangés en un seul paquet (git cat-file, mesuré)</text>
+<text x="16" y="48" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">tous les blobs, tels quels</text>
+<rect x="250" y="36" width="273" height="16" fill="#C62828"/>
+<text x="529.0313001109934" y="48" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.2px">17,5 Mo</text>
+<text x="16" y="74" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">l'arbre de travail de HEAD</text>
+<rect x="250" y="62" width="207" height="16" fill="#6B7378"/>
+<text x="463.3805959747318" y="74" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.2px">2,9 Mo</text>
+<text x="16" y="100" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">toute l'histoire, paquet compris</text>
+<rect x="250" y="88" width="173" height="16" fill="#2E7D32"/>
+<text x="428.84784303332793" y="100" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.2px">1,1 Mo</text>
+<text x="16" y="134" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">12 versions de schema/Metrique.cs, tels quels</text>
+<rect x="250" y="122" width="194" height="16" fill="#C62828"/>
+<text x="449.6767072166487" y="134" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.2px">2,0 Mo</text>
+<text x="16" y="160" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">les mêmes, dans le paquet</text>
+<rect x="250" y="148" width="70" height="16" fill="#2E7D32"/>
+<text x="326.07534476481317" y="160" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.2px">68 Ko</text>
+<text x="16" y="184" font-size="7.8" fill="#2B2F33" text-anchor="start">Dans un paquet, une version est rangée comme la différence avec une autre (un delta) : 436 blobs sur 600 le sont ici.</text>
+<text x="16" y="198" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Une version de Metrique.cs de 180 Ko y occupe 48 octets. Échelle logarithmique.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Git, ce que pèse chaque type d'objet dans un dépôt</span>git cat-file --batch-all-objects --batch-check="%(objecttype) %(objectsize) %(objectsize:disk)"
+git count-objects -vH          # size-pack: 1.10 MiB pour SnapSet</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Un gros fichier souvent modifié</h3>
+      <p><code>schema/Metrique.cs</code> fait 3 366 lignes et 180 Ko. Douze versions, 2 Mo en tout, occupent 68 Ko dans le paquet : chaque modification ne change que quelques lignes, et seul ce changement est rangé.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Ce qui ne se compresse pas</h3>
+      <p>Une image, une DLL, un fichier <code>.gh</code> changent presque entièrement d'une version à l'autre : aucun delta utile. Dix versions d'une image de 5 Mo pèsent près de 50 Mo pour toujours, même après la suppression du fichier.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Supprimer un gros fichier par un nouveau commit pour alléger le dépôt. Les commits précédents le citent toujours : il reste dans chaque clone. Seule une réécriture de toute l'histoire l'en retire.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 103 · Les objets de Git</div>
+</section>
+
+<!-- ============ PAGE 4 · L'IMMUABILITÉ ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 103</b></div>
+  <p class="rubrique">Schéma 3 · Immuable</p>
+  <h2>Changer un commit, c'est en créer d'autres</h2>
+  <p style="max-width:165mm">Un commit contient l'identifiant de son parent. Changer quoi que ce soit dans un commit, même son message, change son empreinte ; ses enfants, qui la citent, doivent alors être recréés, et ainsi de suite jusqu'au bout de la branche. Aucun objet n'est jamais modifié : on en écrit de nouveaux.</p>
+
+  <svg viewBox="0 0 600 204" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="204" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">Quatre commits ; on renomme le deuxième (git rebase -i, dépôt d'essai, mesuré)</text>
+<text x="16" y="62" font-size="8.6" fill="#6B7378" text-anchor="start" font-weight="700">avant</text>
+<rect x="80" y="40" width="110" height="36" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="135" y="55" font-size="8.4" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">d6648e0</text>
+<text x="135" y="69" font-size="7.4" fill="#6B7378" text-anchor="middle">c1</text>
+<line x1="208" y1="58" x2="192" y2="58" stroke="#6B7378" stroke-width="1"/><polygon points="192,58 198.4,55.3 198.4,60.7" fill="#6B7378"/>
+<rect x="208" y="40" width="110" height="36" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="263" y="55" font-size="8.4" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">9298e4f</text>
+<text x="263" y="69" font-size="7.4" fill="#6B7378" text-anchor="middle">c2</text>
+<line x1="336" y1="58" x2="320" y2="58" stroke="#6B7378" stroke-width="1"/><polygon points="320,58 326.4,55.3 326.4,60.7" fill="#6B7378"/>
+<rect x="336" y="40" width="110" height="36" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="391" y="55" font-size="8.4" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">726ae07</text>
+<text x="391" y="69" font-size="7.4" fill="#6B7378" text-anchor="middle">c3</text>
+<line x1="464" y1="58" x2="448" y2="58" stroke="#6B7378" stroke-width="1"/><polygon points="448,58 454.4,55.3 454.4,60.7" fill="#6B7378"/>
+<rect x="464" y="40" width="110" height="36" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="519" y="55" font-size="8.4" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">9327b88</text>
+<text x="519" y="69" font-size="7.4" fill="#6B7378" text-anchor="middle">c4</text>
+<text x="16" y="116" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">après</text>
+<rect x="80" y="94" width="110" height="36" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="135" y="109" font-size="8.4" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">d6648e0</text>
+<text x="135" y="123" font-size="7.4" fill="#6B7378" text-anchor="middle">c1</text>
+<line x1="208" y1="112" x2="192" y2="112" stroke="#6B7378" stroke-width="1"/><polygon points="192,112 198.4,109.3 198.4,114.7" fill="#6B7378"/>
+<rect x="208" y="94" width="110" height="36" rx="4" fill="#FBE3DD" stroke="#C62828" stroke-width="1.2"/>
+<text x="263" y="109" font-size="8.4" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">889bd01</text>
+<text x="263" y="123" font-size="7.4" fill="#6B7378" text-anchor="middle">c2 renommé</text>
+<line x1="336" y1="112" x2="320" y2="112" stroke="#6B7378" stroke-width="1"/><polygon points="320,112 326.4,109.3 326.4,114.7" fill="#6B7378"/>
+<rect x="336" y="94" width="110" height="36" rx="4" fill="#FBE3DD" stroke="#C62828" stroke-width="1.2"/>
+<text x="391" y="109" font-size="8.4" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">d281534</text>
+<text x="391" y="123" font-size="7.4" fill="#6B7378" text-anchor="middle">c3</text>
+<line x1="464" y1="112" x2="448" y2="112" stroke="#6B7378" stroke-width="1"/><polygon points="448,112 454.4,109.3 454.4,114.7" fill="#6B7378"/>
+<rect x="464" y="94" width="110" height="36" rx="4" fill="#FBE3DD" stroke="#C62828" stroke-width="1.2"/>
+<text x="519" y="109" font-size="8.4" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">b806a6c</text>
+<text x="519" y="123" font-size="7.4" fill="#6B7378" text-anchor="middle">c4</text>
+<text x="16" y="166" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">c3 et c4 n'ont pas changé de contenu (c4 garde l'arbre 0fbef63), mais leur parent a changé : leur identifiant aussi.</text>
+<text x="16" y="182" font-size="7.8" fill="#2B2F33" text-anchor="start">Réécrire un commit, c'est réécrire toute sa descendance. Les anciens restent dans le dépôt, sans branche pour les montrer.</text>
+<text x="16" y="198" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Les flèches vont vers le parent : chaque commit connaît son passé, jamais son avenir.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · le dépôt d'essai, c4 avant et après, git cat-file -p</span>tree 0fbef63bfc8b58a623b154a2903d54d51eeccb36      tree 0fbef63bfc8b58a623b154a2903d54d51eeccb36
+parent 726ae070215767677976fc87d43af2d8cd581162    parent d2815348e8593b286240813ba5ade0052f7139be</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Une chaîne d'empreintes</h3>
+      <p>Comme chaque commit scelle son parent, l'identifiant du dernier commit garantit toute l'histoire qui le précède. Deux personnes qui ont le même identifiant de tête ont, octet pour octet, le même passé.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Les anciens commits restent</h3>
+      <p>Après la réécriture, <code>9327b88</code> existe toujours, seulement plus aucune branche ne le désigne. Le journal des références le retrouve (cours 107) ; le nettoyage automatique ne l'efface qu'après plusieurs semaines.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Réécrire des commits déjà poussés et partagés. Ceux qui les ont récupérés gardent les anciens : leurs branches et les tiennes ne se reconnaissent plus. On ne réécrit que ce qui n'a pas quitté son poste.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 103 · Les objets de Git</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 103</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Le dernier commit de SnapSet, de l'intérieur</h2>
+  <p style="max-width:165mm"><code>git cat-file -p</code> affiche un objet tel qu'il est rangé. Voici le commit de tête de la branche etapes-pilote-ui, puis le fichier qui règle la façon dont les blobs sont écrits.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">git cat-file -p HEAD   (SnapSet, etapes-pilote-ui)</span></div>
+<div class="l k1"><span class="n">1</span><span class="kw">tree</span> 0a838dcd102a8537378b1eff127f5005f1926f8b<span class="rep r1">1</span></div>
+<div class="l k2"><span class="n">2</span><span class="kw">parent</span> 61ee6558fac7ec433a5a837446466777bb85c311<span class="rep r2">2</span></div>
+<div class="l k3"><span class="n">3</span><span class="kw">author</span> Gyci &lt;carolus.jeremy@…&gt; 1792394165 +0200<span class="rep r3">3</span></div>
+<div class="l k4"><span class="n">6</span>Doc et garde-fous alignés sur le code (F3-F6, F8, …)<span class="rep r4">4</span></div>
+<div class="l"><span class="cm">SnapSet/.gitattributes</span></div>
+<div class="l k5"><span class="n">3</span>* text=auto eol=lf<span class="rep r5">5</span></div>
+<div class="l k5"><span class="n">9</span>*.gh  binary</div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>L'arbre</b>Tout le projet.</li>
+      <li><span class="rep r2">2</span><b>Le parent</b>Un seul.</li>
+      <li><span class="rep r3">3</span><b>Qui, quand</b>En secondes Unix.</li>
+      <li><span class="rep r4">4</span><b>Le message</b>Après une ligne vide.</li>
+      <li><span class="rep r5">5</span><b>Les blobs</b>Toujours en LF.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À surveiller · une adresse personnelle dans chaque commit</span>
+    Chaque commit range le nom et l'adresse électronique de son auteur, pour toujours : les trois dépôts en contiennent 187 portant <code>carolus.jeremy@…</code>, sous trois noms (Gyci, GyciH, Jérémy Carolus), et une autre adresse sur 23 commits. Un dépôt rendu public publie ces adresses, et les statistiques comptent trois auteurs pour une personne. GitHub propose une adresse « noreply » à régler dans <code>git config user.email</code>, et un fichier <code>.mailmap</code> regroupe les noms. Relevé par git log.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 103 · Les objets de Git</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 103</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Un blob contient…</div><ul>
+      <li><span>A</span>une différence avec la version précédente</li><li><span>B</span>un dossier</li><li><span>C</span>les octets d'un fichier, sans son nom</li><li><span>D</span>un fichier et son nom</li></ul></div>
+
+    <div class="q"><div class="enonce">Un commit désigne… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>ses enfants</li><li><span>B</span>un arbre racine</li><li><span>C</span>la branche où il a été fait</li><li><span>D</span>son ou ses parents</li></ul></div>
+
+    <div class="q"><div class="enonce">L'identifiant d'un blob est…</div><ul>
+      <li><span>A</span>le SHA-1 de son en-tête et de son contenu</li><li><span>B</span>une date</li><li><span>C</span>le SHA-1 du nom du fichier</li><li><span>D</span>un numéro attribué dans l'ordre</li></ul></div>
+
+    <div class="q"><div class="enonce">Dans SnapSet, 5 186 fichiers listés au fil des commits tiennent en…</div><ul>
+      <li><span>A</span>un seul blob</li><li><span>B</span>41 blobs</li><li><span>C</span>600 blobs</li><li><span>D</span>5 186 blobs</li></ul></div>
+
+    <div class="q"><div class="enonce">Renommer un fichier sans le modifier…</div><ul>
+      <li><span>A</span>crée un nouveau blob</li><li><span>B</span>garde le même blob, change l'arbre</li><li><span>C</span>supprime l'historique du fichier</li><li><span>D</span>ne change rien</li></ul></div>
+
+    <div class="q"><div class="enonce">Toute l'histoire de SnapSet occupe, paquet compris…</div><ul>
+      <li><span>A</span>1,1 Mo, moins que l'arbre de travail</li><li><span>B</span>17,5 Mo</li><li><span>C</span>100 Mo</li><li><span>D</span>2,9 Mo</li></ul></div>
+
+    <div class="q"><div class="enonce">Dans un paquet, une version de Metrique.cs de 180 Ko peut occuper…</div><ul>
+      <li><span>A</span>180 Ko, toujours</li><li><span>B</span>48 octets, comme delta</li><li><span>C</span>2 Mo</li><li><span>D</span>rien</li></ul></div>
+
+    <div class="q"><div class="enonce">Supprimer un gros fichier par un nouveau commit…</div><ul>
+      <li><span>A</span>l'efface de l'histoire</li><li><span>B</span>réduit le paquet</li><li><span>C</span>le compresse</li><li><span>D</span>le laisse dans l'histoire et dans chaque clone</li></ul></div>
+
+    <div class="q"><div class="enonce">Renommer le message du 2e commit sur 4 change l'identifiant de…</div><ul>
+      <li><span>A</span>c2, c3 et c4</li><li><span>B</span>aucun</li><li><span>C</span>c1 à c4</li><li><span>D</span>c2 seulement</li></ul></div>
+
+    <div class="q"><div class="enonce">Après réécriture, c4 garde le même arbre parce que…</div><ul>
+      <li><span>A</span>Git l'interdit</li><li><span>B</span>les arbres n'ont pas d'identifiant</li><li><span>C</span>c'est un hasard</li><li><span>D</span>son contenu n'a pas changé</li></ul></div>
+
+    <div class="q"><div class="enonce">On ne réécrit pas des commits déjà partagés parce que…</div><ul>
+      <li><span>A</span>cela efface le dépôt distant</li><li><span>B</span>Git l'interdit</li><li><span>C</span>ils deviennent illisibles</li><li><span>D</span>les autres gardent les anciens, et les branches divergent</li></ul></div>
+
+    <div class="q"><div class="enonce">L'adresse électronique de l'auteur…</div><ul>
+      <li><span>A</span>est chiffrée</li><li><span>B</span>disparaît au push</li><li><span>C</span>est rangée dans chaque commit, pour toujours</li><li><span>D</span>n'est que sur GitHub</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 103 · Les objets de Git</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 103</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · C.</b> Le nom vit dans l'arbre.</div>
+    <div><b>02 · B et D.</b> Le passé, jamais l'avenir.</div>
+    <div><b>03 · A.</b> "blob taille\0" + contenu.</div>
+    <div><b>04 · C.</b> Les inchangés sont partagés.</div>
+    <div><b>05 · B.</b> Même octets, même blob.</div>
+    <div><b>06 · A.</b> Grâce aux deltas.</div>
+    <div><b>07 · B.</b> Peu de lignes changent.</div>
+    <div><b>08 · D.</b> Les anciens commits le citent.</div>
+    <div><b>09 · A.</b> Les enfants citent le parent.</div>
+    <div><b>10 · D.</b> 0fbef63 dans les deux cas.</div>
+    <div><b>11 · D.</b> Deux histoires sans lien.</div>
+    <div><b>12 · C.</b> D'où l'adresse noreply.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 104, « Branches et références ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">git cat-file -p &lt;id&gt;</td><td>afficher un objet</td><td>page 5</td></tr>
+      <tr><td class="c">git cat-file -t &lt;id&gt;</td><td>son type : blob, tree, commit</td><td>page 1</td></tr>
+      <tr><td class="c">git rev-parse HEAD:chemin</td><td>l'identifiant d'un fichier dans un commit</td><td>schéma 1, page 2</td></tr>
+      <tr><td class="c">git hash-object fichier</td><td>calculer l'identifiant d'un fichier</td><td>page 2</td></tr>
+      <tr><td class="c">git count-objects -vH</td><td>combien d'objets, quel poids</td><td>exemple autonome, page 3</td></tr>
+      <tr><td class="c">git ls-tree -r HEAD</td><td>lister l'arbre d'un commit</td><td>schéma 1, page 2</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Blob</dt><dd>L'objet Git qui contient les octets d'un fichier.</dd>
+    <dt>Arbre (tree)</dt><dd>L'objet Git qui liste les noms d'un dossier et ce qu'ils désignent.</dd>
+    <dt>Adressage par le contenu</dt><dd>Nommer une donnée par l'empreinte de son contenu.</dd>
+    <dt>Paquet (pack)</dt><dd>Un fichier qui regroupe des objets compressés, en partie sous forme de deltas.</dd>
+    <dt>Delta</dt><dd>Une version rangée comme la différence avec une autre.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 104</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 103 · Les objets de Git</div>
+</section>
+
+</body>
+</html>

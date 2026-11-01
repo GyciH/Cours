@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>46 · Les scripts Node d'outillage</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-11">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 46</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Les scripts Node d'outillage</h1>
+  <p class="chapeau">Magpie a deux petits scripts dans <code>outils/</code> : l'un recopie un parcours de ton dossier de travail vers le binaire, l'autre recopie la skill et les agents vers <code>.claude/</code>. Ils sont bâtis sur le même patron : une <b>source</b>, un <b>artefact</b> qui en est la copie, et un mode <code>--check</code> qui dit si les deux ont divergé.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>29</b>, <b>30</b>, <b>41</b> et <b>45</b></span>
+    <span class="pastille">Exemples · <b>outils/publier-parcours.mjs</b>, <b>outils/sync-claude.mjs</b> (Magpie)</span>
+  </div>
+
+  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+    <svg viewBox="0 0 600 200" width="100%">
+<path d="M6 16 h52.5 l6 -8 h91.5 v60 h-150 z" fill="#fff" stroke="#1565C0" stroke-width="1.4"/>
+<text x="81.0" y="44.0" font-size="8.4" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">%AppData%/Magpie</text>
+<text x="81.0" y="58.0" font-size="7.4" fill="#2B2F33" text-anchor="middle">la source, éditée</text>
+<line x1="160" y1="46" x2="214" y2="46" stroke="#2B2F33" stroke-width="1.4"/><polygon points="214,46 207.6,48.7 207.6,43.3" fill="#2B2F33"/>
+<rect x="216" y="24" width="168" height="40" rx="5" fill="#3A3A3A"/><text x="300" y="49" font-size="8.2" fill="#fff" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.2px">publier-parcours.mjs</text>
+<line x1="388" y1="46" x2="440" y2="46" stroke="#2B2F33" stroke-width="1.4"/><polygon points="440,46 433.6,48.7 433.6,43.3" fill="#2B2F33"/>
+<path d="M442 16 h52.5 l6 -8 h91.5 v60 h-150 z" fill="#fff" stroke="#6D4C41" stroke-width="1.4"/>
+<text x="517.0" y="44.0" font-size="8.4" fill="#6D4C41" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">plugin/Resources</text>
+<text x="517.0" y="58.0" font-size="7.4" fill="#2B2F33" text-anchor="middle">embarqué dans le .gha</text>
+<path d="M6 108 h52.5 l6 -8 h91.5 v60 h-150 z" fill="#fff" stroke="#1565C0" stroke-width="1.4"/>
+<text x="81.0" y="136.0" font-size="8.4" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">pedagogie/</text>
+<text x="81.0" y="150.0" font-size="7.4" fill="#2B2F33" text-anchor="middle">la source, éditée</text>
+<line x1="160" y1="138" x2="214" y2="138" stroke="#2B2F33" stroke-width="1.4"/><polygon points="214,138 207.6,140.7 207.6,135.3" fill="#2B2F33"/>
+<rect x="216" y="116" width="168" height="40" rx="5" fill="#3A3A3A"/><text x="300" y="141" font-size="8.2" fill="#fff" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.2px">sync-claude.mjs</text>
+<line x1="388" y1="138" x2="440" y2="138" stroke="#2B2F33" stroke-width="1.4"/><polygon points="440,138 433.6,140.7 433.6,135.3" fill="#2B2F33"/>
+<path d="M442 108 h52.5 l6 -8 h91.5 v60 h-150 z" fill="#fff" stroke="#6D4C41" stroke-width="1.4"/>
+<text x="517.0" y="136.0" font-size="8.4" fill="#6D4C41" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">.claude/</text>
+<text x="517.0" y="150.0" font-size="7.4" fill="#2B2F33" text-anchor="middle">lu par Claude Code</text>
+<text x="300" y="92" font-size="7.6" fill="#E65100" text-anchor="middle" font-weight="700">--check : compare sans écrire, sort en 1</text>
+<text x="517" y="196" font-size="7.6" fill="#C62828" text-anchor="middle" font-style="italic">artefact : ne pas éditer</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Quand un même contenu doit exister à deux endroits, on n'en édite qu'un ; l'autre est fabriqué par un script, et un second mode du même script vérifie, sans rien toucher, que la copie est à jour.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Le tirage d'une photo. On retouche le négatif, jamais le tirage ; et l'on peut toujours poser le tirage à côté du négatif pour voir s'il est encore fidèle.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>trouver la racine du dépôt depuis un script, où qu'on le lance ;</li>
+        <li>lire options et variables d'environnement ;</li>
+        <li>synchroniser deux dossiers : écrire, sauter, supprimer ;</li>
+        <li>rendre un code de sortie qu'un hook ou une CI comprend.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:5mm">
+    <span class="titre">À retenir</span>
+    L'artefact ne s'édite pas à la main : « l'éditer à la main revient à écrire dans un dossier de sortie, et la prochaine publication l'écrasera » (publier-parcours.mjs, lignes 15–17). Les deux scripts le disent dans leur en-tête, et <code>--check</code> le fait respecter.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 46 · Les scripts Node d'outillage</div>
+</section>
+
+<!-- ============ PAGE 2 · SES REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 46</b></div>
+  <p class="rubrique">Schéma 1 · Trouver ses repères</p>
+  <h2>Où est le dépôt, où est la source ?</h2>
+  <p style="max-width:165mm">Un script peut être lancé depuis n'importe quel dossier. Il calcule donc la racine du dépôt à partir de <b>son propre fichier</b>, puis cherche la source par une chaîne de replis, du plus explicite au plus général.</p>
+
+  <svg viewBox="0 0 600 170" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="170" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="9" fill="#4F46B8" text-anchor="start" font-weight="700">SOURCE = le premier qui existe</text>
+<rect x="16" y="38" width="172" height="48" rx="5" fill="#fff" stroke="#E65100" stroke-width="1.4"/>
+<text x="102" y="58" font-size="8.8" fill="#E65100" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.8px">MAGPIE_APPDATA</text>
+<text x="102" y="74" font-size="7.6" fill="#2B2F33" text-anchor="middle">variable d'environnement</text>
+<line x1="188" y1="62" x2="210" y2="62" stroke="#2B2F33" stroke-width="1.2"/><polygon points="210,62 203.6,64.7 203.6,59.3" fill="#2B2F33"/>
+<text x="199" y="54" font-size="8" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">??</text>
+<rect x="212" y="38" width="172" height="48" rx="5" fill="#fff" stroke="#1565C0" stroke-width="1.4"/>
+<text x="298" y="58" font-size="8.8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.8px">dossierRegle()</text>
+<text x="298" y="74" font-size="7.6" fill="#2B2F33" text-anchor="middle">Grasshopper/Magpie.xml</text>
+<line x1="384" y1="62" x2="406" y2="62" stroke="#2B2F33" stroke-width="1.2"/><polygon points="406,62 399.6,64.7 399.6,59.3" fill="#2B2F33"/>
+<text x="395" y="54" font-size="8" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">??</text>
+<rect x="408" y="38" width="172" height="48" rx="5" fill="#fff" stroke="#2E7D32" stroke-width="1.4"/>
+<text x="494" y="58" font-size="8.8" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.8px">APPDATA/Magpie</text>
+<text x="494" y="74" font-size="7.6" fill="#2B2F33" text-anchor="middle">l'emplacement historique</text>
+<text x="16" y="112" font-size="8.2" fill="#2B2F33" text-anchor="start">?? passe au suivant quand la gauche est null ou undefined :</text>
+<text x="16" y="128" font-size="8.2" fill="#2B2F33" text-anchor="start">variable absente → undefined ; dossier réglé disparu → dossierRegle() rend null.</text>
+<text x="16" y="150" font-size="8.2" fill="#4F46B8" text-anchor="start" font-weight="700">Et RACINE ne dépend pas du dossier courant : elle se calcule depuis le fichier du script.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Magpie · outils/publier-parcours.mjs · 26–27 et 39–55</span>const RACINE = dirname(dirname(fileURLToPath(import.meta.url)));
+const check = process.argv.includes("--check");
+…
+const APPDATA = process.env.APPDATA ?? join(homedir(), ".config");
+…
+const SOURCE = process.env.MAGPIE_APPDATA
+  ?? dossierRegle()
+  ?? join(APPDATA, "Magpie");</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>import.meta.url</h3>
+      <p>Dans un module ES, <code>import.meta.url</code> est l'adresse du fichier en cours, en <code>file://</code>. <code>fileURLToPath</code> en fait un chemin, et deux <code>dirname</code> remontent de <code>outils/publier-parcours.mjs</code> à la racine. Le dossier courant n'intervient pas.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Lire les réglages de Grasshopper</h3>
+      <p><code>dossierRegle</code> ouvre <code>Grasshopper/Magpie.xml</code>, y cherche l'élément <code>DossierTravail</code> par une expression régulière, et décode les entités XML (lignes 41–51). Le script trouve ainsi le même dossier que le plugin.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège réel</span>
+    Deux règles qui divergent. Le plugin revient au dossier par défaut quand le dossier réglé a disparu (disque débranché) ; un script qui ne le ferait pas publierait depuis un autre endroit que celui où l'auteur travaille. D'où la ligne 50 : <code>existsSync(dossier) ? dossier : null</code>, « même règle ».
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 46 · Les scripts Node d'outillage</div>
+</section>
+
+<!-- ============ PAGE 3 · SYNCHRONISER ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 46</b></div>
+  <p class="rubrique">Schéma 2 · Trois listes</p>
+  <h2>Écrire, sauter, supprimer</h2>
+  <p style="max-width:165mm">Synchroniser, c'est comparer deux listes : ce qui <b>devrait</b> être dans l'artefact (les attendus) et ce qui <b>y est</b> (les présents). De là sortent trois sortes de fichiers, et chacune a son geste.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<circle cx="230" cy="114" r="88" fill="#1565C0" fill-opacity=".10" stroke="#1565C0" stroke-width="1.4"/>
+<circle cx="350" cy="114" r="88" fill="#6D4C41" fill-opacity=".10" stroke="#6D4C41" stroke-width="1.4"/>
+<text x="200" y="18" font-size="9" fill="#1565C0" text-anchor="middle" font-weight="700">attendus</text>
+<text x="380" y="18" font-size="9" fill="#6D4C41" text-anchor="middle" font-weight="700">présents</text>
+<text x="194" y="112" font-size="8.4" fill="#2E7D32" text-anchor="middle" font-weight="700">à écrire</text><text x="194" y="126" font-size="7.4" fill="#2B2F33" text-anchor="middle">(manquants)</text>
+<text x="290" y="100" font-size="7.6" fill="#6B7378" text-anchor="middle" font-weight="700">identiques :</text><text x="290" y="112" font-size="7.6" fill="#6B7378" text-anchor="middle">sautés</text>
+<text x="290" y="132" font-size="7.6" fill="#E65100" text-anchor="middle" font-weight="700">différents :</text><text x="290" y="144" font-size="7.6" fill="#E65100" text-anchor="middle">réécrits</text>
+<text x="388" y="112" font-size="8.4" fill="#C62828" text-anchor="middle" font-weight="700">en trop :</text><text x="388" y="126" font-size="7.4" fill="#2B2F33" text-anchor="middle">supprimés</text>
+<text x="460" y="80" font-size="8" fill="#2B2F33" text-anchor="start">Avec --check, chaque</text><text x="460" y="94" font-size="8" fill="#2B2F33" text-anchor="start">geste coloré devient</text><text x="460" y="108" font-size="8" fill="#2B2F33" text-anchor="start">une divergence comptée,</text><text x="460" y="122" font-size="8" fill="#2B2F33" text-anchor="start">et rien n'est touché.</text>
+<text x="16" y="80" font-size="8" fill="#2B2F33" text-anchor="start">Les attendus de</text><text x="16" y="94" font-size="8" fill="#2B2F33" text-anchor="start">publier-parcours :</text><text x="16" y="108" font-size="8" fill="#2B2F33" text-anchor="start">le parcours, puis</text><text x="16" y="122" font-size="8" fill="#2B2F33" text-anchor="start">exactement ses</text><text x="16" y="136" font-size="8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8px">ExerciseIds.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Magpie · outils/publier-parcours.mjs · 29–32 et 91–102</span>// Les parcours à embarquer. Un seul pour octobre — et c'est volontairement une
+// liste explicite, pas un balayage du dossier : le %AppData% de l'auteur contient
+// aussi ses brouillons, qui n'ont rien à faire dans le binaire livré.
+const PARCOURS = ["G2V_01"];
+…
+for (const id of PARCOURS) {
+  const brut = lire(PARCOURS_DIR, id);
+  attendus.set(join(PARCOURS_DIR, `${id}.json`), brut);
+  const def = JSON.parse(brut.toString("utf8"));
+  for (const exId of def.ExerciseIds ?? [])
+    attendus.set(join(EXERCICES, `${exId}.json`), lire(EXERCICES, exId));
+}</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Comparer octet par octet</h3>
+      <p><code>readFileSync</code> sans encodage rend un <code>Buffer</code>, et <code>Buffer.equals</code> compare les octets. Un fichier identique est sauté : rien n'est réécrit, et la date de modification ne bouge pas.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Refuser ce qui ne se relit pas</h3>
+      <p><code>lire</code> parse chaque JSON avant de le publier (lignes 73–89). Un fichier cassé arrête tout : « le dire ici coûte une ligne ; le découvrir en salle, une séance ».</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Oublier les fichiers en trop. Un exercice retiré du parcours mais resté dans <code>plugin/Resources</code> continuerait d'être servi par la source embarquée, alors que plus rien ne le cite (lignes 116–117). Recopier ne suffit pas : il faut aussi supprimer.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 46 · Les scripts Node d'outillage</div>
+</section>
+
+<!-- ============ PAGE 4 · --CHECK ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 46</b></div>
+  <p class="rubrique">Schéma 3 · Vérifier sans toucher</p>
+  <h2>--check et les codes de sortie</h2>
+  <p style="max-width:165mm">Le même parcours des fichiers sert deux modes. Sans option, le script écrit. Avec <code>--check</code>, il n'écrit rien, compte les divergences et sort avec un code que peut lire une autre machine.</p>
+
+  <svg viewBox="0 0 600 176" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="176" fill="#EFE9E1"/>
+<rect x="16" y="12" width="568" height="22" rx="4" fill="#4F46B8"/>
+<text x="28" y="27" font-size="8.8" fill="#fff" text-anchor="start" font-weight="700">Code</text>
+<text x="90" y="27" font-size="8.8" fill="#fff" text-anchor="start" font-weight="700">Quand</text>
+<text x="330" y="27" font-size="8.8" fill="#fff" text-anchor="start" font-weight="700">Qui le lit, et ce qu'il fait</text>
+<rect x="16" y="38" width="568" height="28" fill="#fff"/>
+<circle cx="40" cy="52" r="10" fill="#2E7D32"/><text x="40" y="56" font-size="9.4" fill="#fff" text-anchor="middle" font-weight="700" class="mono" style="font-size:9.4px">0</text>
+<text x="90" y="56" font-size="8.4" fill="#2B2F33" text-anchor="start">à jour, ou recopie faite</text>
+<text x="330" y="56" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700">le hook laisse passer le commit</text>
+<rect x="16" y="68" width="568" height="28" fill="#ECEBFA"/>
+<circle cx="40" cy="82" r="10" fill="#E65100"/><text x="40" y="86" font-size="9.4" fill="#fff" text-anchor="middle" font-weight="700" class="mono" style="font-size:9.4px">1</text>
+<text x="90" y="86" font-size="8.4" fill="#2B2F33" text-anchor="start">--check : divergence trouvée</text>
+<text x="330" y="86" font-size="8.4" fill="#E65100" text-anchor="start" font-weight="700">le hook refuse ; la CI passe au rouge</text>
+<rect x="16" y="98" width="568" height="28" fill="#fff"/>
+<circle cx="40" cy="112" r="10" fill="#C62828"/><text x="40" y="116" font-size="9.4" fill="#fff" text-anchor="middle" font-weight="700" class="mono" style="font-size:9.4px">2</text>
+<text x="90" y="116" font-size="8.4" fill="#2B2F33" text-anchor="start">source introuvable, absente, illisible</text>
+<text x="330" y="116" font-size="8.4" fill="#C62828" text-anchor="start" font-weight="700">rien ne doit partir : à corriger d'abord</text>
+<text x="16" y="150" font-size="8.2" fill="#2B2F33" text-anchor="start">console.log pour ce qui va bien, console.error pour les problèmes : un outil peut les séparer.</text>
+<text x="16" y="166" font-size="8.2" fill="#6B7378" text-anchor="start" font-style="italic">Le code de sortie, lui, se lit dans $? sous bash, ou par la CI, sans lire un mot du message.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Magpie · outils/publier-parcours.mjs · 145–153</span>if (check) {
+  if (divergences) {
+    console.error(
+      `\n${divergences} divergence(s) entre ${SOURCE} et plugin/Resources.\n` +
+      `Lance « node outils/publier-parcours.mjs », puis recompile le .gha.`,
+    );
+    process.exit(1);
+  }
+  console.log("Les parcours embarqués sont à jour.");
+}</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Trois codes, trois sens</h3>
+      <p><code>0</code> : à jour, ou recopié. <code>1</code> : divergence trouvée par <code>--check</code>. <code>2</code> : la source elle-même pose problème (dossier introuvable, fichier absent ou illisible). Un hook de pré-commit ou une CI n'a besoin que de ce nombre.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Un message qui dit quoi faire</h3>
+      <p>Une divergence ne se contente pas de « erreur » : le message donne la commande à lancer, et l'étape d'après (« puis recompile le .gha »). Les sorties normales vont sur <code>console.log</code>, les problèmes sur <code>console.error</code>.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège réel</span>
+    Corriger un exercice dans <code>%AppData%</code> et oublier de le republier : le binaire livre l'ancienne version. C'est « exactement la panne que ce chantier ferme » (lignes 12–13). <code>--check</code> la rend visible avant le commit, au lieu de la laisser arriver en salle.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 46 · Les scripts Node d'outillage</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 46</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>sync-claude.mjs : la boucle commune</h2>
+  <p style="max-width:165mm">Le second script applique le même patron à deux paires de dossiers, <code>pedagogie/skill</code> et <code>pedagogie/agents</code>, recopiés là où Claude Code les cherche. Voici sa boucle, presque mot pour mot celle de <code>publier-parcours</code>.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="n">58</span><span class="kw">for</span> (<span class="kw">const</span> { de, vers, ignore } <span class="kw">of</span> PAIRES) {</div>
+<div class="l k1"><span class="n">67</span>  <span class="kw">const</span> attendus = fichiers(src)<span class="rep r1">1</span></div>
+<div class="l k1"><span class="n"> </span>    .filter((rel) =&gt; !ignore?.(rel));</div>
+<div class="l k2"><span class="n">68</span>  <span class="kw">const</span> presents = fichiers(dst);<span class="rep r2">2</span></div>
+<div class="l k3"><span class="n">71</span>  <span class="kw">for</span> (<span class="kw">const</span> rel <span class="kw">of</span> presents) {<span class="rep r3">3</span></div>
+<div class="l k3"><span class="n">72</span>    <span class="kw">if</span> (attendus.includes(rel)) <span class="kw">continue</span>;</div>
+<div class="l k3"><span class="n">73</span>    <span class="kw">if</span> (check) { divergences++; }</div>
+<div class="l k3"><span class="n">76</span>    <span class="kw">else</span> { rmSync(join(dst, rel)); }</div>
+<div class="l"><span class="n">81</span>  }</div>
+<div class="l k4"><span class="n">84</span>  <span class="kw">for</span> (<span class="kw">const</span> rel <span class="kw">of</span> attendus) {<span class="rep r4">4</span></div>
+<div class="l k5"><span class="n">85</span>    <span class="kw">const</span> contenu = readFileSync(join(src, rel));<span class="rep r5">5</span></div>
+<div class="l k5"><span class="n">87</span>    <span class="kw">const</span> identique = existsSync(cible)</div>
+<div class="l k5"><span class="n"> </span>      &amp;&amp; readFileSync(cible).equals(contenu);</div>
+<div class="l k5"><span class="n">88</span>    <span class="kw">if</span> (identique) <span class="kw">continue</span>;</div>
+<div class="l k6"><span class="n">90</span>    <span class="kw">if</span> (check) { divergences++; }<span class="rep r6">6</span></div>
+<div class="l k6"><span class="n">93</span>    <span class="kw">else</span> { mkdirSync(dirname(cible), { recursive: <span class="kw">true</span> });</div>
+<div class="l k6"><span class="n">95</span>           writeFileSync(cible, contenu); }</div>
+<div class="l"><span class="n">99</span>  }</div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Les attendus</b>Tout sauf les notes de révision.</li>
+      <li><span class="rep r2">2</span><b>Les présents</b>Ce qui est déjà dans .claude/.</li>
+      <li><span class="rep r3">3</span><b>En trop</b>Compté ou supprimé.</li>
+      <li><span class="rep r4">4</span><b>À écrire</b>Chaque attendu.</li>
+      <li><span class="rep r5">5</span><b>Identique ?</b>Octet par octet : on saute.</li>
+      <li><span class="rep r6">6</span><b>Différent</b>Compté, ou écrit avec ses dossiers.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">Pourquoi ignorer NOTE-DE-REVISION</span>
+    La note documente une révision pour un humain ; la charger avec la skill « ne ferait qu'ajouter du contexte que le modèle n'a pas à lire » (lignes 34–36). Le filtre <code>ignore</code> est une fonction : chaque paire peut avoir le sien, ou aucun, d'où l'appel optionnel <code>ignore?.(rel)</code>.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 46 · Les scripts Node d'outillage</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 46</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Un artefact, dans ces scripts, c'est…</div><ul>
+      <li><span>A</span>la source à éditer</li><li><span>B</span>une copie fabriquée, à ne pas éditer à la main</li><li><span>C</span>un fichier temporaire</li><li><span>D</span>un exécutable</li></ul></div>
+
+    <div class="q"><div class="enonce">dirname(dirname(fileURLToPath(import.meta.url))) donne…</div><ul>
+      <li><span>A</span>le dossier courant</li><li><span>B</span>le dossier personnel</li><li><span>C</span>la racine du dépôt, d'où qu'on lance</li><li><span>D</span>le dossier de Node</li></ul></div>
+
+    <div class="q"><div class="enonce">process.argv.includes("--check") sert à…</div><ul>
+      <li><span>A</span>lire une option de la ligne de commande</li><li><span>B</span>vérifier Node</li><li><span>C</span>lire une variable d'environnement</li><li><span>D</span>ouvrir un fichier</li></ul></div>
+
+    <div class="q"><div class="enonce">MAGPIE_APPDATA défini, la source est…</div><ul>
+      <li><span>A</span>%AppData%/Magpie</li><li><span>B</span>le dossier réglé dans Grasshopper</li><li><span>C</span>le dépôt</li><li><span>D</span>le dossier qu'elle indique</li></ul></div>
+
+    <div class="q"><div class="enonce">Pourquoi une liste PARCOURS explicite ?</div><ul>
+      <li><span>A</span>pour aller plus vite</li><li><span>B</span>pour ne pas embarquer les brouillons de l'auteur</li><li><span>C</span>Node l'exige</li><li><span>D</span>il n'y a qu'un dossier</li></ul></div>
+
+    <div class="q"><div class="enonce">Un fichier identique dans l'artefact est…</div><ul>
+      <li><span>A</span>réécrit</li><li><span>B</span>supprimé</li><li><span>C</span>sauté</li><li><span>D</span>renommé</li></ul></div>
+
+    <div class="q"><div class="enonce">Un fichier présent mais plus attendu, sans --check :</div><ul>
+      <li><span>A</span>il est supprimé</li><li><span>B</span>il est gardé</li><li><span>C</span>il est déplacé</li><li><span>D</span>il bloque le script</li></ul></div>
+
+    <div class="q"><div class="enonce">--check trouve une divergence. Le code de sortie est…</div><ul>
+      <li><span>A</span>0</li><li><span>B</span>2</li><li><span>C</span>−1</li><li><span>D</span>1</li></ul></div>
+
+    <div class="q"><div class="enonce">Le code 2 signifie…</div><ul>
+      <li><span>A</span>tout va bien</li><li><span>B</span>deux divergences</li><li><span>C</span>la source pose problème : absente, illisible</li><li><span>D</span>deux fichiers écrits</li></ul></div>
+
+    <div class="q"><div class="enonce">Qui peut tirer parti de --check ? <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>un hook de pré-commit</li><li><span>B</span>une CI</li><li><span>C</span>le plugin dans Grasshopper</li><li><span>D</span>l'apprenant</li></ul></div>
+
+    <div class="q"><div class="enonce">Pourquoi lire chaque JSON avant de le publier ?</div><ul>
+      <li><span>A</span>pour le reformater</li><li><span>B</span>un JSON cassé serait sauté en silence par le plugin</li><li><span>C</span>pour le traduire</li><li><span>D</span>pour le compresser</li></ul></div>
+
+    <div class="q"><div class="enonce">ignore?.(rel) appelle ignore…</div><ul>
+      <li><span>A</span>toujours</li><li><span>B</span>jamais</li><li><span>C</span>deux fois</li><li><span>D</span>seulement si la paire en définit un</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 46 · Les scripts Node d'outillage</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 46</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · B.</b> La prochaine copie l'écrase.</div>
+    <div><b>02 · C.</b> Calculée depuis le fichier lui-même.</div>
+    <div><b>03 · A.</b> argv : les mots tapés.</div>
+    <div><b>04 · D.</b> Le premier maillon du ??.</div>
+    <div><b>05 · B.</b> Lignes 29–31.</div>
+    <div><b>06 · C.</b> Buffer.equals.</div>
+    <div><b>07 · A.</b> Sinon il reste servi.</div>
+    <div><b>08 · D.</b> process.exit(1).</div>
+    <div><b>09 · C.</b> process.exit(2), lignes 69, 77, 86.</div>
+    <div><b>10 · A et B.</b> Ils ne lisent que le code.</div>
+    <div><b>11 · B.</b> Une ligne ici, une séance en salle.</div>
+    <div><b>12 · D.</b> Appel optionnel ?.().</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis la page 4 et la boucle de la page 5. <b>10 à 12</b> : passe au cours 91, « Mesurer avant d'optimiser ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">fileURLToPath(import.meta.url)</td><td>le chemin du script</td><td>publier-parcours.mjs:26</td></tr>
+      <tr><td class="c">process.argv.includes("--check")</td><td>lire une option</td><td>publier-parcours.mjs:27</td></tr>
+      <tr><td class="c">process.env.MAGPIE_APPDATA ?? …</td><td>variable, puis replis</td><td>publier-parcours.mjs:53</td></tr>
+      <tr><td class="c">readFileSync(a).equals(b)</td><td>comparer octet par octet</td><td>publier-parcours.mjs:132</td></tr>
+      <tr><td class="c">mkdirSync(d, { recursive: true })</td><td>créer les dossiers manquants</td><td>publier-parcours.mjs:138</td></tr>
+      <tr><td class="c">process.exit(1)</td><td>signaler une divergence</td><td>publier-parcours.mjs:151</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Artefact</dt><dd>Un fichier fabriqué depuis une source, qu'on régénère au lieu de l'éditer.</dd>
+    <dt>Code de sortie</dt><dd>Le nombre qu'un programme rend en finissant : 0 pour « tout va bien ».</dd>
+    <dt>Variable d'environnement</dt><dd>Un réglage passé au programme par le système, lu par process.env.</dd>
+    <dt>Buffer</dt><dd>Un tableau d'octets bruts en Node, sans encodage de texte.</dd>
+    <dt>Hook de pré-commit</dt><dd>Un script que git lance avant chaque commit, et qui peut le refuser.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 91</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 46 · Les scripts Node d'outillage</div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>31 · React et Vite</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-8">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 31</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>React et Vite</h1>
+  <p class="chapeau">Le front de Magpie ne retouche jamais la page à la main. Chaque composant est une fonction qui <b>décrit</b> ce que l'écran doit montrer pour un état donné ; quand l'état change, React rappelle la fonction et applique la différence. Vite, lui, sert ces fichiers pendant le développement et les assemble pour la mise en ligne.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>55 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>29</b> et <b>30</b></span>
+    <span class="pastille">Exemples · <b>App.jsx</b>, <b>QuickSearch.jsx</b>, <b>hooks/</b>, <b>vite.config.js</b> (Magpie)</span>
+  </div>
+
+  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+    <svg viewBox="0 0 600 196" width="100%">
+<text x="16" y="16" font-size="11" fill="#7A5A12" text-anchor="start" font-weight="700">Une frappe dans la recherche rapide : la boucle de React</text>
+<rect x="16" y="34" width="130" height="50" rx="5" fill="#fff" stroke="#2E7D32" stroke-width="1.4"/>
+<text x="81" y="54" font-size="10" fill="#2E7D32" text-anchor="middle" font-weight="700">état</text>
+<text x="81" y="72" font-size="8.8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.8px">query = "cer"</text>
+<line x1="147" y1="59" x2="161" y2="59" stroke="#6B7378" stroke-width="1.4"/><polygon points="161,59 154.6,61.7 154.6,56.3" fill="#6B7378"/>
+<rect x="162" y="34" width="130" height="50" rx="5" fill="#fff" stroke="#7B1FA2" stroke-width="1.4"/>
+<text x="227" y="54" font-size="10" fill="#7B1FA2" text-anchor="middle" font-weight="700">rendu</text>
+<text x="227" y="72" font-size="8.8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.8px">QuickSearch(props)</text>
+<line x1="293" y1="59" x2="307" y2="59" stroke="#6B7378" stroke-width="1.4"/><polygon points="307,59 300.6,61.7 300.6,56.3" fill="#6B7378"/>
+<rect x="308" y="34" width="130" height="50" rx="5" fill="#fff" stroke="#1565C0" stroke-width="1.4"/>
+<text x="373" y="54" font-size="10" fill="#1565C0" text-anchor="middle" font-weight="700">comparaison</text>
+<text x="373" y="72" font-size="8.8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.8px">avant / après</text>
+<line x1="439" y1="59" x2="453" y2="59" stroke="#6B7378" stroke-width="1.4"/><polygon points="453,59 446.6,61.7 446.6,56.3" fill="#6B7378"/>
+<rect x="454" y="34" width="130" height="50" rx="5" fill="#fff" stroke="#7A5A12" stroke-width="1.4"/>
+<text x="519" y="54" font-size="10" fill="#7A5A12" text-anchor="middle" font-weight="700">page</text>
+<text x="519" y="72" font-size="8.8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.8px">liste retouchée</text>
+<text x="81" y="100" font-size="8.4" fill="#6B7378" text-anchor="middle" font-style="italic">la valeur retenue</text>
+<text x="227" y="100" font-size="8.4" fill="#6B7378" text-anchor="middle" font-style="italic">la fonction rappelée</text>
+<text x="373" y="100" font-size="8.4" fill="#6B7378" text-anchor="middle" font-style="italic">React cherche l'écart</text>
+<text x="519" y="100" font-size="8.4" fill="#6B7378" text-anchor="middle" font-style="italic">seul l'écart est appliqué</text>
+<path d="M519 108 L519 132 L81 132 L81 112" fill="none" stroke="#E65100" stroke-width="1.4"/>
+<polygon points="81,106 77,114 85,114" fill="#E65100"/>
+<rect x="170" y="122" width="260" height="20" rx="4" fill="#E65100"/>
+<text x="300" y="136" font-size="8.8" fill="#fff" text-anchor="middle" font-weight="700">frappe « c » → onChange → setQuery("cerc")</text>
+<text x="300" y="166" font-size="9" fill="#2B2F33" text-anchor="middle">Tu n'écris que deux choses : ce que la fonction affiche, et quand l'état change.</text>
+<text x="300" y="180" font-size="9" fill="#2B2F33" text-anchor="middle">Le reste de la boucle appartient à React.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>L'écran est une <b>fonction de l'état</b> : tu écris ce qu'il faut afficher, jamais comment passer d'un affichage à l'autre. Le passage, React le calcule.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Grasshopper. Tu ne redessines pas la géométrie quand tu bouges un curseur : tu as câblé une fois la définition, et le graphe se recalcule en aval. Un composant React est cette définition ; <code>setState</code> est le curseur qui bouge.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>lire un composant, son JSX et ses props ;</li>
+        <li>employer useState, useEffect, useMemo et useRef ;</li>
+        <li>reconnaître un hook maison comme useCatalog ;</li>
+        <li>dire ce que fait Vite en développement et au build.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:5mm">
+    <span class="titre">À retenir</span>
+    Un composant React est une <b>fonction</b> qui reçoit des <b>props</b> et rend du <b>JSX</b>. Ce qu'il doit retenir d'un rendu à l'autre passe par des <b>hooks</b> (<code>useState</code>…). Une règle fixe : on appelle les hooks en tête de fonction, toujours dans le même ordre, jamais dans un <code>if</code>.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 31 · React et Vite</div>
+</section>
+
+<!-- ============ PAGE 2 · COMPOSANTS ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 31</b></div>
+  <p class="rubrique">Schéma 1 · Composants et props</p>
+  <h2>Un arbre de fonctions</h2>
+  <p style="max-width:165mm"><code>main.jsx</code> monte un seul composant dans la balise <code>&lt;div id="root"&gt;</code> d'<code>index.html</code>. Tout le reste en découle : chaque composant en appelle d'autres dans son JSX et leur passe des <b>props</b>, comme des arguments.</p>
+
+  <svg viewBox="0 0 600 228" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="228" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="12" fill="#7A5A12" text-anchor="start" font-weight="700">L'interface de l'apprenant, de main.jsx aux feuilles</text>
+<rect x="16" y="38" width="104" height="26" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.3"/>
+<text x="68" y="55" font-size="8.8" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.8px">main.jsx</text>
+<line x1="121" y1="51" x2="131" y2="51" stroke="#6B7378" stroke-width="1.1"/><polygon points="131,51 124.6,53.7 124.6,48.3" fill="#6B7378"/>
+<rect x="132" y="38" width="104" height="26" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.3"/>
+<text x="184" y="55" font-size="8.8" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.8px">StrictMode</text>
+<line x1="237" y1="51" x2="247" y2="51" stroke="#6B7378" stroke-width="1.1"/><polygon points="247,51 240.6,53.7 240.6,48.3" fill="#6B7378"/>
+<rect x="248" y="38" width="104" height="26" rx="4" fill="#F4EEDF" stroke="#7A5A12" stroke-width="1.3"/>
+<text x="300" y="55" font-size="8.8" fill="#7A5A12" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.8px">App</text>
+<line x1="353" y1="51" x2="363" y2="51" stroke="#6B7378" stroke-width="1.1"/><polygon points="363,51 356.6,53.7 356.6,48.3" fill="#6B7378"/>
+<rect x="364" y="38" width="104" height="26" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.3"/>
+<text x="416" y="55" font-size="8.8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.8px">ReactFlowProvider</text>
+<line x1="469" y1="51" x2="479" y2="51" stroke="#6B7378" stroke-width="1.1"/><polygon points="479,51 472.6,53.7 472.6,48.3" fill="#6B7378"/>
+<rect x="480" y="38" width="104" height="26" rx="4" fill="#F4EEDF" stroke="#7A5A12" stroke-width="1.3"/>
+<text x="532" y="55" font-size="8.8" fill="#7A5A12" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.8px">StudentCanvas</text>
+<text x="300" y="80" font-size="8.2" fill="#6B7378" text-anchor="middle" font-style="italic">ou AdminApp sous /admin (main.jsx, ligne 10)</text>
+<line x1="532" y1="64" x2="532" y2="96" stroke="#6B7378"/>
+<line x1="86" y1="96" x2="532" y2="96" stroke="#6B7378"/>
+<line x1="86" y1="96" x2="86" y2="110" stroke="#6B7378" stroke-width="1.1"/><polygon points="86,110 83.3,103.6 88.7,103.6" fill="#6B7378"/>
+<rect x="16" y="112" width="188" height="40" rx="4" fill="#fff" stroke="#7A5A12" stroke-width="1.3"/>
+<text x="110" y="128" font-size="9" fill="#7A5A12" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">ExerciseHeader</text>
+<text x="110" y="144" font-size="8.2" fill="#E65100" text-anchor="middle" class="mono" style="font-size:8.2px">parcours</text>
+<line x1="276" y1="96" x2="276" y2="110" stroke="#6B7378" stroke-width="1.1"/><polygon points="276,110 273.3,103.6 278.7,103.6" fill="#6B7378"/>
+<rect x="206" y="112" width="188" height="40" rx="4" fill="#fff" stroke="#7A5A12" stroke-width="1.3"/>
+<text x="300" y="128" font-size="9" fill="#7A5A12" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">ExercisePanel</text>
+<text x="300" y="144" font-size="8.2" fill="#E65100" text-anchor="middle" class="mono" style="font-size:8.2px">exercise, onSubmit, …</text>
+<line x1="466" y1="96" x2="466" y2="110" stroke="#6B7378" stroke-width="1.1"/><polygon points="466,110 463.3,103.6 468.7,103.6" fill="#6B7378"/>
+<rect x="396" y="112" width="188" height="40" rx="4" fill="#fff" stroke="#7A5A12" stroke-width="1.3"/>
+<text x="490" y="128" font-size="9" fill="#7A5A12" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">GraphCanvas</text>
+<text x="490" y="144" font-size="8.2" fill="#E65100" text-anchor="middle" class="mono" style="font-size:8.2px">editor, catalog, viewer, …</text>
+<line x1="490" y1="152" x2="490" y2="170" stroke="#6B7378" stroke-width="1.1"/><polygon points="490,170 487.3,163.6 492.7,163.6" fill="#6B7378"/>
+<rect x="396" y="172" width="188" height="40" rx="4" fill="#fff" stroke="#1565C0" stroke-dasharray="4 2" stroke-width="1.3"/>
+<text x="490" y="188" font-size="9" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">Suspense › Viewer3D</text>
+<text x="490" y="204" font-size="8.2" fill="#2B2F33" text-anchor="middle">chargé à la demande (lazy)</text>
+<text x="16" y="184" font-size="8.6" fill="#E65100" text-anchor="start" font-weight="700">En orange : les props,</text>
+<text x="16" y="198" font-size="8.6" fill="#2B2F33" text-anchor="start">passées comme des arguments.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">App.jsx · 106–118 et 142–155, condensé</span>return (
+  &lt;div className="magpie-app-layout"&gt;
+    {layout.chromeOpen &amp;&amp; &lt;ExerciseHeader parcours={parcours} /&gt;}
+    {!rotateHintClosed &amp;&amp; (
+      &lt;button onClick={() =&gt; setRotateHintClosed(true)}&gt;✕&lt;/button&gt;
+    )}
+    &lt;ExercisePanel exercise={currentExercise} onSubmit={handleSubmit} … /&gt;
+    …</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Le JSX, c'est du JavaScript</h3>
+      <p>Les accolades insèrent une expression. <code>cond &amp;&amp; &lt;X /&gt;</code> affiche X seulement si cond est vrai. On écrit <code>className</code>, car <code>class</code> est un mot réservé du langage. Vite traduit chaque balise en appel de fonction.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Les données descendent, les événements remontent</h3>
+      <p>Les props arrivent en un seul objet, qu'on déstructure : <code>function ExerciseHeader({ parcours })</code>. Un enfant ne les modifie pas. Pour prévenir son parent, il appelle une fonction reçue en prop, comme <code>onSubmit</code>.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Oublier <code>key</code> dans un <code>map</code>. Sans clé stable, React reconnaît les éléments d'une liste par leur position : supprime le premier, et l'état du deuxième glisse sur le premier. Magpie donne une identité, jamais l'index : <code>key={ex.id}</code> (ExerciseHeader.jsx, ligne 59).
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 31 · React et Vite</div>
+</section>
+
+<!-- ============ PAGE 3 · HOOKS ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 31</b></div>
+  <p class="rubrique">Schéma 2 · Les hooks</p>
+  <h2>Ce qu'une fonction retient entre deux appels</h2>
+  <p style="max-width:165mm">Une fonction ordinaire oublie tout à la sortie. Les hooks donnent au composant une mémoire, rangée par React à côté de lui. Leurs noms commencent tous par <code>use</code>, y compris ceux que tu écris toi-même.</p>
+
+  <svg viewBox="0 0 600 196" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="196" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="12" fill="#7A5A12" text-anchor="start" font-weight="700">Six hooks, et leur voisin en C#</text>
+<text x="26" y="44" font-size="9" fill="#7A5A12" text-anchor="start" font-weight="700">hook</text>
+<text x="126" y="44" font-size="9" fill="#6B7378" text-anchor="start" font-weight="700">ce qu'il garde</text>
+<text x="336" y="44" font-size="9" fill="#7B1FA2" text-anchor="start" font-weight="700">en C#, à peu près</text>
+<text x="490" y="44" font-size="9" fill="#6B7378" text-anchor="start" font-weight="700">dans Magpie</text>
+<rect x="16" y="50" width="568" height="19" rx="3" fill="#fff" stroke="#E2DCD2"/>
+<text x="26" y="63.5" font-size="9.2" fill="#7A5A12" text-anchor="True" class="mono" style="font-size:9.2px">useState</text>
+<text x="126" y="63.5" font-size="8.8" fill="#2B2F33" text-anchor="start">une valeur ; la changer redessine</text>
+<text x="336" y="63.5" font-size="8.8" fill="#7B1FA2" text-anchor="start">champ + PropertyChanged</text>
+<text x="490" y="63.5" font-size="8.4" fill="#6B7378" text-anchor="start" class="mono" style="font-size:8.4px">QuickSearch:4</text>
+<rect x="16" y="72" width="568" height="19" rx="3" fill="#fff" stroke="#E2DCD2"/>
+<text x="26" y="85.5" font-size="9.2" fill="#7A5A12" text-anchor="True" class="mono" style="font-size:9.2px">useEffect</text>
+<text x="126" y="85.5" font-size="8.8" fill="#2B2F33" text-anchor="start">une action après l'affichage</text>
+<text x="336" y="85.5" font-size="8.8" fill="#7B1FA2" text-anchor="start">Loaded / Unloaded</text>
+<text x="490" y="85.5" font-size="8.4" fill="#6B7378" text-anchor="start" class="mono" style="font-size:8.4px">QuickSearch:11</text>
+<rect x="16" y="94" width="568" height="19" rx="3" fill="#fff" stroke="#E2DCD2"/>
+<text x="26" y="107.5" font-size="9.2" fill="#7A5A12" text-anchor="True" class="mono" style="font-size:9.2px">useMemo</text>
+<text x="126" y="107.5" font-size="8.8" fill="#2B2F33" text-anchor="start">un résultat, tant que ses entrées tiennent</text>
+<text x="336" y="107.5" font-size="8.8" fill="#7B1FA2" text-anchor="start">un cache Lazy&lt;T&gt;</text>
+<text x="490" y="107.5" font-size="8.4" fill="#6B7378" text-anchor="start" class="mono" style="font-size:8.4px">QuickSearch:19</text>
+<rect x="16" y="116" width="568" height="19" rx="3" fill="#fff" stroke="#E2DCD2"/>
+<text x="26" y="129.5" font-size="9.2" fill="#7A5A12" text-anchor="True" class="mono" style="font-size:9.2px">useRef</text>
+<text x="126" y="129.5" font-size="8.8" fill="#2B2F33" text-anchor="start">une boîte qui ne redessine pas</text>
+<text x="336" y="129.5" font-size="8.8" fill="#7B1FA2" text-anchor="start">un champ privé</text>
+<text x="490" y="129.5" font-size="8.4" fill="#6B7378" text-anchor="start" class="mono" style="font-size:8.4px">QuickSearch:5</text>
+<rect x="16" y="138" width="568" height="19" rx="3" fill="#fff" stroke="#E2DCD2"/>
+<text x="26" y="151.5" font-size="9.2" fill="#7A5A12" text-anchor="True" class="mono" style="font-size:9.2px">useCallback</text>
+<text x="126" y="151.5" font-size="8.8" fill="#2B2F33" text-anchor="start">la même fonction d'un rendu à l'autre</text>
+<text x="336" y="151.5" font-size="8.8" fill="#7B1FA2" text-anchor="start">un délégué gardé</text>
+<text x="490" y="151.5" font-size="8.4" fill="#6B7378" text-anchor="start" class="mono" style="font-size:8.4px">useLayoutPrefs:38</text>
+<rect x="16" y="160" width="568" height="19" rx="3" fill="#fff" stroke="#E2DCD2"/>
+<text x="26" y="173.5" font-size="9.2" fill="#E65100" text-anchor="True" class="mono" style="font-size:9.2px">useCatalog</text>
+<text x="126" y="173.5" font-size="8.8" fill="#2B2F33" text-anchor="start">tes hooks assemblés, réutilisables</text>
+<text x="336" y="173.5" font-size="8.8" fill="#7B1FA2" text-anchor="start">une classe de service</text>
+<text x="490" y="173.5" font-size="8.4" fill="#6B7378" text-anchor="start" class="mono" style="font-size:8.4px">App:27</text>
+<text x="16" y="190" font-size="8.4" fill="#6B7378" text-anchor="start" font-style="italic">Les correspondances C# sont des repères, pas des équivalences : seul React sait quand rappeler la fonction.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">hooks/useCatalog.js · 5–30, condensé</span>export default function useCatalog() {
+  const [catalog, setCatalog] = useState([]);
+  const [error, setError] = useState(null);
+  useEffect(() =&gt; {
+    let cancelled = false;
+    fetchCatalog()
+      .then((data) =&gt; { if (!cancelled) setCatalog(data); })
+      .catch((err) =&gt; { if (!cancelled) setError(err.message); });
+    return () =&gt; { cancelled = true; };
+  }, []);
+  …</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Un nouvel objet, jamais une retouche</h3>
+      <p>React voit un changement quand la <b>référence</b> change. <code>useLayoutPrefs</code> écrit donc <code>{ ...p, [field]: !p[field] }</code> (ligne 40) : une copie modifiée. Retoucher <code>p</code> en place ne redessinerait rien.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>L'effet qui se retire</h3>
+      <p>La fonction rendue par un effet est son <b>nettoyage</b>. Ici, elle lève le drapeau <code>cancelled</code> : si le composant disparaît avant la réponse du serveur, la réponse arrive dans le vide au lieu de toucher un état mort.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    En développement, <code>&lt;StrictMode&gt;</code> (main.jsx, ligne 10) monte, démonte puis remonte chaque composant : chaque effet s'exécute deux fois. C'est voulu. Un effet sans nettoyage, par exemple un <code>addEventListener</code> sans <code>removeEventListener</code>, se retrouve alors doublé et se voit tout de suite.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 31 · React et Vite</div>
+</section>
+
+<!-- ============ PAGE 4 · VITE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 31</b></div>
+  <p class="rubrique">Schéma 3 · Vite</p>
+  <h2>Deux façons de servir le même front</h2>
+  <p style="max-width:165mm">Le navigateur ne lit pas le JSX. En développement, Vite traduit chaque fichier à la demande et met la page à jour à chaque enregistrement. Pour la mise en ligne, <code>npm run build</code> produit une fois pour toutes des fichiers prêts, dans <code>dist/</code>.</p>
+
+  <svg viewBox="0 0 600 236" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="236" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="12" fill="#1565C0" text-anchor="start" font-weight="700">Développement</text>
+<text x="312" y="22" font-size="12" fill="#2E7D32" text-anchor="start" font-weight="700">Production</text>
+<line x1="300" y1="10" x2="300" y2="226" stroke="#CFC6BA"/>
+<rect x="16" y="36" width="120" height="36" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.3"/>
+<text x="76.0" y="51" font-size="9" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">navigateur</text>
+<text x="76.0" y="65" font-size="8.2" fill="#2B2F33" text-anchor="middle">localhost:5173</text>
+<rect x="170" y="36" width="118" height="36" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.3"/>
+<text x="229.0" y="51" font-size="9" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">Vite</text>
+<text x="229.0" y="65" font-size="8.2" fill="#2B2F33" text-anchor="middle">src/*.jsx à la demande</text>
+<line x1="137" y1="54" x2="168" y2="54" stroke="#1565C0" stroke-width="1.4"/><polygon points="168,54 161.6,56.7 161.6,51.3" fill="#1565C0"/>
+<rect x="170" y="110" width="118" height="36" rx="4" fill="#fff" stroke="#7A5A12" stroke-width="1.3"/>
+<text x="229.0" y="125" font-size="9" fill="#7A5A12" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">compute-proxy</text>
+<text x="229.0" y="139" font-size="8.2" fill="#2B2F33" text-anchor="middle">port 5175</text>
+<line x1="229" y1="73" x2="229" y2="108" stroke="#7A5A12" stroke-width="1.4"/><polygon points="229,108 226.3,101.6 231.7,101.6" fill="#7A5A12"/>
+<text x="236" y="94" font-size="8.4" fill="#7A5A12" text-anchor="start" class="mono" style="font-size:8.4px">/api/…</text>
+<rect x="170" y="180" width="118" height="36" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.3"/>
+<text x="229.0" y="195" font-size="9" fill="#7B1FA2" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">Rhino Compute</text>
+<line x1="229" y1="147" x2="229" y2="178" stroke="#7B1FA2" stroke-width="1.4"/><polygon points="229,178 226.3,171.6 231.7,171.6" fill="#7B1FA2"/>
+<text x="16" y="104" font-size="9" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">npm run dev</text>
+<text x="16" y="120" font-size="8.4" fill="#2B2F33" text-anchor="start">deux serveurs,</text>
+<text x="16" y="133" font-size="8.4" fill="#2B2F33" text-anchor="start">deux fenêtres</text>
+<text x="16" y="146" font-size="8.4" fill="#6B7378" text-anchor="start">(demarrer_magpie.bat)</text>
+<text x="312" y="48" font-size="9" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">npm run build</text>
+<rect x="312" y="56" width="272" height="62" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.3"/>
+<text x="448.0" y="71" font-size="9" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">dist/</text>
+<text x="322" y="88" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px">index.html</text>
+<text x="322" y="101" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px">assets/index-‹empreinte›.js</text>
+<text x="322" y="114" font-size="8.4" fill="#1565C0" text-anchor="start" class="mono" style="font-size:8.4px">assets/Viewer3D-‹empreinte›.js</text>
+<rect x="312" y="150" width="120" height="36" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.3"/>
+<text x="372.0" y="165" font-size="9" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">navigateur</text>
+<text x="372.0" y="179" font-size="8.2" fill="#2B2F33" text-anchor="middle">une seule origine</text>
+<rect x="464" y="150" width="120" height="36" rx="4" fill="#fff" stroke="#7A5A12" stroke-width="1.3"/>
+<text x="524.0" y="165" font-size="9" fill="#7A5A12" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">compute-proxy</text>
+<text x="524.0" y="179" font-size="8.2" fill="#2B2F33" text-anchor="middle">sert dist/ et /api</text>
+<line x1="433" y1="168" x2="462" y2="168" stroke="#7A5A12" stroke-width="1.4"/><polygon points="462,168 455.6,170.7 455.6,165.3" fill="#7A5A12"/>
+<line x1="524" y1="149" x2="524" y2="120" stroke="#2E7D32" stroke-width="1.4"/><polygon points="524,120 526.7,126.4 521.3,126.4" fill="#2E7D32"/>
+<text x="312" y="206" font-size="8.2" fill="#6B7378" text-anchor="start">assets/ : en cache un an (le nom change à chaque build)</text>
+<text x="312" y="219" font-size="8.2" fill="#6B7378" text-anchor="start">index.html : revalidé à chaque visite</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">vite.config.js · 1–12</span>import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    proxy: {
+      "/api": "http://localhost:5175",
+    },
+  },
+});</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Le relais /api</h3>
+      <p>Le front appelle toujours <code>/api/…</code> en relatif (src/api.js). En développement, Vite relaie ces appels vers le backend sur le port 5175. En ligne, c'est le backend lui-même qui sert la page : une seule origine, aucune adresse en dur.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>lazy et Suspense</h3>
+      <p><code>lazy(() =&gt; import("./Viewer3D.jsx"))</code> (App.jsx, ligne 18) fait de l'aperçu 3D un fichier à part : three.js n'est téléchargé qu'à sa première ouverture. En attendant, <code>&lt;Suspense&gt;</code> affiche « Chargement de l'aperçu 3D… ».</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Modifier <code>src/</code> et ne rien voir en ligne. Le backend sert <code>dist/</code>, pas les sources : il faut relancer <code>npm run build</code>. Sans build du tout, il répond « Front non construit : lancer npm run build » (compute-proxy.mjs, ligne 503).
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 31 · React et Vite</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 31</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>QuickSearch : un composant complet</h2>
+  <p style="max-width:165mm">La recherche rapide du canvas, ouverte d'un double-clic sur le fond comme dans Grasshopper. En 59 lignes, elle utilise l'état, une référence, deux effets, un calcul mémorisé et une liste.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="n">3</span><span class="kw">export default function</span> <span class="ty">QuickSearch</span>({</div>
+<div class="l"><span class="n"> </span>  catalog, screenPosition, onSelect, onClose }) {</div>
+<div class="l k1"><span class="n">4</span>  <span class="kw">const</span> [query, setQuery] = useState(<span class="st">""</span>);<span class="rep r1">1</span></div>
+<div class="l k2"><span class="n">5</span>  <span class="kw">const</span> inputRef = useRef(<span class="kw">null</span>);<span class="rep r2">2</span></div>
+<div class="l k3"><span class="n">7</span>  useEffect(() =&gt; {<span class="rep r3">3</span></div>
+<div class="l k3"><span class="n">8</span>    inputRef.current?.focus();</div>
+<div class="l k3"><span class="n">9</span>  }, []);</div>
+<div class="l k4"><span class="n">11</span>  useEffect(() =&gt; {<span class="rep r4">4</span></div>
+<div class="l k4"><span class="n">12</span>    <span class="kw">const</span> handleKey = (e) =&gt; {</div>
+<div class="l k4"><span class="n">13</span>      <span class="kw">if</span> (e.key === <span class="st">"Escape"</span>) onClose();</div>
+<div class="l k4"><span class="n">14</span>    };</div>
+<div class="l k4"><span class="n">15</span>    window.addEventListener(<span class="st">"keydown"</span>, handleKey);</div>
+<div class="l k4"><span class="n">16</span>    <span class="kw">return</span> () =&gt;</div>
+<div class="l k4"><span class="n"> </span>      window.removeEventListener(<span class="st">"keydown"</span>, handleKey);</div>
+<div class="l k4"><span class="n">17</span>  }, [onClose]);</div>
+<div class="l k5"><span class="n">19</span>  <span class="kw">const</span> results = useMemo(() =&gt; {<span class="rep r5">5</span></div>
+<div class="l k5"><span class="n">20</span>    <span class="kw">const</span> q = query.trim().toLowerCase();</div>
+<div class="l k5"><span class="n">21</span>    <span class="kw">if</span> (!q) <span class="kw">return</span> [];</div>
+<div class="l k5"><span class="n">22</span>    <span class="kw">return</span> catalog.filter(…).slice(<span class="st">0</span>, <span class="st">30</span>);</div>
+<div class="l k5"><span class="n">25</span>  }, [catalog, query]);</div>
+<div class="l"><span class="n">27</span>  <span class="kw">return</span> ( …</div>
+<div class="l k6"><span class="n">38</span>    &lt;input ref={inputRef} …<span class="rep r6">6</span></div>
+<div class="l k6"><span class="n">43</span>      value={query}</div>
+<div class="l k6"><span class="n">44</span>      onChange={(e) =&gt; setQuery(e.target.value)} /&gt;</div>
+<div class="l k7"><span class="n">48</span>    {results.map((entry) =&gt; (<span class="rep r7">7</span></div>
+<div class="l k7"><span class="n">49</span>      &lt;button key={entry.typeGuid}</div>
+<div class="l k7"><span class="n"> </span>        onClick={() =&gt; onSelect(entry)}&gt; …</div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>L'état</b>Le texte tapé. setQuery redessine le composant.</li>
+      <li><span class="rep r2">2</span><b>Une référence</b>Pointe vers la vraie balise input, sans redessiner.</li>
+      <li><span class="rep r3">3</span><b>Une fois, à l'ouverture</b>Tableau vide : le curseur va dans le champ.</li>
+      <li><span class="rep r4">4</span><b>S'abonner, se désabonner</b>Échap ferme ; le nettoyage retire l'écouteur.</li>
+      <li><span class="rep r5">5</span><b>Calcul mémorisé</b>Refiltré seulement si catalog ou query change. 30 résultats au plus.</li>
+      <li><span class="rep r6">6</span><b>Champ contrôlé</b>value vient de l'état, onChange le met à jour.</li>
+      <li><span class="rep r7">7</span><b>La liste</b>Une clé stable par entrée : le GUID du composant.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">Le champ contrôlé</span>
+    En WinForms, le texte vit dans la TextBox et tu viens le lire. Ici, il vit dans <code>query</code> et la balise ne fait que l'afficher. À chaque frappe : onChange, setQuery, nouveau rendu, nouveau filtrage. La source de vérité est l'état, une seule.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 31 · React et Vite</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 31</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Un composant React, dans Magpie, est…</div><ul>
+      <li><span>A</span>une classe qui hérite de Component</li><li><span>B</span>une fonction qui rend du JSX</li><li><span>C</span>un fichier HTML</li><li><span>D</span>un fil d'exécution</li></ul></div>
+
+    <div class="q"><div class="enonce">setQuery("cer") provoque…</div><ul>
+      <li><span>A</span>rien tant qu'on ne recharge pas</li><li><span>B</span>une exception</li><li><span>C</span>un nouveau rendu du composant</li><li><span>D</span>le rechargement de la page</li></ul></div>
+
+    <div class="q"><div class="enonce">En JSX, on écrit className parce que…</div><ul>
+      <li><span>A</span>class est un mot réservé de JavaScript</li><li><span>B</span>CSS l'impose</li><li><span>C</span>Vite renomme les classes</li><li><span>D</span>c'est plus court</li></ul></div>
+
+    <div class="q"><div class="enonce">useEffect(f, []) exécute f…</div><ul>
+      <li><span>A</span>à chaque rendu</li><li><span>B</span>jamais</li><li><span>C</span>une fois, après le premier rendu</li><li><span>D</span>seulement au démontage</li></ul></div>
+
+    <div class="q"><div class="enonce">La fonction rendue par l'effet clavier de QuickSearch…</div><ul>
+      <li><span>A</span>retire l'écouteur keydown</li><li><span>B</span>ouvre la recherche</li><li><span>C</span>vide query</li><li><span>D</span>relance le filtrage</li></ul></div>
+
+    <div class="q"><div class="enonce">useMemo dans QuickSearch évite…</div><ul>
+      <li><span>A</span>un appel au serveur</li><li><span>B</span>le double rendu de StrictMode</li><li><span>C</span>l'écoute du clavier</li><li><span>D</span>de refiltrer si catalog et query n'ont pas changé</li></ul></div>
+
+    <div class="q"><div class="enonce">useLayoutPrefs écrit { ...p, [field]: … } car…</div><ul>
+      <li><span>A</span>c'est plus rapide</li><li><span>B</span>React détecte un changement par la référence</li><li><span>C</span>localStorage l'exige</li><li><span>D</span>p est une constante</li></ul></div>
+
+    <div class="q"><div class="enonce">La prop key d'un élément de liste… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>fixe son style</li><li><span>B</span>trie la liste</li><li><span>C</span>l'identifie d'un rendu à l'autre</li><li><span>D</span>garde son état sur le bon élément</li></ul></div>
+
+    <div class="q"><div class="enonce">En développement, un appel à /api/catalog…</div><ul>
+      <li><span>A</span>part directement vers Compute</li><li><span>B</span>lit un fichier de src/</li><li><span>C</span>échoue faute de backend en ligne</li><li><span>D</span>est relayé par Vite vers le port 5175</li></ul></div>
+
+    <div class="q"><div class="enonce">npm run build produit…</div><ul>
+      <li><span>A</span>dist/ : des fichiers assemblés, servis par le backend</li><li><span>B</span>un .exe</li><li><span>C</span>node_modules</li><li><span>D</span>une base SQLite</li></ul></div>
+
+    <div class="q"><div class="enonce">lazy(() =&gt; import("./Viewer3D.jsx")) sert à…</div><ul>
+      <li><span>A</span>calculer plus vite</li><li><span>B</span>éviter StrictMode</li><li><span>C</span>ne télécharger three.js qu'à l'ouverture de l'aperçu</li><li><span>D</span>cacher l'aperçu</li></ul></div>
+
+    <div class="q"><div class="enonce">StrictMode, en développement…</div><ul>
+      <li><span>A</span>interdit les effets</li><li><span>B</span>exécute deux fois chaque effet</li><li><span>C</span>ralentit la production</li><li><span>D</span>vérifie les types</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 31 · React et Vite</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 31</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · B.</b> Tous les composants de Magpie sont des fonctions.</div>
+    <div><b>02 · C.</b> React rappelle la fonction avec le nouvel état.</div>
+    <div><b>03 · A.</b> class déclare une classe en JavaScript.</div>
+    <div><b>04 · C.</b> Aucune dépendance : rien ne la relance.</div>
+    <div><b>05 · A.</b> C'est le nettoyage : on se désabonne.</div>
+    <div><b>06 · D.</b> Le filtre ne tourne que si ses entrées changent.</div>
+    <div><b>07 · B.</b> Même objet retouché : aucun changement vu.</div>
+    <div><b>08 · C et D.</b> L'identité, et l'état qui la suit.</div>
+    <div><b>09 · D.</b> Le proxy de vite.config.js.</div>
+    <div><b>10 · A.</b> Puis compute-proxy.mjs sert dist/.</div>
+    <div><b>11 · C.</b> Un fichier à part, chargé à la demande.</div>
+    <div><b>12 · B.</b> Pour révéler un nettoyage manquant.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis la page 4 et le code de la page 5. <b>10 à 12</b> : passe au cours 32, « React Flow, three.js et rhino3dm ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">const [v, setV] = useState(x);</td><td>un état qui redessine</td><td>QuickSearch:4</td></tr>
+      <tr><td class="c">useEffect(() =&gt; { …; return nettoyage; }, [deps])</td><td>agir après le rendu</td><td>QuickSearch:11</td></tr>
+      <tr><td class="c">useMemo(() =&gt; calcul, [deps])</td><td>garder un calcul</td><td>QuickSearch:19</td></tr>
+      <tr><td class="c">{cond &amp;&amp; &lt;X /&gt;}</td><td>afficher sous condition</td><td>App:108</td></tr>
+      <tr><td class="c">list.map((e) =&gt; &lt;li key={e.id}&gt;…)</td><td>afficher une liste</td><td>ExerciseHeader:57</td></tr>
+      <tr><td class="c">lazy(() =&gt; import("./X.jsx"))</td><td>charger un composant à la demande</td><td>App:18</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Composant</dt><dd>Une fonction qui reçoit des props et rend du JSX.</dd>
+    <dt>JSX</dt><dd>Des balises dans le JavaScript, traduites en appels de fonction par Vite.</dd>
+    <dt>Hook</dt><dd>Une fonction use… qui donne au composant une mémoire ou un effet.</dd>
+    <dt>Rendu</dt><dd>Un appel du composant ; React en déduit les retouches de la page.</dd>
+    <dt>Build</dt><dd>L'assemblage des sources en fichiers prêts à servir, dans dist/.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 32</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 31 · React et Vite</div>
+</section>
+
+</body>
+</html>

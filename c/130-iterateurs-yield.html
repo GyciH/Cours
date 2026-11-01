@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>130 · Les itérateurs et yield</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-1">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 130</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Les itérateurs et yield</h1>
+  <p class="chapeau">Une méthode qui contient <code>yield return</code> ne rend pas une liste : elle rend une promesse de liste. Rien ne s'exécute à l'appel ; chaque élément est produit au moment où le <code>foreach</code> le demande. C'est économe, c'est paresseux, et c'est <b>à chaque parcours</b> que tout recommence.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>03</b>, <b>127</b></span>
+    <span class="pastille">Exemples · <b>SnapSet</b>, <b>Magpie</b> plugin</span>
+  </div>
+
+  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+    <svg viewBox="0 0 600 204" width="100%">
+<text x="10" y="30" font-size="8.4" fill="#6B2C7A" text-anchor="start" font-weight="700">consommateur</text>
+<text x="10" y="92" font-size="8.4" fill="#1565C0" text-anchor="start" font-weight="700">itérateur</text>
+<rect x="110" y="16" width="118" height="24" rx="4" fill="#F1E9F3" stroke="#6B2C7A" stroke-width="1.2"/>
+<text x="169.0" y="30.6" font-size="7.8" fill="#6B2C7A" text-anchor="middle" font-weight="700">appel fait</text>
+<line x1="228" y1="28" x2="240" y2="90" stroke="#6B7378" stroke-width="1.1"/><polygon points="240,90 236.1,84.2 241.5,83.2" fill="#6B7378"/>
+<rect x="240" y="78" width="118" height="24" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="299.0" y="92.6" font-size="7.8" fill="#1565C0" text-anchor="middle" font-weight="700">construit 1</text>
+<line x1="358" y1="90" x2="370" y2="28" stroke="#6B7378" stroke-width="1.1"/><polygon points="370,28 371.5,34.8 366.1,33.8" fill="#6B7378"/>
+<rect x="370" y="16" width="118" height="24" rx="4" fill="#F1E9F3" stroke="#6B2C7A" stroke-width="1.2"/>
+<text x="429.0" y="30.6" font-size="7.8" fill="#6B2C7A" text-anchor="middle" font-weight="700">lu 1, puis break</text>
+<rect x="440" y="78" width="118" height="22" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2" stroke-dasharray="4 3"/>
+<text x="499.0" y="91.53333333333333" font-size="7.6" fill="#6B7378" text-anchor="middle" font-weight="700">construit 2 : jamais</text>
+<rect x="440" y="108" width="118" height="22" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2" stroke-dasharray="4 3"/>
+<text x="499.0" y="121.53333333333333" font-size="7.6" fill="#6B7378" text-anchor="middle" font-weight="700">construit 3 : jamais</text>
+<text x="10" y="158" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">Appeler la méthode ne lance rien. Chaque élément est fabriqué quand on le demande, et pas un de plus (mesuré).</text>
+<text x="10" y="178" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">yield return rend un élément et met la méthode en pause, au milieu de son code, jusqu'à la demande suivante.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Un itérateur fabrique ses éléments à la demande, en reprenant son code là où il s'était arrêté ; on ne paie que ce qu'on lit, mais on le repaie à chaque lecture.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Une recette plutôt qu'un plat. On peut s'arrêter après la première assiette ; mais servir deux fois, c'est cuisiner deux fois.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>prévoir quand le code tourne ;</li>
+        <li>éviter le double parcours ;</li>
+        <li>fermer ce qu'un itérateur ouvre ;</li>
+        <li>mesurer un yield récursif.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À retenir</span>
+    IEnumerable dit « on peut parcourir », pas « c'est déjà calculé ». Celui qui reçoit un itérateur et le lit deux fois fait tourner deux fois le code de celui qui l'a écrit.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 130 · Les itérateurs et yield</div>
+</section>
+
+<!-- ============ PAGE 2 · PARESSEUX ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 130</b></div>
+  <p class="rubrique">Schéma 1 · Paresseux, et à chaque fois</p>
+  <h2>Quand le code tourne vraiment</h2>
+  <p style="max-width:165mm">On a écrit un itérateur qui note chaque élément qu'il fabrique, puis on l'a parcouru de plusieurs façons : deux fois de suite, avec un break, et à la main.</p>
+
+  <svg viewBox="0 0 600 196" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="196" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#6B2C7A" text-anchor="start" font-weight="700">Un itérateur qui fabrique trois éléments en notant chaque construction (.NET 8, mesuré)</text>
+<rect x="16" y="34" width="568" height="32" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="26" y="48" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">e.Count(); e.Count();</text>
+<text x="26" y="60" font-size="7.2" fill="#6B7378" text-anchor="start" font-style="italic">chaque parcours relance le code depuis le début</text>
+<text x="574" y="54" font-size="7.8" fill="#C62828" text-anchor="end" font-weight="700">6 constructions</text>
+<rect x="16" y="74" width="568" height="32" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="26" y="88" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">foreach (var x in e) break;  (try … finally)</text>
+<text x="26" y="100" font-size="7.2" fill="#6B7378" text-anchor="start" font-style="italic">foreach appelle Dispose en sortant</text>
+<text x="574" y="94" font-size="7.8" fill="#2E7D32" text-anchor="end" font-weight="700">finally exécuté</text>
+<rect x="16" y="114" width="568" height="32" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
+<text x="26" y="128" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">GetEnumerator(); MoveNext();  sans Dispose</text>
+<text x="26" y="140" font-size="7.2" fill="#6B7378" text-anchor="start" font-style="italic">jusqu'à l'appel de Dispose</text>
+<text x="574" y="134" font-size="7.8" fill="#E65100" text-anchor="end" font-weight="700">finally jamais exécuté</text>
+<text x="16" y="170" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Un IEnumerable n'est pas une liste : c'est une recette. Pour la lire deux fois sans tout refaire, ToList().</text>
+<text x="16" y="186" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Un using ou un finally dans un itérateur ne se ferme qu'à la fin du parcours, ou au Dispose.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, figer un parcours qu'on relira</span>var sources = Sources().ToList();         // le code de Sources tourne une fois, ici
+Console.WriteLine(sources.Count);
+foreach (var s in sources) Charger(s);       // on relit la liste, pas la recette</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Les erreurs aussi sont paresseuses</h3>
+      <p>Une vérification d'argument écrite dans un itérateur ne lève qu'au premier MoveNext, loin de l'appel. D'où les méthodes qui vérifient d'abord, puis délèguent à un itérateur privé.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Les sources de Magpie</h3>
+      <p>MagpieRepository.cs:78 décrit les sources par trois yield : local, cache, embarqué. Chaque lecture des Sources reconstruit ces trois objets, ce qui ne coûte presque rien.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    <code>if (items.Any()) foreach (var i in items) …</code> sur un itérateur qui lit des fichiers. Any lance la lecture, foreach la relance depuis le début : deux ouvertures pour un seul usage.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 130 · Les itérateurs et yield</div>
+</section>
+
+<!-- ============ PAGE 3 · LE TYPE CACHÉ ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 130</b></div>
+  <p class="rubrique">Schéma 2 · Le type caché</p>
+  <h2>Ce que le compilateur écrit pour toi</h2>
+  <p style="max-width:165mm">Une méthode ne peut pas s'arrêter au milieu et reprendre. Le compilateur la transforme donc en classe, qui garde l'endroit où elle en est. On l'a retrouvée par réflexion.</p>
+
+  <svg viewBox="0 0 600 200" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="200" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#6B2C7A" text-anchor="start" font-weight="700">Ce que le compilateur fabrique pour chaque méthode à yield (réflexion sur le programme d'essai, mesuré)</text>
+<rect x="16" y="34" width="160" height="18" rx="4" fill="#F1E9F3" stroke="#6B2C7A" stroke-width="1.2"/>
+<text x="96.0" y="45.53333333333333" font-size="7.6" fill="#6B2C7A" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.6px">&lt;Sources&gt;d__1</text>
+<text x="186" y="47" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">IEnumerable&lt;T&gt;, IEnumerator&lt;T&gt;, IDisposable, IEnumerable, IEnumerator</text>
+<rect x="16" y="56" width="160" height="18" rx="4" fill="#F1E9F3" stroke="#6B2C7A" stroke-width="1.2"/>
+<text x="96.0" y="67.53333333333333" font-size="7.6" fill="#6B2C7A" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.6px">&lt;AvecFinally&gt;d__2</text>
+<text x="186" y="69" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">IEnumerable&lt;T&gt;, IEnumerator&lt;T&gt;, IDisposable, IEnumerable, IEnumerator</text>
+<rect x="16" y="78" width="160" height="18" rx="4" fill="#F1E9F3" stroke="#6B2C7A" stroke-width="1.2"/>
+<text x="96.0" y="89.53333333333333" font-size="7.6" fill="#6B2C7A" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.6px">&lt;Descendants&gt;d__4</text>
+<text x="186" y="91" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">IEnumerable&lt;T&gt;, IEnumerator&lt;T&gt;, IDisposable, IEnumerable, IEnumerator</text>
+<text x="16" y="116" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Une classe cachée par itérateur : un automate qui retient où la méthode s'est arrêtée et ses variables.</text>
+<text x="16" y="132" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Chaque parcours en crée un objet : 32 octets pour l'itérateur de trois éléments (mesuré).</text>
+<text x="16" y="156" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Ce type appartient à l'assembly qui contient la méthode. Si ses interfaces viennent d'une DLL pas encore</text>
+<text x="16" y="170" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">chargée, l'énumération des types échoue : c'est l'accident que décrit MagpiePriority.cs:76 à 80.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, un tableau plutôt qu'un itérateur</span>private static Widget[] Construire()          // aucun type caché : un tableau existe déjà
+    =&gt; new[] { new WidgetSignature(), new WidgetNavigation() };</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Un automate</h3>
+      <p>Chaque yield devient un état numéroté ; MoveNext saute à l'état suivant, exécute jusqu'au yield d'après, range l'élément dans Current et rend true.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Quand l'éviter</h3>
+      <p>Pour deux ou trois éléments connus d'avance, un tableau est plus simple et n'ajoute aucun type à l'assembly. Magpie a fait ce choix pour ses widgets, après un échec de chargement.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Garder un itérateur ouvert à la main (GetEnumerator, MoveNext) sans Dispose. Son finally ne s'exécute jamais : un fichier ouvert dans un using de l'itérateur reste ouvert (mesuré).
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 130 · Les itérateurs et yield</div>
+</section>
+
+<!-- ============ PAGE 4 · YIELD RÉCURSIF ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 130</b></div>
+  <p class="rubrique">Schéma 3 · Le yield récursif</p>
+  <h2>Un arbre, des itérateurs emboîtés</h2>
+  <p style="max-width:165mm">Parcourir un arbre en rappelant l'itérateur pour chaque enfant est élégant. Mais chaque élément remonte toute la pile d'itérateurs. On a comparé avec une pile explicite.</p>
+
+  <svg viewBox="0 0 600 220" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="220" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8" fill="#6B2C7A" text-anchor="start" font-weight="700">3 000 nœuds en chaînes de profondeur variable, parcours préfixe recopié d'ArbreAppartenance (mesuré)</text>
+<text x="16" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">profondeur</text>
+<text x="110" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">yield récursif</text>
+<text x="260" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">pile explicite</text>
+<text x="380" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">AvecDescendants,</text>
+<text x="500" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">la racine seule</text>
+<text x="380" y="50" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">tout sélectionné</text>
+<rect x="10" y="56" width="580" height="18" fill="#fff" opacity=".55"/>
+<text x="16" y="69" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">3</text>
+<text x="110" y="69" font-size="7.6" fill="#2B2F33" text-anchor="start">1,8 à 2,5 ms</text>
+<text x="260" y="69" font-size="7.6" fill="#2E7D32" text-anchor="start">0,24 à 0,36 ms</text>
+<text x="380" y="69" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">8,3 ms</text>
+<text x="500" y="69" font-size="7.6" fill="#2B2F33" text-anchor="start">4,2 ms</text>
+<text x="16" y="87" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">10</text>
+<text x="110" y="87" font-size="7.6" fill="#2B2F33" text-anchor="start">2,3 à 2,5 ms</text>
+<text x="260" y="87" font-size="7.6" fill="#2E7D32" text-anchor="start">0,25 à 0,34 ms</text>
+<text x="380" y="87" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">13,8 ms</text>
+<text x="500" y="87" font-size="7.6" fill="#2B2F33" text-anchor="start">2,2 ms</text>
+<rect x="10" y="92" width="580" height="18" fill="#fff" opacity=".55"/>
+<text x="16" y="105" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">100</text>
+<text x="110" y="105" font-size="7.6" fill="#2B2F33" text-anchor="start">3,0 à 12,6 ms</text>
+<text x="260" y="105" font-size="7.6" fill="#2E7D32" text-anchor="start">0,24 à 0,43 ms</text>
+<text x="380" y="105" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">142,7 ms</text>
+<text x="500" y="105" font-size="7.6" fill="#2B2F33" text-anchor="start">4,0 ms</text>
+<text x="16" y="123" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">1 000</text>
+<text x="110" y="123" font-size="7.6" fill="#2B2F33" text-anchor="start">25,3 à 26,2 ms</text>
+<text x="260" y="123" font-size="7.6" fill="#2E7D32" text-anchor="start">0,46 à 0,50 ms</text>
+<text x="380" y="123" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">8 217,6 ms</text>
+<text x="500" y="123" font-size="7.6" fill="#2B2F33" text-anchor="start">25,7 ms</text>
+<text x="16" y="148" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Chaque niveau ajoute un itérateur imbriqué que chaque élément doit traverser : le coût suit la profondeur.</text>
+<text x="16" y="164" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">AvecDescendants reparcourt les descendants de chaque id, même déjà emporté par un ancêtre listé avant lui.</text>
+<text x="16" y="188" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Une capsule SnapSet n'emboîte que quelques niveaux : aux profondeurs réelles, quelques millisecondes (déduit).</text>
+<text x="16" y="204" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Deux séries pour les parcours, une pour AvecDescendants ; moyenne de 20 et de 5 répétitions.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, le même parcours préfixe sans récursion</span>var pile = new Stack&lt;IEnumerator&lt;Guid&gt;&gt;(); pile.Push(MembresDe(racine).GetEnumerator());
+while (pile.Count &gt; 0)
+{
+    var e = pile.Peek();
+    if (!e.MoveNext()) { pile.Pop(); continue; }
+    yield return e.Current; pile.Push(MembresDe(e.Current).GetEnumerator());
+}</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Pourquoi ça grandit</h3>
+      <p>À profondeur 100, un élément du bas passe par cent MoveNext imbriqués avant d'arriver au foreach. Le travail suit le nombre d'éléments fois leur profondeur.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Doit-on changer ?</h3>
+      <p>Pas pour des arbres de quelques niveaux : la version récursive est la plus lisible, et ses millisecondes ne se voient pas. La pile sert aux arbres profonds.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Appeler un parcours de sous-arbre pour chaque nœud d'un arbre. Chaque sous-arbre est reparcouru autant de fois qu'il a d'ancêtres : 8 secondes mesurées au lieu de 26 ms.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 130 · Les itérateurs et yield</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 130</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Des itérateurs dans SnapSet et Magpie</h2>
+  <p style="max-width:165mm">Un parcours d'arbre récursif, ses réutilisations, des sources paresseuses, et un itérateur évité.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">SnapSet/…/Appartenance/ArbreAppartenance.cs</span></div>
+<div class="l k1"><span class="n">135</span>public IEnumerable&lt;Guid&gt; Descendants(Guid conteneur)<span class="rep r1">1</span></div>
+<div class="l k2"><span class="n">141</span>    foreach (var d in Descendants(m)) yield return d;<span class="rep r2">2</span></div>
+<div class="l k3"><span class="n">158</span>    foreach (var d in Descendants(id))<span class="rep r3">3</span></div>
+<div class="l"><span class="cm">magpie/plugin/Core/MagpieRepository.cs · MagpiePriority.cs</span></div>
+<div class="l k4"><span class="n">82</span>yield return new SourceDossier("dossier local", …);<span class="rep r4">4</span></div>
+<div class="l k5"><span class="n">76</span>// UN TABLEAU, PAS UN ITÉRATEUR (yield return). …<span class="rep r5">5</span></div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Paresseux</b>Préfixe.</li>
+      <li><span class="rep r2">2</span><b>Récursif</b>Emboîté.</li>
+      <li><span class="rep r3">3</span><b>Pour chaque id</b>Même emporté.</li>
+      <li><span class="rep r4">4</span><b>Trois sources</b>À la demande.</li>
+      <li><span class="rep r5">5</span><b>Évité</b>Type caché.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À surveiller · AvecDescendants reparcourt les sous-arbres</span>
+    ArbreAppartenance.cs:150 à 164 parcourt les descendants de chaque id donné, même s'il a déjà été emporté par un ancêtre ; le HashSet évite les doublons, pas le travail. Mesuré sur une recopie, tout sélectionné : 8,3 ms à profondeur 3, 8,2 s à profondeur 1 000. Aujourd'hui, seuls les tests l'appellent (CopieConteneurTests.cs). Relevé sans rien modifier.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 130 · Les itérateurs et yield</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 130</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">À l'appel d'une méthode à yield, son code…</div><ul>
+      <li><span>A</span>s'exécute en entier</li><li><span>B</span>s'exécute jusqu'au premier yield</li><li><span>C</span>part sur un autre fil</li><li><span>D</span>ne s'exécute pas encore</li></ul></div>
+
+    <div class="q"><div class="enonce">Un foreach qui fait break après le premier élément…</div><ul>
+      <li><span>A</span>fabrique le dernier</li><li><span>B</span>lève une exception</li><li><span>C</span>ne fabrique pas les suivants</li><li><span>D</span>fabrique tout quand même</li></ul></div>
+
+    <div class="q"><div class="enonce">Deux Count() sur un itérateur de trois éléments…</div><ul>
+      <li><span>A</span>trois</li><li><span>B</span>font six constructions</li><li><span>C</span>zéro</li><li><span>D</span>une</li></ul></div>
+
+    <div class="q"><div class="enonce">Pour relire sans refaire le travail…</div><ul>
+      <li><span>A</span>ToList() une fois</li><li><span>B</span>yield break</li><li><span>C</span>rien, c'est déjà mis en cache</li><li><span>D</span>appeler Count() avant</li></ul></div>
+
+    <div class="q"><div class="enonce">Le finally d'un itérateur s'exécute… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>après un MoveNext sans Dispose</li><li><span>B</span>dès l'appel de la méthode</li><li><span>C</span>quand foreach sort par break</li><li><span>D</span>quand on appelle Dispose</li></ul></div>
+
+    <div class="q"><div class="enonce">Le compilateur fait de chaque itérateur…</div><ul>
+      <li><span>A</span>une classe cachée, un automate</li><li><span>B</span>un fil</li><li><span>C</span>une liste</li><li><span>D</span>rien de plus</li></ul></div>
+
+    <div class="q"><div class="enonce">Un parcours de l'itérateur de trois éléments a alloué…</div><ul>
+      <li><span>A</span>3 Ko</li><li><span>B</span>32 octets</li><li><span>C</span>0</li><li><span>D</span>1 Mo</li></ul></div>
+
+    <div class="q"><div class="enonce">Magpie construit ses widgets avec un tableau parce que…</div><ul>
+      <li><span>A</span>yield est interdit en C#</li><li><span>B</span>c'est plus rapide</li><li><span>C</span>le type caché d'un itérateur faisait échouer le chargement</li><li><span>D</span>Grasshopper l'exige</li></ul></div>
+
+    <div class="q"><div class="enonce">Le yield récursif, à profondeur 1 000, a pris…</div><ul>
+      <li><span>A</span>0,1 ms</li><li><span>B</span>8 s</li><li><span>C</span>environ 25 ms, contre 0,5 ms avec une pile</li><li><span>D</span>autant que la pile</li></ul></div>
+
+    <div class="q"><div class="enonce">Le coût d'un yield récursif suit…</div><ul>
+      <li><span>A</span>le nombre d'éléments seul</li><li><span>B</span>la taille des Guid</li><li><span>C</span>rien de mesurable</li><li><span>D</span>le nombre d'éléments fois leur profondeur</li></ul></div>
+
+    <div class="q"><div class="enonce">AvecDescendants, tout sélectionné à profondeur 1 000…</div><ul>
+      <li><span>A</span>26 ms</li><li><span>B</span>8,2 s</li><li><span>C</span>0,5 ms</li><li><span>D</span>une exception</li></ul></div>
+
+    <div class="q"><div class="enonce">Une vérification d'argument dans un itérateur lève…</div><ul>
+      <li><span>A</span>jamais</li><li><span>B</span>à la compilation</li><li><span>C</span>à l'appel</li><li><span>D</span>au premier MoveNext</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 130 · Les itérateurs et yield</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 130</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · D.</b> Rien avant la demande.</div>
+    <div><b>02 · C.</b> 2 et 3 jamais construits.</div>
+    <div><b>03 · B.</b> Chaque parcours recommence.</div>
+    <div><b>04 · A.</b> On relit la liste.</div>
+    <div><b>05 · C et D.</b> foreach appelle Dispose.</div>
+    <div><b>06 · A.</b> &lt;Sources&gt;d__1.</div>
+    <div><b>07 · B.</b> Mesuré, page 3.</div>
+    <div><b>08 · C.</b> MagpiePriority.cs:76.</div>
+    <div><b>09 · C.</b> 25,3 à 26,2 ms.</div>
+    <div><b>10 · D.</b> Des MoveNext imbriqués.</div>
+    <div><b>11 · B.</b> 8 217,6 ms.</div>
+    <div><b>12 · D.</b> Loin de l'appel.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 129, « Les structs et la copie ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">yield return x;</td><td>rendre un élément, se mettre en pause</td><td>MagpieRepository.cs:82</td></tr>
+      <tr><td class="c">yield break;</td><td>terminer le parcours</td><td>ArbreAppartenance.cs:137</td></tr>
+      <tr><td class="c">.ToList()</td><td>exécuter une fois, garder le résultat</td><td>page 2</td></tr>
+      <tr><td class="c">GetEnumerator / MoveNext / Current</td><td>parcourir à la main</td><td>page 3</td></tr>
+      <tr><td class="c">using (var e = …GetEnumerator())</td><td>garantir le Dispose</td><td>page 3</td></tr>
+      <tr><td class="c">Stack&lt;IEnumerator&lt;T&gt;&gt;</td><td>parcours profond sans récursion</td><td>page 4</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Itérateur</dt><dd>Une méthode à yield, qui produit ses éléments un par un, à la demande.</dd>
+    <dt>Évaluation paresseuse</dt><dd>Un calcul repoussé jusqu'au moment où l'on en a besoin.</dd>
+    <dt>Énumérateur</dt><dd>L'objet qui parcourt : MoveNext avance, Current donne l'élément.</dd>
+    <dt>Automate</dt><dd>La classe cachée qui retient l'état où l'itérateur s'est arrêté.</dd>
+    <dt>Parcours préfixe</dt><dd>Un parcours d'arbre qui rend chaque parent avant ses enfants.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 129</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 130 · Les itérateurs et yield</div>
+</section>
+
+</body>
+</html>

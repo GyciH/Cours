@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>109 · Ce qu'un test prouve</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-11">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 109</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Ce qu'un test prouve</h1>
+  <p class="chapeau">Un test automatique exécute un morceau du programme et compare le résultat à ce qu'on attend. Quand il passe, on se sent couvert. Ce cours mesure ce que cette impression vaut, en introduisant exprès des défauts dans le code de Magpie et en regardant lesquels ses tests voient.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>26</b> tests automatisés</span>
+    <span class="pastille">Exemples · <b>Magpie</b> web, <b>SnapSet</b></span>
+  </div>
+
+  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+    <svg viewBox="0 0 600 204" width="100%">
+<rect x="10" y="14" width="180" height="92" rx="4" fill="#fff" stroke="#4F46B8" stroke-width="1.2"/>
+<text x="100" y="34" font-size="9.6" fill="#4F46B8" text-anchor="middle" font-weight="700">préparer</text>
+<text x="100" y="52" font-size="7.6" fill="#2B2F33" text-anchor="middle">un exercice : [1, 3, 5],</text>
+<text x="100" y="64" font-size="7.6" fill="#2B2F33" text-anchor="middle">tolérance 0,01</text>
+<text x="100" y="94" font-size="7.2" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.2px">const config = { … }</text>
+<line x1="192" y1="60" x2="204" y2="60" stroke="#6B7378" stroke-width="1.2"/><polygon points="204,60 197.6,62.7 197.6,57.3" fill="#6B7378"/>
+<rect x="206" y="14" width="180" height="92" rx="4" fill="#fff" stroke="#4F46B8" stroke-width="1.2"/>
+<text x="296" y="34" font-size="9.6" fill="#4F46B8" text-anchor="middle" font-weight="700">agir</text>
+<text x="296" y="52" font-size="7.6" fill="#2B2F33" text-anchor="middle">appeler la vraie fonction</text>
+<text x="296" y="64" font-size="7.6" fill="#2B2F33" text-anchor="middle">avec une réponse</text>
+<text x="296" y="94" font-size="7.2" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.2px">verdict([1.02, 3, 5], config)</text>
+<line x1="388" y1="60" x2="400" y2="60" stroke="#6B7378" stroke-width="1.2"/><polygon points="400,60 393.6,62.7 393.6,57.3" fill="#6B7378"/>
+<rect x="402" y="14" width="180" height="92" rx="4" fill="#ECEBFA" stroke="#4F46B8" stroke-width="1.2"/>
+<text x="492" y="34" font-size="9.6" fill="#4F46B8" text-anchor="middle" font-weight="700">vérifier</text>
+<text x="492" y="52" font-size="7.6" fill="#2B2F33" text-anchor="middle">comparer au résultat</text>
+<text x="492" y="64" font-size="7.6" fill="#2B2F33" text-anchor="middle">qu'on attend</text>
+<text x="492" y="94" font-size="7.2" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.2px">assert.equal(…, false)</text>
+<text x="10" y="130" font-size="8.8" fill="#2B2F33" text-anchor="start" font-weight="700">Un test vert dit une seule chose : aucune des vérifications écrites n'a échoué.</text>
+<text x="10" y="148" font-size="8" fill="#2B2F33" text-anchor="start">Il ne dit rien de ce qu'on n'a pas vérifié. Magpie web : 25 tests, tous verts, en 261 ms (mesuré sur une copie).</text>
+<text x="10" y="166" font-size="8" fill="#4F46B8" text-anchor="start" font-weight="700">La question utile n'est pas « les tests passent-ils ? », mais « quel défaut feraient-ils échouer ? ».</text>
+<text x="10" y="188" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Exemple tiré de magpie/web/test/validation.test.mjs, lignes 9 à 17.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Un test prouve que le programme se comporte bien sur les exemples qu'il essaie, et seulement sur eux ; sa valeur se mesure aux défauts qu'il ferait échouer.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Un contrôle de pièces en atelier. La pige « entre » vérifie qu'une cote n'est pas trop grande ; sans la pige « n'entre pas », une pièce trop petite passe. Un contrôle qui n'essaie qu'un côté laisse passer l'autre défaut sans bruit.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>découper un test en trois temps ;</li>
+        <li>dire ce qu'un test vert prouve ;</li>
+        <li>mesurer un jeu de tests par mutants ;</li>
+        <li>repérer un test qui ne peut pas échouer.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À retenir</span>
+    Toutes les mesures de ce bloc ont été faites sur des copies des dépôts, dans le dossier de travail de la session : aucun fichier de SnapSet, Cuttlefish ou Magpie n'a été modifié.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 109 · Ce qu'un test prouve</div>
+</section>
+
+<!-- ============ PAGE 2 · LES MUTANTS ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 109</b></div>
+  <p class="rubrique">Schéma 1 · Mettre les tests à l'épreuve</p>
+  <h2>Casser exprès pour voir</h2>
+  <p style="max-width:165mm">Le <b>test par mutation</b> retourne la question : au lieu de demander si le code est juste, il demande si les tests remarqueraient qu'il ne l'est plus. On fabrique des copies du code avec un petit défaut chacune (un <b>mutant</b>), on lance les tests sur chaque copie, et on compte celles qu'ils font échouer.</p>
+
+  <svg viewBox="0 0 600 222" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="222" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#4F46B8" text-anchor="start" font-weight="700">Introduire exprès un défaut dans validation.mjs, relancer ses tests, et compter les défauts vus (copie, mesuré)</text>
+<rect x="20.0" y="36" width="392.0" height="22" fill="#2E7D32"/>
+<text x="216.0" y="51" font-size="8.6" fill="#fff" text-anchor="middle" font-weight="700">28</text>
+<rect x="412.0" y="36" width="70.0" height="22" fill="#E65100"/>
+<text x="447.0" y="51" font-size="8.6" fill="#fff" text-anchor="middle" font-weight="700">5</text>
+<rect x="482.0" y="36" width="70.0" height="22" fill="#C62828"/>
+<text x="517.0" y="51" font-size="8.6" fill="#fff" text-anchor="middle" font-weight="700">5</text>
+<rect x="552.0" y="36" width="28.0" height="22" fill="#6B7378"/>
+<text x="566.0" y="51" font-size="8.6" fill="#fff" text-anchor="middle" font-weight="700">2</text>
+<rect x="20" y="68" width="9" height="9" fill="#2E7D32"/>
+<text x="34" y="76" font-size="7.8" fill="#2B2F33" text-anchor="start">tués : un test échoue (28)</text>
+<rect x="310" y="68" width="9" height="9" fill="#E65100"/>
+<text x="324" y="76" font-size="7.8" fill="#2B2F33" text-anchor="start">survivants sur des lignes jamais exécutées (5)</text>
+<rect x="20" y="84" width="9" height="9" fill="#C62828"/>
+<text x="34" y="92" font-size="7.8" fill="#2B2F33" text-anchor="start">survivants sur des lignes exécutées (5)</text>
+<rect x="310" y="84" width="9" height="9" fill="#6B7378"/>
+<text x="324" y="92" font-size="7.8" fill="#2B2F33" text-anchor="start">équivalents (2)</text>
+<text x="20" y="122" font-size="7.8" fill="#2B2F33" text-anchor="start">Un mutant : « &gt; » devenu « &gt;= », « pass: false » devenu « pass: true », un Math.abs( retiré…</text>
+<text x="20" y="138" font-size="7.8" fill="#2B2F33" text-anchor="start">40 mutants, 4,9 s. Un mutant équivalent ne change rien au résultat : i &lt; n devenu i &lt;= n lit une case vide.</text>
+<text x="20" y="160" font-size="8" fill="#C62828" text-anchor="start" font-weight="700">Les cinq survivants « exécutés » sont les plus instructifs : la ligne tourne pendant les tests,</text>
+<text x="20" y="176" font-size="8" fill="#C62828" text-anchor="start" font-weight="700">mais aucune vérification ne dépend de ce qu'elle fait. Ex. : Math.abs retiré à la ligne 33.</text>
+<text x="20" y="202" font-size="8" fill="#2E7D32" text-anchor="start" font-weight="700">Ajouter une seule assertion, [0.98, 3, 5] refusé, tue ce mutant : 29 sur 40.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Python, le cœur d'un testeur par mutation</span>for ligne, (avant, apres) in mutations:          # « &gt; » → « &gt;= », etc.
+    ecrire(copie, remplacer(source, ligne, avant, apres))
+    r = subprocess.run(["node", "--test", test])
+    tue = r.returncode != 0                      # un test a échoué : bien vu
+ecrire(copie, source)                            # toujours restaurer</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Le score de mutation</h3>
+      <p>La part de mutants tués, ici 28 sur 38 non équivalents, soit 74 %. Contrairement à la couverture (cours 112), il ne compte une ligne que si un test dépend vraiment de ce qu'elle calcule.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Des outils tout faits</h3>
+      <p>Stryker (JavaScript, C#) ou PIT (Java) génèrent des centaines de mutants et rangent les survivants par fichier. Le principe est celui du petit script : copier, casser, tester, restaurer.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Chercher à tuer tous les mutants. Certains sont équivalents (le programme fait exactement la même chose) et aucun test ne peut les voir. On lit les survivants un par un ; on ne vise pas 100 %.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 109 · Ce qu'un test prouve</div>
+</section>
+
+<!-- ============ PAGE 3 · LES FRONTIÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 109</b></div>
+  <p class="rubrique">Schéma 2 · Les frontières</p>
+  <h2>Essayer les deux côtés</h2>
+  <p style="max-width:165mm">Les défauts se logent aux limites : une tolérance, une longueur de liste, une valeur vide. Un cas « au milieu » ne dit presque rien. Les cas qui comptent sont ceux qui encadrent chaque frontière, juste dedans et juste dehors, et de chaque côté.</p>
+
+  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#4F46B8" text-anchor="start" font-weight="700">ExactOrderedList, 1er élément attendu 1, tolérance 0,01 : ce que les tests essaient (validation.test.mjs:11–14)</text>
+<line x1="40" y1="90" x2="560" y2="90" stroke="#6B7378"/>
+<rect x="210" y="76" width="180" height="28" fill="#2E7D32" opacity=".15"/>
+<line x1="30" y1="86" x2="30" y2="94" stroke="#6B7378"/>
+<text x="29.999999999999773" y="120" font-size="7.4" fill="#6B7378" text-anchor="middle" class="mono" style="font-size:7.4px">0,97</text>
+<line x1="120" y1="86" x2="120" y2="94" stroke="#6B7378"/>
+<text x="119.99999999999983" y="120" font-size="7.4" fill="#6B7378" text-anchor="middle" class="mono" style="font-size:7.4px">0,98</text>
+<line x1="210" y1="86" x2="210" y2="94" stroke="#6B7378"/>
+<text x="209.99999999999991" y="120" font-size="7.4" fill="#6B7378" text-anchor="middle" class="mono" style="font-size:7.4px">0,99</text>
+<line x1="300" y1="86" x2="300" y2="94" stroke="#6B7378"/>
+<text x="300.0" y="120" font-size="7.4" fill="#6B7378" text-anchor="middle" class="mono" style="font-size:7.4px">1,00</text>
+<line x1="390" y1="86" x2="390" y2="94" stroke="#6B7378"/>
+<text x="390.0000000000001" y="120" font-size="7.4" fill="#6B7378" text-anchor="middle" class="mono" style="font-size:7.4px">1,01</text>
+<line x1="480" y1="86" x2="480" y2="94" stroke="#6B7378"/>
+<text x="480.00000000000017" y="120" font-size="7.4" fill="#6B7378" text-anchor="middle" class="mono" style="font-size:7.4px">1,02</text>
+<line x1="570" y1="86" x2="570" y2="94" stroke="#6B7378"/>
+<text x="570.0000000000002" y="120" font-size="7.4" fill="#6B7378" text-anchor="middle" class="mono" style="font-size:7.4px">1,03</text>
+<circle cx="300" cy="90" r="5" fill="#2E7D32"/>
+<circle cx="345" cy="90" r="5" fill="#2E7D32"/>
+<circle cx="480" cy="90" r="5" fill="#C62828"/>
+<circle cx="120" cy="90" r="5" fill="#fff" stroke="#C62828" stroke-width="1.4" stroke-dasharray="2 2"/>
+<text x="119.99999999999983" y="66" font-size="7.6" fill="#C62828" text-anchor="middle" font-weight="700">jamais essayé</text>
+<text x="344.99999999999903" y="66" font-size="7.6" fill="#2E7D32" text-anchor="middle" font-weight="700">testés</text>
+<text x="16" y="146" font-size="8" fill="#2B2F33" text-anchor="start">Sans Math.abs, 1,02 reste refusé (écart +0,02) mais 0,98 passerait (écart −0,02, plus petit que 0,01).</text>
+<text x="16" y="162" font-size="8" fill="#2B2F33" text-anchor="start">Les tests n'essaient que le côté supérieur : le défaut passerait inaperçu. Le code actuel, lui, est juste.</text>
+<text x="16" y="184" font-size="8" fill="#4F46B8" text-anchor="start" font-weight="700">Un bon jeu de cas encadre chaque frontière des deux côtés : juste dedans, juste dehors, en dessous comme au-dessus.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · node:test, encadrer une tolérance</span>assert.equal(verdict([1.009, 3, 5], c), true,  "juste dedans, au-dessus");
+assert.equal(verdict([1.02,  3, 5], c), false, "juste dehors, au-dessus");
+assert.equal(verdict([0.991, 3, 5], c), true,  "juste dedans, en dessous");
+assert.equal(verdict([0.98,  3, 5], c), false, "juste dehors, en dessous");</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Le message de l'assertion</h3>
+      <p>Le troisième argument (« hors tolérance ») est ce qu'affiche un échec. Les tests de Magpie le soignent : le jour où l'un casse, il dit quel cas, sans relire le code.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Pile sur la frontière</h3>
+      <p>Tester 1,01 exactement est piégeux : 1,01 − 1 vaut 0,010000000000000009 en virgule flottante (cours 49), un peu plus que 0,01. On teste nettement de part et d'autre.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Écrire les cas de test en relisant le code. On reproduit alors ses angles morts : si le code oublie un côté, celui qui le relit l'oublie aussi. Les cas se tirent de la règle (« à 0,01 près »), pas de l'implémentation.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 109 · Ce qu'un test prouve</div>
+</section>
+
+<!-- ============ PAGE 4 · LE TEST TOUJOURS VERT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 109</b></div>
+  <p class="rubrique">Schéma 3 · Le faux vert</p>
+  <h2>Le test qui ne peut pas échouer</h2>
+  <p style="max-width:165mm">Un test peut passer pour une raison qui n'a rien à voir avec le code testé : il sort avant de vérifier, il vérifie trop tard, ou il compare une valeur à elle-même. Il reste vert quoi qu'on fasse, et rassure à tort.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">Trois façons d'écrire un test toujours vert</text>
+<rect x="16" y="36" width="568" height="40" rx="4" fill="#ECEBFA" stroke="#C62828" stroke-width="1.2"/>
+<text x="28" y="52" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">sortir avant de vérifier</text>
+<text x="250" y="52" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">if (g == null) return;</text>
+<text x="28" y="68" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">SnapSet LotATests.cs:62 : sans node sur le poste, le test passe sans rien vérifier</text>
+<rect x="16" y="82" width="568" height="40" rx="4" fill="#fff" stroke="#4F46B8" stroke-width="1.2"/>
+<text x="28" y="98" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">vérifier après la fin du test</text>
+<text x="250" y="98" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">charge().then(v => assert…)</text>
+<text x="28" y="114" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">mesuré : node:test affiche « ok » pour ce test et signale l'échec ailleurs (cours 113)</text>
+<rect x="16" y="128" width="568" height="40" rx="4" fill="#ECEBFA" stroke="#4F46B8" stroke-width="1.2"/>
+<text x="28" y="144" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">vérifier ce qu'on a soi-même posé</text>
+<text x="250" y="144" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">assert.equal(x, x)</text>
+<text x="28" y="160" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">souvent caché : comparer la sortie d'une fonction à une copie de son propre code</text>
+<text x="16" y="192" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">La parade : voir chaque test échouer au moins une fois, en cassant exprès le code qu'il protège.</text>
+<text x="16" y="208" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Un test qu'on n'a jamais vu rouge n'a pas encore prouvé qu'il sait l'être.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · node:test, dire qu'on n'a pas pu vérifier</span>test("le générateur écrit en LF", (t) =&gt; {
+  if (!nodeDisponible()) return t.skip("node absent du poste");
+  // … vérifications
+});                         // le rapport compte ce test « skipped », pas « ok »</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Rouge, vert, puis seulement réécrire</h3>
+      <p>La démarche « test d'abord » écrit le test avant le code : il commence rouge, ce qui prouve qu'il peut l'être, puis le code le fait passer. Après coup, on obtient la même preuve en cassant le code un instant.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Ignoré n'est pas réussi</h3>
+      <p><code>t.skip()</code> en JavaScript, <code>[Fact(Skip = "…")]</code> ou le paquet SkippableFact en xUnit 2 : le test apparaît « ignoré » dans le rapport. Un <code>return</code> silencieux le montre « réussi ».</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Compter les tests verts comme une mesure de qualité. Un projet de 600 tests dont un tiers ne peuvent pas échouer n'est pas mieux protégé qu'un projet de 400 : le nombre ne dit rien, les mutants tués disent quelque chose.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 109 · Ce qu'un test prouve</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 109</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>La tolérance de Magpie, vue par ses tests</h2>
+  <p style="max-width:165mm">validation.mjs décide du verdict de l'apprenant pour tous les modes non géométriques. Ses tests sont soignés ; les mutants montrent pourtant deux comparaisons dont un seul côté est vérifié.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">magpie/web/validation.mjs</span></div>
+<div class="l k1"><span class="n">33</span>    if (Math.abs(submittedNums[i] - expected[i]) &gt; tolerance) {<span class="rep r1">1</span></div>
+<div class="l k2"><span class="n">116</span>  if (Math.abs(value - expected) &gt; tolerance) {<span class="rep r2">2</span></div>
+<div class="l"><span class="cm">magpie/web/test/validation.test.mjs</span></div>
+<div class="l k3"><span class="n">13</span>  assert.equal(verdict([1.005, 3, 5], config), true, "dans …<span class="rep r3">3</span></div>
+<div class="l"><span class="n">14</span>  assert.equal(verdict([1.02, 3, 5], config), false, "hors …</div>
+<div class="l k4"><span class="n">52</span>    assert.equal(verdict([1.42], config), false, Mode);<span class="rep r4">4</span></div>
+<div class="l"><span class="cm">snapset/tests/ResolutionTests/LotATests.cs</span></div>
+<div class="l k5"><span class="n">62</span>            if (g == null) return;<span class="rep r5">5</span></div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Liste</b>abs : survit… puis tué.</li>
+      <li><span class="rep r2">2</span><b>Valeur seule</b>abs et &gt;= survivent.</li>
+      <li><span class="rep r3">3</span><b>Au-dessus</b>Seulement.</li>
+      <li><span class="rep r4">4</span><b>Loin</b>1,42 contre 1,4142.</li>
+      <li><span class="rep r5">5</span><b>Sortie</b>Vert sans node.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À surveiller · des frontières vérifiées d'un seul côté</span>
+    Sur une copie, 40 mutants de validation.mjs : 28 tués, 2 équivalents, 10 survivants. Cinq survivants sont sur des lignes que les tests exécutent, dont Math.abs retiré aux lignes 33 et 116 : une réponse trop petite passerait sans qu'aucun test ne rougisse. Mesuré : une assertion de plus, [0.98, 3, 5] refusé, fait passer à 29. Le code est juste aujourd'hui ; c'est sa protection qui est partielle. Côté SnapSet, LotATests.cs:62 rend un vert sans rien vérifier si node manque. Relevé sans rien modifier.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 109 · Ce qu'un test prouve</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 109</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Un test vert prouve…</div><ul>
+      <li><span>A</span>qu'il n'y a pas de défaut</li><li><span>B</span>que tout le code a tourné</li><li><span>C</span>que le code est juste</li><li><span>D</span>qu'aucune vérification écrite n'a échoué</li></ul></div>
+
+    <div class="q"><div class="enonce">Les trois temps d'un test sont…</div><ul>
+      <li><span>A</span>ouvrir, tester, fermer</li><li><span>B</span>lire, écrire, effacer</li><li><span>C</span>compiler, lancer, publier</li><li><span>D</span>préparer, agir, vérifier</li></ul></div>
+
+    <div class="q"><div class="enonce">Un mutant est…</div><ul>
+      <li><span>A</span>un test qui change</li><li><span>B</span>une branche Git</li><li><span>C</span>une copie du code avec un petit défaut introduit exprès</li><li><span>D</span>un fichier corrompu</li></ul></div>
+
+    <div class="q"><div class="enonce">Un mutant « tué » signifie…</div><ul>
+      <li><span>A</span>qu'au moins un test a échoué sur lui</li><li><span>B</span>qu'il a été supprimé</li><li><span>C</span>qu'il ne compile pas</li><li><span>D</span>que tous les tests passent</li></ul></div>
+
+    <div class="q"><div class="enonce">Sur validation.mjs, la mesure a donné…</div><ul>
+      <li><span>A</span>40 mutants, 40 tués</li><li><span>B</span>40 mutants, 28 tués</li><li><span>C</span>25 mutants, 25 tués</li><li><span>D</span>10 mutants, 0 tué</li></ul></div>
+
+    <div class="q"><div class="enonce">Un mutant équivalent…</div><ul>
+      <li><span>A</span>double le temps de test</li><li><span>B</span>casse la compilation</li><li><span>C</span>ne change rien au résultat du programme</li><li><span>D</span>est toujours tué</li></ul></div>
+
+    <div class="q"><div class="enonce">Sans Math.abs, avec 1 attendu à 0,01 près…</div><ul>
+      <li><span>A</span>les deux seraient refusés</li><li><span>B</span>0,98 passerait, 1,02 resterait refusé</li><li><span>C</span>les deux passeraient</li><li><span>D</span>1,02 passerait</li></ul></div>
+
+    <div class="q"><div class="enonce">Pour encadrer une frontière, on teste… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>une valeur au milieu</li><li><span>B</span>uniquement la valeur exacte</li><li><span>C</span>juste dedans et juste dehors</li><li><span>D</span>des deux côtés</li></ul></div>
+
+    <div class="q"><div class="enonce">Un test qui fait return avant de vérifier…</div><ul>
+      <li><span>A</span>apparaît ignoré</li><li><span>B</span>échoue</li><li><span>C</span>ne compile pas</li><li><span>D</span>apparaît réussi sans rien prouver</li></ul></div>
+
+    <div class="q"><div class="enonce">Pour qu'un test non exécutable soit visible, on utilise…</div><ul>
+      <li><span>A</span>t.skip() ou un Skip</li><li><span>B</span>assert.ok(true)</li><li><span>C</span>un return</li><li><span>D</span>un commentaire</li></ul></div>
+
+    <div class="q"><div class="enonce">Les cas de test se tirent plutôt…</div><ul>
+      <li><span>A</span>des messages d'erreur</li><li><span>B</span>du code à tester</li><li><span>C</span>de la règle à respecter</li><li><span>D</span>du hasard seul</li></ul></div>
+
+    <div class="q"><div class="enonce">Avoir vu un test rouge au moins une fois prouve…</div><ul>
+      <li><span>A</span>qu'il sait échouer</li><li><span>B</span>qu'il est inutile</li><li><span>C</span>que le code est faux</li><li><span>D</span>qu'il est lent</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 109 · Ce qu'un test prouve</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 109</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · D.</b> Rien de plus.</div>
+    <div><b>02 · D.</b> Préparer, agir, vérifier.</div>
+    <div><b>03 · C.</b> Un défaut volontaire.</div>
+    <div><b>04 · A.</b> Les tests l'ont vu.</div>
+    <div><b>05 · B.</b> 2 équivalents, 10 survivants.</div>
+    <div><b>06 · C.</b> Invisible à tout test.</div>
+    <div><b>07 · B.</b> Écart négatif.</div>
+    <div><b>08 · C et D.</b> Quatre cas.</div>
+    <div><b>09 · D.</b> LotATests.cs:62.</div>
+    <div><b>10 · A.</b> Ignoré, pas réussi.</div>
+    <div><b>11 · C.</b> Pas des angles morts.</div>
+    <div><b>12 · A.</b> Sinon, rien ne le dit.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 110, « Doublures et dépendances ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">node --test "test/*.test.mjs"</td><td>lancer les tests de Magpie web</td><td>page 1</td></tr>
+      <tr><td class="c">assert.equal(a, b, "cas")</td><td>vérifier, avec un message d'échec</td><td>page 3</td></tr>
+      <tr><td class="c">mutant tué / survivant</td><td>défaut vu / ignoré par les tests</td><td>schéma 1, page 2</td></tr>
+      <tr><td class="c">juste dedans, juste dehors</td><td>encadrer une frontière</td><td>schéma 2, page 3</td></tr>
+      <tr><td class="c">t.skip("raison")</td><td>marquer un test non exécuté</td><td>page 4</td></tr>
+      <tr><td class="c">Stryker, PIT</td><td>tests par mutation outillés</td><td>page 2</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Assertion</dt><dd>Une vérification qui fait échouer le test si elle est fausse.</dd>
+    <dt>Mutant</dt><dd>Une copie du code avec un défaut introduit exprès.</dd>
+    <dt>Score de mutation</dt><dd>La part des mutants non équivalents que les tests font échouer.</dd>
+    <dt>Mutant équivalent</dt><dd>Un changement qui ne modifie pas le comportement.</dd>
+    <dt>Faux vert</dt><dd>Un test qui passe sans avoir vérifié ce qu'il annonce.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 110</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 109 · Ce qu'un test prouve</div>
+</section>
+
+</body>
+</html>

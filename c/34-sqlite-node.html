@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>34 · SQLite dans Node</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-10">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 34</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>SQLite dans Node</h1>
+  <p class="chapeau">Le catalogue des composants, les parcours et les exercices de Magpie tiennent dans <b>un seul fichier</b>, <code>magpie.db</code>. SQLite est une base de données complète, sans serveur à installer : une bibliothèque lit et écrit ce fichier. Node l'embarque depuis la version 22, sous le nom <code>node:sqlite</code>.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>55 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>30</b> et <b>33</b></span>
+    <span class="pastille">Exemples · <b>db.mjs</b>, <b>exercises.mjs</b>, <b>compute-proxy.mjs</b> (Magpie)</span>
+  </div>
+
+  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+    <svg viewBox="0 0 600 200" width="100%">
+<text x="16" y="16" font-size="11" fill="#4A4A68" text-anchor="start" font-weight="700">Pas de serveur de base : le backend ouvre un fichier</text>
+<rect x="16" y="40" width="170" height="52" rx="4" fill="#ECECF2" stroke="#4A4A68" stroke-width="1.3"/>
+<text x="101.0" y="63.0" font-size="9" fill="#4A4A68" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">compute-proxy.mjs</text>
+<text x="101.0" y="77.0" font-size="8.2" fill="#2B2F33" text-anchor="middle">le processus Node</text>
+<rect x="214" y="40" width="140" height="52" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.3"/>
+<text x="284.0" y="63.0" font-size="9" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">node:sqlite</text>
+<text x="284.0" y="77.0" font-size="8.2" fill="#2B2F33" text-anchor="middle">DatabaseSync</text>
+<line x1="187" y1="66" x2="212" y2="66" stroke="#6B7378" stroke-width="1.4"/><polygon points="212,66 205.6,68.7 205.6,63.3" fill="#6B7378"/>
+<path d="M400 34 h120 l26 18 v86 h-146 z" fill="#fff" stroke="#6D4C41" stroke-width="1.4"/>
+<path d="M520 34 v18 h26" fill="none" stroke="#6D4C41" stroke-width="1.2"/>
+<text x="410" y="52" font-size="9.6" fill="#6D4C41" text-anchor="start" font-weight="700" class="mono" style="font-size:9.6px">magpie.db</text>
+<rect x="412" y="62" width="120" height="18" rx="3" fill="#ECECF2" stroke="#4A4A68"/>
+<text x="472" y="75" font-size="8.6" fill="#4A4A68" text-anchor="middle" class="mono" style="font-size:8.6px">components</text>
+<rect x="412" y="86" width="120" height="18" rx="3" fill="#ECECF2" stroke="#4A4A68"/>
+<text x="472" y="99" font-size="8.6" fill="#4A4A68" text-anchor="middle" class="mono" style="font-size:8.6px">parcours</text>
+<rect x="412" y="110" width="120" height="18" rx="3" fill="#ECECF2" stroke="#4A4A68"/>
+<text x="472" y="123" font-size="8.6" fill="#4A4A68" text-anchor="middle" class="mono" style="font-size:8.6px">exercises</text>
+<line x1="355" y1="66" x2="398" y2="66" stroke="#1565C0" stroke-width="1.4"/><polygon points="398,66 391.6,68.7 391.6,63.3" fill="#1565C0"/>
+<text x="376" y="60" font-size="8" fill="#1565C0" text-anchor="middle">lit, écrit</text>
+<text x="16" y="122" font-size="9" fill="#2B2F33" text-anchor="start" font-weight="700">Une table par sorte de chose :</text>
+<text x="16" y="138" font-size="9" fill="#2B2F33" text-anchor="start">les composants Grasshopper connus, les parcours, les exercices.</text>
+<text x="16" y="166" font-size="8.8" fill="#6B7378" text-anchor="start" font-style="italic">Copier magpie.db, c'est copier toute la base ; le supprimer la recrée vide au prochain démarrage.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Une base relationnelle range les données en <b>tables</b> de lignes et de colonnes, et on l'interroge en <b>SQL</b> : on décrit les lignes voulues, la base trouve comment les obtenir.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Un classeur Excel bien tenu : une feuille par sorte de chose, une ligne par élément, une colonne par propriété, et une colonne d'identifiants qui permet à une feuille de renvoyer à une autre.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>lire le schéma de magpie.db et ses liens ;</li>
+        <li>écrire une requête paramétrée avec prepare et ? ;</li>
+        <li>dire pourquoi on ne colle jamais une valeur dans du SQL ;</li>
+        <li>suivre une migration de schéma sans perte de données.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:5mm">
+    <span class="titre">À retenir</span>
+    <code>DatabaseSync</code> est <b>synchrone</b> : chaque requête bloque le fil de Node le temps de s'exécuter. C'est acceptable ici, car la base est locale et les requêtes durent quelques microsecondes ; l'attente longue, celle de Compute, reste asynchrone (cours 30).
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 34 · SQLite dans Node</div>
+</section>
+
+<!-- ============ PAGE 2 · LE SCHÉMA ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 34</b></div>
+  <p class="rubrique">Schéma 1 · Les tables</p>
+  <h2>Trois tables, un lien</h2>
+  <p style="max-width:165mm"><code>openDb</code> crée les tables au premier lancement. Chaque colonne a un type, une ligne est repérée par sa <b>clé primaire</b>, et une <b>clé étrangère</b> pointe vers la ligne d'une autre table.</p>
+
+  <svg viewBox="0 0 600 222" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="222" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="12" fill="#4A4A68" text-anchor="start" font-weight="700">Le schéma de magpie.db</text>
+<rect x="16" y="36" width="176" height="114" rx="4" fill="#fff" stroke="#4A4A68" stroke-width="1.3"/>
+<rect x="16" y="36" width="176" height="20" rx="4" fill="#4A4A68"/>
+<text x="24" y="50" font-size="9.2" fill="#fff" text-anchor="start" font-weight="700" class="mono" style="font-size:9.2px">components</text>
+<text x="24" y="70" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">typeGuid</text>
+<text x="184" y="70" font-size="7.8" fill="#6B7378" text-anchor="end" class="mono" style="font-size:7.8px">TEXT PK</text>
+<text x="24" y="85" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px">name</text>
+<text x="184" y="85" font-size="7.8" fill="#6B7378" text-anchor="end" class="mono" style="font-size:7.8px">TEXT</text>
+<text x="24" y="100" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px">category</text>
+<text x="184" y="100" font-size="7.8" fill="#6B7378" text-anchor="end" class="mono" style="font-size:7.8px">TEXT</text>
+<text x="24" y="115" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px">inputs</text>
+<text x="184" y="115" font-size="7.8" fill="#6B7378" text-anchor="end" class="mono" style="font-size:7.8px">TEXT json</text>
+<text x="24" y="130" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px">outputs</text>
+<text x="184" y="130" font-size="7.8" fill="#6B7378" text-anchor="end" class="mono" style="font-size:7.8px">TEXT json</text>
+<text x="24" y="145" font-size="8.4" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">isAuthorized</text>
+<text x="184" y="145" font-size="7.8" fill="#6B7378" text-anchor="end" class="mono" style="font-size:7.8px">INTEGER</text>
+<rect x="212" y="36" width="160" height="84" rx="4" fill="#fff" stroke="#4A4A68" stroke-width="1.3"/>
+<rect x="212" y="36" width="160" height="20" rx="4" fill="#4A4A68"/>
+<text x="220" y="50" font-size="9.2" fill="#fff" text-anchor="start" font-weight="700" class="mono" style="font-size:9.2px">parcours</text>
+<text x="220" y="70" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">id</text>
+<text x="364" y="70" font-size="7.8" fill="#6B7378" text-anchor="end" class="mono" style="font-size:7.8px">TEXT PK</text>
+<text x="220" y="85" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px">title</text>
+<text x="364" y="85" font-size="7.8" fill="#6B7378" text-anchor="end" class="mono" style="font-size:7.8px">TEXT</text>
+<text x="220" y="100" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px">sortOrder</text>
+<text x="364" y="100" font-size="7.8" fill="#6B7378" text-anchor="end" class="mono" style="font-size:7.8px">INTEGER</text>
+<text x="220" y="115" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px">exerciseIds</text>
+<text x="364" y="115" font-size="7.8" fill="#6B7378" text-anchor="end" class="mono" style="font-size:7.8px">TEXT json</text>
+<rect x="392" y="36" width="192" height="129" rx="4" fill="#fff" stroke="#4A4A68" stroke-width="1.3"/>
+<rect x="392" y="36" width="192" height="20" rx="4" fill="#4A4A68"/>
+<text x="400" y="50" font-size="9.2" fill="#fff" text-anchor="start" font-weight="700" class="mono" style="font-size:9.2px">exercises</text>
+<text x="400" y="70" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">id</text>
+<text x="576" y="70" font-size="7.8" fill="#6B7378" text-anchor="end" class="mono" style="font-size:7.8px">TEXT PK</text>
+<text x="400" y="85" font-size="8.4" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">parcoursId</text>
+<text x="576" y="85" font-size="7.8" fill="#6B7378" text-anchor="end" class="mono" style="font-size:7.8px">TEXT FK</text>
+<text x="400" y="100" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px">sortOrder</text>
+<text x="576" y="100" font-size="7.8" fill="#6B7378" text-anchor="end" class="mono" style="font-size:7.8px">INTEGER</text>
+<text x="400" y="115" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px">title</text>
+<text x="576" y="115" font-size="7.8" fill="#6B7378" text-anchor="end" class="mono" style="font-size:7.8px">TEXT</text>
+<text x="400" y="130" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px">starterGraph</text>
+<text x="576" y="130" font-size="7.8" fill="#6B7378" text-anchor="end" class="mono" style="font-size:7.8px">TEXT json</text>
+<text x="400" y="145" font-size="8.4" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">validationConfig</text>
+<text x="576" y="145" font-size="7.8" fill="#6B7378" text-anchor="end" class="mono" style="font-size:7.8px">TEXT json</text>
+<text x="400" y="160" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px">opaqueObjects</text>
+<text x="576" y="160" font-size="7.8" fill="#6B7378" text-anchor="end" class="mono" style="font-size:7.8px">TEXT json</text>
+<path d="M392 85 C 380 85, 384 67, 372 67" fill="none" stroke="#1565C0" stroke-width="1.6"/>
+<polygon points="372,67 379,63.5 379,70.5" fill="#1565C0"/>
+<text x="16" y="194" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700">PK : clé primaire.</text>
+<text x="120" y="194" font-size="8.4" fill="#1565C0" text-anchor="start" font-weight="700">FK : clé étrangère, ici vers parcours.id.</text>
+<text x="16" y="210" font-size="8.4" fill="#C62828" text-anchor="start" font-weight="700">En rouge : le corrigé, jamais renvoyé à l'apprenant.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">db.mjs · 47–55</span>CREATE TABLE IF NOT EXISTS exercises (
+  id TEXT PRIMARY KEY,
+  parcoursId TEXT REFERENCES parcours(id),
+  sortOrder INTEGER NOT NULL DEFAULT 0,
+  title TEXT NOT NULL,
+  instructions TEXT,
+  starterGraph TEXT,        -- JSON, optionnel (graphe de départ pré-câblé, propre au web)
+  validationConfig TEXT NOT NULL -- JSON natif complet, JAMAIS renvoyé au client
+) STRICT;</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>STRICT, comme C#</h3>
+      <p>Par défaut, SQLite accepte du texte dans une colonne INTEGER. <code>STRICT</code> l'interdit : une valeur du mauvais type est refusée à l'écriture, comme le ferait le compilateur C#.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Du JSON dans une colonne TEXT</h3>
+      <p><code>validationConfig</code> garde le JSON de l'exercice tel que le plugin l'écrit, sans le découper en colonnes. On ne le cherche jamais par son contenu : on le relit en entier, puis <code>JSON.parse</code>.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Croire qu'une colonne se protège seule. <code>validationConfig</code> contient la réponse attendue : rien dans la base ne l'empêche de sortir. C'est le code qui ne la sélectionne jamais dans les routes de l'apprenant ; la liste publique ne lit que <code>id, title, instructions</code> (compute-proxy.mjs, ligne 230).
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 34 · SQLite dans Node</div>
+</section>
+
+<!-- ============ PAGE 3 · REQUÊTES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 34</b></div>
+  <p class="rubrique">Schéma 2 · Requêtes paramétrées</p>
+  <h2>Le SQL d'un côté, les valeurs de l'autre</h2>
+  <p style="max-width:165mm"><code>db.prepare(sql)</code> compile une requête une fois. Chaque <code>?</code> marque une place ; les valeurs arrivent ensuite, à part, par <code>get</code> (une ligne), <code>all</code> (toutes) ou <code>run</code> (une écriture).</p>
+
+  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
+<rect x="16" y="14" width="278" height="178" rx="5" fill="#fff" stroke="#C62828" stroke-width="1.4"/>
+<rect x="16" y="14" width="278" height="22" rx="5" fill="#C62828"/>
+<text x="26" y="29" font-size="9.6" fill="#fff" text-anchor="start" font-weight="700">Collé dans le texte</text>
+<text x="26" y="58" font-size="8.2" fill="#6B7378" text-anchor="start">la requête</text>
+<text x="26" y="74" font-size="8.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.6px;white-space:pre">`SELECT … WHERE id = '${id}'`</text>
+<text x="26" y="100" font-size="8.2" fill="#6B7378" text-anchor="start">ce qu'envoie un client malveillant</text>
+<text x="26" y="116" font-size="8.6" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px;white-space:pre">id = x' OR '1'='1</text>
+<text x="26" y="142" font-size="8.2" fill="#6B7378" text-anchor="start">ce que la base exécute</text>
+<text x="26" y="158" font-size="8.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.6px;white-space:pre">WHERE id = 'x' OR '1'='1'</text>
+<text x="26" y="182" font-size="9" fill="#C62828" text-anchor="start" font-weight="700">toutes les lignes sortent</text>
+<rect x="306" y="14" width="278" height="178" rx="5" fill="#fff" stroke="#2E7D32" stroke-width="1.4"/>
+<rect x="306" y="14" width="278" height="22" rx="5" fill="#2E7D32"/>
+<text x="316" y="29" font-size="9.6" fill="#fff" text-anchor="start" font-weight="700">Paramétré</text>
+<text x="316" y="58" font-size="8.2" fill="#6B7378" text-anchor="start">la requête</text>
+<text x="316" y="74" font-size="8.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.6px;white-space:pre">"SELECT … WHERE id = ?"</text>
+<text x="316" y="100" font-size="8.2" fill="#6B7378" text-anchor="start">ce qu'envoie un client malveillant</text>
+<text x="316" y="116" font-size="8.6" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px;white-space:pre">.get(id)</text>
+<text x="316" y="142" font-size="8.2" fill="#6B7378" text-anchor="start">ce que la base exécute</text>
+<text x="316" y="158" font-size="8.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.6px;white-space:pre">id comparé tel quel, en texte</text>
+<text x="316" y="182" font-size="9" fill="#2E7D32" text-anchor="start" font-weight="700">aucune ligne : l'id n'existe pas</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">exercises.mjs · 11–18</span>db.prepare(
+  `INSERT INTO exercises (id, parcoursId, sortOrder, title, instructions, starterGraph, validationConfig)
+   VALUES (?, NULL, 0, ?, ?, NULL, ?)
+   ON CONFLICT(id) DO UPDATE SET
+     title = excluded.title,
+     instructions = excluded.instructions,
+     validationConfig = excluded.validationConfig`
+).run(config.Id, config.Titre, config.Consigne || null, JSON.stringify(config));</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Insérer ou mettre à jour</h3>
+      <p><code>ON CONFLICT(id) DO UPDATE</code> : si l'id existe déjà, la ligne est mise à jour au lieu d'échouer. <code>excluded</code> désigne la ligne qu'on tentait d'insérer. Réimporter un exercice corrigé ne change donc jamais sa référence.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Préparer une fois, exécuter souvent</h3>
+      <p><code>upsertParcours</code> prépare <code>setPosition</code> avant la boucle, puis l'exécute pour chaque exercice. La requête est analysée une seule fois ; seules les valeurs changent.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Coller une valeur dans le texte SQL : <code>`… WHERE id = '${id}'`</code>. Un id comme <code>x' OR '1'='1</code> réécrit alors la requête : c'est l'<b>injection SQL</b>. Avec <code>?</code>, la valeur n'est jamais lue comme du SQL. Toutes les requêtes de Magpie qui reçoivent une valeur passent par <code>?</code>.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 34 · SQLite dans Node</div>
+</section>
+
+<!-- ============ PAGE 4 · MIGRATIONS ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 34</b></div>
+  <p class="rubrique">Schéma 3 · Les migrations</p>
+  <h2>Faire évoluer une base déjà remplie</h2>
+  <p style="max-width:165mm">Le fichier <code>magpie.db</code> d'un poste peut dater d'une ancienne version du code. <code>CREATE TABLE IF NOT EXISTS</code> ne touche jamais une table existante : chaque changement de schéma est donc rattrapé à part, au démarrage, par une <b>migration</b>.</p>
+
+  <svg viewBox="0 0 600 196" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="196" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="12" fill="#4A4A68" text-anchor="start" font-weight="700">Au démarrage, quatre rattrapages possibles</text>
+<rect x="16" y="40" width="134" height="96" rx="5" fill="#fff" stroke="#C62828" stroke-width="1.3"/>
+<circle cx="34" cy="58" r="9" fill="#C62828"/><text x="34" y="62" font-size="9" fill="#fff" text-anchor="middle" font-weight="700">1</text>
+<text x="50" y="62" font-size="8.4" fill="#6B7378" text-anchor="start" font-style="italic">si…</text>
+<text x="26" y="84" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">exercises sans</text>
+<text x="26" y="97" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">validationConfig</text>
+<text x="26" y="120" font-size="8.2" fill="#C62828" text-anchor="start">recréer la table (vide)</text>
+<line x1="151" y1="88" x2="159" y2="88" stroke="#6B7378" stroke-width="1"/><polygon points="159,88 152.6,90.7 152.6,85.3" fill="#6B7378"/>
+<rect x="160" y="40" width="134" height="96" rx="5" fill="#fff" stroke="#C62828" stroke-width="1.3"/>
+<circle cx="178" cy="58" r="9" fill="#C62828"/><text x="178" y="62" font-size="9" fill="#fff" text-anchor="middle" font-weight="700">2</text>
+<text x="194" y="62" font-size="8.4" fill="#6B7378" text-anchor="start" font-style="italic">si…</text>
+<text x="170" y="84" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">parcours.id en</text>
+<text x="170" y="97" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">INTEGER</text>
+<text x="170" y="120" font-size="8.2" fill="#C62828" text-anchor="start">relire, recréer, réinsérer</text>
+<line x1="295" y1="88" x2="303" y2="88" stroke="#6B7378" stroke-width="1"/><polygon points="303,88 296.6,90.7 296.6,85.3" fill="#6B7378"/>
+<rect x="304" y="40" width="134" height="96" rx="5" fill="#fff" stroke="#2E7D32" stroke-width="1.3"/>
+<circle cx="322" cy="58" r="9" fill="#2E7D32"/><text x="322" y="62" font-size="9" fill="#fff" text-anchor="middle" font-weight="700">3</text>
+<text x="338" y="62" font-size="8.4" fill="#6B7378" text-anchor="start" font-style="italic">si…</text>
+<text x="314" y="84" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">parcours sans</text>
+<text x="314" y="97" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">exerciseIds</text>
+<text x="314" y="120" font-size="8.2" fill="#2E7D32" text-anchor="start">ALTER TABLE … ADD COLUMN</text>
+<line x1="439" y1="88" x2="447" y2="88" stroke="#6B7378" stroke-width="1"/><polygon points="447,88 440.6,90.7 440.6,85.3" fill="#6B7378"/>
+<rect x="448" y="40" width="134" height="96" rx="5" fill="#fff" stroke="#2E7D32" stroke-width="1.3"/>
+<circle cx="466" cy="58" r="9" fill="#2E7D32"/><text x="466" y="62" font-size="9" fill="#fff" text-anchor="middle" font-weight="700">4</text>
+<text x="482" y="62" font-size="8.4" fill="#6B7378" text-anchor="start" font-style="italic">si…</text>
+<text x="458" y="84" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">exercises sans</text>
+<text x="458" y="97" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">opaqueObjects</text>
+<text x="458" y="120" font-size="8.2" fill="#2E7D32" text-anchor="start">ALTER TABLE … ADD COLUMN</text>
+<text x="16" y="160" font-size="8.8" fill="#2B2F33" text-anchor="start">Chaque test lit d'abord PRAGMA table_info : une base déjà à jour traverse les quatre sans rien changer.</text>
+<text x="16" y="178" font-size="8.6" fill="#6B7378" text-anchor="start" font-style="italic">En rouge : reconstruire une table. En vert : ajouter une colonne en place.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">db.mjs · 125–138</span>// Migration 3 : le parcours garde la liste ExerciseIds de son JSON natif, …
+const hasExerciseIds = db.prepare("PRAGMA table_info(parcours)").all()
+  .some((c) =&gt; c.name === "exerciseIds");
+if (!hasExerciseIds) {
+  db.exec("ALTER TABLE parcours ADD COLUMN exerciseIds TEXT;");
+}
+// Migration 4 : objets du graphe de départ que le canvas ne sait pas représenter …
+const hasOpaque = db.prepare("PRAGMA table_info(exercises)").all()
+  .some((c) =&gt; c.name === "opaqueObjects");
+if (!hasOpaque) {
+  db.exec("ALTER TABLE exercises ADD COLUMN opaqueObjects TEXT;");
+}</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Regarder avant d'agir</h3>
+      <p><code>PRAGMA table_info</code> liste les colonnes réelles d'une table. Chaque migration teste d'abord l'état de la base, et ne fait rien s'il est déjà bon : on peut relancer le serveur autant de fois qu'on veut.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Ajouter, ou reconstruire</h3>
+      <p>Ajouter une colonne se fait en place (<code>ALTER TABLE … ADD COLUMN</code>). Changer le type d'une colonne, non : la migration 2 relit les exercices, recrée les tables, puis les réinsère (lignes 87–123).</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Modifier seulement le <code>CREATE TABLE</code>. Une base neuve aurait la nouvelle colonne, mais celle d'un poste existant resterait à l'ancien schéma, et la première requête qui lit la colonne échouerait. D'où les migrations, à côté du schéma.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 34 · SQLite dans Node</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 34</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>upsertParcours : ranger un parcours</h2>
+  <p style="max-width:165mm">Appelée à l'import d'un parcours, en ligne de commande ou depuis l'administration. Elle enregistre le parcours, puis donne à chacun de ses exercices son parcours et sa position.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l k1"><span class="n">41</span><span class="kw">export function</span> upsertParcours(db, config) {<span class="rep r1">1</span></div>
+<div class="l k1"><span class="n">42</span>  <span class="kw">if</span> (!config.Id || !config.Titre</div>
+<div class="l k1"><span class="n"> </span>      || !Array.isArray(config.ExerciseIds)) {</div>
+<div class="l k1"><span class="n">43</span>    <span class="kw">throw new</span> <span class="ty">Error</span>(<span class="st">"Champs … obligatoires."</span>);</div>
+<div class="l k1"><span class="n">44</span>  }</div>
+<div class="l k2"><span class="n">46</span>  db.prepare(<span class="rep r2">2</span></div>
+<div class="l k2"><span class="n">47</span>    <span class="st">`INSERT INTO parcours (id, title, …)</span></div>
+<div class="l k2"><span class="n">48</span><span class="st">     VALUES (?, ?, NULL, 0, ?)</span></div>
+<div class="l k2"><span class="n">49</span><span class="st">     ON CONFLICT(id) DO UPDATE SET …`</span></div>
+<div class="l k3"><span class="n">50</span>  ).run(config.Id, config.Titre,<span class="rep r3">3</span></div>
+<div class="l k3"><span class="n"> </span>        JSON.stringify(config.ExerciseIds));</div>
+<div class="l k4"><span class="n">52</span>  <span class="kw">const</span> exists = db.prepare(<span class="rep r4">4</span></div>
+<div class="l k4"><span class="n"> </span>    <span class="st">"SELECT 1 FROM exercises WHERE id = ?"</span>);</div>
+<div class="l k4"><span class="n">53</span>  <span class="kw">const</span> setPosition = db.prepare(<span class="st">"UPDATE exercises</span></div>
+<div class="l k4"><span class="n"> </span><span class="st">    SET parcoursId = ?, sortOrder = ? WHERE id = ?"</span>);</div>
+<div class="l k5"><span class="n">55</span>  <span class="kw">const</span> missing = [];<span class="rep r5">5</span></div>
+<div class="l k5"><span class="n">56</span>  config.ExerciseIds.forEach((exerciseId, index) =&gt; {</div>
+<div class="l k5"><span class="n">57</span>    <span class="kw">if</span> (!exists.get(exerciseId)) {</div>
+<div class="l k5"><span class="n">58</span>      missing.push(exerciseId);</div>
+<div class="l k5"><span class="n">59</span>      <span class="kw">return</span>;</div>
+<div class="l k5"><span class="n">60</span>    }</div>
+<div class="l k6"><span class="n">61</span>    setPosition.run(config.Id, index, exerciseId);<span class="rep r6">6</span></div>
+<div class="l"><span class="n">62</span>  });</div>
+<div class="l k7"><span class="n">64</span>  <span class="kw">return</span> { parcoursId: config.Id,<span class="rep r7">7</span></div>
+<div class="l k7"><span class="n"> </span>    linked: …, missing };</div>
+<div class="l"><span class="n">65</span>}</div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Vérifier l'entrée</b>Un fichier mal formé est refusé avant toute écriture.</li>
+      <li><span class="rep r2">2</span><b>Insérer ou mettre à jour</b>Le même import peut se relancer.</li>
+      <li><span class="rep r3">3</span><b>Une liste en JSON</b>ExerciseIds est gardé tel quel, en texte.</li>
+      <li><span class="rep r4">4</span><b>Deux requêtes préparées</b>Une seule fois, avant la boucle.</li>
+      <li><span class="rep r5">5</span><b>Un exercice absent</b>Noté, pas bloquant : il se rattachera à son import.</li>
+      <li><span class="rep r6">6</span><b>La position</b>L'index du tableau devient sortOrder.</li>
+      <li><span class="rep r7">7</span><b>Un compte rendu</b>Combien rattachés, lesquels manquent.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">L'ordre d'import ne compte pas</span>
+    Un parcours peut arriver avant ses exercices : ses absents sont signalés, et sa liste reste en base. Quand l'exercice arrive, <code>upsertExercise</code> relit cette liste et se range tout seul à sa place (exercises.mjs, lignes 20–32).
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 34 · SQLite dans Node</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 34</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Une base SQLite, c'est…</div><ul>
+      <li><span>A</span>un serveur à installer</li><li><span>B</span>un fichier, lu par une bibliothèque</li><li><span>C</span>un service en ligne</li><li><span>D</span>un fichier JSON</li></ul></div>
+
+    <div class="q"><div class="enonce">exercises.parcoursId REFERENCES parcours(id) est…</div><ul>
+      <li><span>A</span>une clé primaire</li><li><span>B</span>un index</li><li><span>C</span>une clé étrangère</li><li><span>D</span>une migration</li></ul></div>
+
+    <div class="q"><div class="enonce">Une table STRICT…</div><ul>
+      <li><span>A</span>refuse une valeur du mauvais type</li><li><span>B</span>est en lecture seule</li><li><span>C</span>est chiffrée</li><li><span>D</span>interdit NULL partout</li></ul></div>
+
+    <div class="q"><div class="enonce">db.prepare(sql).get(id) rend…</div><ul>
+      <li><span>A</span>toutes les lignes</li><li><span>B</span>le nombre de lignes</li><li><span>C</span>une promesse</li><li><span>D</span>une ligne, ou undefined</li></ul></div>
+
+    <div class="q"><div class="enonce">Pourquoi des ? dans les requêtes ? <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>empêcher l'injection SQL</li><li><span>B</span>réutiliser la requête préparée</li><li><span>C</span>accélérer le disque</li><li><span>D</span>chiffrer les valeurs</li></ul></div>
+
+    <div class="q"><div class="enonce">ON CONFLICT(id) DO UPDATE, sur un id existant…</div><ul>
+      <li><span>A</span>lève une erreur</li><li><span>B</span>met la ligne à jour</li><li><span>C</span>crée un doublon</li><li><span>D</span>supprime la ligne</li></ul></div>
+
+    <div class="q"><div class="enonce">Dans DO UPDATE SET title = excluded.title, excluded est…</div><ul>
+      <li><span>A</span>la ligne supprimée</li><li><span>B</span>une table d'archive</li><li><span>C</span>la ligne qu'on tentait d'insérer</li><li><span>D</span>un mot-clé de sécurité</li></ul></div>
+
+    <div class="q"><div class="enonce">CREATE TABLE IF NOT EXISTS sur une table existante…</div><ul>
+      <li><span>A</span>ne la modifie jamais</li><li><span>B</span>ajoute les colonnes manquantes</li><li><span>C</span>la vide</li><li><span>D</span>la recrée</li></ul></div>
+
+    <div class="q"><div class="enonce">Pour savoir si une colonne existe déjà, db.mjs utilise…</div><ul>
+      <li><span>A</span>un try/catch</li><li><span>B</span>PRAGMA table_info</li><li><span>C</span>un fichier de version</li><li><span>D</span>Git</li></ul></div>
+
+    <div class="q"><div class="enonce">Changer le type d'une colonne demande…</div><ul>
+      <li><span>A</span>ALTER TABLE ADD COLUMN</li><li><span>B</span>rien, SQLite convertit</li><li><span>C</span>un redémarrage de Node</li><li><span>D</span>de recréer la table et de réinsérer</li></ul></div>
+
+    <div class="q"><div class="enonce">DatabaseSync est acceptable dans un serveur Node parce que…</div><ul>
+      <li><span>A</span>Node a plusieurs fils</li><li><span>B</span>les requêtes, locales, durent très peu</li><li><span>C</span>SQLite est asynchrone en interne</li><li><span>D</span>il n'y a qu'un apprenant</li></ul></div>
+
+    <div class="q"><div class="enonce">validationConfig ne sort jamais vers l'apprenant parce que…</div><ul>
+      <li><span>A</span>la colonne est chiffrée</li><li><span>B</span>STRICT la protège</li><li><span>C</span>les routes publiques ne la sélectionnent pas</li><li><span>D</span>SQLite la cache</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 34 · SQLite dans Node</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 34</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · B.</b> magpie.db, à côté du code.</div>
+    <div><b>02 · C.</b> Elle pointe vers la ligne d'une autre table.</div>
+    <div><b>03 · A.</b> Comme un compilateur, à l'écriture.</div>
+    <div><b>04 · D.</b> all rend toutes les lignes, run écrit.</div>
+    <div><b>05 · A et B.</b> La valeur n'est jamais lue comme du SQL.</div>
+    <div><b>06 · B.</b> Réimporter ne change pas la référence.</div>
+    <div><b>07 · C.</b> La ligne refusée par le conflit.</div>
+    <div><b>08 · A.</b> D'où les migrations.</div>
+    <div><b>09 · B.</b> La liste des colonnes réelles.</div>
+    <div><b>10 · D.</b> Comme la migration 2.</div>
+    <div><b>11 · B.</b> L'attente longue, Compute, reste asynchrone.</div>
+    <div><b>12 · C.</b> C'est le code qui protège, pas la base.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis la page 4 et le code de la page 5. <b>10 à 12</b> : passe au cours 97, « Modéliser des données ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">new DatabaseSync(DB_PATH)</td><td>ouvrir le fichier de base</td><td>db.mjs:14</td></tr>
+      <tr><td class="c">db.prepare("… WHERE id = ?").get(id)</td><td>lire une ligne</td><td>compute-proxy:374</td></tr>
+      <tr><td class="c">….all()</td><td>lire toutes les lignes</td><td>compute-proxy:128</td></tr>
+      <tr><td class="c">….run(a, b, c)</td><td>écrire</td><td>compute-proxy:224</td></tr>
+      <tr><td class="c">INSERT … ON CONFLICT(id) DO UPDATE</td><td>insérer ou mettre à jour</td><td>exercises:11</td></tr>
+      <tr><td class="c">PRAGMA table_info(t)</td><td>lister les colonnes réelles</td><td>db.mjs:127</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Clé primaire</dt><dd>La colonne dont la valeur identifie une ligne, sans doublon.</dd>
+    <dt>Clé étrangère</dt><dd>Une colonne qui contient la clé primaire d'une ligne d'une autre table.</dd>
+    <dt>Requête paramétrée</dt><dd>Du SQL avec des ? ; les valeurs voyagent à part.</dd>
+    <dt>Injection SQL</dt><dd>Une valeur collée dans le SQL qui en change le sens.</dd>
+    <dt>Migration</dt><dd>Un changement de schéma appliqué à une base déjà remplie.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 97</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 34 · SQLite dans Node</div>
+</section>
+
+</body>
+</html>

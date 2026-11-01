@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>99 · Les index d'une base</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-10">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 99</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Les index d'une base</h1>
+  <p class="chapeau">Sans aide, une base qui cherche les exercices d'un parcours lit toute la table. Un <b>index</b> range à part les valeurs d'une colonne, triées, avec l'adresse de chaque ligne : la recherche descend un arbre au lieu de tout lire. C'est l'index spatial du cours 93, pour des valeurs qu'on peut trier.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>55</b>, <b>93</b> et <b>98</b></span>
+    <span class="pastille">Exemples · <b>db.mjs</b>, <b>compute-proxy.mjs</b>, <b>authorize-components.mjs</b> (Magpie)</span>
+  </div>
+
+  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+    <svg viewBox="0 0 600 200" width="100%">
+<rect x="240" y="8" width="120" height="24" rx="4" fill="#ECECF2" stroke="#4A4A68" stroke-width="1.2"/>
+<text x="300.0" y="22.8" font-size="8.4" fill="#4A4A68" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">f  ·  m</text>
+<rect x="80" y="58" width="100" height="24" rx="4" fill="#fff" stroke="#4A4A68" stroke-width="1.2"/>
+<text x="130.0" y="72.66666666666667" font-size="8" fill="#4A4A68" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">b · c</text>
+<line x1="300" y1="32" x2="130" y2="58" stroke="#4A4A68" stroke-width="1"/>
+<rect x="260" y="58" width="100" height="24" rx="4" fill="#fff" stroke="#4A4A68" stroke-width="1.2"/>
+<text x="310.0" y="72.66666666666667" font-size="8" fill="#4A4A68" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">h · k</text>
+<line x1="300" y1="32" x2="310" y2="58" stroke="#4A4A68" stroke-width="1"/>
+<rect x="440" y="58" width="100" height="24" rx="4" fill="#fff" stroke="#4A4A68" stroke-width="1.2"/>
+<text x="490.0" y="72.66666666666667" font-size="8" fill="#4A4A68" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">p · t</text>
+<line x1="300" y1="32" x2="490" y2="58" stroke="#4A4A68" stroke-width="1"/>
+<rect x="16" y="110" width="56" height="22" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="44.0" y="123.53333333333333" font-size="7.6" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.6px">a…</text>
+<line x1="130" y1="82" x2="44" y2="110" stroke="#6B7378" stroke-width=".6"/>
+<rect x="80" y="110" width="56" height="22" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="108.0" y="123.53333333333333" font-size="7.6" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.6px">b…</text>
+<line x1="130" y1="82" x2="108" y2="110" stroke="#6B7378" stroke-width=".6"/>
+<rect x="144" y="110" width="56" height="22" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="172.0" y="123.53333333333333" font-size="7.6" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.6px">c…</text>
+<line x1="130" y1="82" x2="172" y2="110" stroke="#6B7378" stroke-width=".6"/>
+<rect x="208" y="110" width="56" height="22" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="236.0" y="123.53333333333333" font-size="7.6" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.6px">f…</text>
+<line x1="310" y1="82" x2="236" y2="110" stroke="#6B7378" stroke-width=".6"/>
+<rect x="272" y="110" width="56" height="22" rx="4" fill="#E8F5E9" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="300.0" y="123.53333333333333" font-size="7.6" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.6px">h…</text>
+<line x1="310" y1="82" x2="300" y2="110" stroke="#6B7378" stroke-width=".6"/>
+<rect x="336" y="110" width="56" height="22" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="364.0" y="123.53333333333333" font-size="7.6" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.6px">k…</text>
+<line x1="310" y1="82" x2="364" y2="110" stroke="#6B7378" stroke-width=".6"/>
+<rect x="400" y="110" width="56" height="22" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="428.0" y="123.53333333333333" font-size="7.6" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.6px">m…</text>
+<line x1="490" y1="82" x2="428" y2="110" stroke="#6B7378" stroke-width=".6"/>
+<rect x="464" y="110" width="56" height="22" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="492.0" y="123.53333333333333" font-size="7.6" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.6px">p…</text>
+<line x1="490" y1="82" x2="492" y2="110" stroke="#6B7378" stroke-width=".6"/>
+<rect x="528" y="110" width="56" height="22" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
+<text x="556.0" y="123.53333333333333" font-size="7.6" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.6px">t…</text>
+<line x1="490" y1="82" x2="556" y2="110" stroke="#6B7378" stroke-width=".6"/>
+<path d="M300 32 L310 58 M310 82 L300 110" stroke="#2E7D32" stroke-width="2.4" fill="none"/>
+<text x="16" y="156" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">Un index est une copie triée d'une colonne, rangée en arbre de pages, chaque entrée pointant vers sa ligne.</text>
+<text x="16" y="172" font-size="8.2" fill="#2B2F33" text-anchor="start">Chercher « h… », c'est descendre de la racine à une feuille (en vert) : quelques pages lues, quelle que soit la taille de la table.</text>
+<text x="16" y="190" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Sans index, la base lit toutes les lignes : c'est un parcours complet (SCAN).</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Un index transforme une lecture de toute la table en une descente de quelques pages, au prix d'un peu de place et d'écritures plus lentes.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>L'index à la fin d'un livre : pour trouver « transaction », on ne relit pas les 400 pages, on va à la lettre T. Mais chaque nouvelle page du livre oblige à remettre l'index à jour.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>lire un plan de requête ;</li>
+        <li>choisir les colonnes d'un index ;</li>
+        <li>repérer ce qui empêche un index ;</li>
+        <li>peser son coût en écriture.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À retenir</span>
+    Une clé primaire est toujours indexée : SQLite crée seul un index pour <code>id TEXT PRIMARY KEY</code>. Les autres colonnes ne le sont que si on écrit <code>CREATE INDEX</code>. Toutes les mesures de ce cours ont été faites avec node:sqlite, en mémoire.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 99 · Les index d'une base</div>
+</section>
+
+<!-- ============ PAGE 2 · LE GAIN ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 99</b></div>
+  <p class="rubrique">Schéma 1 · Le gain</p>
+  <h2>Lire tout, ou descendre l'arbre</h2>
+  <p style="max-width:165mm">Un parcours complet coûte en proportion du nombre de lignes : O(n), cours 55. Une descente d'arbre coûte en proportion de sa profondeur, qui grandit comme log n. Sur une petite table, la différence ne se voit pas ; sur un million de lignes, elle devient un facteur de plusieurs centaines.</p>
+
+  <svg viewBox="0 0 600 216" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="216" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#4A4A68" text-anchor="start" font-weight="700">WHERE parcoursId = ? ORDER BY sortOrder, title : 100 exercices rendus, table de plus en plus grande (mesuré)</text>
+<text x="16" y="62" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700">1 000 lignes</text>
+<rect x="140" y="44" width="111.5" height="15" fill="#C62828"/>
+<text x="257.452695499166" y="56" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">149 µs</text>
+<rect x="140" y="61" width="95.0" height="15" fill="#2E7D32"/>
+<text x="241.0" y="73" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">100 µs</text>
+<text x="16" y="106" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700">100 000 lignes</text>
+<rect x="140" y="88" width="286.2" height="15" fill="#C62828"/>
+<text x="432.239559630947" y="100" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">10,3 ms</text>
+<rect x="140" y="105" width="91.1" height="15" fill="#2E7D32"/>
+<text x="237.10893227050389" y="117" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">91 µs</text>
+<text x="16" y="150" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700">1 000 000 lignes</text>
+<rect x="140" y="132" width="368.4" height="15" fill="#C62828"/>
+<text x="514.3677841592726" y="144" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">75,4 ms</text>
+<rect x="140" y="149" width="94.6" height="15" fill="#2E7D32"/>
+<text x="240.58534348676724" y="161" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">99 µs</text>
+<rect x="140" y="176" width="10" height="10" fill="#C62828"/>
+<text x="156" y="185" font-size="7.6" fill="#2B2F33" text-anchor="start">sans index (SCAN)</text>
+<rect x="270" y="176" width="10" height="10" fill="#2E7D32"/>
+<text x="286" y="185" font-size="7.6" fill="#2B2F33" text-anchor="start">index (parcoursId, sortOrder, title)</text>
+<text x="16" y="206" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Échelle logarithmique. Lecture par la clé primaire : 2 µs dans les trois cas. Médianes de 9 mesures, node:sqlite en mémoire.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · SQLite, l'index du schéma (Magpie n'en a pas)</span>CREATE INDEX ix_ex_ordre ON exercises(parcoursId, sortOrder, title);
+
+-- la requête de compute-proxy.mjs, ligne 244, s'en sert sans changer :
+SELECT … FROM exercises WHERE parcoursId = ? ORDER BY sortOrder, title;</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Rien à changer dans la requête</h3>
+      <p>On n'écrit jamais « utilise tel index » : le planificateur voit l'index et décide seul de s'en servir. Ajouter un index ne casse donc aucune requête ; il peut seulement en accélérer, ou ralentir les écritures.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>À 1 000 lignes, rien ne se voit</h3>
+      <p>149 µs sans index, 100 µs avec : l'essentiel du temps sert à rendre les 100 lignes. Le parcours complet ne devient gênant qu'à partir de dizaines de milliers de lignes, où il passe à 10 puis 75 ms.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Mesurer sur la petite base de développement et conclure qu'un index est inutile. Le coût d'un parcours complet grandit avec les données ; on mesure à la taille attendue, ou on lit le plan.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 99 · Les index d'une base</div>
+</section>
+
+<!-- ============ PAGE 3 · LE PLAN ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 99</b></div>
+  <p class="rubrique">Schéma 2 · Le plan de requête</p>
+  <h2>Demander à la base ce qu'elle fera</h2>
+  <p style="max-width:165mm"><code>EXPLAIN QUERY PLAN</code> devant une requête rend le chemin choisi, sans l'exécuter. <code>SCAN</code> veut dire « toute la table », <code>SEARCH … USING INDEX</code> « par l'index », et <code>USE TEMP B-TREE</code> qu'il faudra encore trier le résultat.</p>
+
+  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.6" fill="#4A4A68" text-anchor="start" font-weight="700">EXPLAIN QUERY PLAN pour la même requête, selon l'index présent (sortie réelle de SQLite)</text>
+<rect x="16" y="34" width="568" height="48" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="28" y="50" font-size="8.4" fill="#C62828" text-anchor="start" font-weight="700">aucun index</text>
+<text x="574" y="50" font-size="7.8" fill="#6B7378" text-anchor="end" font-style="italic">lit tout, puis trie</text>
+<text x="28" y="65" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">SCAN exercises</text>
+<text x="28" y="77" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">USE TEMP B-TREE FOR ORDER BY</text>
+<rect x="16" y="88" width="568" height="48" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
+<text x="28" y="104" font-size="8.4" fill="#E65100" text-anchor="start" font-weight="700">index sur (parcoursId)</text>
+<text x="574" y="104" font-size="7.8" fill="#6B7378" text-anchor="end" font-style="italic">trouve vite, trie encore</text>
+<text x="28" y="119" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">SEARCH exercises USING INDEX ix_ex_parcours (parcoursId=?)</text>
+<text x="28" y="131" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">USE TEMP B-TREE FOR ORDER BY</text>
+<rect x="16" y="142" width="568" height="48" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="28" y="158" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700">index sur (parcoursId, sortOrder, title)</text>
+<text x="574" y="158" font-size="7.8" fill="#6B7378" text-anchor="end" font-style="italic">trouve, déjà dans l'ordre</text>
+<text x="28" y="173" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">SEARCH exercises USING INDEX ix_ex_ordre (parcoursId=?)</text>
+<text x="16" y="200" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">Un index sur plusieurs colonnes sert aussi le tri, à condition que l'ordre des colonnes suive celui de la requête.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Node, lire le plan d'une requête</span>const plan = db.prepare("EXPLAIN QUERY PLAN " + sql).all();
+console.log(plan.map((r) =&gt; r.detail).join(" | "));
+// SEARCH exercises USING INDEX ix_ex_ordre (parcoursId=?)</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>L'ordre des colonnes compte</h3>
+      <p>L'index <code>(parcoursId, sortOrder, title)</code> est trié d'abord par parcours, puis par position, puis par titre : exactement le filtre et le tri de la requête. Rangé <code>(sortOrder, parcoursId)</code>, il ne servirait plus à trouver un parcours.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>La clé primaire</h3>
+      <p>Le plan de <code>WHERE id = ?</code> montre <code>SEARCH … USING INDEX sqlite_autoindex_exercises_1</code> : l'index que SQLite a créé seul pour la clé primaire. Toutes les lectures de Magpie par identifiant passent par lui, en 2 µs.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Créer un index par colonne « au cas où ». Une requête n'en utilise généralement qu'un par table, et chacun ralentit toutes les écritures. On crée l'index qu'une requête lente réclame, plan à l'appui.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 99 · Les index d'une base</div>
+</section>
+
+<!-- ============ PAGE 4 · LES LIMITES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 99</b></div>
+  <p class="rubrique">Schéma 3 · Les limites</p>
+  <h2>Ce qui empêche un index, ce qu'il coûte</h2>
+  <p style="max-width:165mm">Un index range les valeurs telles quelles. Une requête qui les transforme avant de comparer, ou qui cherche au milieu d'un texte, ne peut pas descendre l'arbre. Et chaque insertion doit ranger la nouvelle valeur dans chaque index.</p>
+
+  <svg viewBox="0 0 600 224" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="224" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.4" fill="#4A4A68" text-anchor="start" font-weight="700">100 000 composants, un index sur displayName : ce qui s'en sert, et ce qui ne s'en sert pas (mesuré)</text>
+<rect x="16" y="32" width="568" height="19" rx="3" fill="#ECECF2"/>
+<text x="28" y="45" font-size="7.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.8px">displayName = ?</text>
+<text x="420" y="45" font-size="8" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">SEARCH</text>
+<text x="574" y="45" font-size="8.2" fill="#2E7D32" text-anchor="end" font-weight="700" class="mono" style="font-size:8.2px">10 µs</text>
+<rect x="16" y="54" width="568" height="19" rx="3" fill="#fff"/>
+<text x="28" y="67" font-size="7.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.8px">LOWER(displayName) = LOWER(?)</text>
+<text x="420" y="67" font-size="8" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">SCAN</text>
+<text x="574" y="67" font-size="8.2" fill="#C62828" text-anchor="end" font-weight="700" class="mono" style="font-size:8.2px">12,4 ms</text>
+<rect x="16" y="76" width="568" height="19" rx="3" fill="#ECECF2"/>
+<text x="28" y="89" font-size="7.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.8px">idem, avec un index sur LOWER(displayName)</text>
+<text x="420" y="89" font-size="8" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">SEARCH</text>
+<text x="574" y="89" font-size="8.2" fill="#2E7D32" text-anchor="end" font-weight="700" class="mono" style="font-size:8.2px">12 µs</text>
+<rect x="16" y="98" width="568" height="19" rx="3" fill="#fff"/>
+<text x="28" y="111" font-size="7.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.8px">displayName = ? COLLATE NOCASE, index NOCASE</text>
+<text x="420" y="111" font-size="8" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">SEARCH</text>
+<text x="574" y="111" font-size="8.2" fill="#2E7D32" text-anchor="end" font-weight="700" class="mono" style="font-size:8.2px">11 µs</text>
+<rect x="16" y="120" width="568" height="19" rx="3" fill="#ECECF2"/>
+<text x="28" y="133" font-size="7.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.8px">displayName LIKE '%posant 500%'</text>
+<text x="420" y="133" font-size="8" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">SCAN</text>
+<text x="574" y="133" font-size="8.2" fill="#C62828" text-anchor="end" font-weight="700" class="mono" style="font-size:8.2px">12,7 ms</text>
+<text x="16" y="160" font-size="7.8" fill="#2B2F33" text-anchor="start">Une fonction appliquée à la colonne cache ses valeurs triées : la base ne peut plus descendre l'arbre.</text>
+<text x="16" y="180" font-size="8" fill="#4A4A68" text-anchor="start" font-weight="700">Le prix en écriture : 200 000 insertions dans une transaction</text>
+<text x="16" y="200" font-size="7.6" fill="#6B7378" text-anchor="start">sans index secondaire</text>
+<text x="16" y="214" font-size="9" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">633 ms</text>
+<text x="206" y="200" font-size="7.6" fill="#6B7378" text-anchor="start">un index</text>
+<text x="206" y="214" font-size="9" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">998 ms</text>
+<text x="396" y="200" font-size="7.6" fill="#6B7378" text-anchor="start">trois index</text>
+<text x="396" y="214" font-size="9" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">1964 ms</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · SQLite, deux façons d'indexer une recherche sans casse</span>CREATE INDEX ix_dn_low ON components(LOWER(displayName));  -- index d'expression
+CREATE INDEX ix_dn_nc  ON components(displayName COLLATE NOCASE);
+SELECT … WHERE displayName = ? COLLATE NOCASE;              -- se sert du second</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Indexer l'expression</h3>
+      <p>Un <b>index d'expression</b> range <code>LOWER(displayName)</code> au lieu de la colonne : la requête de Magpie, telle qu'elle est écrite, s'en servirait. <code>COLLATE NOCASE</code> fait le même travail par une règle de comparaison. Les deux ignorent la casse de l'ASCII seulement, comme <code>LOWER</code>.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Le texte au milieu</h3>
+      <p><code>LIKE '%mot%'</code> ne sait pas par où commencer dans l'ordre alphabétique : il lit tout. Une recherche plein texte se fait avec un index dédié (le module FTS5 de SQLite), qui découpe le texte en mots.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Croire qu'un index sur <code>displayName</code> accélère <code>LOWER(displayName) = ?</code>. Le plan dit <code>SCAN</code> : 12,4 ms au lieu de 10 µs, mesuré, avec l'index pourtant présent.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 99 · Les index d'une base</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 99</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Magpie, sans index secondaire</h2>
+  <p style="max-width:165mm">magpie.db n'a aucun <code>CREATE INDEX</code> : seules les clés primaires sont indexées. À la taille réelle de la base, ce choix est le bon, et la mesure le confirme.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">magpie/web/db.mjs</span></div>
+<div class="l k1"><span class="n">18</span>      typeGuid <span class="kw">TEXT PRIMARY KEY</span>,<span class="rep r1">1</span></div>
+<div class="l k1"><span class="n">48</span>      id <span class="kw">TEXT PRIMARY KEY</span>,</div>
+<div class="l"><span class="cm">magpie/web/compute-proxy.mjs</span></div>
+<div class="l k2"><span class="n">128</span><span class="st">"SELECT * FROM components WHERE isAuthorized = 1"</span><span class="rep r2">2</span></div>
+<div class="l k3"><span class="n">244</span><span class="st">"SELECT … WHERE parcoursId = ? ORDER BY …"</span><span class="rep r3">3</span></div>
+<div class="l k4"><span class="n">315</span><span class="st">"SELECT opaqueObjects FROM exercises WHERE id = ?"</span><span class="rep r4">4</span></div>
+<div class="l"><span class="cm">magpie/web/authorize-components.mjs</span></div>
+<div class="l k5"><span class="n">22</span><span class="st">"… WHERE LOWER(displayName) = LOWER(?) OR …"</span><span class="rep r5">5</span></div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Clés primaires</b>Indexées d'office.</li>
+      <li><span class="rep r2">2</span><b>SCAN</b>727 composants.</li>
+      <li><span class="rep r3">3</span><b>SCAN + tri</b>Quelques exercices.</li>
+      <li><span class="rep r4">4</span><b>SEARCH</b>Par la clé.</li>
+      <li><span class="rep r5">5</span><b>SCAN</b>Même avec un index.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À surveiller · aucun index secondaire, à revoir si la base grossit</span>
+    Le catalogue compte 727 composants (src/data/catalog.json) : la recherche de la ligne 22 les lit tous en 106 µs, mesuré sur une table de même taille. Les exercices se comptent par dizaines. Rien ne justifie un index aujourd'hui. Si un jour la base gardait l'historique des soumissions, des dizaines de milliers de lignes cherchées par exercice, un <code>CREATE INDEX</code> sur la colonne cherchée serait la première chose à écrire. Déduit des mesures de ce cours.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 99 · Les index d'une base</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 99</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Un index est…</div><ul>
+      <li><span>A</span>une contrainte de type</li><li><span>B</span>un cache des résultats</li><li><span>C</span>une copie triée d'une colonne, rangée en arbre</li><li><span>D</span>une seconde table identique</li></ul></div>
+
+    <div class="q"><div class="enonce">Sur un million de lignes, la recherche d'un parcours a pris (mesuré)…</div><ul>
+      <li><span>A</span>2 µs sans index</li><li><span>B</span>75 ms avec index</li><li><span>C</span>75 ms sans index, 0,1 ms avec</li><li><span>D</span>la même durée</li></ul></div>
+
+    <div class="q"><div class="enonce">Une clé primaire TEXT dans SQLite…</div><ul>
+      <li><span>A</span>n'est jamais indexée</li><li><span>B</span>reçoit un index créé automatiquement</li><li><span>C</span>rend la table en lecture seule</li><li><span>D</span>demande un CREATE INDEX</li></ul></div>
+
+    <div class="q"><div class="enonce">Dans un plan, SCAN signifie…</div><ul>
+      <li><span>A</span>la requête a échoué</li><li><span>B</span>un index est utilisé</li><li><span>C</span>le résultat est trié</li><li><span>D</span>toute la table est lue</li></ul></div>
+
+    <div class="q"><div class="enonce">USE TEMP B-TREE FOR ORDER BY indique…</div><ul>
+      <li><span>A</span>un tri supplémentaire du résultat</li><li><span>B</span>un index permanent créé</li><li><span>C</span>une jointure</li><li><span>D</span>une erreur de syntaxe</li></ul></div>
+
+    <div class="q"><div class="enonce">Pour WHERE parcoursId = ? ORDER BY sortOrder, title, le meilleur index est…</div><ul>
+      <li><span>A</span>(parcoursId, sortOrder, title)</li><li><span>B</span>(title)</li><li><span>C</span>(sortOrder)</li><li><span>D</span>(sortOrder, parcoursId)</li></ul></div>
+
+    <div class="q"><div class="enonce">Pour qu'une requête utilise un nouvel index, il faut…</div><ul>
+      <li><span>A</span>nommer l'index dans la requête</li><li><span>B</span>redémarrer la base</li><li><span>C</span>la réécrire</li><li><span>D</span>rien : le planificateur le choisit seul</li></ul></div>
+
+    <div class="q"><div class="enonce">Ne peuvent pas descendre un index simple sur displayName… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>displayName = ?</li><li><span>B</span>WHERE typeGuid = ?</li><li><span>C</span>LOWER(displayName) = LOWER(?)</li><li><span>D</span>displayName LIKE '%mot%'</li></ul></div>
+
+    <div class="q"><div class="enonce">Pour indexer une recherche sans casse, on peut… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>supprimer la clé primaire</li><li><span>B</span>un index sur LOWER(displayName)</li><li><span>C</span>LIKE '%x%'</li><li><span>D</span>un index COLLATE NOCASE</li></ul></div>
+
+    <div class="q"><div class="enonce">200 000 insertions avec trois index secondaires ont pris, au lieu de 633 ms…</div><ul>
+      <li><span>A</span>1 964 ms</li><li><span>B</span>633 ms</li><li><span>C</span>63 ms</li><li><span>D</span>20 s</li></ul></div>
+
+    <div class="q"><div class="enonce">Magpie n'a pas d'index secondaire parce que…</div><ul>
+      <li><span>A</span>node:sqlite les interdit</li><li><span>B</span>les index sont payants</li><li><span>C</span>SQLite n'en permet pas</li><li><span>D</span>ses tables sont petites : un SCAN coûte une centaine de µs</li></ul></div>
+
+    <div class="q"><div class="enonce">Une recherche de mots dans un long texte se fait avec…</div><ul>
+      <li><span>A</span>LIKE '%mot%' et un index simple</li><li><span>B</span>un index plein texte (FTS5)</li><li><span>C</span>une clé primaire</li><li><span>D</span>ORDER BY</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 99 · Les index d'une base</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 99</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · C.</b> Triée, avec l'adresse des lignes.</div>
+    <div><b>02 · C.</b> Un facteur de 600 environ.</div>
+    <div><b>03 · B.</b> sqlite_autoindex_…</div>
+    <div><b>04 · D.</b> Parcours complet.</div>
+    <div><b>05 · A.</b> L'index ne donne pas l'ordre.</div>
+    <div><b>06 · A.</b> Filtre, puis tri, dans l'ordre.</div>
+    <div><b>07 · D.</b> On décrit, la base choisit.</div>
+    <div><b>08 · C et D.</b> Valeur transformée, texte au milieu.</div>
+    <div><b>09 · B et D.</b> Expression ou collation.</div>
+    <div><b>10 · A.</b> Trois fois plus lent.</div>
+    <div><b>11 · D.</b> 106 µs pour 727 lignes.</div>
+    <div><b>12 · B.</b> Un index de mots.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 100, « Les transactions ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">CREATE INDEX ix ON t(a, b)</td><td>un index sur deux colonnes</td><td>exemple autonome, page 2</td></tr>
+      <tr><td class="c">EXPLAIN QUERY PLAN …</td><td>le chemin choisi, sans exécuter</td><td>page 3</td></tr>
+      <tr><td class="c">CREATE INDEX … ON t(LOWER(a))</td><td>un index d'expression</td><td>exemple autonome, page 4</td></tr>
+      <tr><td class="c">a COLLATE NOCASE</td><td>comparer sans la casse ASCII</td><td>exemple autonome, page 4</td></tr>
+      <tr><td class="c">DROP INDEX ix</td><td>supprimer un index</td><td>—</td></tr>
+      <tr><td class="c">id TEXT PRIMARY KEY</td><td>une clé, indexée d'office</td><td>db.mjs:18</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Index</dt><dd>Une structure triée qui mène d'une valeur aux lignes qui la portent.</dd>
+    <dt>Arbre B</dt><dd>Un arbre de pages triées, peu profond, où vivent les tables et les index de SQLite.</dd>
+    <dt>Plan de requête</dt><dd>Le chemin que la base a choisi pour exécuter une requête.</dd>
+    <dt>Parcours complet</dt><dd>La lecture de toutes les lignes d'une table (SCAN).</dd>
+    <dt>Index d'expression</dt><dd>Un index sur le résultat d'une fonction de la colonne.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 100</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 99 · Les index d'une base</div>
+</section>
+
+</body>
+</html>

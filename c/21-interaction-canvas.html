@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>21 · Interaction sur le canvas</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-6">
+
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6A</b> · Dessiner sur le canvas</span><b>Cours 21</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Interaction<br>sur le canvas</h1>
+  <p class="chapeau">Peindre ne suffit pas : un interrupteur doit basculer, un curseur glisser, un réglage s'annuler. Grasshopper fournit tout le circuit ; il suffit de savoir où répondre.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>11</b> cycle de vie · <b>20</b> attributs</span>
+    <span class="pastille">Exemples · <b>FeuilleAttributs</b>, <b>MenuReglages</b>, <b>ConceptionTexte</b> (SnapSet)</span>
+  </div>
+
+  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+    <svg viewBox="0 0 600 210" width="100%">
+<rect x="30" y="22" width="240" height="168" rx="6" fill="#C9C9C9" stroke="#2B2B2B" stroke-width="1.3"/>
+<text x="150" y="40" text-anchor="middle" font-size="10.5" font-weight="700" fill="#1E1E1E">Réglages</text>
+<text x="48" y="70" font-size="10" fill="#1E1E1E">Visible</text>
+<rect x="170" y="56" width="82" height="20" rx="2" fill="#3A3A3A"/><text x="211" y="70" text-anchor="middle" font-size="10" font-weight="700" fill="#EEE">True</text>
+<text x="48" y="104" font-size="10" fill="#1E1E1E">Rayon</text>
+<rect x="90" y="92" width="162" height="18" rx="2" fill="#E8E8E8" stroke="#555" stroke-width=".8"/>
+<line x1="98" y1="101" x2="244" y2="101" stroke="#777" stroke-width="1"/>
+<rect x="150" y="94" width="26" height="14" rx="2" fill="#3A3A3A"/><text x="163" y="104.5" text-anchor="middle" font-size="8.5" fill="#EEE" class="mono" style="font-size:8.5px">0.50</text>
+<rect x="48" y="128" width="204" height="24" rx="3" fill="#3A3A3A"/><text x="150" y="144" text-anchor="middle" font-size="10" font-weight="700" fill="#EEE">Valider</text>
+<text x="150" y="176" text-anchor="middle" font-size="8.5" fill="#555">une capsule de conception</text>
+<polygon points="170.0,105.0 170.0,121.0 174.0,117.0 177.0,124.0 180.0,123.0 177.0,116.0 182.0,116.0" fill="#fff" stroke="#111" stroke-width="1.1" stroke-linejoin="round"/>
+<path d="M186 112 C 240 150, 280 60, 312 42" fill="none" stroke="#2F6B3A" stroke-width="1.4" stroke-dasharray="4 3"/>
+<rect x="316" y="22" width="270" height="40" rx="5" fill="#E7F0E8" stroke="#2F6B3A" stroke-width="1"/>
+<text x="326" y="38" font-size="10.5" font-weight="700" fill="#2F6B3A">1 · Le canvas cherche l'objet pointé</text>
+<text x="326" y="54" font-size="9" fill="#2B2F33">FindAttribute(point) : le plus en avant</text>
+<line x1="451" y1="62" x2="451" y2="74" stroke="#2F6B3A" stroke-width="1.4"/><polygon points="447,72 455,72 451,78" fill="#2F6B3A"/>
+<rect x="316" y="78" width="270" height="40" rx="5" fill="#E7F0E8" stroke="#2F6B3A" stroke-width="1"/>
+<text x="326" y="94" font-size="10.5" font-weight="700" fill="#2F6B3A">2 · Il offre l'évènement à ses attributs</text>
+<text x="326" y="110" font-size="9" fill="#2B2F33" class="mono" style="font-size:9px">RespondToMouseDown(canvas, e)</text>
+<line x1="451" y1="118" x2="451" y2="130" stroke="#2F6B3A" stroke-width="1.4"/><polygon points="447,128 455,128 451,134" fill="#2F6B3A"/>
+<text x="326" y="148" font-size="10.5" font-weight="700" fill="#2F6B3A">3 · Les attributs répondent</text>
+<rect x="316.0" y="156" width="64" height="22" rx="4" fill="#6B7378"/><text x="348.0" y="170.5" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff">Ignore</text>
+<rect x="384.5" y="156" width="64" height="22" rx="4" fill="#1565C0"/><text x="416.5" y="170.5" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff">Handled</text>
+<rect x="453.0" y="156" width="64" height="22" rx="4" fill="#E65100"/><text x="485.0" y="170.5" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff">Capture</text>
+<rect x="521.5" y="156" width="64" height="22" rx="4" fill="#2E7D32"/><text x="553.5" y="170.5" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff">Release</text>
+<text x="316" y="198" font-size="8.8" fill="#2B2F33">Ignore : le canvas fait son geste par défaut (sélection, glisser).</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Le canvas offre chaque évènement de souris aux <b>attributs</b> de l'objet pointé, qui répondent par un <code>GH_ObjectResponse</code> : <b>Ignore</b>, <b>Handled</b>, <b>Capture</b> ou <b>Release</b>. Le menu, la saisie de texte et l'annulation viennent eux aussi du SDK.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Un standard téléphonique. Il passe l'appel au bureau visé. Le bureau dit « pas pour moi » et le standard s'en occupe, ou « c'est réglé », ou « je garde la ligne » jusqu'à ce qu'il raccroche.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>lire les quatre réponses et suivre un geste de l'enfoncement au relâchement ;</li>
+        <li>dire quel objet reçoit un clic, grâce à <code>IsPickRegion</code> ;</li>
+        <li>construire un menu contextuel et une saisie avec les outils natifs ;</li>
+        <li>poser un seul enregistrement d'annulation par geste.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:5mm">
+    <span class="titre">À retenir</span>
+    SnapSet n'écrit aucune fenêtre ni aucune pile d'annulation. La souris passe par <code>RespondToMouse*</code>, le menu par <code>AppendAdditionalMenuItems</code>, la saisie par <code>ShowTextInputBox</code>, l'annulation par <code>RecordUndoEvent</code> (décision 0 de CLAUDE.md).
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 21 · Interaction sur le canvas</div>
+</section>
+
+<!-- ============ PAGE 2 · LES RÉPONSES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6A</b> · Dessiner sur le canvas</span><b>Cours 21</b></div>
+  <p class="rubrique">Schéma 1 · Les quatre réponses</p>
+  <h2>Un geste, de l'enfoncement au relâchement</h2>
+  <p style="max-width:165mm">Les attributs ont quatre méthodes à redéfinir : <code>RespondToMouseDown</code>, <code>Move</code>, <code>Up</code> et <code>DoubleClick</code>. Chacune rend une réponse qui dit au canvas ce qu'il doit faire ensuite.</p>
+
+  <svg viewBox="0 0 600 236" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="236" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="12" font-weight="800" fill="#2F6B3A">Un glisser sur le bord droit d'un Texte (ConceptionTexte)</text>
+<line x1="96" y1="56" x2="570" y2="56" stroke="#2B2F33" stroke-width="1.2"/><polygon points="570,52 578,56 570,60" fill="#2B2F33"/>
+<text x="16" y="60" font-size="9.5" font-weight="700" fill="#6B7378">évènement</text>
+<text x="16" y="92" font-size="9.5" font-weight="700" fill="#6B7378">réponse</text>
+<text x="16" y="124" font-size="9.5" font-weight="700" fill="#6B7378">effet</text>
+<circle cx="150" cy="56" r="4.5" fill="#2B2F33"/>
+<text x="150" y="44" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2B2F33" class="mono" style="font-size:9.5px">MouseDown</text>
+<rect x="114" y="78" width="72" height="20" rx="4" fill="#E65100"/><text x="150.0" y="91.5" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff">Capture</text>
+<text x="150" y="122" text-anchor="middle" font-size="8.6" fill="#2B2F33">_redimension = vrai</text>
+<text x="150" y="135" text-anchor="middle" font-size="8.6" fill="#2B2F33">la souris est gardée</text>
+<circle cx="270" cy="56" r="4.5" fill="#2B2F33"/>
+<text x="270" y="44" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2B2F33" class="mono" style="font-size:9.5px">MouseMove</text>
+<rect x="234" y="78" width="72" height="20" rx="4" fill="#1565C0"/><text x="270.0" y="91.5" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff">Handled</text>
+<text x="270" y="122" text-anchor="middle" font-size="8.6" fill="#2B2F33">1er changement :</text>
+<text x="270" y="135" text-anchor="middle" font-size="8.6" fill="#2B2F33">RecordUndoEvent(« Resize »)</text>
+<circle cx="390" cy="56" r="4.5" fill="#2B2F33"/>
+<text x="390" y="44" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2B2F33" class="mono" style="font-size:9.5px">MouseMove</text>
+<rect x="354" y="78" width="72" height="20" rx="4" fill="#1565C0"/><text x="390.0" y="91.5" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff">Handled</text>
+<text x="390" y="122" text-anchor="middle" font-size="8.6" fill="#2B2F33">EcrireSansAnnulation</text>
+<text x="390" y="135" text-anchor="middle" font-size="8.6" fill="#2B2F33">aucun 2e enregistrement</text>
+<circle cx="510" cy="56" r="4.5" fill="#2B2F33"/>
+<text x="510" y="44" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2B2F33" class="mono" style="font-size:9.5px">MouseUp</text>
+<rect x="474" y="78" width="72" height="20" rx="4" fill="#2E7D32"/><text x="510.0" y="91.5" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff">Release</text>
+<text x="510" y="122" text-anchor="middle" font-size="8.6" fill="#2B2F33">_redimension = faux</text>
+<text x="510" y="135" text-anchor="middle" font-size="8.6" fill="#2B2F33">la souris est rendue</text>
+<rect x="150" y="148" width="360" height="8" rx="4" fill="#E65100" opacity=".35"/>
+<text x="330" y="172" text-anchor="middle" font-size="9" fill="#2B2F33">Capturée : les MouseMove et le MouseUp viennent à ces attributs, même hors de leur boîte.</text>
+<line x1="16" y1="186" x2="584" y2="186" stroke="#CFC6BA" stroke-width="1"/>
+<text x="16" y="204" font-size="9.5" font-weight="700" fill="#6B7378">ailleurs</text>
+<rect x="96" y="192" width="64" height="18" rx="4" fill="#6B7378"/><text x="128.0" y="204.5" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">Ignore</text>
+<text x="170" y="204" font-size="9" fill="#2B2F33">Hors du bord : base.RespondToMouseDown. Le canvas sélectionne la feuille et la déplace</text>
+<text x="170" y="218" font-size="9" fill="#2B2F33">par son glisser natif, avec son propre enregistrement « Drag ».</text>
+</svg>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Ce que dit chaque réponse</h3>
+      <p><b>Ignore</b> : pas pour moi, le canvas applique son geste par défaut. C'est ce que rend <code>base</code>. <b>Handled</b> : traité, le canvas s'arrête là. <b>Capture</b> : traité, et la suite du geste est pour moi. <b>Release</b> : traité, je rends la souris.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Le gabarit des feuilles</h3>
+      <p><code>FeuilleAttributs</code> écrit le geste une fois. Chaque feuille ne fournit que trois méthodes abstraites : <code>Enfoncer</code> (vrai si elle capte), <code>Relacher</code> et <code>Abandonner</code>. Au-delà du seuil de glisser de Windows, l'enfoncement est abandonné et la feuille se déplace.</p>
+    </div>
+  </div>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">FeuilleConception.cs · 347–364</span>public override GH_ObjectResponse RespondToMouseUp(GH_Canvas canvas, GH_CanvasMouseEvent e)
+{
+    if (_enfoncement == null) return base.RespondToMouseUp(canvas, e);
+    try { Relacher(canvas, e); }
+    finally
+    {
+        // LA CAPTURE EST RENDUE DANS UN finally (CONTRAT C6, comme Magpie)
+        Abandonner();
+        _enfoncement = null;
+        Instances.RedrawCanvas();
+    }
+    return GH_ObjectResponse.Release;
+}</div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Oublier le cas d'erreur. Si <code>Relacher</code> lève une exception et que rien ne remet l'état à zéro, le bouton reste peint enfoncé et le geste suivant part de travers. Le contrat C6 le dit : « sinon une exception fige le canvas ». D'où le <code>finally</code>.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 21 · Interaction sur le canvas</div>
+</section>
+
+<!-- ============ PAGE 3 · LE POINTAGE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6A</b> · Dessiner sur le canvas</span><b>Cours 21</b></div>
+  <p class="rubrique">Schéma 2 · Le pointage</p>
+  <h2>Qui reçoit le clic ? IsPickRegion</h2>
+  <p style="max-width:165mm">Le canvas demande à chaque objet, du dernier au premier dans l'ordre du document, si le point est dans sa <b>zone de pointage</b> : <code>IsPickRegion(point)</code>. Le premier qui dit oui reçoit l'évènement. Par défaut, la zone est <code>Bounds</code>.</p>
+
+  <svg viewBox="0 0 600 200" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="200" fill="#EFE9E1"/>
+<rect x="20" y="14" width="300" height="172" rx="6" fill="#C9C9C9" stroke="#2B2B2B" stroke-width="1.3"/>
+<text x="26" y="198" font-size="0" fill="none"></text>
+<rect x="32" y="26" width="276" height="32" fill="#DCDCDC" stroke="#6B7378" stroke-width=".8"/>
+<text x="44" y="46" font-size="10" font-weight="700" fill="#1E1E1E">Réglages de la grille</text>
+<rect x="32" y="66" width="276" height="64" fill="none" stroke="#6B7378" stroke-width="1" stroke-dasharray="4 3"/>
+<rect x="40" y="74" width="130" height="48" rx="3" fill="#3A3A3A"/><text x="105" y="102" text-anchor="middle" font-size="10" font-weight="700" fill="#EEE">Valider</text>
+<rect x="170" y="74" width="130" height="48" rx="3" fill="#4A4A4A"/><text x="235" y="102" text-anchor="middle" font-size="10" font-weight="700" fill="#EEE">Annuler</text>
+<line x1="170" y1="74" x2="170" y2="122" stroke="#C9C9C9" stroke-width="1"/>
+<rect x="32" y="138" width="276" height="34" fill="#DCDCDC" stroke="#6B7378" stroke-width=".8"/>
+<text x="44" y="159" font-size="10" fill="#1E1E1E">Visible</text>
+<rect x="216" y="145" width="82" height="20" rx="2" fill="#3A3A3A"/><text x="257" y="159" text-anchor="middle" font-size="10" font-weight="700" fill="#EEE">True</text>
+<circle cx="120" cy="112" r="7.5" fill="#1565C0"/><text x="120" y="115.6" text-anchor="middle" font-size="10" font-weight="800" fill="#fff">1</text>
+<circle cx="250" cy="126" r="6" fill="#7B1FA2"/><text x="250" y="129.6" text-anchor="middle" font-size="10" font-weight="800" fill="#fff">2</text>
+<circle cx="314" cy="96" r="6" fill="#E65100"/><text x="314" y="99.6" text-anchor="middle" font-size="10" font-weight="800" fill="#fff">3</text>
+<text x="350" y="30" font-size="11.5" font-weight="800" fill="#2F6B3A">Qui répond au point ?</text>
+<circle cx="358" cy="56" r="7.5" fill="#1565C0"/><text x="358" y="59.6" text-anchor="middle" font-size="10" font-weight="800" fill="#fff">1</text>
+<text x="372" y="60" font-size="9.6" font-weight="700" fill="#2B2F33">Sur « Valider » : le Bouton répond</text>
+<text x="372" y="74" font-size="9" fill="#2B2F33">la Ligne et la Colonne excluent sa boîte</text>
+<circle cx="358" cy="100" r="7.5" fill="#7B1FA2"/><text x="358" y="103.6" text-anchor="middle" font-size="10" font-weight="800" fill="#fff">2</text>
+<text x="372" y="104" font-size="9.6" font-weight="700" fill="#2B2F33">Sur le rebord de la Ligne : la Ligne</text>
+<text x="372" y="118" font-size="9" fill="#2B2F33">dans sa boîte, hors de ses membres</text>
+<circle cx="358" cy="144" r="7.5" fill="#E65100"/><text x="358" y="147.6" text-anchor="middle" font-size="10" font-weight="800" fill="#fff">3</text>
+<text x="372" y="148" font-size="9.6" font-weight="700" fill="#2B2F33">Sur le rebord de la Colonne : la Colonne</text>
+<text x="372" y="162" font-size="9" fill="#2B2F33">il lui reste toujours au moins ce rebord</text>
+<text x="350" y="186" font-size="8.6" fill="#6B7378">Un point, un seul objet, quel que soit l'ordre du document.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">ConteneurAttributs.cs · 151–161 et CibleDeDepot.cs · 247–257, condensé</span>public override bool IsPickRegion(PointF point)
+{
+    var membres = registre.MembresPresents(Conteneur)
+        .Select(m =&gt; m.Attributes is ConstituantAttributs ca ? ca.ZoneDePointage : m.Attributes.Bounds);
+    return PointageConteneur.EstAuConteneur(Bounds, membres, point);
+}
+// EstAuConteneur : dans ma boîte, et dans aucune boîte de membre.
+if (!boite.Contains(point)) return false;
+foreach (var membre in boitesDesMembres) if (membre.Contains(point)) return false;
+return true;</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Pourquoi ne pas compter sur l'ordre</h3>
+      <p>Un conteneur et ses membres se recouvrent. Sans exclusion, le gagnant dépendrait de l'ordre du document, qui change à chaque copier-coller. En cédant la boîte de chaque membre direct, chaque niveau le fait pour le suivant : la règle devient récursive.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Une règle pure, testée hors Rhino</h3>
+      <p><code>EstAuConteneur</code> ne prend que des rectangles et un point. Elle vit dans une classe statique sans Grasshopper : un test unitaire la vérifie sans ouvrir Rhino (cours 26). L'attribut ne fait que lui fournir les boîtes.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Une zone de pointage plus petite que ce qu'on voit. Le Séparateur est fin : sa zone est étendue à sa marge (<code>ZoneDePointage</code>), et le conteneur cède cette zone-là, pas la boîte peinte. Sinon on ne pourrait presque jamais l'attraper.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 21 · Interaction sur le canvas</div>
+</section>
+
+<!-- ============ PAGE 4 · MENU ET SAISIE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6A</b> · Dessiner sur le canvas</span><b>Cours 21</b></div>
+  <p class="rubrique">Schéma 3 · Menu et saisie natifs</p>
+  <h2>L'inspecteur, c'est le menu contextuel</h2>
+  <p style="max-width:165mm">Pas de panneau de propriétés : les réglages d'un constituant s'ajoutent au clic droit, après le menu natif, par <code>AppendAdditionalMenuItems</code>. Voici le menu d'un Interrupteur.</p>
+
+  <svg viewBox="0 0 600 236" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="236" fill="#EFE9E1"/>
+<rect x="20" y="14" width="250" height="160" fill="#FAFAFA" stroke="#9A9A9A" stroke-width="1"/>
+<rect x="34" y="24" width="120" height="6" rx="3" fill="#C8C8C8"/>
+<rect x="34" y="36" width="90" height="6" rx="3" fill="#C8C8C8"/>
+<rect x="34" y="48" width="140" height="6" rx="3" fill="#C8C8C8"/>
+<rect x="34" y="60" width="70" height="6" rx="3" fill="#C8C8C8"/>
+<line x1="28" y1="76" x2="262" y2="76" stroke="#C8C8C8"/>
+<text x="34" y="92" font-size="9" fill="#9A9A9A">Tag (dérivé du libellé ; Entrée pour fixer)</text>
+<rect x="34" y="98" width="200" height="18" fill="#fff" stroke="#8A8A8A" stroke-width=".8"/>
+<text x="40" y="111" font-size="9.5" fill="#1E1E1E" class="mono" style="font-size:9.5px">visible|</text>
+<line x1="28" y1="126" x2="262" y2="126" stroke="#C8C8C8"/>
+<rect x="22" y="133" width="246" height="20" fill="#DCE6F2"/>
+<text x="34" y="147" font-size="9.5" fill="#1E1E1E">Apparence</text><text x="256" y="147" text-anchor="end" font-size="9" fill="#1E1E1E">▸</text>
+<rect x="268" y="130" width="96" height="44" fill="#FAFAFA" stroke="#9A9A9A" stroke-width="1"/>
+<text x="290" y="147" font-size="9.5" fill="#1E1E1E">case</text>
+<text x="278" y="165" font-size="9.5" fill="#1E1E1E">✓</text><text x="290" y="165" font-size="9.5" fill="#1E1E1E">bascule</text>
+<circle cx="14" cy="44" r="7" fill="#2E7D32"/><text x="14" y="47.6" text-anchor="middle" font-size="10" font-weight="800" fill="#fff">1</text>
+<circle cx="14" cy="107" r="7" fill="#1565C0"/><text x="14" y="110.6" text-anchor="middle" font-size="10" font-weight="800" fill="#fff">2</text>
+<circle cx="372" cy="152" r="7" fill="#7B1FA2"/><text x="372" y="155.6" text-anchor="middle" font-size="10" font-weight="800" fill="#fff">3</text>
+<circle cx="308" cy="26" r="7" fill="#2E7D32"/><text x="308" y="29.6" text-anchor="middle" font-size="10" font-weight="800" fill="#fff">1</text>
+<text x="322" y="30" font-size="9.6" font-weight="700" fill="#2B2F33">Le menu natif, tel quel</text>
+<text x="322" y="43" font-size="8.8" fill="#2B2F33" class="mono" style="font-size:8.8px">base.AppendAdditionalMenuItems(menu)</text>
+<circle cx="308" cy="72" r="7" fill="#1565C0"/><text x="308" y="75.6" text-anchor="middle" font-size="10" font-weight="800" fill="#fff">2</text>
+<text x="322" y="76" font-size="9.6" font-weight="700" fill="#2B2F33">La saisie native du menu</text>
+<text x="322" y="89" font-size="8.8" fill="#2B2F33" class="mono" style="font-size:8.8px">Menu_AppendTextItem : Entrée valide</text>
+<circle cx="398" cy="118" r="7" fill="#7B1FA2"/><text x="398" y="121.6" text-anchor="middle" font-size="10" font-weight="800" fill="#fff">3</text>
+<text x="412" y="122" font-size="9.6" font-weight="700" fill="#2B2F33">Un choix fermé : un sous-menu coché</text>
+<text x="412" y="135" font-size="8.8" fill="#2B2F33">MenuReglages, piloté par le schéma</text>
+<line x1="16" y1="186" x2="584" y2="186" stroke="#CFC6BA" stroke-width="1"/>
+<rect x="20" y="198" width="250" height="26" rx="2" fill="#E8E8E8" stroke="#555" stroke-width=".8"/>
+<line x1="30" y1="211" x2="260" y2="211" stroke="#777"/>
+<rect x="96" y="194" width="122" height="34" fill="#fff" stroke="#333" stroke-width="1"/>
+<text x="146" y="215" text-anchor="middle" font-size="10" fill="#1E1E1E" class="mono" style="font-size:10px">0.75</text>
+<rect x="186" y="198" width="13" height="12" fill="#E7F0E8" stroke="#555" stroke-width=".6"/><rect x="201" y="198" width="13" height="12" fill="#F6E1E1" stroke="#555" stroke-width=".6"/>
+<circle cx="282" cy="211" r="7" fill="#E65100"/><text x="282" y="214.6" text-anchor="middle" font-size="10" font-weight="800" fill="#fff">4</text>
+<text x="296" y="208" font-size="9.6" font-weight="700" fill="#2B2F33">Double-clic sur un curseur (zoom ≥ 0,9) : la saisie en place</text>
+<text x="296" y="221" font-size="8.8" fill="#2B2F33" class="mono" style="font-size:8.8px">canvas.BeginInvoke(…) → ShowTextInputBox(…)</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">MenuReglages.cs · 120–134, condensé</span>private static void AjouterTexte(ToolStripDropDown menu, Constituant c, ProprieteNoeud prop)
+{
+    var titre = GH_DocumentObject.Menu_AppendItem(menu, prop.Titre + " (Entrée pour valider)");
+    titre.Enabled = false;
+    GH_DocumentObject.Menu_AppendTextItem(menu, courant, (sender, e) =&gt;
+    {
+        if (e.KeyCode != Keys.Enter) return;
+        string saisi = sender.Text ?? string.Empty;
+        sender.CloseEntireMenuStructure();
+        c.Regler(prop.Titre, table, saisi, c.LireTexte(table, ValeurDuNoeudNeuf(c, prop)));
+    }, null, true);
+}</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Pourquoi BeginInvoke</h3>
+      <p>Le double-clic arrive pendant que le canvas traite la souris. <code>canvas.BeginInvoke</code> repousse l'ouverture de la saisie juste après, sur le même fil d'interface : le double-clic rend <code>Handled</code> tout de suite, puis la boîte s'ouvre.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Un réglage, un Ctrl+Z</h3>
+      <p>Tout élément finit dans <code>Regler</code> : rien si la valeur est la même, sinon <code>Modifier</code>, qui pose l'enregistrement d'annulation avant d'écrire. Annuler est le Ctrl+Z de Grasshopper, avec le libellé du réglage.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Oublier le test sur Entrée. Le gestionnaire de <code>Menu_AppendTextItem</code> est appelé à <b>chaque touche</b>. Sans <code>if (e.KeyCode != Keys.Enter) return;</code>, taper « visible » ferait sept réglages et sept enregistrements d'annulation.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 21 · Interaction sur le canvas</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6A</b> · Dessiner sur le canvas</span><b>Cours 21</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>ConceptionTexte.cs : redimensionner au bord</h2>
+  <p style="max-width:165mm">Un bloc de texte se règle en largeur en tirant son bord, comme le Panel natif. Les trois méthodes forment un seul geste, et un seul Ctrl+Z.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l k1"><span class="n">122</span><span class="kw">public override</span> <span class="ty">GH_ObjectResponse</span> RespondToMouseDown(…)<span class="rep r1">1</span></div>
+<div class="l"><span class="n">123</span>{</div>
+<div class="l k1"><span class="n">124</span>  <span class="kw">if</span> (e.Button == <span class="ty">MouseButtons</span>.Left</div>
+<div class="l k1"><span class="n"> </span>      &amp;&amp; BordSous(e.CanvasLocation) != <span class="kw">null</span>)</div>
+<div class="l k1"><span class="n">125</span>  {</div>
+<div class="l k1"><span class="n">126</span>    _redimension = <span class="kw">true</span>;</div>
+<div class="l k1"><span class="n">127</span>    _annulationPosee = <span class="kw">false</span>;</div>
+<div class="l k1"><span class="n">128</span>    <span class="kw">return</span> <span class="ty">GH_ObjectResponse</span>.Capture;</div>
+<div class="l"><span class="n">129</span>  }</div>
+<div class="l k2"><span class="n">131</span>  <span class="kw">return base</span>.RespondToMouseDown(canvas, e);<span class="rep r2">2</span></div>
+<div class="l"><span class="n">132</span>}</div>
+<div class="l k3"><span class="n">134</span><span class="kw">public override</span> <span class="ty">GH_ObjectResponse</span> RespondToMouseMove(…)<span class="rep r3">3</span></div>
+<div class="l"><span class="n">135</span>{</div>
+<div class="l k3"><span class="n">136</span>  <span class="kw">if</span> (!_redimension) { <span class="cm">/* survol : le pointeur du bord */</span> }</div>
+<div class="l k4"><span class="n">149</span>  <span class="kw">if</span> (e.Button != <span class="ty">MouseButtons</span>.Left)<span class="rep r4">4</span></div>
+<div class="l k4"><span class="n">150</span>  {</div>
+<div class="l k4"><span class="n">151</span>    _redimension = <span class="kw">false</span>;</div>
+<div class="l k4"><span class="n">152</span>    <span class="kw">return</span> <span class="ty">GH_ObjectResponse</span>.Release;</div>
+<div class="l"><span class="n">153</span>  }</div>
+<div class="l"><span class="n">157</span>  <span class="kw">float</span> largeur = <span class="ty">Metrique</span>.LargeurDeBlocGlissee(…);</div>
+<div class="l"><span class="n">158</span>  <span class="kw">if</span> (largeur != feuille.Largeur)</div>
+<div class="l"><span class="n">159</span>  {</div>
+<div class="l k5"><span class="n">161</span>    <span class="kw">if</span> (!_annulationPosee)<span class="rep r5">5</span></div>
+<div class="l k5"><span class="n">162</span>    {</div>
+<div class="l k5"><span class="n">163</span>      feuille.RecordUndoEvent(<span class="st">"Resize "</span> + feuille.Name);</div>
+<div class="l k5"><span class="n">164</span>      _annulationPosee = <span class="kw">true</span>;</div>
+<div class="l k5"><span class="n">165</span>    }</div>
+<div class="l k6"><span class="n">167</span>    feuille.EcrireSansAnnulation(CleLargeur, largeur);<span class="rep r6">6</span></div>
+<div class="l k6"><span class="n">168</span>    feuille.SignalerMesureChangee();</div>
+<div class="l"><span class="n">169</span>  }</div>
+<div class="l k3"><span class="n">171</span>  <span class="kw">return</span> <span class="ty">GH_ObjectResponse</span>.Handled;</div>
+<div class="l"><span class="n">172</span>}</div>
+<div class="l k7"><span class="n">174</span><span class="kw">public override</span> <span class="ty">GH_ObjectResponse</span> RespondToMouseUp(…)<span class="rep r7">7</span></div>
+<div class="l k7"><span class="n">176</span>  <span class="kw">if</span> (!_redimension) <span class="kw">return base</span>.RespondToMouseUp(canvas, e);</div>
+<div class="l k7"><span class="n">177</span>  _redimension = <span class="kw">false</span>; _annulationPosee = <span class="kw">false</span>;</div>
+<div class="l k7"><span class="n">179</span>  <span class="kw">return</span> <span class="ty">GH_ObjectResponse</span>.Release;</div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Capter sur le bord seulement</b>Bouton gauche, sur une des bandes du bord : la souris est gardée.</li>
+      <li><span class="rep r2">2</span><b>Ailleurs, le natif</b><code>base</code> rend Ignore : sélection et glisser natifs.</li>
+      <li><span class="rep r3">3</span><b>Handled à chaque pas</b>Hors geste, seul le pointeur change au survol (lignes 138–146).</li>
+      <li><span class="rep r4">4</span><b>Le relâchement perdu</b>Un mouvement sans bouton gauche : le MouseUp n'est pas arrivé, on rend la souris.</li>
+      <li><span class="rep r5">5</span><b>Un enregistrement par geste</b>Posé au premier vrai changement, avant d'écrire.</li>
+      <li><span class="rep r6">6</span><b>Les pas suivants</b>Écrits sans annulation, puis l'arbre est remis en page.</li>
+      <li><span class="rep r7">7</span><b>Fin du geste</b>Les deux drapeaux retombent, la souris est rendue.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">Le seul chemin d'un réglage</span>
+    Hors geste, tout passe par <code>Constituant.Modifier(libellé, changement)</code> (lignes 311–317) : <code>RecordUndoEvent(libellé)</code>, puis le changement, puis <code>SignalerMesureChangee()</code>. L'ordre compte : Grasshopper photographie l'objet <em>avant</em> qu'il change, et Ctrl+Z remet cette photo.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 21 · Interaction sur le canvas</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6A</b> · Dessiner sur le canvas</span><b>Cours 21</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">À qui le canvas offre-t-il un enfoncement ?</div><ul>
+      <li><span>A</span>à tous les objets</li><li><span>B</span>à l'objet pointé le plus en avant</li><li><span>C</span>à la racine</li><li><span>D</span>au dernier sélectionné</li></ul></div>
+
+    <div class="q"><div class="enonce">La réponse Ignore veut dire…</div><ul>
+      <li><span>A</span>une erreur</li><li><span>B</span>pas pour moi : geste par défaut du canvas</li><li><span>C</span>fin de la capture</li><li><span>D</span>annuler le geste</li></ul></div>
+
+    <div class="q"><div class="enonce">Après Capture…</div><ul>
+      <li><span>A</span>le canvas se fige</li><li><span>B</span>l'objet est sélectionné</li><li><span>C</span>la suite du geste vient à ces attributs</li><li><span>D</span>une image est prise</li></ul></div>
+
+    <div class="q"><div class="enonce">Pourquoi remettre l'état à zéro dans un finally ?</div><ul>
+      <li><span>A</span>pour qu'une exception ne laisse pas le geste à moitié</li><li><span>B</span>pour aller plus vite</li><li><span>C</span>c'est exigé par C#</li><li><span>D</span>pour poser l'annulation</li></ul></div>
+
+    <div class="q"><div class="enonce">Un conteneur exclut de son IsPickRegion…</div><ul>
+      <li><span>A</span>son rebord</li><li><span>B</span>la zone de pointage de chaque membre direct</li><li><span>C</span>tous les objets du document</li><li><span>D</span>rien</li></ul></div>
+
+    <div class="q"><div class="enonce">Sans cette exclusion, le clic sur un membre irait…</div><ul>
+      <li><span>A</span>toujours au membre</li><li><span>B</span>nulle part</li><li><span>C</span>à l'un ou l'autre selon l'ordre du document</li><li><span>D</span>au plus petit</li></ul></div>
+
+    <div class="q"><div class="enonce">Un Bouton enfoncé puis tiré au-delà du seuil de Windows…</div><ul>
+      <li><span>A</span>se déclenche</li><li><span>B</span>abandonne l'enfoncement, la feuille se déplace</li><li><span>C</span>reste enfoncé</li><li><span>D</span>ouvre son menu</li></ul></div>
+
+    <div class="q"><div class="enonce">Pourquoi ouvrir la saisie par canvas.BeginInvoke ?</div><ul>
+      <li><span>A</span>pour l'ouvrir hors du traitement de la souris</li><li><span>B</span>pour la mettre sur un autre fil</li><li><span>C</span>pour l'annuler</li><li><span>D</span>pour la rendre modale</li></ul></div>
+
+    <div class="q"><div class="enonce">Sans le test sur Entrée, Menu_AppendTextItem…</div><ul>
+      <li><span>A</span>ne valide jamais</li><li><span>B</span>règle à chaque touche</li><li><span>C</span>ferme le menu</li><li><span>D</span>refuse le texte</li></ul></div>
+
+    <div class="q"><div class="enonce">Modifier fait, dans l'ordre :</div><ul>
+      <li><span>A</span>changement, RecordUndoEvent, mise en page</li><li><span>B</span>RecordUndoEvent, changement, mise en page</li><li><span>C</span>mise en page, changement</li><li><span>D</span>ExpireSolution, changement</li></ul></div>
+
+    <div class="q"><div class="enonce">Tirer le bord d'un Texte sur dix pas, c'est…</div><ul>
+      <li><span>A</span>dix Ctrl+Z</li><li><span>B</span>aucun Ctrl+Z</li><li><span>C</span>un seul Ctrl+Z</li><li><span>D</span>deux Ctrl+Z</li></ul></div>
+
+    <div class="q"><div class="enonce">Le double-clic de l'Interrupteur… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>bascule au bouton gauche, zoom ≥ 0,5</li><li><span>B</span>rend Handled quand il bascule</li><li><span>C</span>bascule déjà au premier clic</li><li><span>D</span>sur exception, écrit le motif dans la ligne de commande de Rhino</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 21 · Interaction sur le canvas</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6A</b> · Dessiner sur le canvas</span><b>Cours 21</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · B.</b> <code>FindAttribute</code> parcourt du dernier au premier : un seul objet.</div>
+    <div><b>02 · B.</b> C'est la réponse de <code>base</code> : sélection et glisser natifs.</div>
+    <div><b>03 · C.</b> Move et Up viennent à ces attributs jusqu'au Release.</div>
+    <div><b>04 · A.</b> Bouton enfoncé, drapeaux levés : le finally les remet à zéro.</div>
+    <div><b>05 · B.</b> Le rebord lui reste toujours (C8).</div>
+    <div><b>06 · C.</b> Le dernier objet du document est pointé d'abord.</div>
+    <div><b>07 · B.</b> Sans clic ; le glisser natif prend la main.</div>
+    <div><b>08 · A.</b> Même fil, juste après : ce n'est pas du parallélisme.</div>
+    <div><b>09 · B.</b> Un réglage et un enregistrement par frappe.</div>
+    <div><b>10 · B.</b> La photo avant le changement, sinon Ctrl+Z ne remet rien.</div>
+    <div><b>11 · C.</b> Un enregistrement au premier changement, puis <code>EcrireSansAnnulation</code>.</div>
+    <div><b>12 · A, B et D.</b> Le premier clic est capté sans effet, comme le Toggle natif.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3, réponses et pointage. <b>7 à 9</b> : relis les pages 4 et 5, menu et annulation. <b>10 à 12</b> : passe au cours 22, « Mise en page en flux ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">return GH_ObjectResponse.Capture;</td><td>garder la souris</td><td>FeuilleConception:291</td></tr>
+      <tr><td class="c">return GH_ObjectResponse.Release;</td><td>rendre la souris</td><td>FeuilleConception:364</td></tr>
+      <tr><td class="c">public override bool IsPickRegion(PointF p)</td><td>dire si le point est à moi</td><td>ConteneurAttributs:151</td></tr>
+      <tr><td class="c">Menu_AppendTextItem(menu, texte, h, null, true)</td><td>une saisie dans le menu</td><td>MenuReglages:127</td></tr>
+      <tr><td class="c">canvas.BeginInvoke(new Action(…))</td><td>agir juste après la souris</td><td>ConceptionCurseur:380</td></tr>
+      <tr><td class="c">RecordUndoEvent(libellé)</td><td>photographier avant de changer</td><td>Constituant:314</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Réponse d'objet</dt><dd>Le <code>GH_ObjectResponse</code> qui dit au canvas quoi faire après un évènement.</dd>
+    <dt>Capture</dt><dd>La souris gardée par un objet jusqu'à ce qu'il la rende.</dd>
+    <dt>Zone de pointage</dt><dd>Les points pour lesquels <code>IsPickRegion</code> répond oui.</dd>
+    <dt>Saisie native</dt><dd>La boîte de texte de Grasshopper, posée sur le canvas ou dans le menu.</dd>
+    <dt>Enregistrement</dt><dd>L'état d'un objet photographié pour Ctrl+Z, sous un libellé.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 22</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 21 · Interaction sur le canvas</div>
+</section>
+
+</body>
+</html>

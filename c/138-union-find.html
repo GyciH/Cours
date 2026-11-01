@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>138 · Union-find</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-2">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 138</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Union-find</h1>
+  <p class="chapeau">Des éléments arrivent, des liens se tissent entre eux, et une seule question revient : ces deux-là sont-ils reliés ? Union-find y répond en temps presque constant, avec un simple tableau de parents et deux astuces. Il sait regrouper ; il ne sait pas orienter.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>18</b>, <b>134</b>, <b>135</b></span>
+    <span class="pastille">Exemples · <b>SnapSet</b>, <b>Cuttlefish</b></span>
+  </div>
+
+  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+    <svg viewBox="0 0 600 204" width="100%">
+<text x="10" y="14" font-size="8" fill="#5D4037" text-anchor="start" font-weight="700">avant Union(c, f)</text>
+<circle cx="60" cy="34" r="11" fill="#EFEBE9" stroke="#5D4037" stroke-width="1.2"/>
+<text x="60" y="37" font-size="8" fill="#5D4037" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">a</text>
+<circle cx="30" cy="74" r="11" fill="#fff" stroke="#5D4037" stroke-width="1.2"/>
+<text x="30" y="77" font-size="8" fill="#5D4037" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">b</text>
+<circle cx="90" cy="74" r="11" fill="#fff" stroke="#5D4037" stroke-width="1.2"/>
+<text x="90" y="77" font-size="8" fill="#5D4037" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">c</text>
+<line x1="34" y1="64" x2="54" y2="44" stroke="#6B7378" stroke-width="0.9"/><polygon points="54,44 51.4,50.5 47.5,46.6" fill="#6B7378"/>
+<line x1="86" y1="64" x2="66" y2="44" stroke="#6B7378" stroke-width="0.9"/><polygon points="66,44 72.5,46.6 68.6,50.5" fill="#6B7378"/>
+<circle cx="170" cy="34" r="11" fill="#EAF0FA" stroke="#1565C0" stroke-width="1.2"/>
+<text x="170" y="37" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">d</text>
+<circle cx="150" cy="74" r="11" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="150" y="77" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">e</text>
+<circle cx="190" cy="74" r="11" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="190" y="77" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">f</text>
+<line x1="154" y1="64" x2="166" y2="44" stroke="#1565C0" stroke-width="0.9"/><polygon points="166,44 165.0,50.9 160.3,48.1" fill="#1565C0"/>
+<line x1="186" y1="64" x2="174" y2="44" stroke="#1565C0" stroke-width="0.9"/><polygon points="174,44 179.7,48.1 175.0,50.9" fill="#1565C0"/>
+<text x="10" y="108" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">deux ensembles, deux représentants : a et d</text>
+<line x1="230" y1="54" x2="280" y2="54" stroke="#6B7378" stroke-width="1.2"/><polygon points="280,54 273.6,56.7 273.6,51.3" fill="#6B7378"/>
+<text x="300" y="14" font-size="8" fill="#5D4037" text-anchor="start" font-weight="700">après : Find(c) = a, Find(f) = d, on accroche d sous a</text>
+<circle cx="380" cy="34" r="11" fill="#EFEBE9" stroke="#5D4037" stroke-width="1.2"/>
+<text x="380" y="37" font-size="8" fill="#5D4037" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">a</text>
+<circle cx="330" cy="74" r="11" fill="#fff" stroke="#5D4037" stroke-width="1.2"/>
+<text x="330" y="77" font-size="8" fill="#5D4037" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">b</text>
+<circle cx="380" cy="74" r="11" fill="#fff" stroke="#5D4037" stroke-width="1.2"/>
+<text x="380" y="77" font-size="8" fill="#5D4037" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">c</text>
+<circle cx="440" cy="74" r="11" fill="#EAF0FA" stroke="#1565C0" stroke-width="1.2"/>
+<text x="440" y="77" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">d</text>
+<line x1="334" y1="64" x2="374" y2="44" stroke="#6B7378" stroke-width="0.9"/><polygon points="374,44 369.5,49.3 367.0,44.4" fill="#6B7378"/>
+<line x1="380" y1="63" x2="380" y2="45" stroke="#6B7378" stroke-width="0.9"/><polygon points="380,45 382.7,51.4 377.3,51.4" fill="#6B7378"/>
+<line x1="436" y1="64" x2="386" y2="44" stroke="#1565C0" stroke-width="0.9"/><polygon points="386,44 393.0,43.9 391.0,48.9" fill="#1565C0"/>
+<circle cx="420" cy="114" r="11" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="420" y="117" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">e</text>
+<circle cx="460" cy="114" r="11" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="460" y="117" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">f</text>
+<line x1="424" y1="104" x2="436" y2="84" stroke="#1565C0" stroke-width="0.9"/><polygon points="436,84 435.0,90.9 430.3,88.1" fill="#1565C0"/>
+<line x1="456" y1="104" x2="444" y2="84" stroke="#1565C0" stroke-width="0.9"/><polygon points="444,84 449.7,88.1 445.0,90.9" fill="#1565C0"/>
+<text x="300" y="148" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">un seul ensemble : tous remontent à a</text>
+<text x="10" y="172" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">Chaque élément ne connaît qu'un parent ; le représentant est celui qui n'en a pas. Deux opérations :</text>
+<text x="10" y="188" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Find remonte au représentant ; Union accroche un représentant sous l'autre. Exemple construit à la main.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Chaque ensemble est un arbre dont la racine le représente ; deux éléments sont reliés s'ils remontent à la même racine.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Des équipes qui fusionnent : chacun connaît son chef, qui connaît le sien. Pour savoir si deux personnes sont collègues, on remonte jusqu'au patron.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>écrire Find et Union ;</li>
+        <li>garder des arbres plats ;</li>
+        <li>compter des composantes au fil des liens ;</li>
+        <li>savoir quand il ne convient pas.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À retenir</span>
+    Union-find répond à « même groupe ou non ? » et à « combien de groupes ? ». Il ne sait ni séparer un groupe, ni dire qui est l'ancêtre de qui.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 138 · Union-find</div>
+</section>
+
+<!-- ============ PAGE 2 · LES DEUX ASTUCES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 138</b></div>
+  <p class="rubrique">Schéma 1 · Les deux astuces</p>
+  <h2>Garder les arbres plats</h2>
+  <p style="max-width:165mm">Sans précaution, une suite d'unions malheureuse fabrique une chaîne, et chaque Find la remonte en entier. On a provoqué ce pire cas, puis activé une astuce, l'autre, les deux.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#5D4037" text-anchor="start" font-weight="700">100 000 unions en chaîne, puis un Find par élément, selon les astuces activées (.NET 8, mesuré)</text>
+<text x="16" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">version</text>
+<text x="200" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">profondeur atteinte</text>
+<text x="330" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">100 000 Find</text>
+<text x="450" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">pas de remontée</text>
+<rect x="10" y="48" width="580" height="18" fill="#fff" opacity=".55"/>
+<text x="16" y="61" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">naïve</text>
+<text x="200" y="61" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">99 999</text>
+<text x="330" y="61" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">11 594 ms</text>
+<text x="450" y="61" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">≈ 5 milliards</text>
+<text x="16" y="79" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">union par taille</text>
+<text x="200" y="79" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">1</text>
+<text x="330" y="79" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">0,4 ms</text>
+<text x="450" y="79" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">99 999</text>
+<rect x="10" y="84" width="580" height="18" fill="#fff" opacity=".55"/>
+<text x="16" y="97" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">compression de chemin</text>
+<text x="200" y="97" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">99 999</text>
+<text x="330" y="97" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">1,3 ms</text>
+<text x="450" y="97" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">199 997</text>
+<text x="16" y="115" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">les deux</text>
+<text x="200" y="115" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">1</text>
+<text x="330" y="115" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">0,8 ms</text>
+<text x="450" y="115" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">99 999</text>
+<text x="16" y="138" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Par taille : on accroche le petit arbre sous le grand, la profondeur ne dépasse jamais log₂ n.</text>
+<text x="16" y="154" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Compression : chaque Find raccroche tout son chemin directement au représentant, pour les suivants.</text>
+<text x="16" y="176" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Unions en chaîne : Union(i, i − 1) pour i de 1 à 99 999, le pire cas d'une version naïve. Le compteur de pas</text>
+<text x="16" y="190" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">de la version naïve a débordé un int ; la valeur donnée est la somme des profondeurs, 4 999 950 000 (déduit).</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, Find avec compression, Union par taille</span>int Find(int x) { while (p[x] != x) { p[x] = p[p[x]]; x = p[x]; } return x; }   // saute un cran
+bool Union(int a, int b) {
+    a = Find(a); b = Find(b); if (a == b) return false;            // déjà reliés
+    if (taille[a] &lt; taille[b]) (a, b) = (b, a);
+    p[b] = a; taille[a] += taille[b]; return true; }</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Pourquoi un tableau</h3>
+      <p>Les éléments sont numérotés de 0 à n − 1 ; p[i] est le parent de i, et une racine est son propre parent. Pas de nœud, pas de pointeur : 4 octets par élément, lus à la suite.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Presque constant</h3>
+      <p>Avec les deux astuces, le coût d'une opération croît comme la fonction d'Ackermann inverse, inférieure à 5 pour toute taille réaliste (résultat théorique, non mesuré ici).</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Écrire Union comme p[Find(a)] = Find(b), sans regarder les tailles. Sur 100 000 unions en chaîne, les Find ont pris 11,6 s, contre 0,4 à 1,3 ms avec l'une ou l'autre astuce (mesuré).
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 138 · Union-find</div>
+</section>
+
+<!-- ============ PAGE 3 · COMPOSANTES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 138</b></div>
+  <p class="rubrique">Schéma 2 · Compter les composantes</p>
+  <h2>Des liens qui arrivent un à un</h2>
+  <p style="max-width:165mm">Compter des îlots une fois, un parcours en largeur le fait aussi bien. L'avantage d'union-find apparaît quand les liens arrivent l'un après l'autre et qu'on veut le compte à chaque instant.</p>
+
+  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#5D4037" text-anchor="start" font-weight="700">Compter les îlots d'une grille dont 55 % des cases sont ouvertes (deux séries, mesuré)</text>
+<text x="16" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">grille</text>
+<text x="220" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">union-find</text>
+<text x="380" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">parcours en largeur</text>
+<rect x="10" y="48" width="580" height="20" fill="#fff" opacity=".55"/>
+<text x="16" y="62" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">300 × 300 (3 959 îlots)</text>
+<text x="220" y="62" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">4,1 à 6,8 ms</text>
+<text x="380" y="62" font-size="7.6" fill="#1565C0" text-anchor="start" font-weight="700">6,4 à 7,3 ms</text>
+<text x="16" y="82" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">1 000 × 1 000 (44 327 îlots)</text>
+<text x="220" y="82" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">44 à 46 ms</text>
+<text x="380" y="82" font-size="7.6" fill="#1565C0" text-anchor="start" font-weight="700">49 à 61 ms</text>
+<text x="16" y="108" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Ajouter 2 millions de liens au hasard, un par un, en tenant le nombre d'îlots à jour : 208 ms en tout.</text>
+<rect x="16" y="118" width="136" height="22" rx="4" fill="#fff" stroke="#5D4037" stroke-width="1.2"/>
+<text x="84.0" y="131.46666666666667" font-size="7.4" fill="#5D4037" text-anchor="middle" font-weight="700">25 % des liens : 504 895</text>
+<rect x="160" y="118" width="136" height="22" rx="4" fill="#fff" stroke="#5D4037" stroke-width="1.2"/>
+<text x="228.0" y="131.46666666666667" font-size="7.4" fill="#5D4037" text-anchor="middle" font-weight="700">50 % des liens : 98 355</text>
+<rect x="304" y="118" width="136" height="22" rx="4" fill="#fff" stroke="#5D4037" stroke-width="1.2"/>
+<text x="372.0" y="131.46666666666667" font-size="7.4" fill="#5D4037" text-anchor="middle" font-weight="700">75 % des liens : 4 376</text>
+<rect x="448" y="118" width="136" height="22" rx="4" fill="#fff" stroke="#5D4037" stroke-width="1.2"/>
+<text x="516.0" y="131.46666666666667" font-size="7.4" fill="#5D4037" text-anchor="middle" font-weight="700">100 % des liens : 1</text>
+<text x="16" y="164" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Pour un comptage unique, les deux se valent. Quand les liens arrivent un à un, seul union-find</text>
+<text x="16" y="180" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">répond sans tout reparcourir : chaque lien coûte une union, presque constante.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, tenir le nombre de groupes à jour</span>int groupes = n;                                   // au départ, chacun seul
+foreach (var (a, b) in liens)
+    if (Union(a, b)) groupes--;                  // un lien entre deux groupes les fusionne</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Une grille, des numéros</h3>
+      <p>Une case (x, y) d'une grille de largeur L devient l'élément y × L + x. On relie chaque case ouverte à ses voisines de droite et du dessous : chaque lien n'est vu qu'une fois.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Le seuil</h3>
+      <p>Sur un million de cases, à 75 % des liens il restait 4 376 groupes, à 100 % un seul. La fusion se fait d'un coup, vers la fin : c'est la percolation (mesuré).</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Vouloir retirer un lien. Union-find ne sait que fusionner : pour couper, il faut tout reconstruire à partir des liens restants, ou changer de structure.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 138 · Union-find</div>
+</section>
+
+<!-- ============ PAGE 4 · LIMITES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 138</b></div>
+  <p class="rubrique">Schéma 3 · Ce que union-find ne sait pas</p>
+  <h2>Relié n'est pas ancêtre</h2>
+  <p style="max-width:165mm">Kruskal creuse un labyrinthe en abattant des murs au hasard, sauf ceux qui fermeraient une boucle : union-find suffit. Mais dès qu'une relation a un sens, parent et enfant, il ne suffit plus.</p>
+
+  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#5D4037" text-anchor="start" font-weight="700">Deux usages voisins : creuser un labyrinthe, refuser un cycle (mesuré)</text>
+<text x="16" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">labyrinthe 50 × 50, 20 tirages</text>
+<text x="260" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">impasses</text>
+<text x="420" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">chemin entrée-sortie</text>
+<rect x="10" y="48" width="580" height="20" fill="#fff" opacity=".55"/>
+<text x="16" y="62" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">Kruskal : murs au hasard, union-find</text>
+<text x="260" y="62" font-size="7.6" fill="#5D4037" text-anchor="start" font-weight="700">30,4 %</text>
+<text x="420" y="62" font-size="7.6" fill="#5D4037" text-anchor="start" font-weight="700">179 cases</text>
+<text x="16" y="82" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">profondeur avec une pile (cours 134)</text>
+<text x="260" y="82" font-size="7.6" fill="#5D4037" text-anchor="start" font-weight="700">10,1 %</text>
+<text x="420" y="82" font-size="7.6" fill="#5D4037" text-anchor="start" font-weight="700">812 cases</text>
+<text x="16" y="108" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">R contient A et B. Peut-on ranger B dans A ?</text>
+<rect x="16" y="118" width="270" height="22" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="151.0" y="131.46666666666667" font-size="7.4" fill="#C62828" text-anchor="middle" font-weight="700">union-find : A et B même ensemble → refus</text>
+<rect x="300" y="118" width="280" height="22" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="440.0" y="131.46666666666667" font-size="7.4" fill="#2E7D32" text-anchor="middle" font-weight="700">en vrai : B n'est pas un ancêtre de A → permis</text>
+<text x="16" y="164" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">Union-find répond « reliés ou non », sans direction. Un cycle dans un arbre orienté, c'est « est-il mon ancêtre ? » :</text>
+<text x="16" y="180" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">pour cette question, il faut remonter les parents, comme le fait SnapSet.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, le labyrinthe de Kruskal</span>foreach (var (a, b) in murs.OrderBy(_ =&gt; rnd.Next()))   // murs au hasard
+    if (Union(a, b)) Abattre(a, b);              // ouvre seulement entre deux zones isolées</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Deux labyrinthes, deux styles</h3>
+      <p>Kruskal donne beaucoup d'impasses courtes et un chemin direct ; la pile du cours 134, de longs couloirs sinueux. Les deux sont parfaits : un seul chemin entre deux cases.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>La racine n'est pas le parent</h3>
+      <p>Union par taille et compression déplacent les éléments dans l'arbre : la racine trouvée n'a rien à voir avec un parent réel. Garde l'arbre orienté à part, s'il compte.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Refuser un rangement parce que union-find dit « même ensemble ». R contient A et B : ranger B dans A ne crée aucun cycle, mais union-find le refuse (mesuré).
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 138 · Union-find</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 138</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Remonter des parents, joindre des courbes</h2>
+  <p style="max-width:165mm">SnapSet refuse les cycles d'appartenance en remontant les parents, ce qu'union-find ne saurait pas faire en général. Cuttlefish regroupe des segments bout à bout, la tâche typique d'union-find, mais confiée à Rhino.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">SnapSet/…/Appartenance/ArbreAppartenance.cs</span></div>
+<div class="l k1"><span class="n">54</span>|| arbre.EstDansSousArbre(c.Key, m);<span class="rep r1">1</span></div>
+<div class="l k2"><span class="n">63</span>arbre._parent[m] = c.Key;<span class="rep r2">2</span></div>
+<div class="l k3"><span class="n">236</span>while (true) { … courant = p; }<span class="rep r3">3</span></div>
+<div class="l"><span class="cm">cuttlefish/Contour.cs · Maze.cs</span></div>
+<div class="l k4"><span class="n">135</span>….AddRange(Curve.JoinCurves(segments, tolerance), …);<span class="rep r4">4</span></div>
+<div class="l k5"><span class="n">71</span>var stack = new Stack&lt;int[]&gt;();<span class="rep r5">5</span></div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Cycle</b>Refus orienté.</li>
+      <li><span class="rep r2">2</span><b>Parent</b>Un seul.</li>
+      <li><span class="rep r3">3</span><b>Remonter</b>Toute la hauteur.</li>
+      <li><span class="rep r4">4</span><b>Regrouper</b>Par Rhino.</li>
+      <li><span class="rep r5">5</span><b>Labyrinthe</b>Pile, pas Kruskal.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À surveiller · le refus de cycle remonte toute la hauteur, membre par membre</span>
+    Depuis refuse un membre m qui a déjà un parent (ligne 53), puis teste EstDansSousArbre(c.Key, m) (ligne 54) : la boucle des lignes 236 à 241 remonte les parents depuis le conteneur. Comme m n'a pas encore de parent, c'est une racine, et le test revient à « la racine du conteneur est-elle m ? » : ici, et seulement grâce à la règle du parent unique, union-find donnerait la même réponse (déduit). Le coût, la hauteur de l'arbre par membre, reste faible pour des capsules de quelques niveaux (déduit, non mesuré). Relevé sans rien modifier.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 138 · Union-find</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 138</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Dans union-find, le représentant d'un ensemble est…</div><ul>
+      <li><span>A</span>le dernier ajouté</li><li><span>B</span>le plus petit élément</li><li><span>C</span>la racine de son arbre</li><li><span>D</span>une liste à part</li></ul></div>
+
+    <div class="q"><div class="enonce">Find(x) consiste à…</div><ul>
+      <li><span>A</span>trier les parents</li><li><span>B</span>parcourir tout le tableau</li><li><span>C</span>remonter les parents jusqu'à la racine</li><li><span>D</span>hacher x</li></ul></div>
+
+    <div class="q"><div class="enonce">100 000 unions en chaîne, version naïve : les Find ont pris…</div><ul>
+      <li><span>A</span>0,4 ms</li><li><span>B</span>environ 11,6 s</li><li><span>C</span>une erreur de pile</li><li><span>D</span>1,3 ms</li></ul></div>
+
+    <div class="q"><div class="enonce">L'union par taille accroche…</div><ul>
+      <li><span>A</span>le grand sous le petit</li><li><span>B</span>toujours sous l'élément 0</li><li><span>C</span>au hasard</li><li><span>D</span>le petit arbre sous le grand</li></ul></div>
+
+    <div class="q"><div class="enonce">La compression de chemin… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>supprime des éléments</li><li><span>B</span>trie le tableau</li><li><span>C</span>accélère les Find suivants</li><li><span>D</span>raccroche le chemin parcouru près de la racine</li></ul></div>
+
+    <div class="q"><div class="enonce">Union(a, b) qui rend false signifie…</div><ul>
+      <li><span>A</span>le tableau est plein</li><li><span>B</span>a et b étaient déjà reliés</li><li><span>C</span>un cycle orienté</li><li><span>D</span>a est absent</li></ul></div>
+
+    <div class="q"><div class="enonce">Pour tenir le nombre de groupes à jour, on…</div><ul>
+      <li><span>A</span>décrémente à chaque Union réussie</li><li><span>B</span>incrémente à chaque lien</li><li><span>C</span>recompte tout</li><li><span>D</span>compte les racines à chaque lien</li></ul></div>
+
+    <div class="q"><div class="enonce">Pour un comptage unique des îlots d'une grille…</div><ul>
+      <li><span>A</span>le parcours est impossible</li><li><span>B</span>union-find et parcours en largeur se valent</li><li><span>C</span>il faut trier</li><li><span>D</span>union-find est dix fois plus rapide</li></ul></div>
+
+    <div class="q"><div class="enonce">Retirer un lien dans union-find…</div><ul>
+      <li><span>A</span>n'est pas possible sans reconstruire</li><li><span>B</span>coûte log n</li><li><span>C</span>se fait en remettant p[x] = x</li><li><span>D</span>se fait par Split</li></ul></div>
+
+    <div class="q"><div class="enonce">Le labyrinthe de Kruskal, comparé à la pile, a donné…</div><ul>
+      <li><span>A</span>des boucles</li><li><span>B</span>moins d'impasses</li><li><span>C</span>plus d'impasses et un chemin plus court</li><li><span>D</span>le même labyrinthe</li></ul></div>
+
+    <div class="q"><div class="enonce">R contient A et B. Union-find, pour « ranger B dans A »…</div><ul>
+      <li><span>A</span>lève une exception</li><li><span>B</span>détecte un vrai cycle</li><li><span>C</span>accepte</li><li><span>D</span>refuse à tort : il ignore le sens</li></ul></div>
+
+    <div class="q"><div class="enonce">SnapSet détecte un cycle d'appartenance en…</div><ul>
+      <li><span>A</span>triant les Guid</li><li><span>B</span>parcourant tout le document</li><li><span>C</span>appelant union-find</li><li><span>D</span>remontant les parents du conteneur</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 138 · Union-find</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 138</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · C.</b> Son propre parent.</div>
+    <div><b>02 · C.</b> Page 1.</div>
+    <div><b>03 · B.</b> 11 594 ms.</div>
+    <div><b>04 · D.</b> Profondeur 1 ici.</div>
+    <div><b>05 · C et D.</b> Page 2.</div>
+    <div><b>06 · B.</b> Même racine.</div>
+    <div><b>07 · A.</b> Deux groupes en un.</div>
+    <div><b>08 · B.</b> 44–46 contre 49–61 ms.</div>
+    <div><b>09 · A.</b> Il ne fait que fusionner.</div>
+    <div><b>10 · C.</b> 30,4 % ; 179 cases.</div>
+    <div><b>11 · D.</b> Mesuré, page 4.</div>
+    <div><b>12 · D.</b> ArbreAppartenance.cs:236.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 18, « Graphes et parcours ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">int[] p; p[i] = i</td><td>chaque élément seul, son propre parent</td><td>page 2</td></tr>
+      <tr><td class="c">Find(x)</td><td>remonter au représentant, en compressant</td><td>page 2</td></tr>
+      <tr><td class="c">Union(a, b)</td><td>fusionner, le petit sous le grand</td><td>page 2</td></tr>
+      <tr><td class="c">if (Union(a, b)) groupes--</td><td>compter les composantes au fil des liens</td><td>page 3</td></tr>
+      <tr><td class="c">EstDansSousArbre(c, m)</td><td>tester un ancêtre, avec le sens</td><td>ArbreAppartenance.cs:233</td></tr>
+      <tr><td class="c">Curve.JoinCurves(…)</td><td>regrouper des segments bout à bout</td><td>Contour.cs:135</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Représentant</dt><dd>L'élément racine qui désigne tout son ensemble.</dd>
+    <dt>Compression de chemin</dt><dd>Raccrocher, pendant un Find, les éléments parcourus plus près de la racine.</dd>
+    <dt>Union par taille</dt><dd>Accrocher le plus petit arbre sous le plus grand.</dd>
+    <dt>Composante</dt><dd>Un groupe d'éléments reliés entre eux, directement ou non.</dd>
+    <dt>Kruskal</dt><dd>Garder un lien seulement s'il relie deux composantes encore séparées.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 18</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 138 · Union-find</div>
+</section>
+
+</body>
+</html>

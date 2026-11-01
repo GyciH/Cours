@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>02 · Héritage et polymorphisme, appliqués</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-1">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 02</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Héritage et<br>polymorphisme, appliqués</h1>
+  <p class="chapeau">Hériter, c'est dire « est un ». Une classe enfant reçoit tout ce que son parent sait faire, et n'écrit que ce qui change. Le polymorphisme, c'est l'autre moitié : le code qui manipule le parent exécute, sans le savoir, la version de l'enfant.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>55 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>01</b> C# moderne</span>
+    <span class="pastille">Exemple · <b>SnapSet</b>, les constituants</span>
+  </div>
+
+  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:5mm;">
+    <svg viewBox="0 0 600 250" width="100%">
+      <!-- Poupées emboîtées -->
+      <rect x="0" y="6" width="380" height="238" rx="10" fill="#fff" stroke="#6B7378" stroke-width="1.4"/>
+      <text x="14" y="26" class="mono" font-size="11" font-weight="700" fill="#6B7378">GH_Component</text>
+      <rect x="22" y="40" width="340" height="194" rx="9" fill="#F1E9F3" stroke="#6B2C7A" stroke-width="1.4"/>
+      <text x="36" y="60" class="mono" font-size="11" font-weight="700" fill="#6B2C7A">Constituant</text>
+      <rect x="44" y="74" width="300" height="150" rx="8" fill="#fff" stroke="#6B2C7A" stroke-width="1.4" stroke-dasharray="5 3"/>
+      <text x="58" y="94" class="mono" font-size="11" font-weight="700" fill="#6B2C7A">Conteneur</text>
+      <rect x="66" y="108" width="260" height="106" rx="7" fill="#6B2C7A"/>
+      <text x="80" y="130" class="mono" font-size="12" font-weight="700" fill="#fff">Colonne</text>
+      <text x="80" y="152" font-size="10" fill="#fff">« empile de haut en bas »</text>
+      <text x="80" y="176" font-size="10" fill="#fff">un nom, un Guid, un type :</text>
+      <text x="80" y="196" font-size="15" font-weight="800" fill="#fff">19 lignes</text>
+
+      <!-- Ce que chaque couche apporte -->
+      <g font-size="10">
+        <line x1="380" y1="20" x2="404" y2="20" stroke="#6B7378"/>
+        <text x="410" y="18" font-weight="700" fill="#6B7378">fils, calcul, sauvegarde,</text>
+        <text x="410" y="31" fill="#6B7378">messages : tout le natif</text>
+        <line x1="362" y1="56" x2="404" y2="64" stroke="#6B2C7A"/>
+        <text x="410" y="62" font-weight="700" fill="#6B2C7A">onglet SnapSet, icône par type,</text>
+        <text x="410" y="75" fill="#6B2C7A">menu des réglages, placement</text>
+        <line x1="344" y1="90" x2="404" y2="108" stroke="#6B2C7A" stroke-dasharray="4 3"/>
+        <text x="410" y="106" font-weight="700" fill="#6B2C7A">ranger ses membres, geste</text>
+        <text x="410" y="119" fill="#6B2C7A">d'insertion, lecture et écriture .gh</text>
+        <line x1="326" y1="150" x2="404" y2="156" stroke="#2B2F33"/>
+        <text x="410" y="152" font-weight="700">ce qui la distingue de Ligne :</text>
+        <text x="410" y="165">le sens d'empilement, rien d'autre</text>
+      </g>
+      <text x="410" y="214" font-size="10.5" fill="#2B2F33">Conteneur.cs : 239 lignes</text>
+      <text x="410" y="229" font-size="10.5" fill="#2B2F33">Constituant.cs : 336 lignes</text>
+    </svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>On écrit une fois, dans le parent, ce que plusieurs classes ont en commun ; chaque enfant <b>complète</b> les cases laissées vides et <b>corrige</b> celles qui le concernent.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Un formulaire pré-rempli. Le parent remplit tout ce qu'il peut. Certaines cases sont <b>obligatoires</b> et vides (abstract), d'autres ont une valeur proposée qu'on peut <b>changer</b> (virtual).</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>employer les six mots du contrat parent-enfant : abstract, virtual, override, sealed, base, protected ;</li>
+        <li>lire la hiérarchie des constituants de SnapSet et dire qui définit quoi ;</li>
+        <li>suivre un appel polymorphe : Grasshopper demande l'icône d'un GH_Component, et c'est le code de Colonne qui répond.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:5mm">
+    <span class="titre">À retenir</span>
+    Ligne et Colonne sont deux classes de 19 lignes. Tout le reste, plus de 500 lignes, est écrit <b>une seule fois</b> dans leurs parents. C'est le bénéfice de l'héritage : une correction dans Conteneur profite aux deux.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 02 · Héritage et polymorphisme, appliqués</div>
+</section>
+
+<!-- ============ PAGE 2 · LA HIÉRARCHIE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 02</b></div>
+  <p class="rubrique">Schéma 1 · L'arbre généalogique</p>
+  <h2>Les constituants de SnapSet, trois étages</h2>
+  <p style="max-width:165mm">Cadre pointillé : classe <b>abstraite</b>, qu'on ne peut pas créer seule. Cadre plein foncé : classe <b>scellée</b> (sealed), dont personne ne peut hériter. Ce sont les seules qui apparaissent dans le ruban.</p>
+
+  <svg viewBox="0 0 600 482" width="100%" style="margin-top:3mm">
+    <defs><marker id="h1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#fff" stroke="#2B2F33"/></marker></defs>
+    <!-- Niveau 0 -->
+    <rect x="220" y="4" width="160" height="34" rx="5" fill="#fff" stroke="#6B7378" stroke-width="1.4"/>
+    <text x="300" y="25" text-anchor="middle" class="mono" font-size="11" font-weight="700" fill="#6B7378">GH_Component</text>
+    <text x="392" y="20" font-size="9" fill="#6B7378">le SDK Grasshopper</text>
+    <text x="392" y="32" font-size="9" fill="#6B7378">(lui-même héritier d'autres classes)</text>
+
+    <!-- Niveau 1 -->
+    <rect x="200" y="84" width="200" height="40" rx="5" fill="#F1E9F3" stroke="#6B2C7A" stroke-width="1.6" stroke-dasharray="6 3"/>
+    <text x="300" y="102" text-anchor="middle" class="mono" font-size="11.5" font-weight="700" fill="#6B2C7A">Constituant</text>
+    <text x="300" y="117" text-anchor="middle" font-size="8.5" fill="#6B2C7A">abstract · Noyau/Constituant.cs</text>
+    <path d="M300 84 V 40" stroke="#2B2F33" stroke-width="1.4" marker-end="url(#h1)"/>
+
+    <!-- Niveau 2 -->
+    <rect x="30" y="180" width="170" height="40" rx="5" fill="#F1E9F3" stroke="#6B2C7A" stroke-width="1.6" stroke-dasharray="6 3"/>
+    <text x="115" y="198" text-anchor="middle" class="mono" font-size="11" font-weight="700" fill="#6B2C7A">Conteneur</text>
+    <text x="115" y="213" text-anchor="middle" font-size="8.5" fill="#6B2C7A">abstract</text>
+    <rect x="400" y="180" width="190" height="40" rx="5" fill="#F1E9F3" stroke="#6B2C7A" stroke-width="1.6" stroke-dasharray="6 3"/>
+    <text x="495" y="198" text-anchor="middle" class="mono" font-size="11" font-weight="700" fill="#6B2C7A">FeuilleConception</text>
+    <text x="495" y="213" text-anchor="middle" font-size="8.5" fill="#6B2C7A">abstract</text>
+    <path d="M115 180 C 115 150, 250 150, 262 126" stroke="#2B2F33" stroke-width="1.4" fill="none" marker-end="url(#h1)"/>
+    <path d="M495 180 C 495 150, 350 150, 338 126" stroke="#2B2F33" stroke-width="1.4" fill="none" marker-end="url(#h1)"/>
+
+    <!-- Feuilles directes de Constituant -->
+    <g class="mono" font-size="10" font-weight="700">
+      <rect x="236" y="180" width="128" height="26" rx="4" fill="#6B2C7A"/><text x="300" y="197" text-anchor="middle" fill="#fff">Aplat</text>
+      <rect x="236" y="212" width="128" height="26" rx="4" fill="#6B2C7A"/><text x="300" y="229" text-anchor="middle" fill="#fff">Separateur</text>
+      <rect x="236" y="244" width="128" height="26" rx="4" fill="#6B2C7A"/><text x="300" y="261" text-anchor="middle" fill="#fff">ConceptionIcone</text>
+    </g>
+    <path d="M300 180 V 126" stroke="#2B2F33" stroke-width="1.4" marker-end="url(#h1)"/>
+
+    <!-- Niveau 3 : conteneurs -->
+    <g class="mono" font-size="10.5" font-weight="700">
+      <rect x="30" y="290" width="80" height="28" rx="4" fill="#6B2C7A"/><text x="70" y="308" text-anchor="middle" fill="#fff">Colonne</text>
+      <rect x="120" y="290" width="80" height="28" rx="4" fill="#6B2C7A"/><text x="160" y="308" text-anchor="middle" fill="#fff">Ligne</text>
+    </g>
+    <path d="M70 290 C 70 250, 100 245, 108 222" stroke="#2B2F33" stroke-width="1.4" fill="none" marker-end="url(#h1)"/>
+    <path d="M160 290 C 160 250, 130 245, 122 222" stroke="#2B2F33" stroke-width="1.4" fill="none" marker-end="url(#h1)"/>
+
+    <!-- Niveau 3 : feuilles -->
+    <g class="mono" font-size="9" font-weight="700" fill="#fff">
+      <rect x="400" y="290" width="92" height="22" rx="3" fill="#6B2C7A"/><text x="446" y="305" text-anchor="middle" fill="#fff">…Bouton</text>
+      <rect x="498" y="290" width="92" height="22" rx="3" fill="#6B2C7A"/><text x="544" y="305" text-anchor="middle" fill="#fff">…Interrupteur</text>
+      <rect x="400" y="316" width="92" height="22" rx="3" fill="#6B2C7A"/><text x="446" y="331" text-anchor="middle" fill="#fff">…Curseur</text>
+      <rect x="498" y="316" width="92" height="22" rx="3" fill="#6B2C7A"/><text x="544" y="331" text-anchor="middle" fill="#fff">…Champ</text>
+      <rect x="400" y="342" width="92" height="22" rx="3" fill="#6B2C7A"/><text x="446" y="357" text-anchor="middle" fill="#fff">…Liste</text>
+      <rect x="498" y="342" width="92" height="22" rx="3" fill="#6B2C7A"/><text x="544" y="357" text-anchor="middle" fill="#fff">…Voyant</text>
+      <rect x="400" y="368" width="190" height="22" rx="3" fill="#fff" stroke="#6B2C7A"/><text x="495" y="383" text-anchor="middle" fill="#6B2C7A">+ 6 autres (Texte, Jauge…)</text>
+    </g>
+    <path d="M495 290 V 222" stroke="#2B2F33" stroke-width="1.4" marker-end="url(#h1)"/>
+    <text x="400" y="408" font-size="9" fill="#6B7378">12 feuilles, toutes préfixées Conception</text>
+
+    <!-- Cuttlefish en regard -->
+    <rect x="0" y="420" width="600" height="60" fill="#EFE9E1"/>
+    <text x="14" y="440" font-size="10.5" font-weight="700">En regard, Cuttlefish : un seul étage.</text>
+    <text x="14" y="456" font-size="10" fill="#2B2F33">Bubble, Maze, Voronoi… héritent tous directement de GH_Component. Ce qu'ils partagent vit dans une classe statique,</text>
+    <text x="14" y="469" font-size="10" fill="#2B2F33"><tspan class="mono">Outils</tspan>, appelée et non héritée. Les deux choix sont bons : SnapSet partage du comportement, Cuttlefish des calculs.</text>
+  </svg>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">La flèche d'héritage</span>
+    Par convention, la flèche à pointe creuse va de l'enfant vers le parent : « Colonne est un Conteneur ». Dans le code, c'est le <code>:</code> de <code>class Colonne : Conteneur</code>. Une classe C# n'a qu'<b>un seul</b> parent ; elle peut en revanche implémenter plusieurs interfaces (Conteneur implémente <code>IGH_InstanceGuidDependent</code>).
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 02 · Héritage et polymorphisme, appliqués</div>
+</section>
+
+<!-- ============ PAGE 3 · LE CONTRAT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 02</b></div>
+  <p class="rubrique">Schéma 2 · Le contrat parent-enfant</p>
+  <h2>Six mots pour dire qui écrit quoi</h2>
+  <p style="max-width:165mm">Chaque mot-clé répond à deux questions : le parent fournit-il une version ? L'enfant doit-il, ou peut-il, la remplacer ? Les exemples sont tous dans SnapSet.</p>
+
+  <svg viewBox="0 0 600 480" width="100%" style="margin-top:3mm">
+    <!-- En-têtes -->
+    <g font-size="9" font-weight="700" fill="#6B7378" letter-spacing="1">
+      <text x="0" y="14">MOT-CLÉ</text><text x="120" y="14">LE PARENT</text><text x="270" y="14">L'ENFANT</text><text x="400" y="14">DANS SNAPSET</text>
+    </g>
+    <line x1="0" y1="22" x2="600" y2="22" stroke="#6B2C7A" stroke-width="1.4"/>
+
+    <!-- abstract -->
+    <g transform="translate(0,30)">
+      <rect x="0" y="0" width="600" height="68" fill="#F1E6F5"/>
+      <circle cx="16" cy="20" r="9" fill="#7B1FA2"/><text x="16" y="24" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">1</text>
+      <text x="32" y="24" class="mono" font-size="12" font-weight="700" fill="#7B1FA2">abstract</text>
+      <text x="32" y="42" font-size="9" fill="#2B2F33">la case obligatoire</text>
+      <rect x="120" y="12" width="130" height="22" rx="3" fill="#fff" stroke="#7B1FA2" stroke-dasharray="4 3"/><text x="185" y="27" text-anchor="middle" font-size="9.5">déclare, n'écrit rien</text>
+      <rect x="270" y="12" width="110" height="22" rx="3" fill="#7B1FA2"/><text x="325" y="27" text-anchor="middle" font-size="9.5" fill="#fff" font-weight="700">DOIT écrire</text>
+      <text x="400" y="22" class="mono" style="font-size:7.6px">public abstract TypeContenu</text>
+      <text x="400" y="35" class="mono" style="font-size:7.6px">    Type { get; }</text>
+      <text x="400" y="52" font-size="8.6" fill="#6B7378">chaque constituant dit son type</text>
+      <text x="120" y="56" font-size="8.6" fill="#6B7378">sur une classe : on ne peut pas faire new Constituant()</text>
+    </g>
+
+    <!-- virtual -->
+    <g transform="translate(0,104)">
+      <rect x="0" y="0" width="600" height="62" fill="#FCEDE2"/>
+      <circle cx="16" cy="20" r="9" fill="#E65100"/><text x="16" y="24" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">2</text>
+      <text x="32" y="24" class="mono" font-size="12" font-weight="700" fill="#E65100">virtual</text>
+      <text x="32" y="42" font-size="9" fill="#2B2F33">la valeur proposée</text>
+      <rect x="120" y="12" width="130" height="22" rx="3" fill="#fff" stroke="#E65100"/><text x="185" y="27" text-anchor="middle" font-size="9.5">écrit une version</text>
+      <rect x="270" y="12" width="110" height="22" rx="3" fill="#fff" stroke="#E65100"/><text x="325" y="27" text-anchor="middle" font-size="9.5" fill="#E65100" font-weight="700">PEUT remplacer</text>
+      <text x="400" y="22" class="mono" style="font-size:7.6px">internal virtual string</text>
+      <text x="400" y="35" class="mono" style="font-size:7.6px">    PlacementCourant() =&gt; null;</text>
+      <text x="400" y="52" font-size="8.6" fill="#6B7378">seule ConceptionPrise le remplace</text>
+    </g>
+
+    <!-- override -->
+    <g transform="translate(0,172)">
+      <rect x="0" y="0" width="600" height="62" fill="#E8F3E8"/>
+      <circle cx="16" cy="20" r="9" fill="#2E7D32"/><text x="16" y="24" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">3</text>
+      <text x="32" y="24" class="mono" font-size="12" font-weight="700" fill="#2E7D32">override</text>
+      <text x="32" y="42" font-size="9" fill="#2B2F33">« je remplace »</text>
+      <text x="120" y="27" font-size="9.5" fill="#6B7378">abstract ou virtual</text>
+      <rect x="270" y="12" width="110" height="22" rx="3" fill="#2E7D32"/><text x="325" y="27" text-anchor="middle" font-size="9.5" fill="#fff" font-weight="700">remplace</text>
+      <text x="400" y="22" class="mono" style="font-size:7.6px">public override TypeContenu</text>
+      <text x="400" y="35" class="mono" style="font-size:7.6px">    Type =&gt; TypeContenu.Colonne;</text>
+      <text x="400" y="52" font-size="8.6" fill="#6B7378">Colonne remplit la case 1</text>
+    </g>
+
+    <!-- sealed -->
+    <g transform="translate(0,240)">
+      <rect x="0" y="0" width="600" height="74" fill="#EFE8E5"/>
+      <circle cx="16" cy="20" r="9" fill="#6D4C41"/><text x="16" y="24" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">4</text>
+      <text x="32" y="24" class="mono" font-size="12" font-weight="700" fill="#6D4C41">sealed</text>
+      <text x="32" y="42" font-size="9" fill="#2B2F33">« ça s'arrête ici »</text>
+      <text x="120" y="27" font-size="9.5" fill="#2B2F33">sur une classe :</text>
+      <text x="120" y="40" font-size="9.5" fill="#2B2F33">personne n'en hérite</text>
+      <text x="270" y="27" font-size="9.5" fill="#2B2F33">sur un override :</text>
+      <text x="270" y="40" font-size="9.5" fill="#2B2F33">plus aucun remplacement</text>
+      <text x="400" y="22" class="mono" style="font-size:7.6px">public sealed class Colonne</text>
+      <text x="400" y="38" class="mono" style="font-size:7.6px">protected sealed override void</text>
+      <text x="400" y="51" class="mono" style="font-size:7.6px">    PeindreFeuille(…)</text>
+      <text x="400" y="66" font-size="8.6" fill="#6B7378">FeuilleAttributs, page 5</text>
+    </g>
+
+    <!-- base -->
+    <g transform="translate(0,320)">
+      <rect x="0" y="0" width="600" height="62" fill="#E5EEF9"/>
+      <circle cx="16" cy="20" r="9" fill="#1565C0"/><text x="16" y="24" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">5</text>
+      <text x="32" y="24" class="mono" font-size="12" font-weight="700" fill="#1565C0">base</text>
+      <text x="32" y="42" font-size="9" fill="#2B2F33">« au parent »</text>
+      <text x="120" y="27" font-size="9.5" fill="#2B2F33">appelle le constructeur ou la</text>
+      <text x="120" y="40" font-size="9.5" fill="#2B2F33">version du parent depuis l'enfant</text>
+      <text x="400" y="22" class="mono" style="font-size:7.6px">public Colonne()</text>
+      <text x="400" y="35" class="mono" style="font-size:7.6px">    : base("Colonne", …)</text>
+      <text x="400" y="52" font-size="8.6" fill="#6B7378">la chaîne de la page 4</text>
+    </g>
+
+    <!-- protected -->
+    <g transform="translate(0,388)">
+      <rect x="0" y="0" width="600" height="62" fill="#E0F2F3"/>
+      <circle cx="16" cy="20" r="9" fill="#00838F"/><text x="16" y="24" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">6</text>
+      <text x="32" y="24" class="mono" font-size="12" font-weight="700" fill="#00838F">protected</text>
+      <text x="32" y="42" font-size="9" fill="#2B2F33">« en famille »</text>
+      <text x="120" y="27" font-size="9.5" fill="#2B2F33">visible du parent et de ses</text>
+      <text x="120" y="40" font-size="9.5" fill="#2B2F33">enfants, invisible du reste</text>
+      <text x="400" y="22" class="mono" style="font-size:7.6px">protected Constituant(string nom,</text>
+      <text x="400" y="35" class="mono" style="font-size:7.6px">    string surnom, string description)</text>
+      <text x="400" y="52" font-size="8.6" fill="#6B7378">seuls les enfants l'appellent</text>
+    </g>
+    <text x="0" y="472" font-size="9.5" fill="#6B7378" font-style="italic">Les couleurs et numéros 1 à 6 se retrouvent sur le code de la page 5.</text>
+  </svg>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 02 · Héritage et polymorphisme, appliqués</div>
+</section>
+
+<!-- ============ PAGE 4 · CONSTRUCTEURS ET POLYMORPHISME ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 02</b></div>
+  <p class="rubrique">Schéma 3 · Deux trajets à suivre</p>
+  <h2>Les constructeurs montent, les appels descendent</h2>
+
+  <div class="deuxcol" style="margin-top:3mm; gap:6mm">
+    <div>
+      <h3>A · new Colonne()</h3>
+      <p style="font-size:8.6pt">Chaque constructeur passe la main à son parent par <code>base(…)</code>. Les arguments <b>montent</b>, puis les corps s'exécutent en <b>redescendant</b>, du parent le plus haut vers l'enfant.</p>
+      <svg viewBox="0 0 280 400" width="100%">
+        <defs>
+          <marker id="h2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#1565C0"/></marker>
+          <marker id="h3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2E7D32"/></marker>
+        </defs>
+        <g font-size="9">
+          <rect x="0" y="0" width="200" height="66" rx="5" fill="#fff" stroke="#6B7378"/>
+          <text x="8" y="16" class="mono" font-weight="700" fill="#6B7378">GH_Component(…5…)</text>
+          <text x="8" y="32" class="mono" font-size="8">"Colonne", "Colonne", "Empile…",</text>
+          <text x="8" y="45" class="mono" font-size="8" fill="#6B2C7A" font-weight="700">"SnapSet", "Constituants"</text>
+          <text x="8" y="60" fill="#6B7378">enregistre nom et onglet</text>
+
+          <rect x="0" y="104" width="200" height="66" rx="5" fill="#F1E9F3" stroke="#6B2C7A" stroke-dasharray="5 3"/>
+          <text x="8" y="120" class="mono" font-weight="700" fill="#6B2C7A">Constituant(nom, surnom, desc.)</text>
+          <text x="8" y="136" class="mono" font-size="8">: base(nom, surnom, desc.,</text>
+          <text x="8" y="149" class="mono" font-size="8">       Categorie, SousCategorie)</text>
+          <text x="8" y="164" fill="#6B7378">ajoute l'onglet, note son Guid</text>
+
+          <rect x="0" y="208" width="200" height="56" rx="5" fill="#fff" stroke="#6B2C7A" stroke-dasharray="5 3"/>
+          <text x="8" y="224" class="mono" font-weight="700" fill="#6B2C7A">Conteneur(nom, surnom, desc.)</text>
+          <text x="8" y="240" class="mono" font-size="8">: base(nom, surnom, desc.)</text>
+          <text x="8" y="255" fill="#6B7378">transmet tel quel</text>
+
+          <rect x="0" y="302" width="200" height="56" rx="5" fill="#6B2C7A"/>
+          <text x="8" y="318" class="mono" font-weight="700" fill="#fff">Colonne()</text>
+          <text x="8" y="334" class="mono" font-size="8" fill="#fff">: base("Colonne", "Colonne",</text>
+          <text x="8" y="347" class="mono" font-size="8" fill="#fff">       "Empile…")</text>
+        </g>
+        <!-- montée -->
+        <g stroke="#1565C0" stroke-width="1.6" fill="none">
+          <path d="M100 302 V 266" marker-end="url(#h2)"/><path d="M100 208 V 172" marker-end="url(#h2)"/><path d="M100 104 V 68" marker-end="url(#h2)"/>
+        </g>
+        <text x="106" y="290" font-size="8.5" fill="#1565C0" font-weight="600">base(…)</text>
+        <text x="106" y="194" font-size="8.5" fill="#1565C0" font-weight="600">base(…)</text>
+        <text x="106" y="90" font-size="8.5" fill="#1565C0" font-weight="600">base(…)</text>
+        <!-- ordre d'exécution -->
+        <path d="M222 20 V 340" stroke="#2E7D32" stroke-width="1.6" marker-end="url(#h3)"/>
+        <g font-size="10" font-weight="700" fill="#fff">
+          <circle cx="222" cy="33" r="9" fill="#2E7D32"/><text x="222" y="37" text-anchor="middle">1</text>
+          <circle cx="222" cy="137" r="9" fill="#2E7D32"/><text x="222" y="141" text-anchor="middle">2</text>
+          <circle cx="222" cy="236" r="9" fill="#2E7D32"/><text x="222" y="240" text-anchor="middle">3</text>
+          <circle cx="222" cy="330" r="9" fill="#2E7D32"/><text x="222" y="334" text-anchor="middle">4</text>
+        </g>
+        <text x="236" y="190" font-size="8.5" fill="#2E7D32" font-weight="600" transform="rotate(90 236 190)">ordre des corps</text>
+        <text x="0" y="384" font-size="8.6" fill="#2B2F33">La catégorie « SnapSet » n'est écrite</text>
+        <text x="0" y="397" font-size="8.6" fill="#2B2F33">qu'une fois, dans Constituant.</text>
+      </svg>
+    </div>
+
+    <div>
+      <h3>B · Grasshopper demande l'icône</h3>
+      <p style="font-size:8.6pt">Grasshopper ne connaît que <code>GH_Component</code>. Il lit <code>Icon</code> ; le langage cherche la version la plus basse dans la famille de l'objet <b>réel</b>. C'est le polymorphisme.</p>
+      <svg viewBox="0 0 280 400" width="100%">
+        <defs><marker id="h4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2B2F33"/></marker></defs>
+        <g font-size="9">
+          <rect x="0" y="0" width="280" height="44" rx="5" fill="#2B2F33"/>
+          <text x="10" y="18" font-weight="700" fill="#fff">Grasshopper, pour le ruban :</text>
+          <text x="10" y="34" class="mono" fill="#fff">GH_Component c = …;  c.Icon</text>
+
+          <rect x="0" y="84" width="280" height="58" rx="5" fill="#E8F3E8" stroke="#2E7D32"/>
+          <text x="10" y="100" font-weight="700" fill="#2E7D32">Constituant.Icon (override)</text>
+          <text x="10" y="116" class="mono" font-size="8.2">protected override Bitmap Icon</text>
+          <text x="10" y="129" class="mono" font-size="8.2">  =&gt; IconesConstituants.Pour(Type);</text>
+
+          <rect x="0" y="184" width="280" height="58" rx="5" fill="#F1E6F5" stroke="#7B1FA2"/>
+          <text x="10" y="200" font-weight="700" fill="#7B1FA2">Type ? abstract chez Constituant…</text>
+          <text x="10" y="216" font-size="8.6">la version exécutée est celle</text>
+          <text x="10" y="229" font-size="8.6">de l'objet réel : une Colonne</text>
+
+          <rect x="0" y="284" width="280" height="44" rx="5" fill="#6B2C7A"/>
+          <text x="10" y="300" font-weight="700" fill="#fff">Colonne.Type (override)</text>
+          <text x="10" y="317" class="mono" font-size="8.2" fill="#fff">=&gt; TypeContenu.Colonne</text>
+
+          <rect x="0" y="356" width="280" height="40" rx="5" fill="#fff" stroke="#2B2F33"/>
+          <text x="10" y="381" font-size="9.5" font-weight="700">pictogramme « Colonne » dans le ruban</text>
+        </g>
+        <g stroke="#2B2F33" stroke-width="1.4"><path d="M140 44 V 80" marker-end="url(#h4)"/><path d="M140 142 V 180" marker-end="url(#h4)"/><path d="M140 242 V 280" marker-end="url(#h4)"/><path d="M140 328 V 352" marker-end="url(#h4)"/></g>
+        <text x="148" y="66" font-size="8.5" fill="#6B7378" font-style="italic">remplacée plus bas</text>
+        <text x="148" y="166" font-size="8.5" fill="#6B7378" font-style="italic">appelle Type</text>
+        <text x="148" y="266" font-size="8.5" fill="#6B7378" font-style="italic">résolu à l'exécution</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:3mm">
+    <span class="titre">À retenir</span>
+    Constituant écrit <b>une</b> propriété Icon pour 17 constituants. Elle fonctionne parce qu'elle appelle Type, que chaque enfant remplit. Le parent pose la question, l'enfant donne la réponse.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 02 · Héritage et polymorphisme, appliqués</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 02</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Trois étages de code, un seul dessin</h2>
+  <p style="max-width:165mm">Comment une feuille de SnapSet se peint sur le canvas. Le parent fixe l'ordre, l'enfant ne fournit que sa partie. Ce schéma porte un nom : la <b>méthode modèle</b>. Repères = mots-clés de la page 3.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="n"> </span><span class="cm">// Noyau/Constituant.cs</span></div>
+<div class="l k3"><span class="n">33</span><span class="kw">public abstract class</span> <span class="ty">Constituant</span> : <span class="ty">GH_Component</span><span class="rep r3">1</span></div>
+<div class="l k6"><span class="n">57</span>  <span class="kw">protected</span> Constituant(<span class="kw">string</span> nom, …)<span class="rep r6">6</span></div>
+<div class="l k2"><span class="n">58</span>    : <span class="kw">base</span>(nom, surnom, description,<span class="rep r2">5</span></div>
+<div class="l k2"><span class="n"> </span>           Categorie, SousCategorie)</div>
+<div class="l k3"><span class="n">81</span>  <span class="kw">public abstract</span> <span class="ty">TypeContenu</span> Type { <span class="kw">get</span>; }</div>
+<div class="l k4"><span class="n">116</span>  <span class="kw">internal virtual string</span> PlacementCourant()<span class="rep r4">2</span></div>
+<div class="l k4"><span class="n"> </span>    =&gt; <span class="kw">null</span>;</div>
+<div class="l k1"><span class="n">131</span>  <span class="kw">protected override</span> <span class="ty">Bitmap</span> Icon<span class="rep r1">3</span></div>
+<div class="l k1"><span class="n"> </span>    =&gt; <span class="ty">IconesConstituants</span>.Pour(Type);</div>
+<div class="l"><span class="n"> </span> </div>
+<div class="l"><span class="n"> </span><span class="cm">// Feuilles/FeuilleConception.cs</span></div>
+<div class="l k3"><span class="n">209</span><span class="kw">public abstract class</span> <span class="ty">FeuilleAttributs</span></div>
+<div class="l"><span class="n"> </span>    : <span class="ty">ConstituantAttributs</span></div>
+<div class="l k7"><span class="n">237</span>  <span class="kw">protected sealed override void</span><span class="rep r7">4</span></div>
+<div class="l k7"><span class="n"> </span>    PeindreFeuille(<span class="ty">GH_Canvas</span> canvas, <span class="ty">Graphics</span> g)</div>
+<div class="l"><span class="n">238</span>  {</div>
+<div class="l"><span class="n">239</span>    <span class="kw">if</span> (Bounds.Width &lt;= 0f || …) <span class="kw">return</span>;</div>
+<div class="l k5"><span class="n">241</span>    PeindreCoeur(canvas, g);<span class="rep r5">M</span></div>
+<div class="l"><span class="n">244</span>    <span class="kw">if</span> (SelectionPropre) PeindreContour…(canvas, g);</div>
+<div class="l"><span class="n">245</span>  }</div>
+<div class="l k3"><span class="n">271</span>  <span class="kw">protected abstract void</span> PeindreCoeur(</div>
+<div class="l k3"><span class="n"> </span>    <span class="ty">GH_Canvas</span> canvas, <span class="ty">Graphics</span> g);</div>
+<div class="l"><span class="n"> </span> </div>
+<div class="l"><span class="n"> </span><span class="cm">// Feuilles/ConceptionVoyant.cs</span></div>
+<div class="l k7"><span class="n">27</span><span class="kw">public sealed class</span> <span class="ty">ConceptionVoyant</span></div>
+<div class="l"><span class="n"> </span>    : <span class="ty">FeuilleConception</span></div>
+<div class="l k1"><span class="n">40</span>  <span class="kw">public override</span> <span class="ty">TypeContenu</span> Type</div>
+<div class="l k1"><span class="n"> </span>    =&gt; <span class="ty">TypeContenu</span>.Voyant;</div>
+<div class="l k7"><span class="n">68</span>  <span class="kw">private sealed class</span> <span class="ty">VoyantAttributs</span></div>
+<div class="l"><span class="n"> </span>      : <span class="ty">FeuilleAttributs</span></div>
+<div class="l k1"><span class="n">77</span>    <span class="kw">protected override void</span> PeindreCoeur(…)</div>
+<div class="l k1"><span class="n"> </span>      { <span class="cm">/* la pastille de l'état */</span> }</div>
+<div class="l k1"><span class="n">86</span>    <span class="kw">protected override bool</span> Enfoncer(…) =&gt; <span class="kw">false</span>;</div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r3">1</span><b>Deux classes abstraites</b>Constituant et FeuilleAttributs ne seront jamais créées seules. Elles laissent des cases vides : Type, PeindreCoeur.</li>
+      <li><span class="rep r6">6</span><b>Un constructeur protected</b>Seuls les enfants peuvent l'appeler, par base(…). Personne d'autre n'a de raison de le faire.</li>
+      <li><span class="rep r2">5</span><b>base(…) vers GH_Component</b>Catégorie et sous-catégorie sont ajoutées ici, une fois pour tous les constituants.</li>
+      <li><span class="rep r4">2</span><b>Une valeur proposée</b>Par défaut, aucun motif de placement. Seule ConceptionPrise en fournit un, avec <code>internal override</code>.</li>
+      <li><span class="rep r1">3</span><b>override, à tous les étages</b>Constituant remplace Icon de GH_Component ; Voyant remplit Type et PeindreCoeur.</li>
+      <li><span class="rep r7">4</span><b>sealed override</b>PeindreFeuille fixe l'ordre : garde, cœur, contour de sélection. Aucune feuille ne peut l'oublier ni le changer.</li>
+      <li><span class="rep r5">M</span><b>La méthode modèle</b>Le parent appelle une méthode qu'il n'a pas écrite. À l'exécution, c'est le PeindreCoeur du Voyant qui tourne.</li>
+    </ul>
+  </div>
+
+  <div class="encadre piege" style="margin-top:4mm">
+    <span class="titre">Piège courant</span>
+    Oublier <code>override</code> et écrire <code>public TypeContenu Type =&gt; …</code> dans l'enfant. Pour un membre abstract, le compilateur refuse. Pour un membre virtual, il accepte avec un avertissement : la nouvelle version <b>masque</b> l'ancienne au lieu de la remplacer, et Grasshopper, qui appelle par le parent, ne la verra jamais.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 02 · Héritage et polymorphisme, appliqués</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 02</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Que signifie <code>class Colonne : Conteneur</code> ?</div><ul>
+      <li><span>A</span>Colonne contient un Conteneur</li><li><span>B</span>Colonne est un Conteneur et reçoit ce qu'il sait faire</li><li><span>C</span>Conteneur hérite de Colonne</li><li><span>D</span>Colonne copie le texte de Conteneur</li></ul></div>
+
+    <div class="q"><div class="enonce">Peut-on écrire <code>new Constituant("A", "A", "…")</code> ?</div><ul>
+      <li><span>A</span>oui</li><li><span>B</span>non : la classe est abstract</li><li><span>C</span>oui, mais seulement dans SnapSet</li><li><span>D</span>oui, avec base</li></ul></div>
+
+    <div class="q"><div class="enonce">Un membre <code>abstract</code> du parent…</div><ul>
+      <li><span>A</span>a une version par défaut</li><li><span>B</span>doit être écrit par tout enfant non abstrait</li><li><span>C</span>ne peut pas être remplacé</li><li><span>D</span>est privé</li></ul></div>
+
+    <div class="q"><div class="enonce">Un membre <code>virtual</code>…</div><ul>
+      <li><span>A</span>doit être remplacé</li><li><span>B</span>peut être remplacé ; sinon la version du parent s'applique</li><li><span>C</span>est forcément vide</li><li><span>D</span>est statique</li></ul></div>
+
+    <div class="q"><div class="enonce">Combien de classes de SnapSet remplacent PlacementCourant ?</div><ul>
+      <li><span>A</span>aucune</li><li><span>B</span>une : ConceptionPrise</li><li><span>C</span>toutes les feuilles</li><li><span>D</span>tous les conteneurs</li></ul></div>
+
+    <div class="q"><div class="enonce">Que fait <code>sealed</code> devant <code>class Colonne</code> ?</div><ul>
+      <li><span>A</span>empêche de modifier le fichier</li><li><span>B</span>empêche toute classe d'en hériter</li><li><span>C</span>rend Colonne abstraite</li><li><span>D</span>la cache du ruban</li></ul></div>
+
+    <div class="q"><div class="enonce"><code>protected sealed override void PeindreFeuille(…)</code> signifie… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>elle remplace la version du parent</li><li><span>B</span>aucune feuille ne peut la remplacer à son tour</li><li><span>C</span>elle est abstraite</li><li><span>D</span>elle est visible de tout le programme</li></ul></div>
+
+    <div class="q"><div class="enonce">Pour <code>new Colonne()</code>, dans quel ordre s'exécutent les corps des constructeurs ?</div><ul>
+      <li><span>A</span>Colonne, Conteneur, Constituant, GH_Component</li><li><span>B</span>GH_Component, Constituant, Conteneur, Colonne</li><li><span>C</span>seulement Colonne</li><li><span>D</span>dans un ordre imprévisible</li></ul></div>
+
+    <div class="q"><div class="enonce">D'où vient l'onglet « SnapSet » d'une Colonne ?</div><ul>
+      <li><span>A</span>du constructeur de Colonne</li><li><span>B</span>de Constituant, qui le passe à GH_Component</li><li><span>C</span>du fichier .csproj</li><li><span>D</span>de Grasshopper, qui le devine</li></ul></div>
+
+    <div class="q"><div class="enonce">Grasshopper lit Icon sur une Colonne. Quel code s'exécute ? <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>Constituant.Icon</li><li><span>B</span>Colonne.Type</li><li><span>C</span>GH_Component.Icon</li><li><span>D</span>Ligne.Type</li></ul></div>
+
+    <div class="q"><div class="enonce">Pourquoi les composants de Cuttlefish n'ont-ils qu'un étage d'héritage ?</div><ul>
+      <li><span>A</span>C# 7.3 l'interdit</li><li><span>B</span>ils partagent des calculs, mis dans Outils, plutôt que du comportement</li><li><span>C</span>GH_Component est sealed</li><li><span>D</span>.NET Framework l'interdit</li></ul></div>
+
+    <div class="q"><div class="enonce">Pourquoi PeindreCoeur est-il abstract et PeindreFeuille sealed ?</div><ul>
+      <li><span>A</span>pour aller plus vite</li><li><span>B</span>le parent fixe l'ordre du dessin, chaque feuille fournit son cœur</li><li><span>C</span>C# l'impose</li><li><span>D</span>pour cacher le code aux autres projets</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 02 · Héritage et polymorphisme, appliqués</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET AIDE-MÉMOIRE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 02</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · B.</b> Le <code>:</code> se lit « est un ». Contenir un objet, c'est la composition, autre chose.</div>
+    <div><b>02 · B.</b> Une classe abstract ne s'instancie pas. On crée une Colonne, une Ligne, une feuille.</div>
+    <div><b>03 · B.</b> Un enfant qui ne l'écrit pas doit lui-même être abstract, comme Conteneur.</div>
+    <div><b>04 · B.</b> virtual propose une version ; override la remplace si besoin.</div>
+    <div><b>05 · B.</b> Seule ConceptionPrise : une Prise mal placée a un motif à signaler.</div>
+    <div><b>06 · B.</b> sealed ferme la famille. Colonne reste modifiable et visible.</div>
+    <div><b>07 · A et B.</b> override remplace, sealed verrouille. protected la limite à la famille.</div>
+    <div><b>08 · B.</b> Les arguments montent par base(…), les corps s'exécutent du haut vers le bas.</div>
+    <div><b>09 · B.</b> Constituant passe Categorie et SousCategorie à GH_Component.</div>
+    <div><b>10 · A et B.</b> Constituant.Icon remplace celle de GH_Component et appelle Type, que Colonne fournit.</div>
+    <div><b>11 · B.</b> Les composants de Cuttlefish partagent des calculs (Outils.Groupes, Milieu), pas un comportement.</div>
+    <div><b>12 · B.</b> C'est la méthode modèle : l'ordre ne peut être ni oublié ni changé par une feuille.</div>
+  </div>
+
+  <div class="panneau" style="padding:3.5mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:30mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.3pt; line-height:1.45"><b>0 à 6</b> : relis la page 3, ligne par ligne. <b>7 à 9</b> : refais à la main les deux trajets de la page 4. <b>10 à 12</b> : passe au cours 03, « Collections, génériques, lambdas et LINQ ».</div>
+  </div>
+
+  <p class="rubrique" style="margin-top:6mm">Aide-mémoire · le contrat parent-enfant</p>
+  <table class="aide">
+    <thead><tr><th>Mot-clé</th><th>Le parent</th><th>L'enfant</th><th>Dans SnapSet</th></tr></thead>
+    <tbody>
+      <tr><td class="c">abstract class</td><td>ne s'instancie pas</td><td>hérite, complète</td><td class="c">Constituant, Conteneur</td></tr>
+      <tr><td class="c">abstract membre</td><td>déclare sans écrire</td><td><b>doit</b> écrire (override)</td><td class="c">Type, PeindreCoeur</td></tr>
+      <tr><td class="c">virtual</td><td>écrit une version</td><td><b>peut</b> remplacer</td><td class="c">PlacementCourant, CreerAttributs</td></tr>
+      <tr><td class="c">override</td><td>—</td><td>remplace</td><td class="c">Icon, Type, SolveInstance</td></tr>
+      <tr><td class="c">sealed class</td><td>—</td><td>personne n'hérite</td><td class="c">Colonne, ConceptionVoyant</td></tr>
+      <tr><td class="c">sealed override</td><td>—</td><td>remplace et verrouille</td><td class="c">PeindreFeuille</td></tr>
+      <tr><td class="c">base(…)</td><td>reçoit</td><td>appelle le parent</td><td class="c">Colonne() : base("Colonne", …)</td></tr>
+      <tr><td class="c">protected</td><td>partage en famille</td><td>voit et utilise</td><td class="c">Constituant(nom, …)</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:6mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Héritage</dt><dd>Relation « est un » : l'enfant reçoit les membres du parent.</dd>
+    <dt>Polymorphisme</dt><dd>Un appel fait par le parent exécute la version de l'objet réel.</dd>
+    <dt>Méthode modèle</dt><dd>Le parent fixe les étapes, l'enfant fournit certaines d'entre elles.</dd>
+    <dt>Interface</dt><dd>Un contrat sans code ; une classe peut en implémenter plusieurs.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 03</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 02 · Héritage et polymorphisme, appliqués</div>
+</section>
+
+</body>
+</html>

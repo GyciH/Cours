@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>121 · La boucle d'événements</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-8">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 121</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>La boucle d'événements</h1>
+  <p class="chapeau">Dans un onglet, un seul fil d'exécution fait tout : il lance ton JavaScript, traite les clics, calcule la mise en page et dessine. Il le fait par tours, selon une règle fixe, la <b>boucle d'événements</b>. La connaître explique pourquoi une page « gèle », pourquoi un setTimeout(0) n'est pas immédiat, et où placer un calcul.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>30</b>, <b>59</b></span>
+    <span class="pastille">Exemples · <b>Magpie</b> web</span>
+  </div>
+
+  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+    <svg viewBox="0 0 600 214" width="100%">
+<rect x="10" y="10" width="182" height="82" rx="4" fill="#F4EEDF" stroke="#1565C0" stroke-width="1.2"/>
+<text x="101" y="32" font-size="8.8" fill="#1565C0" text-anchor="middle" font-weight="700">1 · une tâche</text>
+<text x="101" y="54" font-size="7.6" fill="#2B2F33" text-anchor="middle">un clic, un setTimeout,</text>
+<text x="101" y="68" font-size="7.6" fill="#2B2F33" text-anchor="middle">une réponse fetch</text>
+<line x1="193" y1="51" x2="205" y2="51" stroke="#6B7378" stroke-width="1.2"/><polygon points="205,51 198.6,53.7 198.6,48.3" fill="#6B7378"/>
+<rect x="206" y="10" width="182" height="82" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
+<text x="297" y="32" font-size="8.8" fill="#7B1FA2" text-anchor="middle" font-weight="700">2 · les microtâches</text>
+<text x="297" y="54" font-size="7.6" fill="#2B2F33" text-anchor="middle">toutes : .then, await,</text>
+<text x="297" y="68" font-size="7.6" fill="#2B2F33" text-anchor="middle">queueMicrotask</text>
+<line x1="389" y1="51" x2="401" y2="51" stroke="#6B7378" stroke-width="1.2"/><polygon points="401,51 394.6,53.7 394.6,48.3" fill="#6B7378"/>
+<rect x="402" y="10" width="182" height="82" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="493" y="32" font-size="8.8" fill="#2E7D32" text-anchor="middle" font-weight="700">3 · le rendu (≈ 16,7 ms)</text>
+<text x="493" y="54" font-size="7.6" fill="#2B2F33" text-anchor="middle">requestAnimationFrame,</text>
+<text x="493" y="68" font-size="7.6" fill="#2B2F33" text-anchor="middle">style, mise en page, peinture</text>
+<path d="M 501 92 C 501 118, 101 118, 101 96" fill="none" stroke="#6B7378" stroke-width="1.2" stroke-dasharray="4 3"/>
+<text x="300" y="126" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">puis la tâche suivante</text>
+<text x="10" y="152" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">Un seul fil exécute le JavaScript, répond aux clics et dessine la page. Tant qu'une étape tourne, les autres attendent :</text>
+<text x="10" y="168" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">un calcul de 300 ms, c'est 300 ms sans clic traité et sans image nouvelle.</text>
+<text x="10" y="192" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Schéma simplifié : le rendu n'a lieu que si l'écran attend une image, et le navigateur choisit la file de tâches à servir.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Le navigateur ne peut rien faire d'autre pendant que ton code tourne ; une page fluide est faite de petits morceaux de travail qui lui rendent souvent la main.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Un seul opérateur au poste de commande d'une machine-outil : il lit les ordres, surveille l'écran et répond au téléphone. S'il lance un usinage de dix minutes sans lever les yeux, le téléphone sonne dans le vide.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>prévoir l'ordre de rappels mélangés ;</li>
+        <li>reconnaître une tâche longue ;</li>
+        <li>rendre la main pendant un calcul ;</li>
+        <li>choisir entre setTimeout, rAF et debounce.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À retenir</span>
+    Un tour de boucle : une tâche, toutes les microtâches, puis, si l'écran attend une image, le rendu. Tout ce qui retarde une étape retarde les autres.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 121 · La boucle d'événements</div>
+</section>
+
+<!-- ============ PAGE 2 · L'ORDRE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 121</b></div>
+  <p class="rubrique">Schéma 1 · Qui passe en premier</p>
+  <h2>Tâches, microtâches, image</h2>
+  <p style="max-width:165mm">Les promesses, setTimeout et requestAnimationFrame déposent chacun leur rappel dans une file différente. On les a programmés ensemble, dans le désordre, et on a relevé l'ordre réel.</p>
+
+  <svg viewBox="0 0 600 220" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="220" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.4" fill="#7A5A12" text-anchor="start" font-weight="700">Cinq rappels programmés dans le même bloc de code, Chromium sans interface (Playwright, mesuré)</text>
+<text x="26" y="44" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">setTimeout(() =&gt; log("setTimeout 0"), 0);</text>
+<text x="26" y="58" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">requestAnimationFrame(() =&gt; log("rAF"));</text>
+<text x="26" y="72" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">Promise.resolve().then(() =&gt; log("then"));</text>
+<text x="26" y="86" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">queueMicrotask(() =&gt; log("microtâche"));</text>
+<text x="26" y="100" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">log("synchrone");</text>
+<rect x="340" y="34" width="20" height="14" rx="4" fill="#fff" stroke="#7A5A12" stroke-width="1.2"/>
+<text x="350.0" y="43.46666666666667" font-size="7.4" fill="#7A5A12" text-anchor="middle" font-weight="700">1</text>
+<text x="368" y="45" font-size="7.8" fill="#7A5A12" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">synchrone</text>
+<rect x="340" y="52" width="20" height="14" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
+<text x="350.0" y="61.46666666666667" font-size="7.4" fill="#7B1FA2" text-anchor="middle" font-weight="700">2</text>
+<text x="368" y="63" font-size="7.8" fill="#7B1FA2" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">then</text>
+<rect x="340" y="70" width="20" height="14" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
+<text x="350.0" y="79.46666666666667" font-size="7.4" fill="#7B1FA2" text-anchor="middle" font-weight="700">3</text>
+<text x="368" y="81" font-size="7.8" fill="#7B1FA2" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">microtâche</text>
+<rect x="340" y="88" width="20" height="14" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
+<text x="350.0" y="97.46666666666667" font-size="7.4" fill="#1565C0" text-anchor="middle" font-weight="700">4</text>
+<text x="368" y="99" font-size="7.8" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">setTimeout 0</text>
+<rect x="340" y="106" width="20" height="14" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="350.0" y="115.46666666666667" font-size="7.4" fill="#2E7D32" text-anchor="middle" font-weight="700">5</text>
+<text x="368" y="117" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">rAF</text>
+<text x="470" y="70" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">ordre observé</text>
+<text x="16" y="136" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Le code en cours finit d'abord ; puis toutes les microtâches ; puis une tâche ; le rendu vient quand l'écran le demande.</text>
+<text x="16" y="156" font-size="7.8" fill="#2B2F33" text-anchor="start">setTimeout(f, 0) imbriqué dix fois : les cinq premiers suivent aussitôt, les suivants attendent 4,1 à 4,3 ms (mesuré).</text>
+<text x="16" y="172" font-size="7.8" fill="#2B2F33" text-anchor="start">Au-delà de cinq niveaux, la norme HTML impose un délai minimal de 4 ms.</text>
+<text x="16" y="194" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">requestAnimationFrame : 16,67 ms en moyenne sur 60 images, soit 60 images par seconde (mesuré).</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript, rendre la main au navigateur</span>const rendreLaMain = () =&gt; new Promise((r) =&gt; setTimeout(r, 0));   // une tâche, pas une microtâche
+for (let i = 0; i &lt; morceaux.length; i++) {
+  traiter(morceaux[i]);
+  if (i % 50 === 49) await rendreLaMain();       // clics et images passent entre deux paquets
+}</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Les microtâches, toutes</h3>
+      <p>La file des microtâches est vidée entièrement, y compris celles ajoutées en cours de route. C'est pourquoi <code>await Promise.resolve()</code> ne rend pas la main : on reste dans le même tour.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>requestAnimationFrame</h3>
+      <p>Il passe juste avant le dessin de la prochaine image, une fois par image. C'est le bon endroit pour lire une taille ou animer, et le mauvais pour attendre « un peu » : dans un onglet caché, il ne passe plus.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Compter sur setTimeout(f, 0) pour une exécution « tout de suite ». Il attend la fin du code en cours et de toutes les microtâches, puis son tour dans la file ; imbriqué, il prend au moins 4 ms ; dans un onglet en arrière-plan, le navigateur peut le retarder d'une seconde ou plus.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 121 · La boucle d'événements</div>
+</section>
+
+<!-- ============ PAGE 3 · TÂCHE LONGUE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 121</b></div>
+  <p class="rubrique">Schéma 2 · La tâche longue</p>
+  <h2>Quand la page ne répond plus</h2>
+  <p style="max-width:165mm">Un clic n'est pas traité quand il arrive, mais quand le fil se libère. On a cliqué avec une vraie souris simulée pendant que la page calculait, puis sur la page au repos.</p>
+
+  <svg viewBox="0 0 600 224" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="224" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.2" fill="#7A5A12" text-anchor="start" font-weight="700">Un clic réel (souris de Playwright) sur un bouton, page libre ou occupée par un calcul de 300 ms (mesuré)</text>
+<text x="16" y="54" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">page libre</text>
+<rect x="200" y="43" width="3.0" height="16" rx="2" fill="#2E7D32"/>
+<text x="211" y="55" font-size="8" fill="#2E7D32" text-anchor="start" font-weight="700">0,5 ms</text>
+<text x="16" y="84" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">calcul de 300 ms en cours</text>
+<rect x="200" y="73" width="327.1" height="16" rx="2" fill="#C62828"/>
+<text x="535.12" y="85" font-size="8" fill="#C62828" text-anchor="start" font-weight="700">272,6 ms</text>
+<text x="200" y="108" font-size="7.2" fill="#6B7378" text-anchor="start" font-style="italic">délai entre le clic et l'exécution du gestionnaire</text>
+<text x="16" y="134" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Deux millions de microtâches enchaînées : 1 404 ms pendant lesquelles un setTimeout(0) programmé avant n'a pas pu passer.</text>
+<text x="16" y="150" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">« async » ne rend pas un calcul non bloquant : les microtâches passent avant tout le reste, rendu compris.</text>
+<text x="16" y="174" font-size="7.6" fill="#2B2F33" text-anchor="start">Au-delà de 50 ms, une tâche est dite « longue » ; au-delà de 100 ms, un clic paraît lent (repères RAIL de Google).</text>
+<text x="16" y="196" font-size="7.6" fill="#7A5A12" text-anchor="start" font-weight="700">Remèdes : découper le calcul et rendre la main entre les morceaux, ou l'envoyer dans un worker (cours 124).</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript, repérer les tâches longues</span>new PerformanceObserver((liste) =&gt; {
+  for (const t of liste.getEntries()) console.warn("tâche longue", Math.round(t.duration), "ms");
+}).observe({ type: "longtask", buffered: true });    // Chromium : toute tâche de plus de 50 ms</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Ce que mesure l'utilisateur</h3>
+      <p>Il ne voit ni la durée du calcul ni celle de la requête : il voit le temps entre son geste et l'image qui y répond. Chrome le note dans l'indicateur INP (Interaction to Next Paint).</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Le réseau ne bloque pas</h3>
+      <p>Un fetch qui dure 20 secondes ne gèle rien : le fil attend sans travailler, et la réponse arrive comme une tâche. Ce qui gèle, c'est le calcul, et le traitement d'une grosse réponse (un JSON.parse de plusieurs Mo).</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Marquer une fonction async pour la « rendre non bloquante ». Son corps s'exécute sur le même fil ; jusqu'au premier await d'une vraie attente, elle bloque autant qu'une fonction ordinaire, et une chaîne de microtâches bloque même le rendu.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 121 · La boucle d'événements</div>
+</section>
+
+<!-- ============ PAGE 4 · LE BON MOMENT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 121</b></div>
+  <p class="rubrique">Schéma 3 · Attendre le bon moment</p>
+  <h2>Reporter, regrouper, dessiner à la demande</h2>
+  <p style="max-width:165mm">Bien utiliser la boucle, c'est aussi ne pas travailler pour rien : regrouper une rafale de modifications en une écriture, attendre que la mise en page soit faite, ne dessiner que ce qui change.</p>
+
+  <svg viewBox="0 0 600 222" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="222" fill="#EFE9E1"/>
+<text x="16" y="22" font-size="8.4" fill="#7A5A12" text-anchor="start" font-weight="700">Le report de sauvegarde de App.jsx:54 (500 ms), rejoué dans Node avec 20 modifications (mesuré)</text>
+<rect x="16" y="34" width="568" height="19" rx="3" fill="#fff"/>
+<text x="28" y="47" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">une modification toutes les 50 ms</text>
+<text x="260" y="47" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700">1 sauvegarde</text>
+<text x="380" y="47" font-size="7.6" fill="#2B2F33" text-anchor="start">500 ms après la dernière</text>
+<rect x="16" y="56" width="568" height="19" rx="3" fill="#F4EEDF"/>
+<text x="28" y="69" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">toutes les 200 ms</text>
+<text x="260" y="69" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700">1 sauvegarde</text>
+<text x="380" y="69" font-size="7.6" fill="#2B2F33" text-anchor="start">500 ms après la dernière</text>
+<rect x="16" y="78" width="568" height="19" rx="3" fill="#fff"/>
+<text x="28" y="91" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">toutes les 600 ms</text>
+<text x="260" y="91" font-size="7.8" fill="#E65100" text-anchor="start" font-weight="700">20 sauvegardes</text>
+<text x="380" y="91" font-size="7.6" fill="#2B2F33" text-anchor="start">une par modification</text>
+<text x="16" y="122" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Chaque modification annule le minuteur précédent (clearTimeout) et en lance un neuf : un glisser continu ne coûte</text>
+<text x="16" y="138" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">qu'une écriture, faite quand la main s'arrête. C'est un « debounce ».</text>
+<text x="16" y="162" font-size="7.4" fill="#7A5A12" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">requestAnimationFrame(f)</text>
+<text x="16" y="174" font-size="7.4" fill="#2B2F33" text-anchor="start">f juste avant la prochaine image : la mise en page est prête (graphEditor.jsx:118)</text>
+<text x="16" y="184" font-size="7.4" fill="#7A5A12" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">controls.addEventListener("change", render)</text>
+<text x="16" y="196" font-size="7.4" fill="#2B2F33" text-anchor="start">une image 3D seulement quand la caméra bouge (Viewer3D.jsx:106)</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript, un debounce et sa sortie de secours</span>let minuteur = null;
+function planifier(f, ms) { clearTimeout(minuteur); minuteur = setTimeout(f, ms); }
+addEventListener("pagehide", () =&gt; { if (minuteur) { clearTimeout(minuteur); sauvegarder(); } });</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Debounce ou throttle</h3>
+      <p>Le debounce agit une fois, quand la rafale s'arrête. Le throttle agit au plus une fois par intervalle, pendant la rafale : pour un aperçu qui suit le geste, c'est lui qu'il faut.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Dessiner à la demande</h3>
+      <p>Viewer3D ne fait pas tourner de boucle d'animation : il redessine sur l'événement change d'OrbitControls (ligne 106) et au redimensionnement. Une scène immobile ne coûte rien.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Lancer une boucle requestAnimationFrame permanente pour une vue qui bouge rarement. Elle dessine 60 fois par seconde une image identique, chauffe le processeur graphique et vide la batterie d'un portable.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 121 · La boucle d'événements</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 121</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Les minuteurs de Magpie web</h2>
+  <p style="max-width:165mm">Quatre façons d'utiliser la boucle, chacune à sa place : un report, une attente d'image, un dessin sur événement, une limite de temps.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">magpie/web/src/App.jsx</span></div>
+<div class="l k1"><span class="n">54</span>const timer = setTimeout(() =&gt; saveCurrentGraph(…), 500);<span class="rep r1">1</span></div>
+<div class="l k2"><span class="n">55</span>return () =&gt; clearTimeout(timer);<span class="rep r2">2</span></div>
+<div class="l"><span class="cm">magpie/web/src/graphEditor.jsx · Viewer3D.jsx · api.js</span></div>
+<div class="l k3"><span class="n">118</span>… requestAnimationFrame(() =&gt; fitView({ padding: 0.2 }));<span class="rep r3">3</span></div>
+<div class="l k4"><span class="n">106</span>controls.addEventListener("change", render);<span class="rep r4">4</span></div>
+<div class="l k5"><span class="n">21</span>const timeoutId = setTimeout(() =&gt; controller.abort(), …);<span class="rep r5">5</span></div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Report</b>500 ms.</li>
+      <li><span class="rep r2">2</span><b>Annulation</b>À chaque rendu.</li>
+      <li><span class="rep r3">3</span><b>Après la mise en page</b>Cadrer.</li>
+      <li><span class="rep r4">4</span><b>À la demande</b>Pas de boucle.</li>
+      <li><span class="rep r5">5</span><b>Limite</b>Abandon du fetch.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">À surveiller · les 500 dernières millisecondes</span>
+    Le nettoyage de la ligne 55 annule la sauvegarde en attente quand le composant se démonte ; aucun gestionnaire pagehide ou beforeunload n'existe dans web/src (grep, mesuré). Déduit : une modification faite moins de 500 ms avant de recharger ou de fermer l'onglet n'est pas écrite, et la reprise retrouve le graphe d'avant. Non reproduit dans l'application. Relevé sans rien modifier.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 121 · La boucle d'événements</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 121</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Dans un onglet, le JavaScript, les clics et le dessin partagent…</div><ul>
+      <li><span>A</span>un fil chacun</li><li><span>B</span>le processeur graphique</li><li><span>C</span>un fil par onglet et par clic</li><li><span>D</span>un seul fil</li></ul></div>
+
+    <div class="q"><div class="enonce">Entre then et setTimeout 0, programmés ensemble, passe d'abord…</div><ul>
+      <li><span>A</span>les deux en même temps</li><li><span>B</span>setTimeout 0</li><li><span>C</span>au hasard</li><li><span>D</span>then</li></ul></div>
+
+    <div class="q"><div class="enonce">Les microtâches d'un tour sont exécutées…</div><ul>
+      <li><span>A</span>après le rendu</li><li><span>B</span>une seule</li><li><span>C</span>toutes, même celles ajoutées en route</li><li><span>D</span>une par image</li></ul></div>
+
+    <div class="q"><div class="enonce">setTimeout(f, 0) imbriqué au-delà de cinq niveaux attend…</div><ul>
+      <li><span>A</span>1 s</li><li><span>B</span>16,7 ms</li><li><span>C</span>0 ms</li><li><span>D</span>au moins 4 ms</li></ul></div>
+
+    <div class="q"><div class="enonce">Un clic pendant un calcul de 300 ms a été traité après…</div><ul>
+      <li><span>A</span>environ 273 ms</li><li><span>B</span>0,5 ms</li><li><span>C</span>16 ms</li><li><span>D</span>jamais</li></ul></div>
+
+    <div class="q"><div class="enonce">Une tâche est dite longue au-delà de…</div><ul>
+      <li><span>A</span>50 ms</li><li><span>B</span>1 ms</li><li><span>C</span>1 s</li><li><span>D</span>16,7 ms</li></ul></div>
+
+    <div class="q"><div class="enonce">Un fetch de 20 secondes…</div><ul>
+      <li><span>A</span>arrête le rendu</li><li><span>B</span>gèle la page 20 s</li><li><span>C</span>ne gèle pas la page</li><li><span>D</span>bloque les clics</li></ul></div>
+
+    <div class="q"><div class="enonce">Pour rendre la main entre deux paquets de calcul… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>envoyer le calcul dans un worker</li><li><span>B</span>await Promise.resolve()</li><li><span>C</span>await d'un setTimeout(r, 0)</li><li><span>D</span>marquer la fonction async</li></ul></div>
+
+    <div class="q"><div class="enonce">20 modifications espacées de 50 ms, debounce de 500 ms…</div><ul>
+      <li><span>A</span>20 sauvegardes</li><li><span>B</span>1 sauvegarde</li><li><span>C</span>2 sauvegardes</li><li><span>D</span>aucune</li></ul></div>
+
+    <div class="q"><div class="enonce">requestAnimationFrame dans graphEditor.jsx sert à…</div><ul>
+      <li><span>A</span>cadrer une fois la mise en page faite</li><li><span>B</span>retarder d'une seconde</li><li><span>C</span>animer en boucle</li><li><span>D</span>lire le réseau</li></ul></div>
+
+    <div class="q"><div class="enonce">Viewer3D redessine…</div><ul>
+      <li><span>A</span>jamais</li><li><span>B</span>quand la caméra bouge ou la vue change de taille</li><li><span>C</span>toutes les secondes</li><li><span>D</span>60 fois par seconde</li></ul></div>
+
+    <div class="q"><div class="enonce">Pour suivre un geste en direct, on préfère…</div><ul>
+      <li><span>A</span>un debounce</li><li><span>B</span>un throttle</li><li><span>C</span>un setTimeout de 5 s</li><li><span>D</span>une microtâche</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 121 · La boucle d'événements</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 121</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · D.</b> Le fil principal.</div>
+    <div><b>02 · D.</b> Microtâche avant tâche.</div>
+    <div><b>03 · C.</b> La file est vidée.</div>
+    <div><b>04 · D.</b> Mesuré 4,1 à 4,3 ms.</div>
+    <div><b>05 · A.</b> Il attend la fin du calcul.</div>
+    <div><b>06 · A.</b> Seuil de l'API Long Tasks.</div>
+    <div><b>07 · C.</b> L'attente ne travaille pas.</div>
+    <div><b>08 · A et C.</b> Pas de microtâche.</div>
+    <div><b>09 · B.</b> 500 ms après la dernière.</div>
+    <div><b>10 · A.</b> Ligne 118.</div>
+    <div><b>11 · B.</b> Sur change, ligne 106.</div>
+    <div><b>12 · B.</b> Au plus une fois par intervalle.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 122, « Du DOM aux pixels ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">queueMicrotask(f)</td><td>f à la fin du code en cours</td><td>page 2</td></tr>
+      <tr><td class="c">setTimeout(f, 0)</td><td>f dans une tâche suivante</td><td>page 2</td></tr>
+      <tr><td class="c">requestAnimationFrame(f)</td><td>f avant la prochaine image</td><td>graphEditor.jsx:118</td></tr>
+      <tr><td class="c">clearTimeout + setTimeout</td><td>un debounce</td><td>App.jsx:54–55</td></tr>
+      <tr><td class="c">observe({ type: "longtask" })</td><td>repérer les tâches longues</td><td>page 3</td></tr>
+      <tr><td class="c">addEventListener("pagehide", …)</td><td>écrire avant de partir</td><td>page 4</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Boucle d'événements</dt><dd>La règle qui enchaîne tâches, microtâches et rendu sur un seul fil.</dd>
+    <dt>Microtâche</dt><dd>Un rappel de promesse, passé avant toute nouvelle tâche.</dd>
+    <dt>Tâche longue</dt><dd>Une tâche de plus de 50 ms, qui retarde clics et images.</dd>
+    <dt>Debounce</dt><dd>Agir une fois, quand une rafale d'événements s'arrête.</dd>
+    <dt>Throttle</dt><dd>Agir au plus une fois par intervalle pendant la rafale.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 122</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 121 · La boucle d'événements</div>
+</section>
+
+</body>
+</html>

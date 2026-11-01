@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>59 · Asynchrone : async, await, Task et Promise</title>
+<link rel="stylesheet" href="trame.css">
+</head>
+<body class="partie-8">
+
+<!-- ============ PAGE 1 · LE CONCEPT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 59</b></div>
+
+  <p class="rubrique">Le concept</p>
+  <h1>Asynchrone : async, await, Task et Promise</h1>
+  <p class="chapeau">Une requête réseau prend des centaines de millisecondes, parfois des secondes. Si le thread de l'interface l'attend, tout se fige. Avec <b>async</b> et <b>await</b>, la fonction rend la main pendant l'attente et reprend quand la réponse arrive, sans un thread de plus.</p>
+
+  <div class="meta">
+    <span class="pastille"><b>55 min</b> de lecture et de QCM</span>
+    <span class="pastille">Prérequis · <b>21</b> et <b>31</b></span>
+    <span class="pastille">Exemples · <b>api.js</b>, <b>App.jsx</b>, <b>compute-proxy.mjs</b> (Magpie), <b>CapsuleExecution</b> (SnapSet)</span>
+  </div>
+
+  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+    <svg viewBox="0 0 600 178" width="100%">
+<text x="10" y="22" font-size="9.4" fill="#C62828" text-anchor="start" font-weight="700">Synchrone</text>
+<text x="10" y="34" font-size="7.4" fill="#6B7378" text-anchor="start">le thread attend</text>
+<rect x="110" y="12" width="50" height="24" rx="3" fill="#1565C0" fill-opacity="0.9" stroke="#1565C0" stroke-width="1.1"/>
+<text x="135.0" y="26.666666666666668" font-size="8" fill="#fff" text-anchor="middle" font-weight="700">clic</text>
+<rect x="162" y="12" width="300" height="24" rx="3" fill="#fff" fill-opacity="1" stroke="#C62828" stroke-width="1.1" stroke-dasharray="4 3"/>
+<text x="312.0" y="26.666666666666668" font-size="8" fill="#C62828" text-anchor="middle" font-weight="700">attente du réseau : l'interface est figée</text>
+<rect x="464" y="12" width="70" height="24" rx="3" fill="#1565C0" fill-opacity="0.9" stroke="#1565C0" stroke-width="1.1"/>
+<text x="499.0" y="26.666666666666668" font-size="8" fill="#fff" text-anchor="middle" font-weight="700">affiche</text>
+<text x="10" y="84" font-size="9.4" fill="#2E7D32" text-anchor="start" font-weight="700">Asynchrone</text>
+<text x="10" y="96" font-size="7.4" fill="#6B7378" text-anchor="start">le thread est libre</text>
+<rect x="110" y="74" width="50" height="24" rx="3" fill="#1565C0" fill-opacity="0.9" stroke="#1565C0" stroke-width="1.1"/>
+<text x="135.0" y="88.66666666666667" font-size="8" fill="#fff" text-anchor="middle" font-weight="700">clic</text>
+<rect x="162" y="74" width="54" height="24" rx="3" fill="#1565C0" fill-opacity="0.9" stroke="#1565C0" stroke-width="1.1"/>
+<text x="189.0" y="88.66666666666667" font-size="8" fill="#fff" text-anchor="middle" font-weight="700">envoi</text>
+<rect x="228" y="74" width="62" height="24" rx="3" fill="#fff" fill-opacity="1" stroke="#2E7D32" stroke-width="1.1"/>
+<text x="259.0" y="88.53333333333333" font-size="7.6" fill="#2E7D32" text-anchor="middle" font-weight="700">repeint</text>
+<rect x="298" y="74" width="62" height="24" rx="3" fill="#fff" fill-opacity="1" stroke="#2E7D32" stroke-width="1.1"/>
+<text x="329.0" y="88.53333333333333" font-size="7.6" fill="#2E7D32" text-anchor="middle" font-weight="700">survol</text>
+<rect x="368" y="74" width="62" height="24" rx="3" fill="#fff" fill-opacity="1" stroke="#2E7D32" stroke-width="1.1"/>
+<text x="399.0" y="88.53333333333333" font-size="7.6" fill="#2E7D32" text-anchor="middle" font-weight="700">repeint</text>
+<rect x="464" y="74" width="70" height="24" rx="3" fill="#1565C0" fill-opacity="0.9" stroke="#1565C0" stroke-width="1.1"/>
+<text x="499.0" y="88.66666666666667" font-size="8" fill="#fff" text-anchor="middle" font-weight="700">suite</text>
+<line x1="189" y1="100" x2="189" y2="132" stroke="#E65100" stroke-width="1.1"/>
+<line x1="189" y1="132" x2="499" y2="132" stroke="#E65100" stroke-width="1.1" stroke-dasharray="4 3"/>
+<line x1="499" y1="132" x2="499" y2="101" stroke="#E65100" stroke-width="1.1"/><polygon points="499,101 501.7,107.4 496.3,107.4" fill="#E65100"/>
+<text x="344" y="146" font-size="7.8" fill="#E65100" text-anchor="middle" font-weight="700">le réseau travaille ; la réponse réveille la suite de la fonction</text>
+<text x="290" y="170" font-size="8" fill="#6B7378" text-anchor="middle" font-style="italic">Même durée totale. La différence : ce que l'utilisateur peut faire pendant l'attente.</text>
+</svg>
+  </div>
+
+  <div class="deuxcol">
+    <div>
+      <h3>L'idée en une phrase</h3>
+      <p>Une fonction <code>async</code> se découpe aux <code>await</code> : la partie avant s'exécute, la fonction rend une <b>promesse</b> de résultat (<code>Promise</code> en JS, <code>Task</code> en C#), et la suite est rangée dans la file pour plus tard.</p>
+      <h3 style="margin-top:4mm">L'analogie</h3>
+      <p>Commander au comptoir d'une boulangerie qui donne un bipeur. On ne reste pas planté devant le four : on va s'asseoir, on lit, on répond à un message. Le bipeur sonne, on revient chercher la commande. Un seul client, aucune attente gaspillée.</p>
+    </div>
+    <div>
+      <h3>À la fin, tu sais</h3>
+      <ol class="objectifs">
+        <li>dire ce qui se passe à chaque <code>await</code> ;</li>
+        <li>attraper une erreur et borner une attente ;</li>
+        <li>lancer deux attentes ensemble ;</li>
+        <li>éviter le double envoi et l'interblocage.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="encadre" style="margin-top:5mm">
+    <span class="titre">À retenir</span>
+    Asynchrone ne veut pas dire parallèle. <code>await</code> sert à <b>attendre sans bloquer</b> (réseau, disque, minuteur). Un calcul lourd, lui, occupe le processeur : il faut un autre thread (<code>Task.Run</code>, un Worker), et les objets de l'interface ne se touchent que depuis le thread de l'interface.
+  </div>
+
+  <div class="folio">1</div>
+  <div class="pied">Cours 59 · Asynchrone : async, await, Task et Promise</div>
+</section>
+
+<!-- ============ PAGE 2 · CE QUE FAIT AWAIT ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 59</b></div>
+  <p class="rubrique">Schéma 1 · Ce que fait await</p>
+  <h2>Une fonction en plusieurs morceaux</h2>
+  <p style="max-width:165mm">Le compilateur (C#) ou le moteur (JS) transforme la fonction en une suite d'étapes. Chaque <code>await</code> est une couture : on enregistre où on en est, on rend la main, et on reprendra au même endroit, avec les mêmes variables locales.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<rect x="16" y="12" width="300" height="190" rx="5" fill="#fff" stroke="#CFC6B8"/>
+<text x="28" y="38" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px;white-space:pre">async function envoyer() {</text>
+<text x="28" y="64" font-size="9" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:9px;white-space:pre">  bouton.disabled = true;</text>
+<text x="28" y="90" font-size="9" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:9px;white-space:pre">  const r = await fetch(url);</text>
+<text x="28" y="116" font-size="9" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:9px;white-space:pre">  afficher(await r.json());</text>
+<text x="28" y="142" font-size="9" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:9px;white-space:pre">  bouton.disabled = false;</text>
+<text x="28" y="168" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px;white-space:pre">}</text>
+<rect x="20" y="52" width="292" height="22" rx="2" fill="#1565C0" fill-opacity=".10"/>
+<rect x="20" y="104" width="292" height="48" rx="2" fill="#2E7D32" fill-opacity=".10"/>
+<circle cx="340" cy="30" r="5" fill="#1565C0"/>
+<text x="352" y="33" font-size="8" fill="#1565C0" text-anchor="start" font-weight="700">1 · la partie avant le premier await s'exécute tout de suite</text>
+<circle cx="340" cy="72" r="5" fill="#E65100"/>
+<text x="352" y="75" font-size="8" fill="#E65100" text-anchor="start" font-weight="700">2 · await : la fonction rend une Promise et rend la main</text>
+<circle cx="340" cy="114" r="5" fill="#2E7D32"/>
+<text x="352" y="117" font-size="8" fill="#2E7D32" text-anchor="start" font-weight="700">3 · la réponse arrive : la suite est mise en file</text>
+<circle cx="340" cy="156" r="5" fill="#2E7D32"/>
+<text x="352" y="159" font-size="8" fill="#2E7D32" text-anchor="start" font-weight="700">4 · le thread, libre, exécute la suite</text>
+<line x1="340" y1="35" x2="340" y2="151" stroke="#CFC6B8" stroke-dasharray="2 3"/>
+<text x="330" y="196" font-size="8" fill="#6B7378" text-anchor="start" font-style="italic">En C#, même découpe : la méthode rend une Task.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#</span>async Task&lt;string&gt; LireAsync(string chemin)
+{
+    string texte = await File.ReadAllTextAsync(chemin);   // rend la main ici
+    return texte.Trim();                                  // reprend ici, plus tard
+}
+Task&lt;string&gt; tache = LireAsync("notes.txt");   // déjà rendue, pas encore finie
+string resultat = await tache;                  // .NET Core 2 et suivants pour ReadAllTextAsync</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>La boucle d'événements</h3>
+      <p>JavaScript n'a qu'un thread. Il prend un travail dans la file (un clic, un minuteur, une réponse réseau), l'exécute jusqu'au bout ou jusqu'au prochain <code>await</code>, puis prend le suivant. Deux morceaux ne s'exécutent jamais en même temps.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Contagieux, et c'est voulu</h3>
+      <p>Pour attendre une fonction <code>async</code>, il faut être soi-même <code>async</code>. La couleur remonte la pile jusqu'au gestionnaire d'événement. En C#, ce gestionnaire est le seul endroit où <code>async void</code> est acceptable.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Oublier <code>await</code>. <code>if (verifier())</code> avec <code>verifier</code> asynchrone teste une <code>Promise</code>, toujours vraie, et non sa réponse. En C#, le compilateur avertit (CS4014) ; en JS, rien ne prévient. Le symptôme : un test qui passe toujours.
+  </div>
+
+  <div class="folio">2</div>
+  <div class="pied">Cours 59 · Asynchrone : async, await, Task et Promise</div>
+</section>
+
+<!-- ============ PAGE 3 · ERREURS ET DÉLAIS ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 59</b></div>
+  <p class="rubrique">Schéma 2 · Erreurs et délais</p>
+  <h2>Toute attente doit pouvoir finir</h2>
+  <p style="max-width:165mm">Une erreur pendant l'attente ressort à l'endroit du <code>await</code> : <code>try</code>, <code>catch</code> et <code>finally</code> marchent comme d'habitude. Un serveur qui ne répond jamais, en revanche, ne lève rien. Il faut un <b>minuteur</b> qui annule la requête.</p>
+
+  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
+<text x="16" y="26" font-size="8.6" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">fetch</text>
+<text x="16" y="60" font-size="8.6" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">minuteur</text>
+<line x1="90" y1="22" x2="560" y2="22" stroke="#1565C0" stroke-width="1.2" stroke-dasharray="4 3"/>
+<line x1="90" y1="56" x2="560" y2="56" stroke="#E65100" stroke-width="1.2"/>
+<line x1="420" y1="44" x2="420" y2="68" stroke="#E65100" stroke-width="2"/>
+<text x="420" y="82" font-size="8" fill="#E65100" text-anchor="middle" font-weight="700">30 s : abort()</text>
+<rect x="16" y="104" width="182" height="54" rx="5" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
+<text x="26" y="122" font-size="8.6" fill="#2E7D32" text-anchor="start" font-weight="700">Réponse à temps</text>
+<text x="26" y="142" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px">return json</text>
+<rect x="208" y="104" width="182" height="54" rx="5" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="218" y="122" font-size="8.6" fill="#C62828" text-anchor="start" font-weight="700">Délai dépassé</text>
+<text x="218" y="142" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px">AbortError → TIMEOUT</text>
+<rect x="400" y="104" width="182" height="54" rx="5" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
+<text x="410" y="122" font-size="8.6" fill="#C62828" text-anchor="start" font-weight="700">Serveur injoignable</text>
+<text x="410" y="142" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px">erreur → NETWORK</text>
+<rect x="16" y="168" width="566" height="26" rx="4" fill="#7A5A12" fill-opacity=".12" stroke="#7A5A12"/>
+<text x="299" y="185" font-size="8.6" fill="#7A5A12" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">finally : clearTimeout(minuteur), dans les trois cas</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript et C#</span>const ctrl = new AbortController();
+const minuteur = setTimeout(() =&gt; ctrl.abort(), 5000);
+try { const r = await fetch(url, { signal: ctrl.signal }); }
+catch (err) { if (err.name === "AbortError") { /* trop long */ } }
+finally { clearTimeout(minuteur); }
+using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));   // C# : même idée
+var reponse = await client.GetAsync(url, cts.Token);</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Distinguer les échecs</h3>
+      <p>Délai dépassé, serveur injoignable, réponse illisible, refus métier : quatre causes, quatre messages. L'utilisateur sait alors s'il doit réessayer, attendre ou corriger sa saisie.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Le jeton d'annulation</h3>
+      <p>En C#, on passe un <code>CancellationToken</code> à chaque méthode qui attend. Le même jeton peut venir d'un minuteur ou d'un bouton « Annuler » : l'appelé n'a pas à savoir pourquoi on arrête.</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    Bloquer sur une tâche avec <code>.Result</code> ou <code>.Wait()</code> depuis le thread WinForms. La suite de la tâche attend ce thread pour reprendre ; le thread attend la tâche : <b>interblocage</b>, Rhino gelé. On attend avec <code>await</code>, jusqu'en haut.
+  </div>
+
+  <div class="folio">3</div>
+  <div class="pied">Cours 59 · Asynchrone : async, await, Task et Promise</div>
+</section>
+
+<!-- ============ PAGE 4 · ENSEMBLE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 59</b></div>
+  <p class="rubrique">Schéma 3 · L'une après l'autre ou ensemble</p>
+  <h2>Lancer d'abord, attendre ensuite</h2>
+  <p style="max-width:165mm">Un appel <code>async</code> démarre dès qu'on l'appelle ; <code>await</code> ne fait qu'attendre sa fin. Deux attentes indépendantes peuvent donc se chevaucher : on lance les deux, puis on attend les deux.</p>
+
+  <svg viewBox="0 0 600 196" width="100%" style="margin-top:2mm">
+<rect x="0" y="0" width="600" height="196" fill="#EFE9E1"/>
+<text x="16" y="24" font-size="9" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">await a; await b;</text>
+<rect x="200" y="12" width="140" height="20" rx="3" fill="#1565C0" fill-opacity="0.9" stroke="#1565C0" stroke-width="1.1"/>
+<text x="270.0" y="24.666666666666668" font-size="8" fill="#fff" text-anchor="middle" font-weight="700">a · 2 s</text>
+<rect x="340" y="12" width="210" height="20" rx="3" fill="#7B1FA2" fill-opacity="0.9" stroke="#7B1FA2" stroke-width="1.1"/>
+<text x="445.0" y="24.666666666666668" font-size="8" fill="#fff" text-anchor="middle" font-weight="700">b · 3 s</text>
+<text x="558" y="26" font-size="9" fill="#C62828" text-anchor="start" font-weight="700">5 s</text>
+<text x="16" y="68" font-size="9" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">Promise.all([a, b])</text>
+<text x="16" y="80" font-size="9" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">Task.WhenAll(a, b)</text>
+<rect x="200" y="56" width="140" height="18" rx="3" fill="#1565C0" fill-opacity="0.9" stroke="#1565C0" stroke-width="1.1"/>
+<text x="270.0" y="67.66666666666667" font-size="8" fill="#fff" text-anchor="middle" font-weight="700">a · 2 s</text>
+<rect x="200" y="78" width="210" height="18" rx="3" fill="#7B1FA2" fill-opacity="0.9" stroke="#7B1FA2" stroke-width="1.1"/>
+<text x="305.0" y="89.66666666666667" font-size="8" fill="#fff" text-anchor="middle" font-weight="700">b · 3 s</text>
+<text x="418" y="92" font-size="9" fill="#2E7D32" text-anchor="start" font-weight="700">3 s</text>
+<line x1="200" y1="104" x2="200" y2="110" stroke="#6B7378"/>
+<text x="200" y="122" font-size="7.4" fill="#6B7378" text-anchor="middle">0 s</text>
+<line x1="270" y1="104" x2="270" y2="110" stroke="#6B7378"/>
+<text x="270" y="122" font-size="7.4" fill="#6B7378" text-anchor="middle">1 s</text>
+<line x1="340" y1="104" x2="340" y2="110" stroke="#6B7378"/>
+<text x="340" y="122" font-size="7.4" fill="#6B7378" text-anchor="middle">2 s</text>
+<line x1="410" y1="104" x2="410" y2="110" stroke="#6B7378"/>
+<text x="410" y="122" font-size="7.4" fill="#6B7378" text-anchor="middle">3 s</text>
+<line x1="480" y1="104" x2="480" y2="110" stroke="#6B7378"/>
+<text x="480" y="122" font-size="7.4" fill="#6B7378" text-anchor="middle">4 s</text>
+<line x1="550" y1="104" x2="550" y2="110" stroke="#6B7378"/>
+<text x="550" y="122" font-size="7.4" fill="#6B7378" text-anchor="middle">5 s</text>
+<line x1="200" y1="104" x2="550" y2="104" stroke="#6B7378"/>
+<text x="16" y="152" font-size="8.4" fill="#2B2F33" text-anchor="start">Lancer les deux, puis attendre les deux : le temps total devient celui de la plus lente.</text>
+<text x="16" y="170" font-size="8.4" fill="#6B7378" text-anchor="start" font-style="italic">À réserver aux appels indépendants : si b a besoin du résultat de a, l'ordre s'impose.</text>
+</svg>
+
+  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript et C#</span>const a = await lire("a");  const b = await lire("b");          // l'une après l'autre
+const [x, y] = await Promise.all([lire("a"), lire("b")]);         // ensemble
+const tous = await Promise.allSettled([lire("a"), lire("b")]);    // même si l'une échoue
+string[] r = await Task.WhenAll(LireAsync("a"), LireAsync("b"));  // C#
+double d = await Task.Run(() =&gt; CalculLourd());                   // C# : un calcul, sur un autre thread</div>
+
+  <div class="deuxcol" style="margin-top:4mm">
+    <div style="font-size:8.6pt">
+      <h3>Attendre ou calculer</h3>
+      <p>Une requête réseau ne consomme rien pendant l'attente. Un maillage de cent mille faces, si : <code>await</code> seul ne l'accélère pas. <code>Task.Run</code> l'envoie sur un autre thread, et l'interface reste fluide.</p>
+    </div>
+    <div style="font-size:8.6pt">
+      <h3>Revenir au thread de l'interface</h3>
+      <p>Un contrôle WinForms ou le canvas Grasshopper ne se touchent que depuis leur thread. Depuis ailleurs, on passe par <code>Invoke</code> (attendre) ou <code>BeginInvoke</code> (mettre en file).</p>
+    </div>
+  </div>
+
+  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+    <span class="titre">Piège courant</span>
+    <code>Promise.all</code> échoue dès que <b>une</b> promesse échoue, et les autres résultats sont perdus pour l'appelant. Quand chaque réponse compte séparément, <code>Promise.allSettled</code> rend un état par promesse : réussie avec sa valeur, ou échouée avec sa raison.
+  </div>
+
+  <div class="folio">4</div>
+  <div class="pied">Cours 59 · Asynchrone : async, await, Task et Promise</div>
+</section>
+
+<!-- ============ PAGE 5 · LE CODE ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 59</b></div>
+  <p class="rubrique">Dans tes projets</p>
+  <h2>Borner, regrouper, verrouiller, différer</h2>
+  <p style="max-width:165mm">Le site Magpie attend le réseau à chaque soumission, et le serveur attend Rhino Compute. SnapSet, en WinForms, n'a pas d'<code>await</code> mais utilise la même file des messages.</p>
+
+  <div class="code-zone" style="margin-top:3mm">
+<div class="code">
+<div class="l"><span class="cm">magpie/web/src/api.js</span></div>
+<div class="l k1"><span class="n">20</span><span class="kw">const</span> controller = <span class="kw">new</span> <span class="ty">AbortController</span>();<span class="rep r1">1</span></div>
+<div class="l k1"><span class="n">21</span><span class="kw">const</span> timeoutId = setTimeout(</div>
+<div class="l k1"><span class="n"> </span>  () =&gt; controller.abort(), timeoutMs);</div>
+<div class="l k1"><span class="n">25</span>response = <span class="kw">await</span> fetch(path, { …, signal });</div>
+<div class="l k1"><span class="n">37</span>clearTimeout(timeoutId);   <span class="cm">// dans finally</span></div>
+<div class="l"><span class="cm">magpie/web/compute-proxy.mjs</span></div>
+<div class="l k2"><span class="n">195</span><span class="kw">async function</span> callCompute(xml) {<span class="rep r2">2</span></div>
+<div class="l"><span class="cm">magpie/web/src/App.jsx</span></div>
+<div class="l k3"><span class="n">54</span><span class="kw">const</span> timer = setTimeout(() =&gt; save…(…), <span class="nb">500</span>);<span class="rep r3">3</span></div>
+<div class="l k3"><span class="n">55</span><span class="kw">return</span> () =&gt; clearTimeout(timer);</div>
+<div class="l k4"><span class="n">62</span><span class="kw">if</span> (isSubmitting || !currentExercise) <span class="kw">return</span>;<span class="rep r4">4</span></div>
+<div class="l k4"><span class="n">74</span>setIsSubmitting(<span class="kw">true</span>);</div>
+<div class="l k4"><span class="n">79</span><span class="kw">const</span> result = <span class="kw">await</span> submitAnswer({ … });</div>
+<div class="l k4"><span class="n">95</span>setIsSubmitting(<span class="kw">false</span>);   <span class="cm">// dans finally</span></div>
+<div class="l"><span class="cm">SnapSet/…/Execution/CapsuleExecution.cs</span></div>
+<div class="l k5"><span class="n">686</span>canvas.BeginInvoke(<span class="kw">new</span> <span class="ty">Action</span>(() =&gt;<span class="rep r5">5</span></div>
+<div class="l k5"><span class="n"> </span>  Proteger(() =&gt; l.MontrerMenu(canvas, point))));</div>
+</div>
+
+    <ul class="notes">
+      <li><span class="rep r1">1</span><b>Une attente bornée</b>30 s par défaut (ligne 7) ; finally range le minuteur quoi qu'il arrive.</li>
+      <li><span class="rep r2">2</span><b>Même garde côté serveur</b>Compute borné à 20 s par défaut (ligne 35).</li>
+      <li><span class="rep r3">3</span><b>Attendre le calme</b>Chaque modification annule le minuteur précédent : une sauvegarde, 500 ms après la dernière.</li>
+      <li><span class="rep r4">4</span><b>Un envoi à la fois</b>Le drapeau bloque le double clic ; finally le relâche.</li>
+      <li><span class="rep r5">5</span><b>Plus tard, même thread</b>Le menu s'ouvre après le traitement de la souris.</li>
+    </ul>
+  </div>
+
+  <div class="encadre" style="margin-top:4mm">
+    <span class="titre">Deux mondes, un même principe</span>
+    La boucle d'événements de JavaScript et la file des messages de WinForms jouent le même rôle : un seul thread exécute un travail à la fois. <code>BeginInvoke</code> ressemble à <code>setTimeout(…, 0)</code>. Comme personne n'attend l'action différée, une exception n'aurait pas d'appelant pour l'attraper : <code>Proteger</code> (ligne 1075) la capte et la signale.
+  </div>
+
+  <div class="folio">5</div>
+  <div class="pied">Cours 59 · Asynchrone : async, await, Task et Promise</div>
+</section>
+
+<!-- ============ PAGE 6 · QCM ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 59</b></div>
+  <p class="rubrique">Vérifier</p>
+  <h2>QCM · 12 questions, environ 15 minutes</h2>
+  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+
+  <div class="qcm" style="margin-top:4mm">
+    <div class="q"><div class="enonce">Pendant <code>await fetch(url)</code>, le thread…</div><ul>
+      <li><span>A</span>est bloqué</li><li><span>B</span>est détruit</li><li><span>C</span>tourne en boucle</li><li><span>D</span>traite d'autres événements</li></ul></div>
+
+    <div class="q"><div class="enonce">Une fonction async appelée sans await rend…</div><ul>
+      <li><span>A</span>une erreur</li><li><span>B</span>undefined</li><li><span>C</span>une Promise ou une Task</li><li><span>D</span>son résultat</li></ul></div>
+
+    <div class="q"><div class="enonce"><code>if (verifier())</code>, verifier étant async…</div><ul>
+      <li><span>A</span>est toujours faux</li><li><span>B</span>fonctionne</li><li><span>C</span>ne compile pas</li><li><span>D</span>est toujours vrai</li></ul></div>
+
+    <div class="q"><div class="enonce">Une erreur levée pendant l'attente…</div><ul>
+      <li><span>A</span>arrête le programme</li><li><span>B</span>est ignorée</li><li><span>C</span>ressort à l'endroit du await</li><li><span>D</span>est perdue</li></ul></div>
+
+    <div class="q"><div class="enonce">clearTimeout dans finally (api.js:37), pour…</div><ul>
+      <li><span>A</span>s'exécuter dans tous les cas</li><li><span>B</span>accélérer fetch</li><li><span>C</span>relancer la requête</li><li><span>D</span>rien</li></ul></div>
+
+    <div class="q"><div class="enonce">L'AbortError d'apiRequest devient…</div><ul>
+      <li><span>A</span>une ApiError TIMEOUT</li><li><span>B</span>un succès vide</li><li><span>C</span>une réponse 401</li><li><span>D</span>une ApiError NETWORK</li></ul></div>
+
+    <div class="q"><div class="enonce"><code>await a; await b;</code> (2 s puis 3 s) dure…</div><ul>
+      <li><span>A</span>6 s</li><li><span>B</span>5 s</li><li><span>C</span>3 s</li><li><span>D</span>2 s</li></ul></div>
+
+    <div class="q"><div class="enonce"><code>Promise.all</code> échoue si…</div><ul>
+      <li><span>A</span>jamais</li><li><span>B</span>une seule promesse échoue</li><li><span>C</span>toutes échouent</li><li><span>D</span>la plus lente gagne</li></ul></div>
+
+    <div class="q"><div class="enonce"><code>.Result</code> sur le thread WinForms risque…</div><ul>
+      <li><span>A</span>un interblocage</li><li><span>B</span>rien</li><li><span>C</span>un double envoi</li><li><span>D</span>une fuite mémoire</li></ul></div>
+
+    <div class="q"><div class="enonce">Le setTimeout d'App.jsx:54 sert à…</div><ul>
+      <li><span>A</span>animer le canvas</li><li><span>B</span>sauver toutes les 500 ms</li><li><span>C</span>sauver après 500 ms de calme</li><li><span>D</span>borner une requête</li></ul></div>
+
+    <div class="q"><div class="enonce">Contre le double envoi : <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
+      <li><span>A</span>le relâcher dans finally</li><li><span>B</span>un await de plus</li><li><span>C</span>Promise.all</li><li><span>D</span>un drapeau testé en entrée</li></ul></div>
+
+    <div class="q"><div class="enonce"><code>canvas.BeginInvoke(action)</code> exécute l'action…</div><ul>
+      <li><span>A</span>jamais</li><li><span>B</span>sur un autre thread</li><li><span>C</span>immédiatement</li><li><span>D</span>plus tard, sur le thread de l'interface</li></ul></div>
+  </div>
+
+  <div class="folio">6</div>
+  <div class="pied">Cours 59 · Asynchrone : async, await, Task et Promise</div>
+</section>
+
+<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
+<section class="page">
+  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 59</b></div>
+  <p class="rubrique">Corrigé expliqué</p>
+  <h2>Les réponses, et pourquoi</h2>
+
+  <div class="corrige" style="margin-top:3mm">
+    <div><b>01 · D.</b> C'est tout l'intérêt.</div>
+    <div><b>02 · C.</b> La promesse d'un résultat.</div>
+    <div><b>03 · D.</b> Un objet Promise est « vrai ».</div>
+    <div><b>04 · C.</b> try / catch l'attrape.</div>
+    <div><b>05 · A.</b> Succès, erreur ou délai.</div>
+    <div><b>06 · A.</b> api.js:32–33.</div>
+    <div><b>07 · B.</b> L'une après l'autre.</div>
+    <div><b>08 · B.</b> D'où allSettled.</div>
+    <div><b>09 · A.</b> Chacun attend l'autre.</div>
+    <div><b>10 · C.</b> Un anti-rebond.</div>
+    <div><b>11 · A et D.</b> App.jsx:62 et 95.</div>
+    <div><b>12 · D.</b> Mis en file, même thread.</div>
+  </div>
+
+  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
+    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
+      <g font-size="9" font-weight="700" text-anchor="middle">
+        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
+        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
+        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
+      </g>
+    </svg>
+    <div style="font-size:8.4pt; line-height:1.45">
+      <b>0 à 6</b> : relis les pages 1 et 2. <b>7 à 9</b> : relis les pages 3 et 4. <b>10 à 12</b> : passe au cours 31, « React et Vite ».
+    </div>
+  </div>
+
+  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
+  <table class="aide">
+    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+    <tbody>
+      <tr><td class="c">await fetch(…)</td><td>attendre sans bloquer</td><td>api.js:25</td></tr>
+      <tr><td class="c">AbortController + setTimeout</td><td>borner une attente</td><td>api.js:20–21</td></tr>
+      <tr><td class="c">finally { clearTimeout(…) }</td><td>ranger quoi qu'il arrive</td><td>api.js:36–37</td></tr>
+      <tr><td class="c">setTimeout + clearTimeout</td><td>anti-rebond</td><td>App.jsx:54–55</td></tr>
+      <tr><td class="c">drapeau + finally</td><td>un seul envoi à la fois</td><td>App.jsx:62, 74, 95</td></tr>
+      <tr><td class="c">BeginInvoke(…)</td><td>différer sur le thread de l'interface</td><td>CapsuleExecution.cs:686</td></tr>
+    </tbody>
+  </table>
+
+  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
+  <dl class="glossaire">
+    <dt>Asynchrone</dt><dd>Qui rend la main pendant une attente et reprend quand le résultat est là.</dd>
+    <dt>Promise / Task</dt><dd>Un objet qui représente un résultat à venir, ou l'erreur qui l'a empêché.</dd>
+    <dt>Boucle d'événements</dt><dd>Le thread unique qui prend les travaux de la file un par un.</dd>
+    <dt>Interblocage</dt><dd>Deux attentes qui dépendent l'une de l'autre : aucune ne finit jamais.</dd>
+    <dt>Anti-rebond</dt><dd>Attendre un temps de calme avant d'agir, en annulant les déclenchements rapprochés.</dd>
+  </dl>
+
+  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 31</span>
+  </div>
+
+  <div class="folio">7</div>
+  <div class="pied">Cours 59 · Asynchrone : async, await, Task et Promise</div>
+</section>
+
+</body>
+</html>
