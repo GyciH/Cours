@@ -1,262 +1,235 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>127 · Délégués et événements</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-1">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 127</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Délégués et événements</h1>
-  <p class="chapeau">Un <b>délégué</b> est une méthode rangée dans une variable : on peut la passer, la garder, l'appeler plus tard. Un <b>événement</b> est une liste de délégués qu'un objet appelle quand quelque chose arrive. Grasshopper prévient ainsi SnapSet d'un clic ou d'un ajout, et c'est aussi par là que fuit la mémoire.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>01</b>, <b>58</b></span>
-    <span class="pastille">Exemples · <b>SnapSet</b>, Conception</span>
-  </div>
-
-  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
-    <svg viewBox="0 0 600 204" width="100%">
-<rect x="10" y="30" width="170" height="104" rx="4" fill="#F1E9F3" stroke="#6B2C7A" stroke-width="1.2"/>
-<text x="95" y="50" font-size="9" fill="#6B2C7A" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">GH_Document</text>
-<text x="95" y="66" font-size="7.6" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.6px">event ObjectsAdded</text>
-<rect x="30" y="78" width="130" height="13" rx="2" fill="#fff" stroke="#6B2C7A" stroke-width=".8"/>
-<text x="95" y="88" font-size="7" fill="#2B2F33" text-anchor="middle">délégué 1 : cible + méthode</text>
-<rect x="30" y="95" width="130" height="13" rx="2" fill="#fff" stroke="#6B2C7A" stroke-width=".8"/>
-<text x="95" y="105" font-size="7" fill="#2B2F33" text-anchor="middle">délégué 2 : cible + méthode</text>
-<rect x="30" y="112" width="130" height="13" rx="2" fill="#fff" stroke="#6B2C7A" stroke-width=".8"/>
-<text x="95" y="122" font-size="7" fill="#2B2F33" text-anchor="middle">délégué 3 : cible + méthode</text>
-<rect x="330" y="14" width="170" height="38" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
-<text x="415" y="30" font-size="8.4" fill="#1565C0" text-anchor="middle" font-weight="700">RegistreDocument</text>
-<text x="415" y="44" font-size="7.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.2px">méthode SurAjout</text>
-<line x1="162" y1="84" x2="328" y2="33" stroke="#1565C0" stroke-width="1.2"/><polygon points="328,33 322.6,37.5 321.0,32.3" fill="#1565C0"/>
-<rect x="330" y="62" width="170" height="38" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
-<text x="415" y="78" font-size="8.4" fill="#7B1FA2" text-anchor="middle" font-weight="700">un autre greffon</text>
-<text x="415" y="92" font-size="7.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.2px">méthode SurObjets</text>
-<line x1="162" y1="101" x2="328" y2="81" stroke="#7B1FA2" stroke-width="1.2"/><polygon points="328,81 321.9,84.5 321.3,79.1" fill="#7B1FA2"/>
-<rect x="330" y="110" width="170" height="38" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2" stroke-dasharray="4 3"/>
-<text x="415" y="126" font-size="8.4" fill="#C62828" text-anchor="middle" font-weight="700">une fenêtre fermée</text>
-<text x="415" y="140" font-size="7.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.2px">méthode Rafraichir</text>
-<line x1="162" y1="118" x2="328" y2="129" stroke="#C62828" stroke-width="1.2"/><polygon points="328,129 321.4,131.3 321.7,125.9" fill="#C62828"/>
-<text x="520" y="146" font-size="7.4" fill="#C62828" text-anchor="middle" font-weight="700">encore en vie</text>
-<text x="10" y="166" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">Un délégué retient sa cible. Tant que l'éditeur vit, chaque abonné qu'il pointe vit aussi, même fermé.</text>
-<text x="10" y="186" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">S'abonner, c'est donner à l'éditeur une référence vers soi. Se désabonner, c'est la lui reprendre.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 127</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Délégués et événements</h1>
+<p class="chapeau">Un <b>délégué</b> est une méthode rangée dans une variable : on peut la passer, la garder, l'appeler plus tard. Un <b>événement</b> est une liste de délégués qu'un objet appelle quand quelque chose arrive. Grasshopper prévient ainsi SnapSet d'un clic ou d'un ajout, et c'est aussi par là que fuit la mémoire.</p>
+<div class="meta">
+<span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>01</b>, <b>58</b></span>
+<span class="pastille">Exemples · <b>SnapSet</b>, Conception</span>
+</div>
+<div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+<svg viewbox="0 0 600 204" width="100%">
+<rect fill="#F1E9F3" height="104" rx="4" stroke="#6B2C7A" stroke-width="1.2" width="170" x="10" y="30"></rect>
+<text class="mono" fill="#6B2C7A" font-size="9" font-weight="700" style="font-size:9px" text-anchor="middle" x="95" y="50">GH_Document</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="middle" x="95" y="66">event ObjectsAdded</text>
+<rect fill="#fff" height="13" rx="2" stroke="#6B2C7A" stroke-width=".8" width="130" x="30" y="78"></rect>
+<text fill="#2B2F33" font-size="7" text-anchor="middle" x="95" y="88">délégué 1 : cible + méthode</text>
+<rect fill="#fff" height="13" rx="2" stroke="#6B2C7A" stroke-width=".8" width="130" x="30" y="95"></rect>
+<text fill="#2B2F33" font-size="7" text-anchor="middle" x="95" y="105">délégué 2 : cible + méthode</text>
+<rect fill="#fff" height="13" rx="2" stroke="#6B2C7A" stroke-width=".8" width="130" x="30" y="112"></rect>
+<text fill="#2B2F33" font-size="7" text-anchor="middle" x="95" y="122">délégué 3 : cible + méthode</text>
+<rect fill="#fff" height="38" rx="4" stroke="#1565C0" stroke-width="1.2" width="170" x="330" y="14"></rect>
+<text fill="#1565C0" font-size="8.4" font-weight="700" text-anchor="middle" x="415" y="30">RegistreDocument</text>
+<text class="mono" fill="#2B2F33" font-size="7.2" style="font-size:7.2px" text-anchor="middle" x="415" y="44">méthode SurAjout</text>
+<line stroke="#1565C0" stroke-width="1.2" x1="162" x2="328" y1="84" y2="33"></line><polygon fill="#1565C0" points="328,33 322.6,37.5 321.0,32.3"></polygon>
+<rect fill="#fff" height="38" rx="4" stroke="#7B1FA2" stroke-width="1.2" width="170" x="330" y="62"></rect>
+<text fill="#7B1FA2" font-size="8.4" font-weight="700" text-anchor="middle" x="415" y="78">un autre greffon</text>
+<text class="mono" fill="#2B2F33" font-size="7.2" style="font-size:7.2px" text-anchor="middle" x="415" y="92">méthode SurObjets</text>
+<line stroke="#7B1FA2" stroke-width="1.2" x1="162" x2="328" y1="101" y2="81"></line><polygon fill="#7B1FA2" points="328,81 321.9,84.5 321.3,79.1"></polygon>
+<rect fill="#fff" height="38" rx="4" stroke="#C62828" stroke-dasharray="4 3" stroke-width="1.2" width="170" x="330" y="110"></rect>
+<text fill="#C62828" font-size="8.4" font-weight="700" text-anchor="middle" x="415" y="126">une fenêtre fermée</text>
+<text class="mono" fill="#2B2F33" font-size="7.2" style="font-size:7.2px" text-anchor="middle" x="415" y="140">méthode Rafraichir</text>
+<line stroke="#C62828" stroke-width="1.2" x1="162" x2="328" y1="118" y2="129"></line><polygon fill="#C62828" points="328,129 321.4,131.3 321.7,125.9"></polygon>
+<text fill="#C62828" font-size="7.4" font-weight="700" text-anchor="middle" x="520" y="146">encore en vie</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="10" y="166">Un délégué retient sa cible. Tant que l'éditeur vit, chaque abonné qu'il pointe vit aussi, même fermé.</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="10" y="186">S'abonner, c'est donner à l'éditeur une référence vers soi. Se désabonner, c'est la lui reprendre.</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Celui qui publie un événement garde une référence vers chacun de ses abonnés ; tout abonnement doit donc avoir sa fin, prévue dès qu'on l'écrit.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Une liste de diffusion. S'y inscrire est facile ; mais tant qu'on n'est pas désinscrit, on reçoit le courrier, même après avoir déménagé, et la liste garde l'adresse.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>dire qui retient qui ;</li>
-        <li>se désabonner pour de bon ;</li>
-        <li>choisir une table faible ;</li>
-        <li>prévoir l'erreur d'un abonné.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Celui qui publie un événement garde une référence vers chacun de ses abonnés ; tout abonnement doit donc avoir sa fin, prévue dès qu'on l'écrit.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Une liste de diffusion. S'y inscrire est facile ; mais tant qu'on n'est pas désinscrit, on reçoit le courrier, même après avoir déménagé, et la liste garde l'adresse.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>dire qui retient qui ;</li>
+<li>se désabonner pour de bon ;</li>
+<li>choisir une table faible ;</li>
+<li>prévoir l'erreur d'un abonné.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À retenir</span>
     Un abonné à courte vie sur un éditeur à longue vie, c'est une fuite tant qu'il ne se désabonne pas. L'inverse ne pose pas de problème : l'éditeur part avec ses abonnements.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 127 · Délégués et événements</div>
+<div class="folio">1</div>
+<div class="pied">Cours 127 · Délégués et événements</div>
 </section>
-
 <!-- ============ PAGE 2 · QUI RETIENT QUI ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 127</b></div>
-  <p class="rubrique">Schéma 1 · Qui retient qui</p>
-  <h2>L'abonnement qui garde en vie</h2>
-  <p style="max-width:165mm">On a abonné mille objets à un événement statique, comme RhinoApp.Idle, puis on les a oubliés. Puis on a rangé cent documents comme clés, dans un dictionnaire et dans une table faible.</p>
-
-  <svg viewBox="0 0 600 210" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="210" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8" fill="#6B2C7A" text-anchor="start" font-weight="700">1 000 abonnés de 10 Ko à un événement statique, puis lâchés par le code (.NET 8, après ramasse-miettes, mesuré)</text>
-<text x="16" y="45" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">sans -=</text>
-<rect x="90" y="34" width="300.0" height="14" rx="2" fill="#C62828"/>
-<text x="396.0" y="45" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700">1 000 / 1 000 vivants · +9 927 Kio</text>
-<text x="16" y="67" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">avec -=</text>
-<rect x="90" y="56" width="2.0" height="14" rx="2" fill="#2E7D32"/>
-<text x="98" y="67" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700">0 / 1 000 · +31 Kio</text>
-<text x="16" y="100" font-size="8" fill="#6B2C7A" text-anchor="start" font-weight="700">100 documents rangés comme clés, puis lâchés par le code (mesuré)</text>
-<text x="16" y="121" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">Dictionary</text>
-<rect x="150" y="110" width="240.0" height="14" rx="2" fill="#C62828"/>
-<text x="396.0" y="121" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700">100 / 100 vivants</text>
-<text x="16" y="143" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">ConditionalWeakTable</text>
-<rect x="150" y="132" width="1.6" height="14" rx="2" fill="#2E7D32"/>
-<text x="157.6" y="143" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700">0 / 100</text>
-<text x="16" y="172" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Un événement statique, ou un dictionnaire statique, vit autant que le programme : tout ce qu'il pointe aussi.</text>
-<text x="16" y="192" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">WeakReference sur chaque objet, trois passages du ramasse-miettes, Release ; projet d'essai hors de SnapSet.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 127</b></div>
+<p class="rubrique">Schéma 1 · Qui retient qui</p>
+<h2>L'abonnement qui garde en vie</h2>
+<p style="max-width:165mm">On a abonné mille objets à un événement statique, comme RhinoApp.Idle, puis on les a oubliés. Puis on a rangé cent documents comme clés, dans un dictionnaire et dans une table faible.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 210" width="100%">
+<rect fill="#EFE9E1" height="210" width="600" x="0" y="0"></rect>
+<text fill="#6B2C7A" font-size="8" font-weight="700" text-anchor="start" x="16" y="22">1 000 abonnés de 10 Ko à un événement statique, puis lâchés par le code (.NET 8, après ramasse-miettes, mesuré)</text>
+<text class="mono" fill="#2B2F33" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="16" y="45">sans -=</text>
+<rect fill="#C62828" height="14" rx="2" width="300.0" x="90" y="34"></rect>
+<text fill="#C62828" font-size="7.8" font-weight="700" text-anchor="start" x="396.0" y="45">1 000 / 1 000 vivants · +9 927 Kio</text>
+<text class="mono" fill="#2B2F33" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="16" y="67">avec -=</text>
+<rect fill="#2E7D32" height="14" rx="2" width="2.0" x="90" y="56"></rect>
+<text fill="#2E7D32" font-size="7.8" font-weight="700" text-anchor="start" x="98" y="67">0 / 1 000 · +31 Kio</text>
+<text fill="#6B2C7A" font-size="8" font-weight="700" text-anchor="start" x="16" y="100">100 documents rangés comme clés, puis lâchés par le code (mesuré)</text>
+<text class="mono" fill="#2B2F33" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="16" y="121">Dictionary</text>
+<rect fill="#C62828" height="14" rx="2" width="240.0" x="150" y="110"></rect>
+<text fill="#C62828" font-size="7.8" font-weight="700" text-anchor="start" x="396.0" y="121">100 / 100 vivants</text>
+<text class="mono" fill="#2B2F33" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="16" y="143">ConditionalWeakTable</text>
+<rect fill="#2E7D32" height="14" rx="2" width="1.6" x="150" y="132"></rect>
+<text fill="#2E7D32" font-size="7.8" font-weight="700" text-anchor="start" x="157.6" y="143">0 / 100</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="172">Un événement statique, ou un dictionnaire statique, vit autant que le programme : tout ce qu'il pointe aussi.</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="192">WeakReference sur chaque objet, trois passages du ramasse-miettes, Release ; projet d'essai hors de SnapSet.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, un abonnement qui a sa fin</span>sealed class Apercu : IDisposable
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, un abonnement qui a sa fin</span>sealed class Apercu : IDisposable
 {
     public Apercu() { RhinoApp.Idle += SurRepos; }
     public void Dispose() { RhinoApp.Idle -= SurRepos; }   // même méthode, même cible : retiré
     void SurRepos(object s, EventArgs e) { /* … */ }
 }</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Statique, donc éternel</h3>
-      <p>RhinoApp.Idle, un champ static : ils vivent jusqu'à la fermeture de Rhino. Tout objet qu'ils pointent aussi, quelle que soit la fenêtre qu'on a fermée.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>La table faible</h3>
-      <p>ConditionalWeakTable attache une valeur à un objet sans le retenir : la paire disparaît avec la clé. RegistreDocument.cs:36 s'en sert pour un registre par document.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Statique, donc éternel</h3>
+<p>RhinoApp.Idle, un champ static : ils vivent jusqu'à la fermeture de Rhino. Tout objet qu'ils pointent aussi, quelle que soit la fenêtre qu'on a fermée.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>La table faible</h3>
+<p>ConditionalWeakTable attache une valeur à un objet sans le retenir : la paire disparaît avec la clé. RegistreDocument.cs:36 s'en sert pour un registre par document.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     S'abonner à un événement statique depuis le constructeur d'un composant. Supprimé du canvas, le composant reste en mémoire, et son gestionnaire continue d'être appelé à chaque repos de Rhino.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 127 · Délégués et événements</div>
+<div class="folio">2</div>
+<div class="pied">Cours 127 · Délégués et événements</div>
 </section>
-
 <!-- ============ PAGE 3 · SE DÉSABONNER ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 127</b></div>
-  <p class="rubrique">Schéma 2 · Se désabonner</p>
-  <h2>Retirer le bon délégué</h2>
-  <p style="max-width:165mm">-= ne retire un gestionnaire que s'il retrouve un délégué égal : même méthode, même cible. On a essayé trois écritures courantes.</p>
-
-  <svg viewBox="0 0 600 196" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="196" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#6B2C7A" text-anchor="start" font-weight="700">Trois façons de se désabonner, le même événement déclenché ensuite (.NET 8, mesuré)</text>
-<rect x="16" y="34" width="568" height="32" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
-<text x="26" y="48" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">e += (s, a) =&gt; n++;   e -= (s, a) =&gt; n++;</text>
-<text x="26" y="61" font-size="7.2" fill="#6B7378" text-anchor="start" font-style="italic">deux lambdas, deux délégués distincts</text>
-<text x="574" y="54" font-size="7.8" fill="#C62828" text-anchor="end" font-weight="700">toujours appelé : 1 appel</text>
-<rect x="16" y="74" width="568" height="32" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="26" y="88" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">h = (s, a) =&gt; n++;   e += h;   e -= h;</text>
-<text x="26" y="101" font-size="7.2" fill="#6B7378" text-anchor="start" font-style="italic">le même délégué, gardé dans une variable</text>
-<text x="574" y="94" font-size="7.8" fill="#2E7D32" text-anchor="end" font-weight="700">retiré : 0 appel</text>
-<rect x="16" y="114" width="568" height="32" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="26" y="128" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">h = (s, a) =&gt; { e -= h; … };   e += h;</text>
-<text x="26" y="141" font-size="7.2" fill="#6B7378" text-anchor="start" font-style="italic">le gestionnaire se retire lui-même</text>
-<text x="574" y="134" font-size="7.8" fill="#2E7D32" text-anchor="end" font-weight="700">1 appel pour 3 déclenchements</text>
-<text x="16" y="172" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">-= cherche un délégué égal : même méthode, même cible. Deux lambdas écrites deux fois ne le sont jamais.</text>
-<text x="16" y="188" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">La troisième forme est celle de ComposantDepart.cs:125 à 131, pour agir une seule fois au repos de Rhino.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 127</b></div>
+<p class="rubrique">Schéma 2 · Se désabonner</p>
+<h2>Retirer le bon délégué</h2>
+<p style="max-width:165mm">-= ne retire un gestionnaire que s'il retrouve un délégué égal : même méthode, même cible. On a essayé trois écritures courantes.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 196" width="100%">
+<rect fill="#EFE9E1" height="196" width="600" x="0" y="0"></rect>
+<text fill="#6B2C7A" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">Trois façons de se désabonner, le même événement déclenché ensuite (.NET 8, mesuré)</text>
+<rect fill="#fff" height="32" rx="4" stroke="#C62828" stroke-width="1.2" width="568" x="16" y="34"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="26" y="48">e += (s, a) =&gt; n++;   e -= (s, a) =&gt; n++;</text>
+<text fill="#6B7378" font-size="7.2" font-style="italic" text-anchor="start" x="26" y="61">deux lambdas, deux délégués distincts</text>
+<text fill="#C62828" font-size="7.8" font-weight="700" text-anchor="end" x="574" y="54">toujours appelé : 1 appel</text>
+<rect fill="#fff" height="32" rx="4" stroke="#2E7D32" stroke-width="1.2" width="568" x="16" y="74"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="26" y="88">h = (s, a) =&gt; n++;   e += h;   e -= h;</text>
+<text fill="#6B7378" font-size="7.2" font-style="italic" text-anchor="start" x="26" y="101">le même délégué, gardé dans une variable</text>
+<text fill="#2E7D32" font-size="7.8" font-weight="700" text-anchor="end" x="574" y="94">retiré : 0 appel</text>
+<rect fill="#fff" height="32" rx="4" stroke="#2E7D32" stroke-width="1.2" width="568" x="16" y="114"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="26" y="128">h = (s, a) =&gt; { e -= h; … };   e += h;</text>
+<text fill="#6B7378" font-size="7.2" font-style="italic" text-anchor="start" x="26" y="141">le gestionnaire se retire lui-même</text>
+<text fill="#2E7D32" font-size="7.8" font-weight="700" text-anchor="end" x="574" y="134">1 appel pour 3 déclenchements</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="172">-= cherche un délégué égal : même méthode, même cible. Deux lambdas écrites deux fois ne le sont jamais.</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="188">La troisième forme est celle de ComposantDepart.cs:125 à 131, pour agir une seule fois au repos de Rhino.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, s'abonner une seule fois par objet</span>readonly HashSet&lt;Champ&gt; _suivis = new HashSet&lt;Champ&gt;();
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, s'abonner une seule fois par objet</span>readonly HashSet&lt;Champ&gt; _suivis = new HashSet&lt;Champ&gt;();
 void Suivre(Champ c)
 {
     if (!_suivis.Add(c)) return;            // déjà abonné : on ne double pas
     c.MesureChangee += (s, e) =&gt; Redessiner();
 }</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Une fois par objet</h3>
-      <p>S'abonner deux fois, c'est être appelé deux fois. CapsuleExecution.cs:397 garde la liste des constituants déjà suivis et sort tout de suite s'il le connaît.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>En miroir</h3>
-      <p>ServiceGeste.cs branche huit événements du canvas (lignes 40 à 47) et les retire tous, dans le même ordre, quand le canvas disparaît (lignes 266 à 273).</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Une fois par objet</h3>
+<p>S'abonner deux fois, c'est être appelé deux fois. CapsuleExecution.cs:397 garde la liste des constituants déjà suivis et sort tout de suite s'il le connaît.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>En miroir</h3>
+<p>ServiceGeste.cs branche huit événements du canvas (lignes 40 à 47) et les retire tous, dans le même ordre, quand le canvas disparaît (lignes 266 à 273).</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Écrire la même lambda dans le += et dans le -=. Le compilateur en fait deux délégués : le -= ne trouve rien, ne dit rien, et le gestionnaire reste branché.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 127 · Délégués et événements</div>
+<div class="folio">3</div>
+<div class="pied">Cours 127 · Délégués et événements</div>
 </section>
-
 <!-- ============ PAGE 4 · ORDRE, ERREUR, COÛT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 127</b></div>
-  <p class="rubrique">Schéma 3 · L'ordre, l'erreur, le coût</p>
-  <h2>Ce qui se passe au déclenchement</h2>
-  <p style="max-width:165mm">Un événement appelle ses abonnés un par un, dans l'ordre d'abonnement, sur le fil qui le déclenche. Si l'un échoue, la suite n'a pas lieu. On a mesuré l'ordre, l'erreur et le prix.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#6B2C7A" text-anchor="start" font-weight="700">Trois abonnés A, B, C ; B lève une exception (.NET 8, mesuré)</text>
-<rect x="16" y="32" width="100" height="24" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="66.0" y="46.6" font-size="7.8" fill="#2E7D32" text-anchor="middle" font-weight="700">A · appelé</text>
-<line x1="117" y1="44" x2="135" y2="44" stroke="#6B7378" stroke-width="1.2"/><polygon points="135,44 128.6,46.7 128.6,41.3" fill="#6B7378"/>
-<rect x="136" y="32" width="100" height="24" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
-<text x="186.0" y="46.6" font-size="7.8" fill="#C62828" text-anchor="middle" font-weight="700">B · lève</text>
-<line x1="237" y1="44" x2="255" y2="44" stroke="#6B7378" stroke-width="1.2"/><polygon points="255,44 248.6,46.7 248.6,41.3" fill="#6B7378"/>
-<rect x="256" y="32" width="100" height="24" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2" stroke-dasharray="4 3"/>
-<text x="306.0" y="46.6" font-size="7.8" fill="#6B7378" text-anchor="middle" font-weight="700">C · jamais appelé</text>
-<text x="380" y="48" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">l'exception remonte à qui a déclenché</text>
-<text x="16" y="84" font-size="8.2" fill="#6B2C7A" text-anchor="start" font-weight="700">Coût d'un appel, en ns (deux séries de 50 millions)</text>
-<text x="16" y="103" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">appel direct</text>
-<rect x="150" y="93" width="5.5" height="12" rx="2" fill="#6B2C7A" opacity=".85"/>
-<text x="161.49333333333334" y="103" font-size="7.4" fill="#6B2C7A" text-anchor="start" font-weight="700">0,43 à 2,06</text>
-<text x="16" y="121" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">par un délégué</text>
-<rect x="150" y="111" width="7.0" height="12" rx="2" fill="#6B2C7A" opacity=".85"/>
-<text x="162.96" y="121" font-size="7.4" fill="#6B2C7A" text-anchor="start" font-weight="700">2,44 à 2,61</text>
-<text x="16" y="139" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">événement à 10 abonnés</text>
-<rect x="150" y="129" width="149.3" height="12" rx="2" fill="#E65100" opacity=".85"/>
-<text x="305.28" y="139" font-size="7.4" fill="#E65100" text-anchor="start" font-weight="700">46,73 à 55,98</text>
-<text x="380" y="84" font-size="8.2" fill="#6B2C7A" text-anchor="start" font-weight="700">Abonner n objets un par un (+=)</text>
-<text x="380" y="103" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">100 abonnés</text>
-<text x="470" y="103" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">0,2 ms</text>
-<text x="380" y="121" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">1 000 abonnés</text>
-<text x="470" y="121" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">6,8 ms</text>
-<text x="380" y="139" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">10 000 abonnés</text>
-<text x="470" y="139" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">237,1 ms</text>
-<text x="16" y="166" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Chaque += recopie toute la liste : dix fois plus d'abonnés, trente-cinq fois plus long, pas dix.</text>
-<text x="16" y="186" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">L'appel direct le plus rapide a sans doute été intégré par le compilateur (déduit) ; un délégué ne l'est pas.</text>
-<text x="16" y="200" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Déclencher l'événement à 10 000 abonnés : 78,8 µs par déclenchement.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 127</b></div>
+<p class="rubrique">Schéma 3 · L'ordre, l'erreur, le coût</p>
+<h2>Ce qui se passe au déclenchement</h2>
+<p style="max-width:165mm">Un événement appelle ses abonnés un par un, dans l'ordre d'abonnement, sur le fil qui le déclenche. Si l'un échoue, la suite n'a pas lieu. On a mesuré l'ordre, l'erreur et le prix.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#6B2C7A" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">Trois abonnés A, B, C ; B lève une exception (.NET 8, mesuré)</text>
+<rect fill="#fff" height="24" rx="4" stroke="#2E7D32" stroke-width="1.2" width="100" x="16" y="32"></rect>
+<text fill="#2E7D32" font-size="7.8" font-weight="700" text-anchor="middle" x="66.0" y="46.6">A · appelé</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="117" x2="135" y1="44" y2="44"></line><polygon fill="#6B7378" points="135,44 128.6,46.7 128.6,41.3"></polygon>
+<rect fill="#fff" height="24" rx="4" stroke="#C62828" stroke-width="1.2" width="100" x="136" y="32"></rect>
+<text fill="#C62828" font-size="7.8" font-weight="700" text-anchor="middle" x="186.0" y="46.6">B · lève</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="237" x2="255" y1="44" y2="44"></line><polygon fill="#6B7378" points="255,44 248.6,46.7 248.6,41.3"></polygon>
+<rect fill="#fff" height="24" rx="4" stroke="#6B7378" stroke-dasharray="4 3" stroke-width="1.2" width="100" x="256" y="32"></rect>
+<text fill="#6B7378" font-size="7.8" font-weight="700" text-anchor="middle" x="306.0" y="46.6">C · jamais appelé</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="380" y="48">l'exception remonte à qui a déclenché</text>
+<text fill="#6B2C7A" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="84">Coût d'un appel, en ns (deux séries de 50 millions)</text>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="16" y="103">appel direct</text>
+<rect fill="#6B2C7A" height="12" opacity=".85" rx="2" width="5.5" x="150" y="93"></rect>
+<text fill="#6B2C7A" font-size="7.4" font-weight="700" text-anchor="start" x="161.49333333333334" y="103">0,43 à 2,06</text>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="16" y="121">par un délégué</text>
+<rect fill="#6B2C7A" height="12" opacity=".85" rx="2" width="7.0" x="150" y="111"></rect>
+<text fill="#6B2C7A" font-size="7.4" font-weight="700" text-anchor="start" x="162.96" y="121">2,44 à 2,61</text>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="16" y="139">événement à 10 abonnés</text>
+<rect fill="#E65100" height="12" opacity=".85" rx="2" width="149.3" x="150" y="129"></rect>
+<text fill="#E65100" font-size="7.4" font-weight="700" text-anchor="start" x="305.28" y="139">46,73 à 55,98</text>
+<text fill="#6B2C7A" font-size="8.2" font-weight="700" text-anchor="start" x="380" y="84">Abonner n objets un par un (+=)</text>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="380" y="103">100 abonnés</text>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="470" y="103">0,2 ms</text>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="380" y="121">1 000 abonnés</text>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="470" y="121">6,8 ms</text>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="380" y="139">10 000 abonnés</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="470" y="139">237,1 ms</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="166">Chaque += recopie toute la liste : dix fois plus d'abonnés, trente-cinq fois plus long, pas dix.</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="186">L'appel direct le plus rapide a sans doute été intégré par le compilateur (déduit) ; un délégué ne l'est pas.</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="200">Déclencher l'événement à 10 000 abonnés : 78,8 µs par déclenchement.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, déclarer et déclencher</span>public event EventHandler MesureChangee;
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, déclarer et déclencher</span>public event EventHandler MesureChangee;
 protected void SignalerMesure() =&gt; MesureChangee?.Invoke(this, EventArgs.Empty);
 // ?. lit la liste une fois : un abonné qui se retire pendant l'appel ne la casse pas</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Action, Func, EventHandler</h3>
-      <p>Action ne rend rien, Func rend une valeur, EventHandler reçoit l'émetteur et des arguments. CapsuleExecution expose un simple Action, QuandMesureChange (ligne 130).</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Le fil du déclencheur</h3>
-      <p>Un gestionnaire tourne sur le fil qui déclenche. Un événement levé hors du fil de l'interface ne doit pas toucher un contrôle : on repasse par BeginInvoke (cours 44).</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Action, Func, EventHandler</h3>
+<p>Action ne rend rien, Func rend une valeur, EventHandler reçoit l'émetteur et des arguments. CapsuleExecution expose un simple Action, QuandMesureChange (ligne 130).</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Le fil du déclencheur</h3>
+<p>Un gestionnaire tourne sur le fil qui déclenche. Un événement levé hors du fil de l'interface ne doit pas toucher un contrôle : on repasse par BeginInvoke (cours 44).</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Laisser un gestionnaire lever une exception. Elle remonte chez celui qui a déclenché l'événement, et les abonnés suivants ne sont jamais appelés : un greffon peut en priver un autre.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 127 · Délégués et événements</div>
+<div class="folio">4</div>
+<div class="pied">Cours 127 · Délégués et événements</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 127</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>Écouter Grasshopper dans SnapSet</h2>
-  <p style="max-width:165mm">Brancher, débrancher en miroir, attacher sans retenir, se retirer après un seul appel.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 127</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>Écouter Grasshopper dans SnapSet</h2>
+<p style="max-width:165mm">Brancher, débrancher en miroir, attacher sans retenir, se retirer après un seul appel.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">SnapSet/src/SnapSet.Conception/Geste/ServiceGeste.cs</span></div>
 <div class="l k1"><span class="n">40</span>canvas.MouseDown += SurEnfoncement;<span class="rep r1">1</span></div>
@@ -266,137 +239,55 @@ protected void SignalerMesure() =&gt; MesureChangee?.Invoke(this, EventArgs.Empt
 <div class="l k4"><span class="n">52</span>document.ObjectsAdded += SurAjout;<span class="rep r4">4</span></div>
 <div class="l k5"><span class="n">128</span>    Rhino.RhinoApp.Idle -= auRepos;<span class="rep r5">5</span></div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>Brancher</b>Huit événements.</li>
-      <li><span class="rep r2">2</span><b>Oublier</b>Au Disposed.</li>
-      <li><span class="rep r3">3</span><b>Sans retenir</b>Un par document.</li>
-      <li><span class="rep r4">4</span><b>Écouter</b>Le document.</li>
-      <li><span class="rep r5">5</span><b>Une seule fois</b>Il se retire.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À surveiller · une exception dans SurAjout</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>Brancher</b>Huit événements.</li>
+<li><span class="rep r2">2</span><b>Oublier</b>Au Disposed.</li>
+<li><span class="rep r3">3</span><b>Sans retenir</b>Un par document.</li>
+<li><span class="rep r4">4</span><b>Écouter</b>Le document.</li>
+<li><span class="rep r5">5</span><b>Une seule fois</b>Il se retire.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À surveiller · une exception dans SurAjout</span>
     SurAjout (RegistreDocument.cs:492) n'entoure d'un try que la réduction de la sélection (ligne 513) ; ToutExpirer (ligne 500) et l'adoption n'en ont pas. Mesuré sur un exemple autonome : un abonné qui lève prive les suivants de l'appel. Déduit : une erreur à cet endroit remonterait dans ObjectsAdded de Grasshopper, et d'autres greffons ne seraient pas prévenus. Aucun cas observé. Relevé sans rien modifier.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 127 · Délégués et événements</div>
+<div class="folio">5</div>
+<div class="pied">Cours 127 · Délégués et événements</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 127</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 127</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">Un délégué vers une méthode d'instance retient…</div><ul>
-      <li><span>A</span>seulement la classe</li><li><span>B</span>rien</li><li><span>C</span>le fil courant</li><li><span>D</span>l'objet cible</li></ul></div>
 
-    <div class="q"><div class="enonce">Mille abonnés oubliés, sans -=, à un événement statique…</div><ul>
-      <li><span>A</span>sont libérés</li><li><span>B</span>lèvent une erreur</li><li><span>C</span>la moitié survit</li><li><span>D</span>restent tous en vie</li></ul></div>
 
-    <div class="q"><div class="enonce">Pour attacher une donnée à un objet sans le retenir…</div><ul>
-      <li><span>A</span>ConditionalWeakTable</li><li><span>B</span>List</li><li><span>C</span>Dictionary</li><li><span>D</span>un champ static</li></ul></div>
 
-    <div class="q"><div class="enonce">e += (s, a) =&gt; n++; puis e -= (s, a) =&gt; n++;…</div><ul>
-      <li><span>A</span>lève une exception</li><li><span>B</span>ne compile pas</li><li><span>C</span>laisse le gestionnaire branché</li><li><span>D</span>le retire</li></ul></div>
-
-    <div class="q"><div class="enonce">-= retire un délégué s'il a… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>la même cible</li><li><span>B</span>le même nom de variable</li><li><span>C</span>la même ligne de code</li><li><span>D</span>la même méthode</li></ul></div>
-
-    <div class="q"><div class="enonce">Un gestionnaire qui fait e -= h; dans son propre corps…</div><ul>
-      <li><span>A</span>plante</li><li><span>B</span>boucle sans fin</li><li><span>C</span>n'est appelé qu'une fois</li><li><span>D</span>ne se retire pas</li></ul></div>
-
-    <div class="q"><div class="enonce">Les abonnés sont appelés…</div><ul>
-      <li><span>A</span>sur le fil de l'interface, toujours</li><li><span>B</span>dans un ordre au hasard</li><li><span>C</span>dans l'ordre d'abonnement, sur le fil du déclencheur</li><li><span>D</span>en parallèle</li></ul></div>
-
-    <div class="q"><div class="enonce">Si le deuxième abonné sur trois lève une exception…</div><ul>
-      <li><span>A</span>le premier est rappelé</li><li><span>B</span>le troisième n'est pas appelé</li><li><span>C</span>l'exception est avalée</li><li><span>D</span>tous sont appelés</li></ul></div>
-
-    <div class="q"><div class="enonce">Un appel par délégué a coûté environ…</div><ul>
-      <li><span>A</span>2,5 µs</li><li><span>B</span>2,5 ns</li><li><span>C</span>autant qu'un fichier lu</li><li><span>D</span>2,5 ms</li></ul></div>
-
-    <div class="q"><div class="enonce">Abonner 10 000 objets un par un a pris…</div><ul>
-      <li><span>A</span>237 ms : chaque += recopie la liste</li><li><span>B</span>0 ms</li><li><span>C</span>autant que 100 objets</li><li><span>D</span>2 ms</li></ul></div>
-
-    <div class="q"><div class="enonce">ServiceGeste retire ses gestionnaires…</div><ul>
-      <li><span>A</span>à chaque clic</li><li><span>B</span>quand le canvas est détruit</li><li><span>C</span>jamais</li><li><span>D</span>au démarrage de Rhino</li></ul></div>
-
-    <div class="q"><div class="enonce">MesureChangee?.Invoke(…) protège contre…</div><ul>
-      <li><span>A</span>un événement sans abonné</li><li><span>B</span>les appels doublés</li><li><span>C</span>toute exception</li><li><span>D</span>les fuites</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 127 · Délégués et événements</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">public event EventHandler X;</td><td>déclarer un événement</td><td>page 4</td></tr>
+<tr><td class="c">x.X += Methode;</td><td>s'abonner (l'éditeur retient l'abonné)</td><td>ServiceGeste.cs:40</td></tr>
+<tr><td class="c">x.X -= Methode;</td><td>se désabonner, même délégué</td><td>ServiceGeste.cs:266</td></tr>
+<tr><td class="c">X?.Invoke(this, args)</td><td>déclencher s'il y a des abonnés</td><td>page 4</td></tr>
+<tr><td class="c">ConditionalWeakTable&lt;K, V&gt;</td><td>attacher sans retenir</td><td>RegistreDocument.cs:36</td></tr>
+<tr><td class="c">Action, Func&lt;T&gt;</td><td>délégués prêts à l'emploi</td><td>CapsuleExecution.cs:130</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Délégué</dt><dd>Une référence vers une méthode, et vers l'objet qui la porte.</dd>
+<dt>Événement</dt><dd>Une liste de délégués qu'un objet appelle quand quelque chose arrive.</dd>
+<dt>Abonné</dt><dd>L'objet dont une méthode est dans la liste.</dd>
+<dt>Délégué multicast</dt><dd>Un délégué qui en appelle plusieurs, dans l'ordre.</dd>
+<dt>Référence faible</dt><dd>Une référence qui n'empêche pas le ramasse-miettes de libérer l'objet.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 130</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 127 · Délégués et événements</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 127</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · D.</b> Cible et méthode.</div>
-    <div><b>02 · D.</b> 1 000 sur 1 000, mesuré.</div>
-    <div><b>03 · A.</b> RegistreDocument.cs:36.</div>
-    <div><b>04 · C.</b> Deux délégués distincts.</div>
-    <div><b>05 · A et D.</b> L'égalité des délégués.</div>
-    <div><b>06 · C.</b> ComposantDepart.cs:128.</div>
-    <div><b>07 · C.</b> Un par un.</div>
-    <div><b>08 · B.</b> L'exception remonte.</div>
-    <div><b>09 · B.</b> 2,44 à 2,61 ns.</div>
-    <div><b>10 · A.</b> 35 fois le temps pour 1 000.</div>
-    <div><b>11 · B.</b> Lignes 264 à 274.</div>
-    <div><b>12 · A.</b> null si personne n'écoute.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 130, « Les itérateurs et yield ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">public event EventHandler X;</td><td>déclarer un événement</td><td>page 4</td></tr>
-      <tr><td class="c">x.X += Methode;</td><td>s'abonner (l'éditeur retient l'abonné)</td><td>ServiceGeste.cs:40</td></tr>
-      <tr><td class="c">x.X -= Methode;</td><td>se désabonner, même délégué</td><td>ServiceGeste.cs:266</td></tr>
-      <tr><td class="c">X?.Invoke(this, args)</td><td>déclencher s'il y a des abonnés</td><td>page 4</td></tr>
-      <tr><td class="c">ConditionalWeakTable&lt;K, V&gt;</td><td>attacher sans retenir</td><td>RegistreDocument.cs:36</td></tr>
-      <tr><td class="c">Action, Func&lt;T&gt;</td><td>délégués prêts à l'emploi</td><td>CapsuleExecution.cs:130</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Délégué</dt><dd>Une référence vers une méthode, et vers l'objet qui la porte.</dd>
-    <dt>Événement</dt><dd>Une liste de délégués qu'un objet appelle quand quelque chose arrive.</dd>
-    <dt>Abonné</dt><dd>L'objet dont une méthode est dans la liste.</dd>
-    <dt>Délégué multicast</dt><dd>Un délégué qui en appelle plusieurs, dans l'ordre.</dd>
-    <dt>Référence faible</dt><dd>Une référence qui n'empêche pas le ramasse-miettes de libérer l'objet.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 130</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 127 · Délégués et événements</div>
-</section>
-
 </body>
 </html>

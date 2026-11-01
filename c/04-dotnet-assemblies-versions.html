@@ -1,322 +1,290 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>04 · .NET : runtime, assemblies et versions</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-1">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 04</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>.NET : runtime,<br>assemblies et versions</h1>
-  <p class="chapeau">Ton code C# ne tourne jamais seul. Il est compilé dans un fichier, l'assembly, qu'un moteur, le runtime, charge et exécute. Dans notre cas, ce moteur vit à l'intérieur de Rhino : c'est lui qui décide quelle version de .NET ton plugin doit viser.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>01</b> à <b>03</b></span>
-    <span class="pastille">Exemples · <b>Cuttlefish, SnapSet, Magpie</b> (le chargeur)</span>
-  </div>
-
-  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
-    <svg viewBox="0 0 600 210" width="100%">
-      <defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2B2F33"/></marker></defs>
-      <text x="0" y="14" font-size="10" font-weight="700" fill="#6B2C7A" letter-spacing="1.2">SUR TON POSTE, À LA COMPILATION</text>
-      <text x="330" y="14" font-size="10" font-weight="700" fill="#1F5F7A" letter-spacing="1.2">DANS RHINO, À L'EXÉCUTION</text>
-      <line x1="318" y1="4" x2="318" y2="112" stroke="#D9D2C8" stroke-width="1.2" stroke-dasharray="4 3"/>
-
-      <rect x="0" y="30" width="86" height="56" rx="5" fill="#fff" stroke="#6B7378"/>
-      <text x="43" y="54" text-anchor="middle" font-size="10.5" font-weight="700">Maze.cs</text>
-      <text x="43" y="70" text-anchor="middle" font-size="9" fill="#6B7378">ton texte C#</text>
-      <path d="M88 58 H 108" stroke="#2B2F33" stroke-width="1.4" marker-end="url(#a1)"/>
-      <rect x="110" y="40" width="80" height="36" rx="18" fill="#2B2F33"/>
-      <text x="150" y="62" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">compilateur</text>
-      <path d="M192 58 H 212" stroke="#2B2F33" stroke-width="1.4" marker-end="url(#a1)"/>
-      <rect x="214" y="24" width="96" height="68" rx="5" fill="#6B2C7A"/>
-      <text x="262" y="46" text-anchor="middle" font-size="10.5" font-weight="700" fill="#fff">Cuttlefish.gha</text>
-      <text x="262" y="62" text-anchor="middle" font-size="9" fill="#fff">l'assembly :</text>
-      <text x="262" y="75" text-anchor="middle" font-size="9" fill="#fff">du code IL, pas</text>
-      <text x="262" y="87" text-anchor="middle" font-size="9" fill="#fff">du code machine</text>
-
-      <path d="M312 58 H 340" stroke="#2B2F33" stroke-width="1.4" marker-end="url(#a1)"/>
-      <rect x="342" y="24" width="258" height="94" rx="6" fill="#fff" stroke="#1F5F7A" stroke-width="1.6"/>
-      <text x="354" y="42" font-size="10" font-weight="700" fill="#1F5F7A">Rhino.exe, un seul processus</text>
-      <rect x="354" y="52" width="234" height="56" rx="4" fill="#E6EFF2"/>
-      <text x="366" y="70" font-size="9.5" font-weight="700">le runtime .NET</text>
-      <text x="366" y="85" font-size="9">charge l'assembly, traduit l'IL en</text>
-      <text x="366" y="98" font-size="9">code machine au premier appel (JIT)</text>
-
-      <text x="0" y="128" font-size="10" fill="#2B2F33"><tspan font-weight="700">L'IL</tspan> (langage intermédiaire) est le même quel que soit le processeur.</text>
-      <text x="0" y="143" font-size="10" fill="#2B2F33">C'est le runtime, sur la machine qui exécute, qui le traduit.</text>
-      <text x="0" y="170" font-size="10" fill="#6B7378">Le compilateur doit savoir quel runtime attendra le fichier : c'est la <tspan font-weight="700" fill="#6B2C7A">cible</tspan></text>
-      <text x="0" y="185" font-size="10" fill="#6B7378">du projet, <tspan class="mono" style="font-size:9.5px">net48</tspan> pour Cuttlefish, <tspan class="mono" style="font-size:9.5px">net7.0-windows</tspan> pour SnapSet et Magpie.</text>
-    </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Un plugin est une <b>assembly</b> (un .dll renommé .gha) compilée pour un <b>runtime</b> précis ; Rhino fournit ce runtime et y charge chaque plugin, une fois, pour toute la session.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Une partition et un orchestre. La partition (l'assembly) est écrite pour une formation donnée (la cible). Rhino 7 a un orchestre classique, .NET Framework ; Rhino 8 un orchestre moderne, .NET 7 et suivants, qui sait encore jouer une partie de l'ancien répertoire.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>distinguer .NET Framework 4.8 et .NET moderne, et dire lequel vise chacun de tes projets ;</li>
-        <li>dire ce que contient une assembly : nom, version, métadonnées, IL, ressources ;</li>
-        <li>expliquer pourquoi une bibliothèque chargée ne se remplace pas sans redémarrer Rhino.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:5mm">
-    <span class="titre">À retenir</span>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 04</b></div>
+<p class="rubrique">Le concept</p>
+<h1>.NET : runtime,<br/>assemblies et versions</h1>
+<p class="chapeau">Ton code C# ne tourne jamais seul. Il est compilé dans un fichier, l'assembly, qu'un moteur, le runtime, charge et exécute. Dans notre cas, ce moteur vit à l'intérieur de Rhino : c'est lui qui décide quelle version de .NET ton plugin doit viser.</p>
+<div class="meta">
+<span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>01</b> à <b>03</b></span>
+<span class="pastille">Exemples · <b>Cuttlefish, SnapSet, Magpie</b> (le chargeur)</span>
+</div>
+<div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+<svg viewbox="0 0 600 210" width="100%">
+<defs><marker id="a1" markerheight="7" markerwidth="7" orient="auto" refx="9" refy="5" viewbox="0 0 10 10"><path d="M0 0 L10 5 L0 10 z" fill="#2B2F33"></path></marker></defs>
+<text fill="#6B2C7A" font-size="10" font-weight="700" letter-spacing="1.2" x="0" y="14">SUR TON POSTE, À LA COMPILATION</text>
+<text fill="#1F5F7A" font-size="10" font-weight="700" letter-spacing="1.2" x="330" y="14">DANS RHINO, À L'EXÉCUTION</text>
+<line stroke="#D9D2C8" stroke-dasharray="4 3" stroke-width="1.2" x1="318" x2="318" y1="4" y2="112"></line>
+<rect fill="#fff" height="56" rx="5" stroke="#6B7378" width="86" x="0" y="30"></rect>
+<text font-size="10.5" font-weight="700" text-anchor="middle" x="43" y="54">Maze.cs</text>
+<text fill="#6B7378" font-size="9" text-anchor="middle" x="43" y="70">ton texte C#</text>
+<path d="M88 58 H 108" marker-end="url(#a1)" stroke="#2B2F33" stroke-width="1.4"></path>
+<rect fill="#2B2F33" height="36" rx="18" width="80" x="110" y="40"></rect>
+<text fill="#fff" font-size="10" font-weight="700" text-anchor="middle" x="150" y="62">compilateur</text>
+<path d="M192 58 H 212" marker-end="url(#a1)" stroke="#2B2F33" stroke-width="1.4"></path>
+<rect fill="#6B2C7A" height="68" rx="5" width="96" x="214" y="24"></rect>
+<text fill="#fff" font-size="10.5" font-weight="700" text-anchor="middle" x="262" y="46">Cuttlefish.gha</text>
+<text fill="#fff" font-size="9" text-anchor="middle" x="262" y="62">l'assembly :</text>
+<text fill="#fff" font-size="9" text-anchor="middle" x="262" y="75">du code IL, pas</text>
+<text fill="#fff" font-size="9" text-anchor="middle" x="262" y="87">du code machine</text>
+<path d="M312 58 H 340" marker-end="url(#a1)" stroke="#2B2F33" stroke-width="1.4"></path>
+<rect fill="#fff" height="94" rx="6" stroke="#1F5F7A" stroke-width="1.6" width="258" x="342" y="24"></rect>
+<text fill="#1F5F7A" font-size="10" font-weight="700" x="354" y="42">Rhino.exe, un seul processus</text>
+<rect fill="#E6EFF2" height="56" rx="4" width="234" x="354" y="52"></rect>
+<text font-size="9.5" font-weight="700" x="366" y="70">le runtime .NET</text>
+<text font-size="9" x="366" y="85">charge l'assembly, traduit l'IL en</text>
+<text font-size="9" x="366" y="98">code machine au premier appel (JIT)</text>
+<text fill="#2B2F33" font-size="10" x="0" y="128"><tspan font-weight="700">L'IL</tspan> (langage intermédiaire) est le même quel que soit le processeur.</text>
+<text fill="#2B2F33" font-size="10" x="0" y="143">C'est le runtime, sur la machine qui exécute, qui le traduit.</text>
+<text fill="#6B7378" font-size="10" x="0" y="170">Le compilateur doit savoir quel runtime attendra le fichier : c'est la <tspan fill="#6B2C7A" font-weight="700">cible</tspan></text>
+<text fill="#6B7378" font-size="10" x="0" y="185">du projet, <tspan class="mono" style="font-size:9.5px">net48</tspan> pour Cuttlefish, <tspan class="mono" style="font-size:9.5px">net7.0-windows</tspan> pour SnapSet et Magpie.</text>
+</svg>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Un plugin est une <b>assembly</b> (un .dll renommé .gha) compilée pour un <b>runtime</b> précis ; Rhino fournit ce runtime et y charge chaque plugin, une fois, pour toute la session.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Une partition et un orchestre. La partition (l'assembly) est écrite pour une formation donnée (la cible). Rhino 7 a un orchestre classique, .NET Framework ; Rhino 8 un orchestre moderne, .NET 7 et suivants, qui sait encore jouer une partie de l'ancien répertoire.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>distinguer .NET Framework 4.8 et .NET moderne, et dire lequel vise chacun de tes projets ;</li>
+<li>dire ce que contient une assembly : nom, version, métadonnées, IL, ressources ;</li>
+<li>expliquer pourquoi une bibliothèque chargée ne se remplace pas sans redémarrer Rhino.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:5mm">
+<span class="titre">À retenir</span>
     Le langage (C# 7.3, C# 11) et le runtime (.NET Framework 4.8, .NET 7) sont deux choses distinctes. Le cours 01 parlait du premier ; celui-ci parle du second. La cible choisit le runtime, et par défaut, la version du langage.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 04 · .NET : runtime, assemblies et versions</div>
+<div class="folio">1</div>
+<div class="pied">Cours 04 · .NET : runtime, assemblies et versions</div>
 </section>
-
 <!-- ============ PAGE 2 · DEUX FAMILLES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 04</b></div>
-  <p class="rubrique">Schéma 1 · Deux familles de runtime</p>
-  <h2>Pourquoi Cuttlefish et SnapSet ne visent pas la même cible</h2>
-  <p style="max-width:165mm">En 2016, Microsoft a repris .NET de zéro sous le nom .NET Core, devenu simplement « .NET » à partir de la version 5. L'ancien .NET Framework s'arrête à 4.8 : maintenu, mais il n'évolue plus. Rhino a suivi avec un temps de retard.</p>
-
-  <svg viewBox="0 0 600 420" width="100%" style="margin-top:2mm">
-    <rect x="0" y="0" width="600" height="420" fill="#EFE9E1"/>
-    <!-- axe -->
-    <line x1="30" y1="40" x2="580" y2="40" stroke="#2B2F33" stroke-width="1.4"/>
-    <g font-size="9" fill="#6B7378" text-anchor="middle">
-      <text x="50" y="30">2002</text><text x="190" y="30">2016</text><text x="290" y="30">2019</text><text x="340" y="30">2020</text><text x="420" y="30">2022</text><text x="520" y="30">2024</text>
-    </g>
-    <!-- Framework -->
-    <rect x="50" y="58" width="240" height="30" rx="4" fill="#6D4C41"/>
-    <text x="62" y="78" font-size="10.5" font-weight="700" fill="#fff">.NET Framework 1.0 … 4.8</text>
-    <rect x="290" y="58" width="290" height="30" rx="4" fill="#EFE8E5" stroke="#6D4C41" stroke-dasharray="4 3"/>
-    <text x="302" y="78" font-size="9.5" fill="#6D4C41">4.8 maintenu, figé : Windows seulement</text>
-    <!-- Core -->
-    <rect x="190" y="98" width="150" height="30" rx="4" fill="#5F8FA3"/>
-    <text x="202" y="118" font-size="10.5" font-weight="700" fill="#fff">.NET Core 1 … 3.1</text>
-    <rect x="340" y="98" width="240" height="30" rx="4" fill="#1F5F7A"/>
-    <text x="352" y="118" font-size="10.5" font-weight="700" fill="#fff">.NET 5, 6, 7, 8… multiplateforme</text>
-
-    <!-- Rhino -->
-    <text x="30" y="160" font-size="10" font-weight="700" fill="#6B2C7A" letter-spacing="1">QUI EMBARQUE QUOI</text>
-    <rect x="30" y="170" width="260" height="70" rx="6" fill="#fff" stroke="#6D4C41" stroke-width="1.4"/>
-    <text x="44" y="190" font-size="10.5" font-weight="700" fill="#6D4C41">Rhino 7</text>
-    <text x="44" y="207" font-size="9.5">.NET Framework 4.8 uniquement.</text>
-    <text x="44" y="222" font-size="9.5">Un plugin pour Rhino 7 vise net48.</text>
-    <rect x="310" y="170" width="270" height="70" rx="6" fill="#fff" stroke="#1F5F7A" stroke-width="1.4"/>
-    <text x="324" y="190" font-size="10.5" font-weight="700" fill="#1F5F7A">Rhino 8</text>
-    <text x="324" y="207" font-size="9.5">.NET moderne par défaut ; peut repasser</text>
-    <text x="324" y="222" font-size="9.5">en 4.8 (commande SetDotNetRuntime).</text>
-
-    <!-- projets -->
-    <text x="30" y="270" font-size="10" font-weight="700" fill="#6B2C7A" letter-spacing="1">TES TROIS PROJETS</text>
-    <g font-size="9.5">
-      <rect x="30" y="280" width="176" height="124" rx="6" fill="#fff" stroke="#6B2C7A" stroke-width="1.4"/>
-      <text x="42" y="300" font-size="10.5" font-weight="700" fill="#6B2C7A">Cuttlefish</text>
-      <text x="42" y="318" class="mono" style="font-size:9px">net48</text>
-      <text x="42" y="336">C# 7.3 par défaut,</text>
-      <text x="42" y="350">Grasshopper 7 en référence</text>
-      <text x="42" y="368">tourne dans Rhino 7 et</text>
-      <text x="42" y="382">dans Rhino 8 (il charge</text>
-      <text x="42" y="396">aussi les anciens plugins)</text>
-
-      <rect x="212" y="280" width="176" height="124" rx="6" fill="#fff" stroke="#1F5F7A" stroke-width="1.4"/>
-      <text x="224" y="300" font-size="10.5" font-weight="700" fill="#1F5F7A">SnapSet</text>
-      <text x="224" y="318" class="mono" style="font-size:9px">net7.0-windows</text>
-      <text x="224" y="336">LangVersion latest,</text>
-      <text x="224" y="350">RhinoCommon pris dans</text>
-      <text x="224" y="364">l'installation de Rhino 8</text>
-      <text x="224" y="382">Rhino 8 seulement,</text>
-      <text x="224" y="396">Windows seulement</text>
-
-      <rect x="394" y="280" width="186" height="124" rx="6" fill="#fff" stroke="#2E7D32" stroke-width="1.4"/>
-      <text x="406" y="300" font-size="10.5" font-weight="700" fill="#2E7D32">Magpie</text>
-      <text x="406" y="318" class="mono" style="font-size:9px">net7.0-windows;net7.0</text>
-      <text x="406" y="336">deux cibles d'un coup :</text>
-      <text x="406" y="350">la seconde, sans Windows,</text>
-      <text x="406" y="364">prépare macOS (issue #27)</text>
-      <text x="406" y="382">Rhino 8 seulement,</text>
-      <text x="406" y="396">Grasshopper 8 en référence</text>
-    </g>
-  </svg>
-
-  <div class="encadre piege" style="margin-top:4mm">
-    <span class="titre">Piège courant</span>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 04</b></div>
+<p class="rubrique">Schéma 1 · Deux familles de runtime</p>
+<h2>Pourquoi Cuttlefish et SnapSet ne visent pas la même cible</h2>
+<p style="max-width:165mm">En 2016, Microsoft a repris .NET de zéro sous le nom .NET Core, devenu simplement « .NET » à partir de la version 5. L'ancien .NET Framework s'arrête à 4.8 : maintenu, mais il n'évolue plus. Rhino a suivi avec un temps de retard.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 420" width="100%">
+<rect fill="#EFE9E1" height="420" width="600" x="0" y="0"></rect>
+<!-- axe -->
+<line stroke="#2B2F33" stroke-width="1.4" x1="30" x2="580" y1="40" y2="40"></line>
+<g fill="#6B7378" font-size="9" text-anchor="middle">
+<text x="50" y="30">2002</text><text x="190" y="30">2016</text><text x="290" y="30">2019</text><text x="340" y="30">2020</text><text x="420" y="30">2022</text><text x="520" y="30">2024</text>
+</g>
+<!-- Framework -->
+<rect fill="#6D4C41" height="30" rx="4" width="240" x="50" y="58"></rect>
+<text fill="#fff" font-size="10.5" font-weight="700" x="62" y="78">.NET Framework 1.0 … 4.8</text>
+<rect fill="#EFE8E5" height="30" rx="4" stroke="#6D4C41" stroke-dasharray="4 3" width="290" x="290" y="58"></rect>
+<text fill="#6D4C41" font-size="9.5" x="302" y="78">4.8 maintenu, figé : Windows seulement</text>
+<!-- Core -->
+<rect fill="#5F8FA3" height="30" rx="4" width="150" x="190" y="98"></rect>
+<text fill="#fff" font-size="10.5" font-weight="700" x="202" y="118">.NET Core 1 … 3.1</text>
+<rect fill="#1F5F7A" height="30" rx="4" width="240" x="340" y="98"></rect>
+<text fill="#fff" font-size="10.5" font-weight="700" x="352" y="118">.NET 5, 6, 7, 8… multiplateforme</text>
+<!-- Rhino -->
+<text fill="#6B2C7A" font-size="10" font-weight="700" letter-spacing="1" x="30" y="160">QUI EMBARQUE QUOI</text>
+<rect fill="#fff" height="70" rx="6" stroke="#6D4C41" stroke-width="1.4" width="260" x="30" y="170"></rect>
+<text fill="#6D4C41" font-size="10.5" font-weight="700" x="44" y="190">Rhino 7</text>
+<text font-size="9.5" x="44" y="207">.NET Framework 4.8 uniquement.</text>
+<text font-size="9.5" x="44" y="222">Un plugin pour Rhino 7 vise net48.</text>
+<rect fill="#fff" height="70" rx="6" stroke="#1F5F7A" stroke-width="1.4" width="270" x="310" y="170"></rect>
+<text fill="#1F5F7A" font-size="10.5" font-weight="700" x="324" y="190">Rhino 8</text>
+<text font-size="9.5" x="324" y="207">.NET moderne par défaut ; peut repasser</text>
+<text font-size="9.5" x="324" y="222">en 4.8 (commande SetDotNetRuntime).</text>
+<!-- projets -->
+<text fill="#6B2C7A" font-size="10" font-weight="700" letter-spacing="1" x="30" y="270">TES TROIS PROJETS</text>
+<g font-size="9.5">
+<rect fill="#fff" height="124" rx="6" stroke="#6B2C7A" stroke-width="1.4" width="176" x="30" y="280"></rect>
+<text fill="#6B2C7A" font-size="10.5" font-weight="700" x="42" y="300">Cuttlefish</text>
+<text class="mono" style="font-size:9px" x="42" y="318">net48</text>
+<text x="42" y="336">C# 7.3 par défaut,</text>
+<text x="42" y="350">Grasshopper 7 en référence</text>
+<text x="42" y="368">tourne dans Rhino 7 et</text>
+<text x="42" y="382">dans Rhino 8 (il charge</text>
+<text x="42" y="396">aussi les anciens plugins)</text>
+<rect fill="#fff" height="124" rx="6" stroke="#1F5F7A" stroke-width="1.4" width="176" x="212" y="280"></rect>
+<text fill="#1F5F7A" font-size="10.5" font-weight="700" x="224" y="300">SnapSet</text>
+<text class="mono" style="font-size:9px" x="224" y="318">net7.0-windows</text>
+<text x="224" y="336">LangVersion latest,</text>
+<text x="224" y="350">RhinoCommon pris dans</text>
+<text x="224" y="364">l'installation de Rhino 8</text>
+<text x="224" y="382">Rhino 8 seulement,</text>
+<text x="224" y="396">Windows seulement</text>
+<rect fill="#fff" height="124" rx="6" stroke="#2E7D32" stroke-width="1.4" width="186" x="394" y="280"></rect>
+<text fill="#2E7D32" font-size="10.5" font-weight="700" x="406" y="300">Magpie</text>
+<text class="mono" style="font-size:9px" x="406" y="318">net7.0-windows;net7.0</text>
+<text x="406" y="336">deux cibles d'un coup :</text>
+<text x="406" y="350">la seconde, sans Windows,</text>
+<text x="406" y="364">prépare macOS (issue #27)</text>
+<text x="406" y="382">Rhino 8 seulement,</text>
+<text x="406" y="396">Grasshopper 8 en référence</text>
+</g>
+</svg>
+<div class="encadre piege" style="margin-top:4mm">
+<span class="titre">Piège courant</span>
     Croire qu'une cible plus récente « marche partout ». Un .gha compilé pour <code>net7.0-windows</code> ne se charge pas dans Rhino 7, ni dans un Rhino 8 qu'on a repassé en .NET Framework. À l'inverse, Cuttlefish en <code>net48</code> se charge dans les deux : viser l'ancien, c'est élargir le public.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 04 · .NET : runtime, assemblies et versions</div>
+<div class="folio">2</div>
+<div class="pied">Cours 04 · .NET : runtime, assemblies et versions</div>
 </section>
-
 <!-- ============ PAGE 3 · DANS UNE ASSEMBLY ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 04</b></div>
-  <p class="rubrique">Schéma 2 · Ouvrir une assembly</p>
-  <h2>Un .gha est un .dll qui a changé de nom</h2>
-  <p style="max-width:165mm">Le projet demande <code>&lt;TargetExt&gt;.gha&lt;/TargetExt&gt;</code> : c'est tout ce qui distingue un plugin Grasshopper d'une bibliothèque .NET ordinaire. Voici ce qu'on trouve dedans.</p>
-
-  <svg viewBox="0 0 600 360" width="100%" style="margin-top:2mm">
-    <rect x="0" y="0" width="600" height="360" fill="#EFE9E1"/>
-    <rect x="20" y="20" width="300" height="320" rx="8" fill="#fff" stroke="#6B2C7A" stroke-width="2"/>
-    <text x="36" y="44" font-size="12" font-weight="700" fill="#6B2C7A">MagpieApprenant.gha</text>
-    <!-- couches -->
-    <rect x="36" y="58" width="268" height="46" rx="4" fill="#F1E6F5" stroke="#7B1FA2"/>
-    <text x="48" y="77" font-size="10" font-weight="700" fill="#7B1FA2">identité</text>
-    <text x="48" y="93" class="mono" style="font-size:8.6px">MagpieApprenant, Version=0.1.5.0</text>
-    <rect x="36" y="112" width="268" height="58" rx="4" fill="#E5EEF9" stroke="#1565C0"/>
-    <text x="48" y="131" font-size="10" font-weight="700" fill="#1565C0">métadonnées</text>
-    <text x="48" y="147" font-size="9.5">la liste des types, de leurs membres,</text>
-    <text x="48" y="161" font-size="9.5">et des assemblies dont il a besoin</text>
-    <rect x="36" y="178" width="268" height="46" rx="4" fill="#E8F3E8" stroke="#2E7D32"/>
-    <text x="48" y="197" font-size="10" font-weight="700" fill="#2E7D32">le code, en IL</text>
-    <text x="48" y="213" font-size="9.5">les corps de méthodes, à traduire au JIT</text>
-    <rect x="36" y="232" width="268" height="94" rx="4" fill="#FCEDE2" stroke="#E65100"/>
-    <text x="48" y="251" font-size="10" font-weight="700" fill="#E65100">ressources embarquées</text>
-    <text x="48" y="267" font-size="9.5">icônes, gabarit de certificat .3dm,</text>
-    <text x="48" y="281" font-size="9.5">parcours de base… et une assembly</text>
-    <text x="48" y="295" font-size="9.5">entière : <tspan font-weight="700">Magpie.Core.dll</tspan>, rangée</text>
-    <text x="48" y="309" font-size="9.5">comme un simple fichier (page 5)</text>
-
-    <!-- références -->
-    <text x="350" y="44" font-size="10" font-weight="700" fill="#2B2F33" letter-spacing="1">CE QU'IL RÉFÉRENCE</text>
-    <rect x="350" y="58" width="230" height="60" rx="6" fill="#fff" stroke="#1F5F7A" stroke-width="1.4"/>
-    <text x="362" y="78" font-size="10" font-weight="700" fill="#1F5F7A">RhinoCommon, Grasshopper</text>
-    <text x="362" y="94" font-size="9.5">fournies par Rhino : ne pas</text>
-    <text x="362" y="108" font-size="9.5">les copier à côté du plugin</text>
-    <path d="M304 140 C 330 140, 330 90, 346 90" stroke="#1565C0" stroke-width="1.3" fill="none" stroke-dasharray="4 3"/>
-    <rect x="350" y="128" width="230" height="60" rx="6" fill="#fff" stroke="#6D4C41" stroke-width="1.4"/>
-    <text x="362" y="148" font-size="10" font-weight="700" fill="#6D4C41">Newtonsoft.Json 13.0.4</text>
-    <text x="362" y="164" font-size="9.5">un paquet NuGet tiers : lui</text>
-    <text x="362" y="178" font-size="9.5">doit voyager avec le plugin</text>
-    <path d="M304 150 H 346" stroke="#1565C0" stroke-width="1.3" fill="none" stroke-dasharray="4 3"/>
-
-    <rect x="350" y="206" width="230" height="120" rx="6" fill="#2B2F33"/>
-    <text x="362" y="226" font-size="10" font-weight="700" fill="#fff">Dans le .csproj</text>
-    <text x="362" y="246" class="mono" style="font-size:8.4px" fill="#FFE7B3">ExcludeAssets="runtime"</text>
-    <text x="362" y="260" font-size="9" fill="#fff">compile contre Grasshopper,</text>
-    <text x="362" y="273" font-size="9" fill="#fff">mais n'en copie pas la DLL</text>
-    <text x="362" y="294" class="mono" style="font-size:8.4px" fill="#FFE7B3">Private="false"</text>
-    <text x="362" y="308" font-size="9" fill="#fff">même idée pour une référence</text>
-    <text x="362" y="321" font-size="9" fill="#fff">directe (SnapSet, Magpie.Core)</text>
-  </svg>
-
-  <div class="deuxcol" style="margin-top:4mm; gap:6mm">
-    <div class="encadre" style="margin:0">
-      <span class="titre">La version d'assembly</span>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 04</b></div>
+<p class="rubrique">Schéma 2 · Ouvrir une assembly</p>
+<h2>Un .gha est un .dll qui a changé de nom</h2>
+<p style="max-width:165mm">Le projet demande <code>&lt;TargetExt&gt;.gha&lt;/TargetExt&gt;</code> : c'est tout ce qui distingue un plugin Grasshopper d'une bibliothèque .NET ordinaire. Voici ce qu'on trouve dedans.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 360" width="100%">
+<rect fill="#EFE9E1" height="360" width="600" x="0" y="0"></rect>
+<rect fill="#fff" height="320" rx="8" stroke="#6B2C7A" stroke-width="2" width="300" x="20" y="20"></rect>
+<text fill="#6B2C7A" font-size="12" font-weight="700" x="36" y="44">MagpieApprenant.gha</text>
+<!-- couches -->
+<rect fill="#F1E6F5" height="46" rx="4" stroke="#7B1FA2" width="268" x="36" y="58"></rect>
+<text fill="#7B1FA2" font-size="10" font-weight="700" x="48" y="77">identité</text>
+<text class="mono" style="font-size:8.6px" x="48" y="93">MagpieApprenant, Version=0.1.5.0</text>
+<rect fill="#E5EEF9" height="58" rx="4" stroke="#1565C0" width="268" x="36" y="112"></rect>
+<text fill="#1565C0" font-size="10" font-weight="700" x="48" y="131">métadonnées</text>
+<text font-size="9.5" x="48" y="147">la liste des types, de leurs membres,</text>
+<text font-size="9.5" x="48" y="161">et des assemblies dont il a besoin</text>
+<rect fill="#E8F3E8" height="46" rx="4" stroke="#2E7D32" width="268" x="36" y="178"></rect>
+<text fill="#2E7D32" font-size="10" font-weight="700" x="48" y="197">le code, en IL</text>
+<text font-size="9.5" x="48" y="213">les corps de méthodes, à traduire au JIT</text>
+<rect fill="#FCEDE2" height="94" rx="4" stroke="#E65100" width="268" x="36" y="232"></rect>
+<text fill="#E65100" font-size="10" font-weight="700" x="48" y="251">ressources embarquées</text>
+<text font-size="9.5" x="48" y="267">icônes, gabarit de certificat .3dm,</text>
+<text font-size="9.5" x="48" y="281">parcours de base… et une assembly</text>
+<text font-size="9.5" x="48" y="295">entière : <tspan font-weight="700">Magpie.Core.dll</tspan>, rangée</text>
+<text font-size="9.5" x="48" y="309">comme un simple fichier (page 5)</text>
+<!-- références -->
+<text fill="#2B2F33" font-size="10" font-weight="700" letter-spacing="1" x="350" y="44">CE QU'IL RÉFÉRENCE</text>
+<rect fill="#fff" height="60" rx="6" stroke="#1F5F7A" stroke-width="1.4" width="230" x="350" y="58"></rect>
+<text fill="#1F5F7A" font-size="10" font-weight="700" x="362" y="78">RhinoCommon, Grasshopper</text>
+<text font-size="9.5" x="362" y="94">fournies par Rhino : ne pas</text>
+<text font-size="9.5" x="362" y="108">les copier à côté du plugin</text>
+<path d="M304 140 C 330 140, 330 90, 346 90" fill="none" stroke="#1565C0" stroke-dasharray="4 3" stroke-width="1.3"></path>
+<rect fill="#fff" height="60" rx="6" stroke="#6D4C41" stroke-width="1.4" width="230" x="350" y="128"></rect>
+<text fill="#6D4C41" font-size="10" font-weight="700" x="362" y="148">Newtonsoft.Json 13.0.4</text>
+<text font-size="9.5" x="362" y="164">un paquet NuGet tiers : lui</text>
+<text font-size="9.5" x="362" y="178">doit voyager avec le plugin</text>
+<path d="M304 150 H 346" fill="none" stroke="#1565C0" stroke-dasharray="4 3" stroke-width="1.3"></path>
+<rect fill="#2B2F33" height="120" rx="6" width="230" x="350" y="206"></rect>
+<text fill="#fff" font-size="10" font-weight="700" x="362" y="226">Dans le .csproj</text>
+<text class="mono" fill="#FFE7B3" style="font-size:8.4px" x="362" y="246">ExcludeAssets="runtime"</text>
+<text fill="#fff" font-size="9" x="362" y="260">compile contre Grasshopper,</text>
+<text fill="#fff" font-size="9" x="362" y="273">mais n'en copie pas la DLL</text>
+<text class="mono" fill="#FFE7B3" style="font-size:8.4px" x="362" y="294">Private="false"</text>
+<text fill="#fff" font-size="9" x="362" y="308">même idée pour une référence</text>
+<text fill="#fff" font-size="9" x="362" y="321">directe (SnapSet, Magpie.Core)</text>
+</svg>
+<div class="deuxcol" style="margin-top:4mm; gap:6mm">
+<div class="encadre" style="margin:0">
+<span class="titre">La version d'assembly</span>
       Quatre nombres, <code>0.1.5.0</code>. Elle sert à .NET pour choisir entre deux copies, et à toi pour savoir ce qui tourne. Magpie l'affiche dans « À propos » ; c'est elle que le chargeur compare page 5.
     </div>
-    <div class="encadre piege" style="margin:0">
-      <span class="titre">Piège courant</span>
+<div class="encadre piege" style="margin:0">
+<span class="titre">Piège courant</span>
       Copier <code>Grasshopper.dll</code> dans le dossier du plugin. Rhino a déjà la sienne en mémoire ; une seconde copie crée deux types <code>GH_Component</code> distincts, et plus rien ne se reconnaît.
     </div>
-  </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 04 · .NET : runtime, assemblies et versions</div>
+</div>
+<div class="folio">3</div>
+<div class="pied">Cours 04 · .NET : runtime, assemblies et versions</div>
 </section>
-
 <!-- ============ PAGE 4 · LE CHARGEMENT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 04</b></div>
-  <p class="rubrique">Schéma 3 · Le chargement dans Rhino</p>
-  <h2>Chargée une fois, gardée jusqu'à la fermeture</h2>
-  <p style="max-width:165mm">Au démarrage de Grasshopper, chaque .gha des dossiers de bibliothèques passe par les mêmes étapes. Quand une dépendance manque, .NET pose une question, et un plugin peut y répondre.</p>
-
-  <svg viewBox="0 0 600 380" width="100%" style="margin-top:2mm">
-    <defs><marker id="a4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2B2F33"/></marker></defs>
-    <rect x="0" y="0" width="600" height="380" fill="#EFE9E1"/>
-    <g font-size="10">
-      <!-- 1 -->
-      <circle cx="30" cy="38" r="11" fill="#6B2C7A"/><text x="30" y="42" text-anchor="middle" fill="#fff" font-weight="700">1</text>
-      <rect x="50" y="18" width="290" height="40" rx="5" fill="#fff" stroke="#6B2C7A"/>
-      <text x="62" y="35" font-weight="700">Grasshopper parcourt Libraries</text>
-      <text x="62" y="50" font-size="9.5" fill="#2B2F33">%APPDATA%\Grasshopper\Libraries et les dossiers ajoutés</text>
-      <path d="M195 60 V 74" stroke="#2B2F33" stroke-width="1.3" marker-end="url(#a4)"/>
-      <!-- 2 -->
-      <circle cx="30" cy="98" r="11" fill="#6B2C7A"/><text x="30" y="102" text-anchor="middle" fill="#fff" font-weight="700">2</text>
-      <rect x="50" y="78" width="290" height="40" rx="5" fill="#fff" stroke="#6B2C7A"/>
-      <text x="62" y="95" font-weight="700">.NET charge l'assembly</text>
-      <text x="62" y="110" font-size="9.5" fill="#2B2F33">elle entre dans le processus de Rhino</text>
-      <path d="M195 120 V 134" stroke="#2B2F33" stroke-width="1.3" marker-end="url(#a4)"/>
-      <!-- 3 -->
-      <circle cx="30" cy="158" r="11" fill="#6B2C7A"/><text x="30" y="162" text-anchor="middle" fill="#fff" font-weight="700">3</text>
-      <rect x="50" y="138" width="290" height="40" rx="5" fill="#fff" stroke="#6B2C7A"/>
-      <text x="62" y="155" font-weight="700">GH_AssemblyPriority.PriorityLoad</text>
-      <text x="62" y="170" font-size="9.5" fill="#2B2F33">le tout premier code du plugin (cours 07)</text>
-      <path d="M195 180 V 194" stroke="#2B2F33" stroke-width="1.3" marker-end="url(#a4)"/>
-      <!-- 4 -->
-      <circle cx="30" cy="218" r="11" fill="#6B2C7A"/><text x="30" y="222" text-anchor="middle" fill="#fff" font-weight="700">4</text>
-      <rect x="50" y="198" width="290" height="40" rx="5" fill="#fff" stroke="#6B2C7A"/>
-      <text x="62" y="215" font-weight="700">GetExportedTypes, puis les composants</text>
-      <text x="62" y="230" font-size="9.5" fill="#2B2F33">chaque GH_Component public est inscrit au ruban</text>
-
-      <!-- dépendance manquante -->
-      <path d="M342 218 H 372" stroke="#C62828" stroke-width="1.4" marker-end="url(#a4)"/>
-      <rect x="376" y="186" width="210" height="64" rx="6" fill="#fff" stroke="#C62828" stroke-width="1.5"/>
-      <text x="388" y="205" font-weight="700" fill="#C62828">Il manque Magpie.Core !</text>
-      <text x="388" y="221" font-size="9.5">.NET déclenche l'événement</text>
-      <text x="388" y="236" class="mono" style="font-size:9px">AssemblyResolve</text>
-      <path d="M480 252 V 270" stroke="#2B2F33" stroke-width="1.3" marker-end="url(#a4)"/>
-      <rect x="376" y="274" width="210" height="64" rx="6" fill="#2E7D32"/>
-      <text x="388" y="293" font-weight="700" fill="#fff">Un abonné répond</text>
-      <text x="388" y="309" font-size="9.5" fill="#fff">« tiens, la voici » : sinon le</text>
-      <text x="388" y="323" font-size="9.5" fill="#fff">plugin entier est écarté</text>
-      <path d="M342 150 C 420 150, 478 140, 480 182" stroke="#2E7D32" stroke-width="1.3" stroke-dasharray="4 3" fill="none" marker-end="url(#a4)"/>
-      <text x="400" y="138" font-size="9" fill="#2E7D32">branché à l'étape 3</text>
-    </g>
-
-    <!-- règle -->
-    <rect x="50" y="262" width="290" height="100" rx="6" fill="#2B2F33"/>
-    <text x="62" y="282" font-size="10" font-weight="700" fill="#FFE7B3">Une règle de .NET</text>
-    <text x="62" y="300" font-size="9.5" fill="#fff">Une assembly chargée ne se décharge pas</text>
-    <text x="62" y="315" font-size="9.5" fill="#fff">(pas dans le contexte par défaut). Nouvelle</text>
-    <text x="62" y="330" font-size="9.5" fill="#fff">version du .gha : il faut redémarrer Rhino.</text>
-    <text x="62" y="350" font-size="9" fill="#B5AEA5">SnapSet en a fait une règle : « pas de greffe à chaud ».</text>
-  </svg>
-
-  <div class="encadre piege" style="margin-top:4mm">
-    <span class="titre">Piège courant : deux versions d'une même dépendance</span>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 04</b></div>
+<p class="rubrique">Schéma 3 · Le chargement dans Rhino</p>
+<h2>Chargée une fois, gardée jusqu'à la fermeture</h2>
+<p style="max-width:165mm">Au démarrage de Grasshopper, chaque .gha des dossiers de bibliothèques passe par les mêmes étapes. Quand une dépendance manque, .NET pose une question, et un plugin peut y répondre.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 380" width="100%">
+<defs><marker id="a4" markerheight="7" markerwidth="7" orient="auto" refx="9" refy="5" viewbox="0 0 10 10"><path d="M0 0 L10 5 L0 10 z" fill="#2B2F33"></path></marker></defs>
+<rect fill="#EFE9E1" height="380" width="600" x="0" y="0"></rect>
+<g font-size="10">
+<!-- 1 -->
+<circle cx="30" cy="38" fill="#6B2C7A" r="11"></circle><text fill="#fff" font-weight="700" text-anchor="middle" x="30" y="42">1</text>
+<rect fill="#fff" height="40" rx="5" stroke="#6B2C7A" width="290" x="50" y="18"></rect>
+<text font-weight="700" x="62" y="35">Grasshopper parcourt Libraries</text>
+<text fill="#2B2F33" font-size="9.5" x="62" y="50">%APPDATA%\Grasshopper\Libraries et les dossiers ajoutés</text>
+<path d="M195 60 V 74" marker-end="url(#a4)" stroke="#2B2F33" stroke-width="1.3"></path>
+<!-- 2 -->
+<circle cx="30" cy="98" fill="#6B2C7A" r="11"></circle><text fill="#fff" font-weight="700" text-anchor="middle" x="30" y="102">2</text>
+<rect fill="#fff" height="40" rx="5" stroke="#6B2C7A" width="290" x="50" y="78"></rect>
+<text font-weight="700" x="62" y="95">.NET charge l'assembly</text>
+<text fill="#2B2F33" font-size="9.5" x="62" y="110">elle entre dans le processus de Rhino</text>
+<path d="M195 120 V 134" marker-end="url(#a4)" stroke="#2B2F33" stroke-width="1.3"></path>
+<!-- 3 -->
+<circle cx="30" cy="158" fill="#6B2C7A" r="11"></circle><text fill="#fff" font-weight="700" text-anchor="middle" x="30" y="162">3</text>
+<rect fill="#fff" height="40" rx="5" stroke="#6B2C7A" width="290" x="50" y="138"></rect>
+<text font-weight="700" x="62" y="155">GH_AssemblyPriority.PriorityLoad</text>
+<text fill="#2B2F33" font-size="9.5" x="62" y="170">le tout premier code du plugin (cours 07)</text>
+<path d="M195 180 V 194" marker-end="url(#a4)" stroke="#2B2F33" stroke-width="1.3"></path>
+<!-- 4 -->
+<circle cx="30" cy="218" fill="#6B2C7A" r="11"></circle><text fill="#fff" font-weight="700" text-anchor="middle" x="30" y="222">4</text>
+<rect fill="#fff" height="40" rx="5" stroke="#6B2C7A" width="290" x="50" y="198"></rect>
+<text font-weight="700" x="62" y="215">GetExportedTypes, puis les composants</text>
+<text fill="#2B2F33" font-size="9.5" x="62" y="230">chaque GH_Component public est inscrit au ruban</text>
+<!-- dépendance manquante -->
+<path d="M342 218 H 372" marker-end="url(#a4)" stroke="#C62828" stroke-width="1.4"></path>
+<rect fill="#fff" height="64" rx="6" stroke="#C62828" stroke-width="1.5" width="210" x="376" y="186"></rect>
+<text fill="#C62828" font-weight="700" x="388" y="205">Il manque Magpie.Core !</text>
+<text font-size="9.5" x="388" y="221">.NET déclenche l'événement</text>
+<text class="mono" style="font-size:9px" x="388" y="236">AssemblyResolve</text>
+<path d="M480 252 V 270" marker-end="url(#a4)" stroke="#2B2F33" stroke-width="1.3"></path>
+<rect fill="#2E7D32" height="64" rx="6" width="210" x="376" y="274"></rect>
+<text fill="#fff" font-weight="700" x="388" y="293">Un abonné répond</text>
+<text fill="#fff" font-size="9.5" x="388" y="309">« tiens, la voici » : sinon le</text>
+<text fill="#fff" font-size="9.5" x="388" y="323">plugin entier est écarté</text>
+<path d="M342 150 C 420 150, 478 140, 480 182" fill="none" marker-end="url(#a4)" stroke="#2E7D32" stroke-dasharray="4 3" stroke-width="1.3"></path>
+<text fill="#2E7D32" font-size="9" x="400" y="138">branché à l'étape 3</text>
+</g>
+<!-- règle -->
+<rect fill="#2B2F33" height="100" rx="6" width="290" x="50" y="262"></rect>
+<text fill="#FFE7B3" font-size="10" font-weight="700" x="62" y="282">Une règle de .NET</text>
+<text fill="#fff" font-size="9.5" x="62" y="300">Une assembly chargée ne se décharge pas</text>
+<text fill="#fff" font-size="9.5" x="62" y="315">(pas dans le contexte par défaut). Nouvelle</text>
+<text fill="#fff" font-size="9.5" x="62" y="330">version du .gha : il faut redémarrer Rhino.</text>
+<text fill="#B5AEA5" font-size="9" x="62" y="350">SnapSet en a fait une règle : « pas de greffe à chaud ».</text>
+</svg>
+<div class="encadre piege" style="margin-top:4mm">
+<span class="titre">Piège courant : deux versions d'une même dépendance</span>
     Deux plugins embarquent chacun leur Newtonsoft.Json, en versions différentes. Le premier chargé gagne pour toute la session ; le second tourne avec une version qu'il n'a pas choisie. C'est le problème que le chargeur de Magpie règle pour son propre Core, en prenant toujours la plus récente.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 04 · .NET : runtime, assemblies et versions</div>
+<div class="folio">4</div>
+<div class="pied">Cours 04 · .NET : runtime, assemblies et versions</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 04</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>Le chargeur de Magpie, ou répondre à .NET</h2>
-  <p style="max-width:165mm">Chaque .gha de Magpie embarque Magpie.Core.dll en ressource. Quand .NET le réclame, le chargeur cherche toutes les copies installées et charge la plus récente, une seule fois pour tous.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 04</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>Le chargeur de Magpie, ou répondre à .NET</h2>
+<p style="max-width:165mm">Chaque .gha de Magpie embarque Magpie.Core.dll en ressource. Quand .NET le réclame, le chargeur cherche toutes les copies installées et charge la plus récente, une seule fois pour tous.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="n"> </span><span class="cm">// Magpie/plugin/Chargeur/ChargeurCore.cs</span></div>
 <div class="l k4"><span class="n">50</span><span class="kw">public class</span> <span class="ty">ChargeurPriority</span> : <span class="ty">GH_AssemblyPriority</span><span class="rep r4">1</span></div>
-<div class="l k4"><span class="n">52</span>  <span class="kw">public override</span> <span class="ty">GH_LoadingInstruction</span> PriorityLoad()</div>
+<div class="l k4"><span class="n">52</span> <span class="kw">public override</span> <span class="ty">GH_LoadingInstruction</span> PriorityLoad()</div>
 <div class="l k4"><span class="n">54</span>    =&gt; … ChargeurCore.Initialiser(); …</div>
 <div class="l"><span class="n"> </span> </div>
 <div class="l k2"><span class="n">74</span><span class="kw">internal static void</span> Initialiser()<span class="rep r2">2</span></div>
-<div class="l k2"><span class="n">76</span>  <span class="kw">lock</span> (Verrou)</div>
-<div class="l k2"><span class="n">78</span>    <span class="kw">if</span> (_branche) <span class="kw">return</span>;</div>
-<div class="l k2"><span class="n">79</span>    <span class="ty">AppDomain</span>.CurrentDomain.AssemblyResolve</div>
+<div class="l k2"><span class="n">76</span> <span class="kw">lock</span> (Verrou)</div>
+<div class="l k2"><span class="n">78</span> <span class="kw">if</span> (_branche) <span class="kw">return</span>;</div>
+<div class="l k2"><span class="n">79</span> <span class="ty">AppDomain</span>.CurrentDomain.AssemblyResolve</div>
 <div class="l k2"><span class="n"> </span>        += SurResolution;</div>
 <div class="l"><span class="n"> </span> </div>
 <div class="l k5"><span class="n">89</span><span class="kw">static</span> <span class="ty">Assembly</span> SurResolution(<span class="kw">object</span> s, <span class="ty">ResolveEventArgs</span> e)<span class="rep r5">3</span></div>
-<div class="l k5"><span class="n">91</span>  <span class="kw">if</span> (<span class="kw">new</span> <span class="ty">AssemblyName</span>(e.Name).Name != NomCore)</div>
-<div class="l k5"><span class="n"> </span>      <span class="kw">return null</span>;   <span class="cm">// pas pour moi</span></div>
+<div class="l k5"><span class="n">91</span> <span class="kw">if</span> (<span class="kw">new</span> <span class="ty">AssemblyName</span>(e.Name).Name != NomCore)</div>
+<div class="l k5"><span class="n"> </span> <span class="kw">return null</span>;   <span class="cm">// pas pour moi</span></div>
 <div class="l"><span class="n"> </span> </div>
 <div class="l k1"><span class="n">102</span><span class="kw">var</span> deja = <span class="ty">AppDomain</span>.CurrentDomain.GetAssemblies()<span class="rep r1">4</span></div>
 <div class="l k1"><span class="n">103</span>    .FirstOrDefault(a =&gt; a.GetName().Name == NomCore);</div>
@@ -328,135 +296,55 @@
 <div class="l k6"><span class="n">112</span><span class="kw">return</span> <span class="ty">AssemblyLoadContext</span>.Default<span class="rep r6">6</span></div>
 <div class="l k6"><span class="n"> </span>    .LoadFromStream(<span class="kw">new</span> <span class="ty">MemoryStream</span>(meilleur.Octets));</div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r4">1</span><b>Le plus tôt possible</b>PriorityLoad est le premier code exécuté (étape 3, page 4). Plus tard, les composants auraient déjà réclamé Core.</li>
-      <li><span class="rep r2">2</span><b>S'abonner à la question</b><em>+=</em> ajoute une réponse à l'événement AssemblyResolve. Le lock et le drapeau évitent de s'abonner deux fois.</li>
-      <li><span class="rep r5">3</span><b>Filtrer</b>.NET pose la question pour toute assembly introuvable. On ne répond que pour Magpie.Core ; null laisse les autres chercher.</li>
-      <li><span class="rep r1">4</span><b>Déjà en mémoire ?</b>Si une autre version de Magpie l'a chargé, on rend le même : un seul moteur, donc une seule session.</li>
-      <li><span class="rep r3">5</span><b>LINQ, cours 03</b>Toutes les copies trouvées, triées de la plus récente à la plus ancienne ; on garde la première.</li>
-      <li><span class="rep r6">6</span><b>Charger depuis des octets</b>Core n'est pas un fichier sur le disque mais une ressource : on le charge depuis la mémoire.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À retenir</span>
+<ul class="notes">
+<li><span class="rep r4">1</span><b>Le plus tôt possible</b>PriorityLoad est le premier code exécuté (étape 3, page 4). Plus tard, les composants auraient déjà réclamé Core.</li>
+<li><span class="rep r2">2</span><b>S'abonner à la question</b><em>+=</em> ajoute une réponse à l'événement AssemblyResolve. Le lock et le drapeau évitent de s'abonner deux fois.</li>
+<li><span class="rep r5">3</span><b>Filtrer</b>.NET pose la question pour toute assembly introuvable. On ne répond que pour Magpie.Core ; null laisse les autres chercher.</li>
+<li><span class="rep r1">4</span><b>Déjà en mémoire ?</b>Si une autre version de Magpie l'a chargé, on rend le même : un seul moteur, donc une seule session.</li>
+<li><span class="rep r3">5</span><b>LINQ, cours 03</b>Toutes les copies trouvées, triées de la plus récente à la plus ancienne ; on garde la première.</li>
+<li><span class="rep r6">6</span><b>Charger depuis des octets</b>Core n'est pas un fichier sur le disque mais une ressource : on le charge depuis la mémoire.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À retenir</span>
     Le commentaire en tête du fichier note la contrepartie : un ancien .gha peut tourner avec un Core plus récent. D'où la règle « Core ne fait qu'ajouter, jamais retirer ni renommer » : c'est de la compatibilité de version, écrite noir sur blanc.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 04 · .NET : runtime, assemblies et versions</div>
+<div class="folio">5</div>
+<div class="pied">Cours 04 · .NET : runtime, assemblies et versions</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 04</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 04</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">Que contient un fichier .gha ?</div><ul>
-      <li><span>A</span>du code machine prêt à exécuter</li><li><span>B</span>de l'IL, des métadonnées et des ressources</li><li><span>C</span>le code source C#</li><li><span>D</span>un installateur</li></ul></div>
 
-    <div class="q"><div class="enonce">Qui traduit l'IL en code machine ?</div><ul>
-      <li><span>A</span>le compilateur C#</li><li><span>B</span>Visual Studio</li><li><span>C</span>le runtime, au premier appel (JIT)</li><li><span>D</span>Grasshopper</li></ul></div>
 
-    <div class="q"><div class="enonce">Quelle cible vise Cuttlefish ?</div><ul>
-      <li><span>A</span>net7.0-windows</li><li><span>B</span>net48</li><li><span>C</span>net8.0</li><li><span>D</span>netstandard2.0</li></ul></div>
 
-    <div class="q"><div class="enonce">Dans quel Rhino se charge un .gha net48 ? <span class="tag" style="color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>Rhino 7</li><li><span>B</span>Rhino 8</li><li><span>C</span>aucun</li><li><span>D</span>Rhino 6 seulement</li></ul></div>
-
-    <div class="q"><div class="enonce">Qu'est-ce qui distingue un .gha d'un .dll ?</div><ul>
-      <li><span>A</span>un format binaire propre à Rhino</li><li><span>B</span>l'extension, choisie par TargetExt</li><li><span>C</span>un chiffrement</li><li><span>D</span>la présence d'icônes</li></ul></div>
-
-    <div class="q"><div class="enonce">Pourquoi <code>ExcludeAssets="runtime"</code> sur Grasshopper ?</div><ul>
-      <li><span>A</span>pour compiler plus vite</li><li><span>B</span>Rhino fournit déjà la DLL ; il ne faut pas la copier</li><li><span>C</span>pour viser macOS</li><li><span>D</span>pour éviter NuGet</li></ul></div>
-
-    <div class="q"><div class="enonce">Installer une nouvelle version d'un .gha pendant que Rhino tourne…</div><ul>
-      <li><span>A</span>la remplace aussitôt</li><li><span>B</span>demande de redémarrer Rhino</li><li><span>C</span>plante Rhino</li><li><span>D</span>la charge en double</li></ul></div>
-
-    <div class="q"><div class="enonce">Quand .NET déclenche-t-il <code>AssemblyResolve</code> ?</div><ul>
-      <li><span>A</span>à chaque appel de méthode</li><li><span>B</span>quand il ne trouve pas une assembly demandée</li><li><span>C</span>au démarrage de Windows</li><li><span>D</span>à la compilation</li></ul></div>
-
-    <div class="q"><div class="enonce">Pourquoi le chargeur s'abonne-t-il dans PriorityLoad ?</div><ul>
-      <li><span>A</span>par habitude</li><li><span>B</span>c'est le premier code du plugin, avant les composants qui réclament Core</li><li><span>C</span>Grasshopper l'interdit ailleurs</li><li><span>D</span>pour l'icône</li></ul></div>
-
-    <div class="q"><div class="enonce">Si deux .gha de Magpie embarquent des Core différents…</div><ul>
-      <li><span>A</span>les deux sont chargés</li><li><span>B</span>le plus récent est chargé, une fois, pour tous</li><li><span>C</span>le plus ancien gagne</li><li><span>D</span>Rhino refuse les deux</li></ul></div>
-
-    <div class="q"><div class="enonce">Langage et runtime : <span class="tag" style="color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>C# 7.3 est la version par défaut pour net48</li><li><span>B</span>LangVersion latest change le runtime</li><li><span>C</span>la cible choisit le runtime</li><li><span>D</span>ce sont deux choses distinctes</li></ul></div>
-
-    <div class="q"><div class="enonce">Pourquoi Magpie vise-t-il aussi <code>net7.0</code> sans « -windows » ?</div><ul>
-      <li><span>A</span>pour Rhino 7</li><li><span>B</span>pour préparer macOS</li><li><span>C</span>pour le web</li><li><span>D</span>par erreur</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 04 · .NET : runtime, assemblies et versions</div>
+<p class="rubrique" style="">Aide-mémoire · cibles et runtimes</p>
+<table class="aide">
+<thead><tr><th>Cible</th><th>Runtime</th><th>C# par défaut</th><th>Où</th></tr></thead>
+<tbody>
+<tr><td class="c">net48</td><td>.NET Framework 4.8, Windows</td><td>7.3</td><td class="c">Cuttlefish</td></tr>
+<tr><td class="c">net7.0</td><td>.NET 7, toutes plateformes</td><td>11</td><td class="c">Magpie (2e cible)</td></tr>
+<tr><td class="c">net7.0-windows</td><td>.NET 7, API Windows en plus</td><td>11</td><td class="c">SnapSet, Magpie</td></tr>
+<tr><td class="c">LangVersion latest</td><td>inchangé</td><td>la plus récente</td><td class="c">SnapSet</td></tr>
+<tr><td class="c">TargetExt .gha</td><td>inchangé</td><td>—</td><td class="c">les trois</td></tr>
+<tr><td class="c">EnableDynamicLoading</td><td>chargé par un hôte</td><td>—</td><td class="c">Cuttlefish, Magpie</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:6mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Runtime</dt><dd>Le moteur qui charge et exécute le code .NET (ici, dans Rhino).</dd>
+<dt>Assembly</dt><dd>Fichier compilé .dll ou .gha : identité, métadonnées, IL, ressources.</dd>
+<dt>IL</dt><dd>Langage intermédiaire, traduit en code machine par le JIT.</dd>
+<dt>Cible (TFM)</dt><dd>Le runtime visé par le projet : net48, net7.0-windows…</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 05</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 04 · .NET : runtime, assemblies et versions</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET AIDE-MÉMOIRE ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 04</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · B.</b> Identité, métadonnées, IL et ressources. Le code machine n'existe qu'à l'exécution.</div>
-    <div><b>02 · C.</b> Le JIT traduit chaque méthode la première fois qu'elle est appelée.</div>
-    <div><b>03 · B.</b> net48, sans LangVersion : d'où le C# 7.3 du cours 01.</div>
-    <div><b>04 · A et B.</b> Rhino 8 sait encore charger les plugins .NET Framework.</div>
-    <div><b>05 · B.</b> Un .gha est un .dll renommé ; Grasshopper le cherche par son extension.</div>
-    <div><b>06 · B.</b> Une seconde copie créerait des types en double, incompatibles avec ceux de Rhino.</div>
-    <div><b>07 · B.</b> Une assembly chargée reste en mémoire jusqu'à la fermeture.</div>
-    <div><b>08 · B.</b> C'est une question posée aux abonnés : « quelqu'un sait-il où elle est ? ».</div>
-    <div><b>09 · B.</b> Le module initializer, essayé d'abord, passait trop tard (note du 20/10/2026).</div>
-    <div><b>10 · B.</b> Un seul moteur, donc une seule session partagée par les quatre versions.</div>
-    <div><b>11 · A, C et D.</b> LangVersion change le langage accepté, pas le moteur qui exécute.</div>
-    <div><b>12 · B.</b> Rhino 8 Mac tourne en .NET moderne, sans Windows : issue #27.</div>
-  </div>
-
-  <div class="panneau" style="padding:3.5mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:30mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.3pt; line-height:1.45"><b>0 à 6</b> : relis les pages 1 et 2. <b>7 à 9</b> : refais les quatre étapes de la page 4 de mémoire. <b>10 à 12</b> : passe au cours 05, « Construire un projet : solution, csproj, MSBuild, NuGet ».</div>
-  </div>
-
-  <p class="rubrique" style="margin-top:6mm">Aide-mémoire · cibles et runtimes</p>
-  <table class="aide">
-    <thead><tr><th>Cible</th><th>Runtime</th><th>C# par défaut</th><th>Où</th></tr></thead>
-    <tbody>
-      <tr><td class="c">net48</td><td>.NET Framework 4.8, Windows</td><td>7.3</td><td class="c">Cuttlefish</td></tr>
-      <tr><td class="c">net7.0</td><td>.NET 7, toutes plateformes</td><td>11</td><td class="c">Magpie (2e cible)</td></tr>
-      <tr><td class="c">net7.0-windows</td><td>.NET 7, API Windows en plus</td><td>11</td><td class="c">SnapSet, Magpie</td></tr>
-      <tr><td class="c">LangVersion latest</td><td>inchangé</td><td>la plus récente</td><td class="c">SnapSet</td></tr>
-      <tr><td class="c">TargetExt .gha</td><td>inchangé</td><td>—</td><td class="c">les trois</td></tr>
-      <tr><td class="c">EnableDynamicLoading</td><td>chargé par un hôte</td><td>—</td><td class="c">Cuttlefish, Magpie</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:6mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Runtime</dt><dd>Le moteur qui charge et exécute le code .NET (ici, dans Rhino).</dd>
-    <dt>Assembly</dt><dd>Fichier compilé .dll ou .gha : identité, métadonnées, IL, ressources.</dd>
-    <dt>IL</dt><dd>Langage intermédiaire, traduit en code machine par le JIT.</dd>
-    <dt>Cible (TFM)</dt><dd>Le runtime visé par le projet : net48, net7.0-windows…</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 05</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 04 · .NET : runtime, assemblies et versions</div>
-</section>
-
 </body>
 </html>

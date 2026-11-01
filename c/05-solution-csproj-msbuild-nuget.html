@@ -1,335 +1,306 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>05 · Construire un projet : solution, csproj, MSBuild, NuGet</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-1">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 05</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Construire un projet :<br>solution, csproj, MSBuild</h1>
-  <p class="chapeau">Entre ton code et le .gha, il y a une recette écrite en XML. Elle dit quoi compiler, contre quelles bibliothèques, et quoi faire du résultat. Savoir la lire, c'est comprendre pourquoi un projet compile sur un poste et pas sur un autre.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>55 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>04</b> runtime et assemblies</span>
-    <span class="pastille">Exemples · <b>SnapSet, Magpie</b>, Cuttlefish en contrepoint</span>
-  </div>
-
-  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
-    <svg viewBox="0 0 600 214" width="100%">
-      <defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2B2F33"/></marker></defs>
-      <text x="0" y="14" font-size="10" font-weight="700" fill="#6B2C7A" letter-spacing="1.2">CE QUI SE PASSE QUAND TU LANCES « dotnet build »</text>
-      <g font-size="10">
-        <rect x="0" y="30" width="104" height="70" rx="6" fill="#fff" stroke="#6D4C41" stroke-width="1.4"/>
-        <text x="52" y="52" text-anchor="middle" font-weight="700" fill="#6D4C41">.sln / .slnx</text>
-        <text x="52" y="70" text-anchor="middle" font-size="9">la liste</text>
-        <text x="52" y="83" text-anchor="middle" font-size="9">des projets</text>
-        <path d="M106 65 H 124" stroke="#2B2F33" stroke-width="1.4" marker-end="url(#a1)"/>
-        <rect x="126" y="30" width="104" height="70" rx="6" fill="#fff" stroke="#6B2C7A" stroke-width="1.4"/>
-        <text x="178" y="52" text-anchor="middle" font-weight="700" fill="#6B2C7A">.csproj</text>
-        <text x="178" y="70" text-anchor="middle" font-size="9">la recette</text>
-        <text x="178" y="83" text-anchor="middle" font-size="9">de chaque projet</text>
-        <path d="M232 65 H 250" stroke="#2B2F33" stroke-width="1.4" marker-end="url(#a1)"/>
-        <rect x="252" y="30" width="104" height="70" rx="6" fill="#fff" stroke="#2E7D32" stroke-width="1.4"/>
-        <text x="304" y="52" text-anchor="middle" font-weight="700" fill="#2E7D32">restauration</text>
-        <text x="304" y="70" text-anchor="middle" font-size="9">NuGet apporte</text>
-        <text x="304" y="83" text-anchor="middle" font-size="9">les paquets</text>
-        <path d="M358 65 H 376" stroke="#2B2F33" stroke-width="1.4" marker-end="url(#a1)"/>
-        <rect x="378" y="30" width="104" height="70" rx="6" fill="#fff" stroke="#1565C0" stroke-width="1.4"/>
-        <text x="430" y="52" text-anchor="middle" font-weight="700" fill="#1565C0">compilation</text>
-        <text x="430" y="70" text-anchor="middle" font-size="9">C# vers IL,</text>
-        <text x="430" y="83" text-anchor="middle" font-size="9">dans bin/</text>
-        <path d="M484 65 H 502" stroke="#2B2F33" stroke-width="1.4" marker-end="url(#a1)"/>
-        <rect x="504" y="30" width="96" height="70" rx="6" fill="#6B2C7A"/>
-        <text x="552" y="52" text-anchor="middle" font-weight="700" fill="#fff">cibles</text>
-        <text x="552" y="70" text-anchor="middle" font-size="9" fill="#fff">copier dans</text>
-        <text x="552" y="83" text-anchor="middle" font-size="9" fill="#fff">Libraries…</text>
-      </g>
-      <rect x="126" y="112" width="474" height="30" rx="15" fill="#2B2F33"/>
-      <text x="363" y="132" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">MSBuild fait tout cela : il lit le XML, l'évalue et exécute les étapes</text>
-      <text x="0" y="170" font-size="10" fill="#2B2F33">Visual Studio, VS Code et la ligne de commande appellent tous le même MSBuild :</text>
-      <text x="0" y="185" font-size="10" fill="#2B2F33">un projet qui compile dans l'un compile dans les autres, à environnement égal.</text>
-      <text x="0" y="204" font-size="10" fill="#6B7378">L'environnement, justement, est ce qui varie d'un poste à l'autre (page 4).</text>
-    </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>La <b>solution</b> liste les projets ; chaque <b>.csproj</b> décrit, en propriétés, listes d'éléments et étapes, comment produire une assembly ; <b>MSBuild</b> l'exécute ; <b>NuGet</b> apporte les bibliothèques tierces.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Un livre de cuisine. La solution est le sommaire ; chaque csproj est une recette (ingrédients, quantités, étapes) ; MSBuild est le cuisinier ; NuGet est l'épicier qui livre ce que le placard ne contient pas.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>lire un .csproj : propriétés, éléments, cibles, et la syntaxe <code>$(…)</code> et <code>@(…)</code> ;</li>
-        <li>distinguer les trois façons de référencer Grasshopper et leurs conséquences ;</li>
-        <li>suivre la cible de déploiement de SnapSet et dire pourquoi elle échoue volontairement.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:5mm">
-    <span class="titre">À retenir</span>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 05</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Construire un projet :<br/>solution, csproj, MSBuild</h1>
+<p class="chapeau">Entre ton code et le .gha, il y a une recette écrite en XML. Elle dit quoi compiler, contre quelles bibliothèques, et quoi faire du résultat. Savoir la lire, c'est comprendre pourquoi un projet compile sur un poste et pas sur un autre.</p>
+<div class="meta">
+<span class="pastille"><b>55 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>04</b> runtime et assemblies</span>
+<span class="pastille">Exemples · <b>SnapSet, Magpie</b>, Cuttlefish en contrepoint</span>
+</div>
+<div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+<svg viewbox="0 0 600 214" width="100%">
+<defs><marker id="a1" markerheight="7" markerwidth="7" orient="auto" refx="9" refy="5" viewbox="0 0 10 10"><path d="M0 0 L10 5 L0 10 z" fill="#2B2F33"></path></marker></defs>
+<text fill="#6B2C7A" font-size="10" font-weight="700" letter-spacing="1.2" x="0" y="14">CE QUI SE PASSE QUAND TU LANCES « dotnet build »</text>
+<g font-size="10">
+<rect fill="#fff" height="70" rx="6" stroke="#6D4C41" stroke-width="1.4" width="104" x="0" y="30"></rect>
+<text fill="#6D4C41" font-weight="700" text-anchor="middle" x="52" y="52">.sln / .slnx</text>
+<text font-size="9" text-anchor="middle" x="52" y="70">la liste</text>
+<text font-size="9" text-anchor="middle" x="52" y="83">des projets</text>
+<path d="M106 65 H 124" marker-end="url(#a1)" stroke="#2B2F33" stroke-width="1.4"></path>
+<rect fill="#fff" height="70" rx="6" stroke="#6B2C7A" stroke-width="1.4" width="104" x="126" y="30"></rect>
+<text fill="#6B2C7A" font-weight="700" text-anchor="middle" x="178" y="52">.csproj</text>
+<text font-size="9" text-anchor="middle" x="178" y="70">la recette</text>
+<text font-size="9" text-anchor="middle" x="178" y="83">de chaque projet</text>
+<path d="M232 65 H 250" marker-end="url(#a1)" stroke="#2B2F33" stroke-width="1.4"></path>
+<rect fill="#fff" height="70" rx="6" stroke="#2E7D32" stroke-width="1.4" width="104" x="252" y="30"></rect>
+<text fill="#2E7D32" font-weight="700" text-anchor="middle" x="304" y="52">restauration</text>
+<text font-size="9" text-anchor="middle" x="304" y="70">NuGet apporte</text>
+<text font-size="9" text-anchor="middle" x="304" y="83">les paquets</text>
+<path d="M358 65 H 376" marker-end="url(#a1)" stroke="#2B2F33" stroke-width="1.4"></path>
+<rect fill="#fff" height="70" rx="6" stroke="#1565C0" stroke-width="1.4" width="104" x="378" y="30"></rect>
+<text fill="#1565C0" font-weight="700" text-anchor="middle" x="430" y="52">compilation</text>
+<text font-size="9" text-anchor="middle" x="430" y="70">C# vers IL,</text>
+<text font-size="9" text-anchor="middle" x="430" y="83">dans bin/</text>
+<path d="M484 65 H 502" marker-end="url(#a1)" stroke="#2B2F33" stroke-width="1.4"></path>
+<rect fill="#6B2C7A" height="70" rx="6" width="96" x="504" y="30"></rect>
+<text fill="#fff" font-weight="700" text-anchor="middle" x="552" y="52">cibles</text>
+<text fill="#fff" font-size="9" text-anchor="middle" x="552" y="70">copier dans</text>
+<text fill="#fff" font-size="9" text-anchor="middle" x="552" y="83">Libraries…</text>
+</g>
+<rect fill="#2B2F33" height="30" rx="15" width="474" x="126" y="112"></rect>
+<text fill="#fff" font-size="10" font-weight="700" text-anchor="middle" x="363" y="132">MSBuild fait tout cela : il lit le XML, l'évalue et exécute les étapes</text>
+<text fill="#2B2F33" font-size="10" x="0" y="170">Visual Studio, VS Code et la ligne de commande appellent tous le même MSBuild :</text>
+<text fill="#2B2F33" font-size="10" x="0" y="185">un projet qui compile dans l'un compile dans les autres, à environnement égal.</text>
+<text fill="#6B7378" font-size="10" x="0" y="204">L'environnement, justement, est ce qui varie d'un poste à l'autre (page 4).</text>
+</svg>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>La <b>solution</b> liste les projets ; chaque <b>.csproj</b> décrit, en propriétés, listes d'éléments et étapes, comment produire une assembly ; <b>MSBuild</b> l'exécute ; <b>NuGet</b> apporte les bibliothèques tierces.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Un livre de cuisine. La solution est le sommaire ; chaque csproj est une recette (ingrédients, quantités, étapes) ; MSBuild est le cuisinier ; NuGet est l'épicier qui livre ce que le placard ne contient pas.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>lire un .csproj : propriétés, éléments, cibles, et la syntaxe <code>$(…)</code> et <code>@(…)</code> ;</li>
+<li>distinguer les trois façons de référencer Grasshopper et leurs conséquences ;</li>
+<li>suivre la cible de déploiement de SnapSet et dire pourquoi elle échoue volontairement.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:5mm">
+<span class="titre">À retenir</span>
     Un .csproj moderne (« SDK-style ») est court parce que le SDK fournit les valeurs par défaut : tous les .cs du dossier sont compilés, sans qu'on les liste. Ce qui reste dans le fichier, c'est ce qui s'écarte de la norme.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 05 · Construire un projet : solution, csproj, MSBuild, NuGet</div>
+<div class="folio">1</div>
+<div class="pied">Cours 05 · Construire un projet : solution, csproj, MSBuild, NuGet</div>
 </section>
-
 <!-- ============ PAGE 2 · SOLUTIONS ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 05</b></div>
-  <p class="rubrique">Schéma 1 · Solutions et dépendances</p>
-  <h2>Trois dépôts, trois découpages</h2>
-  <p style="max-width:165mm">Une solution ne compile rien : elle regroupe des projets pour les ouvrir et les construire ensemble. Ce sont les références entre projets qui fixent l'ordre de construction. Flèche : « dépend de ».</p>
-
-  <svg viewBox="0 0 600 430" width="100%" style="margin-top:2mm">
-    <defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2B2F33"/></marker></defs>
-    <rect x="0" y="0" width="600" height="430" fill="#EFE9E1"/>
-
-    <!-- Cuttlefish -->
-    <text x="16" y="26" font-size="10.5" font-weight="700" fill="#6B2C7A">Cuttlefish.slnx</text>
-    <rect x="16" y="38" width="150" height="40" rx="5" fill="#fff" stroke="#6B2C7A"/>
-    <text x="28" y="56" font-size="10" font-weight="700">Cuttlefish.csproj</text>
-    <text x="28" y="70" font-size="9" fill="#6B7378">→ Cuttlefish.gha</text>
-    <text x="16" y="100" font-size="9.5">Un seul projet : tout est</text>
-    <text x="16" y="114" font-size="9.5">dans le même .gha, les</text>
-    <text x="16" y="128" font-size="9.5">calculs communs dans Outils.</text>
-
-    <!-- SnapSet -->
-    <text x="200" y="26" font-size="10.5" font-weight="700" fill="#1F5F7A">SnapSet.sln</text>
-    <rect x="200" y="38" width="180" height="40" rx="5" fill="#fff" stroke="#1F5F7A"/>
-    <text x="212" y="56" font-size="10" font-weight="700">SnapSet.Conception</text>
-    <text x="212" y="70" font-size="9" fill="#6B7378">→ SnapSet.Conception.gha</text>
-    <path d="M290 80 V 100" stroke="#2B2F33" stroke-width="1.4" marker-end="url(#a2)"/>
-    <rect x="200" y="104" width="180" height="40" rx="5" fill="#fff" stroke="#1F5F7A"/>
-    <text x="212" y="122" font-size="10" font-weight="700">SnapSet.Constituants</text>
-    <text x="212" y="136" font-size="9" fill="#6B7378">→ SnapSet.Constituants.dll</text>
-    <path d="M290 146 V 166" stroke="#2B2F33" stroke-width="1.4" marker-end="url(#a2)"/>
-    <rect x="200" y="170" width="180" height="40" rx="5" fill="#fff" stroke="#7B1FA2" stroke-dasharray="4 3"/>
-    <text x="212" y="188" font-size="10" font-weight="700" fill="#7B1FA2">schema/*.cs</text>
-    <text x="212" y="202" font-size="9" fill="#6B7378">compilés par lien, une fois</text>
-    <rect x="200" y="226" width="180" height="40" rx="5" fill="#fff" stroke="#2E7D32"/>
-    <text x="212" y="244" font-size="10" font-weight="700" fill="#2E7D32">tests/ResolutionTests</text>
-    <text x="212" y="258" font-size="9" fill="#6B7378">xUnit, lie la logique pure</text>
-    <path d="M382 246 C 420 246, 420 124, 384 124" stroke="#2E7D32" stroke-width="1.2" stroke-dasharray="4 3" fill="none" marker-end="url(#a2)"/>
-
-    <!-- Magpie -->
-    <text x="420" y="26" font-size="10.5" font-weight="700" fill="#2E7D32">Magpie.slnx</text>
-    <g font-size="9.5">
-      <rect x="420" y="38" width="80" height="30" rx="4" fill="#fff" stroke="#1565C0"/><text x="460" y="57" text-anchor="middle" font-weight="700">Apprenant</text>
-      <rect x="504" y="38" width="80" height="30" rx="4" fill="#fff" stroke="#6D4C41"/><text x="544" y="57" text-anchor="middle" font-weight="700">Auteur</text>
-      <rect x="420" y="74" width="80" height="30" rx="4" fill="#fff" stroke="#00838F"/><text x="460" y="93" text-anchor="middle" font-weight="700">Serveur</text>
-      <rect x="504" y="74" width="80" height="30" rx="4" fill="#fff" stroke="#7B1FA2" stroke-dasharray="4 3"/><text x="544" y="93" text-anchor="middle" font-weight="700">Dev</text>
-    </g>
-    <path d="M502 106 V 134" stroke="#2B2F33" stroke-width="1.4" marker-end="url(#a2)"/>
-    <rect x="420" y="138" width="164" height="40" rx="5" fill="#2E7D32"/>
-    <text x="432" y="156" font-size="10" font-weight="700" fill="#fff">Magpie.Core</text>
-    <text x="432" y="170" font-size="9" fill="#fff">embarqué dans chaque .gha</text>
-    <rect x="420" y="194" width="164" height="72" rx="5" fill="#fff" stroke="#6B2C7A" stroke-dasharray="4 3"/>
-    <text x="432" y="212" font-size="10" font-weight="700" fill="#6B2C7A">Directory.Build.props</text>
-    <text x="432" y="227" font-size="9">cible, version, références :</text>
-    <text x="432" y="240" font-size="9">importé de lui-même par</text>
-    <text x="432" y="253" font-size="9">tout projet sous plugin/</text>
-
-    <!-- bas : format sln vs slnx -->
-    <rect x="16" y="290" width="568" height="124" rx="6" fill="#fff" stroke="#D9D2C8"/>
-    <text x="30" y="310" font-size="10" font-weight="700" fill="#6B2C7A" letter-spacing="1">.SLN ET .SLNX : LE MÊME RÔLE, DEUX FORMATS</text>
-    <text x="30" y="332" class="mono" style="font-size:8.6px" fill="#5E6468">Project("{FAE04EC0-…}") = "SnapSet.Conception",</text>
-    <text x="30" y="346" class="mono" style="font-size:8.6px" fill="#5E6468">  "src\SnapSet.Conception\…csproj", "{1E6B245C-…}"</text>
-    <text x="30" y="360" class="mono" style="font-size:8.6px" fill="#5E6468">EndProject</text>
-    <text x="30" y="384" font-size="9.5">.sln : format texte historique, plein</text>
-    <text x="30" y="398" font-size="9.5">de GUID, illisible à la main (SnapSet).</text>
-    <text x="320" y="332" class="mono" style="font-size:8.6px" fill="#2B2F33">&lt;Solution&gt;</text>
-    <text x="320" y="346" class="mono" style="font-size:8.6px" fill="#2B2F33">  &lt;Project Path="plugin/Magpie.csproj" /&gt;</text>
-    <text x="320" y="360" class="mono" style="font-size:8.6px" fill="#2B2F33">&lt;/Solution&gt;</text>
-    <text x="320" y="384" font-size="9.5">.slnx : XML récent, une ligne par</text>
-    <text x="320" y="398" font-size="9.5">projet (Magpie, Cuttlefish).</text>
-  </svg>
-
-  <div class="encadre piege" style="margin-top:4mm">
-    <span class="titre">Piège courant</span>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 05</b></div>
+<p class="rubrique">Schéma 1 · Solutions et dépendances</p>
+<h2>Trois dépôts, trois découpages</h2>
+<p style="max-width:165mm">Une solution ne compile rien : elle regroupe des projets pour les ouvrir et les construire ensemble. Ce sont les références entre projets qui fixent l'ordre de construction. Flèche : « dépend de ».</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 430" width="100%">
+<defs><marker id="a2" markerheight="7" markerwidth="7" orient="auto" refx="9" refy="5" viewbox="0 0 10 10"><path d="M0 0 L10 5 L0 10 z" fill="#2B2F33"></path></marker></defs>
+<rect fill="#EFE9E1" height="430" width="600" x="0" y="0"></rect>
+<!-- Cuttlefish -->
+<text fill="#6B2C7A" font-size="10.5" font-weight="700" x="16" y="26">Cuttlefish.slnx</text>
+<rect fill="#fff" height="40" rx="5" stroke="#6B2C7A" width="150" x="16" y="38"></rect>
+<text font-size="10" font-weight="700" x="28" y="56">Cuttlefish.csproj</text>
+<text fill="#6B7378" font-size="9" x="28" y="70">→ Cuttlefish.gha</text>
+<text font-size="9.5" x="16" y="100">Un seul projet : tout est</text>
+<text font-size="9.5" x="16" y="114">dans le même .gha, les</text>
+<text font-size="9.5" x="16" y="128">calculs communs dans Outils.</text>
+<!-- SnapSet -->
+<text fill="#1F5F7A" font-size="10.5" font-weight="700" x="200" y="26">SnapSet.sln</text>
+<rect fill="#fff" height="40" rx="5" stroke="#1F5F7A" width="180" x="200" y="38"></rect>
+<text font-size="10" font-weight="700" x="212" y="56">SnapSet.Conception</text>
+<text fill="#6B7378" font-size="9" x="212" y="70">→ SnapSet.Conception.gha</text>
+<path d="M290 80 V 100" marker-end="url(#a2)" stroke="#2B2F33" stroke-width="1.4"></path>
+<rect fill="#fff" height="40" rx="5" stroke="#1F5F7A" width="180" x="200" y="104"></rect>
+<text font-size="10" font-weight="700" x="212" y="122">SnapSet.Constituants</text>
+<text fill="#6B7378" font-size="9" x="212" y="136">→ SnapSet.Constituants.dll</text>
+<path d="M290 146 V 166" marker-end="url(#a2)" stroke="#2B2F33" stroke-width="1.4"></path>
+<rect fill="#fff" height="40" rx="5" stroke="#7B1FA2" stroke-dasharray="4 3" width="180" x="200" y="170"></rect>
+<text fill="#7B1FA2" font-size="10" font-weight="700" x="212" y="188">schema/*.cs</text>
+<text fill="#6B7378" font-size="9" x="212" y="202">compilés par lien, une fois</text>
+<rect fill="#fff" height="40" rx="5" stroke="#2E7D32" width="180" x="200" y="226"></rect>
+<text fill="#2E7D32" font-size="10" font-weight="700" x="212" y="244">tests/ResolutionTests</text>
+<text fill="#6B7378" font-size="9" x="212" y="258">xUnit, lie la logique pure</text>
+<path d="M382 246 C 420 246, 420 124, 384 124" fill="none" marker-end="url(#a2)" stroke="#2E7D32" stroke-dasharray="4 3" stroke-width="1.2"></path>
+<!-- Magpie -->
+<text fill="#2E7D32" font-size="10.5" font-weight="700" x="420" y="26">Magpie.slnx</text>
+<g font-size="9.5">
+<rect fill="#fff" height="30" rx="4" stroke="#1565C0" width="80" x="420" y="38"></rect><text font-weight="700" text-anchor="middle" x="460" y="57">Apprenant</text>
+<rect fill="#fff" height="30" rx="4" stroke="#6D4C41" width="80" x="504" y="38"></rect><text font-weight="700" text-anchor="middle" x="544" y="57">Auteur</text>
+<rect fill="#fff" height="30" rx="4" stroke="#00838F" width="80" x="420" y="74"></rect><text font-weight="700" text-anchor="middle" x="460" y="93">Serveur</text>
+<rect fill="#fff" height="30" rx="4" stroke="#7B1FA2" stroke-dasharray="4 3" width="80" x="504" y="74"></rect><text font-weight="700" text-anchor="middle" x="544" y="93">Dev</text>
+</g>
+<path d="M502 106 V 134" marker-end="url(#a2)" stroke="#2B2F33" stroke-width="1.4"></path>
+<rect fill="#2E7D32" height="40" rx="5" width="164" x="420" y="138"></rect>
+<text fill="#fff" font-size="10" font-weight="700" x="432" y="156">Magpie.Core</text>
+<text fill="#fff" font-size="9" x="432" y="170">embarqué dans chaque .gha</text>
+<rect fill="#fff" height="72" rx="5" stroke="#6B2C7A" stroke-dasharray="4 3" width="164" x="420" y="194"></rect>
+<text fill="#6B2C7A" font-size="10" font-weight="700" x="432" y="212">Directory.Build.props</text>
+<text font-size="9" x="432" y="227">cible, version, références :</text>
+<text font-size="9" x="432" y="240">importé de lui-même par</text>
+<text font-size="9" x="432" y="253">tout projet sous plugin/</text>
+<!-- bas : format sln vs slnx -->
+<rect fill="#fff" height="124" rx="6" stroke="#D9D2C8" width="568" x="16" y="290"></rect>
+<text fill="#6B2C7A" font-size="10" font-weight="700" letter-spacing="1" x="30" y="310">.SLN ET .SLNX : LE MÊME RÔLE, DEUX FORMATS</text>
+<text class="mono" fill="#5E6468" style="font-size:8.6px" x="30" y="332">Project("{FAE04EC0-…}") = "SnapSet.Conception",</text>
+<text class="mono" fill="#5E6468" style="font-size:8.6px" x="30" y="346">  "src\SnapSet.Conception\…csproj", "{1E6B245C-…}"</text>
+<text class="mono" fill="#5E6468" style="font-size:8.6px" x="30" y="360">EndProject</text>
+<text font-size="9.5" x="30" y="384">.sln : format texte historique, plein</text>
+<text font-size="9.5" x="30" y="398">de GUID, illisible à la main (SnapSet).</text>
+<text class="mono" fill="#2B2F33" style="font-size:8.6px" x="320" y="332">&lt;Solution&gt;</text>
+<text class="mono" fill="#2B2F33" style="font-size:8.6px" x="320" y="346">  &lt;Project Path="plugin/Magpie.csproj" /&gt;</text>
+<text class="mono" fill="#2B2F33" style="font-size:8.6px" x="320" y="360">&lt;/Solution&gt;</text>
+<text font-size="9.5" x="320" y="384">.slnx : XML récent, une ligne par</text>
+<text font-size="9.5" x="320" y="398">projet (Magpie, Cuttlefish).</text>
+</svg>
+<div class="encadre piege" style="margin-top:4mm">
+<span class="titre">Piège courant</span>
     Compiler un même fichier dans deux projets qui se référencent. SnapSet l'a appris : si <code>schema/Metrique.cs</code> était compilé à la fois dans Constituants et dans Conception, le type existerait deux fois et tout appel lèverait l'erreur CS0433. D'où la règle écrite en tête du csproj : un seul propriétaire.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 05 · Construire un projet : solution, csproj, MSBuild, NuGet</div>
+<div class="folio">2</div>
+<div class="pied">Cours 05 · Construire un projet : solution, csproj, MSBuild, NuGet</div>
 </section>
-
 <!-- ============ PAGE 3 · ANATOMIE D'UN CSPROJ ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 05</b></div>
-  <p class="rubrique">Schéma 2 · Anatomie d'un .csproj</p>
-  <h2>Des propriétés, des listes, des étapes</h2>
-  <p style="max-width:165mm">Tout fichier MSBuild se range en trois sortes de blocs. Une propriété est une valeur unique, lue par <code>$(Nom)</code> ; un élément est une entrée de liste, lue par <code>@(Type)</code> ; une cible est une suite de tâches.</p>
-
-  <svg viewBox="0 0 600 420" width="100%" style="margin-top:2mm">
-    <rect x="0" y="0" width="600" height="420" fill="#EFE9E1"/>
-    <!-- XML -->
-    <rect x="16" y="16" width="330" height="390" rx="6" fill="#fff" stroke="#D9D2C8"/>
-    <g class="mono">
-      <text x="28" y="38" class="mono" style="font-size:9.2px">&lt;Project Sdk="Microsoft.NET.Sdk"&gt;</text>
-      <rect x="22" y="48" width="318" height="96" fill="#F1E6F5"/>
-      <text x="34" y="64" class="mono" style="font-size:9.2px" fill="#7B1FA2">&lt;PropertyGroup&gt;</text>
-      <text x="46" y="80" class="mono" style="font-size:9.2px">&lt;TargetFramework&gt;net7.0-windows&lt;/…&gt;</text>
-      <text x="46" y="96" class="mono" style="font-size:9.2px">&lt;TargetExt&gt;.gha&lt;/TargetExt&gt;</text>
-      <text x="46" y="112" class="mono" style="font-size:9.2px">&lt;RhinoRoot&gt;D:\programme\Rhino&lt;/…&gt;</text>
-      <text x="34" y="132" class="mono" style="font-size:9.2px" fill="#7B1FA2">&lt;/PropertyGroup&gt;</text>
-      <rect x="22" y="152" width="318" height="112" fill="#E5EEF9"/>
-      <text x="34" y="168" class="mono" style="font-size:9.2px" fill="#1565C0">&lt;ItemGroup&gt;</text>
-      <text x="46" y="184" class="mono" style="font-size:9.2px">&lt;Reference Include="Grasshopper"&gt;</text>
-      <text x="46" y="200" class="mono" style="font-size:9.2px">&lt;PackageReference Include="…" /&gt;</text>
-      <text x="46" y="216" class="mono" style="font-size:9.2px">&lt;ProjectReference Include="…" /&gt;</text>
-      <text x="46" y="232" class="mono" style="font-size:9.2px">&lt;Compile Include="../../schema/…" /&gt;</text>
-      <text x="34" y="252" class="mono" style="font-size:9.2px" fill="#1565C0">&lt;/ItemGroup&gt;</text>
-      <rect x="22" y="272" width="318" height="108" fill="#FCEDE2"/>
-      <text x="34" y="288" class="mono" style="font-size:9.2px" fill="#E65100">&lt;Target Name="CopierVersLibraries"</text>
-      <text x="46" y="304" class="mono" style="font-size:9.2px" fill="#E65100">AfterTargets="Build"&gt;</text>
-      <text x="46" y="320" class="mono" style="font-size:9.2px">&lt;MakeDir … /&gt;</text>
-      <text x="46" y="336" class="mono" style="font-size:9.2px">&lt;Copy SourceFiles="$(TargetPath)" … /&gt;</text>
-      <text x="46" y="352" class="mono" style="font-size:9.2px">&lt;Error Condition="…" … /&gt;</text>
-      <text x="34" y="370" class="mono" style="font-size:9.2px" fill="#E65100">&lt;/Target&gt;</text>
-      <text x="28" y="396" class="mono" style="font-size:9.2px">&lt;/Project&gt;</text>
-    </g>
-    <!-- annotations -->
-    <g font-size="9.5">
-      <line x1="342" y1="96" x2="368" y2="96" stroke="#7B1FA2"/>
-      <circle cx="380" cy="96" r="9" fill="#7B1FA2"/><text x="380" y="99.5" text-anchor="middle" fill="#fff" font-weight="700">1</text>
-      <text x="396" y="76" font-weight="700" fill="#7B1FA2">Propriétés</text>
-      <text x="396" y="92">une valeur par nom ;</text>
-      <text x="396" y="106">lue ailleurs par <tspan class="mono" style="font-size:9px">$(RhinoRoot)</tspan></text>
-      <text x="396" y="120">la dernière écrite gagne</text>
-
-      <line x1="342" y1="208" x2="368" y2="208" stroke="#1565C0"/>
-      <circle cx="380" cy="208" r="9" fill="#1565C0"/><text x="380" y="211.5" text-anchor="middle" fill="#fff" font-weight="700">2</text>
-      <text x="396" y="176" font-weight="700" fill="#1565C0">Éléments</text>
-      <text x="396" y="192">des listes typées : fichiers</text>
-      <text x="396" y="206">à compiler, références…</text>
-      <text x="396" y="220">lues par <tspan class="mono" style="font-size:9px">@(Compile)</tspan></text>
-      <text x="396" y="234">métadonnée : <tspan class="mono" style="font-size:9px">%(Filename)</tspan></text>
-
-      <line x1="342" y1="326" x2="368" y2="326" stroke="#E65100"/>
-      <circle cx="380" cy="326" r="9" fill="#E65100"/><text x="380" y="329.5" text-anchor="middle" fill="#fff" font-weight="700">3</text>
-      <text x="396" y="292" font-weight="700" fill="#E65100">Cibles</text>
-      <text x="396" y="308">des étapes nommées, faites</text>
-      <text x="396" y="322">de tâches (Copy, MakeDir,</text>
-      <text x="396" y="336">Error…), accrochées par</text>
-      <text x="396" y="350"><tspan class="mono" style="font-size:9px">AfterTargets</tspan> ou <tspan class="mono" style="font-size:9px">BeforeTargets</tspan></text>
-      <text x="396" y="378" fill="#6B7378">Condition="…" s'applique</text>
-      <text x="396" y="392" fill="#6B7378">aux trois sortes de blocs</text>
-    </g>
-  </svg>
-
-  <div class="deuxcol" style="margin-top:4mm; gap:6mm">
-    <div class="encadre" style="margin:0">
-      <span class="titre">Les fichiers importés d'office</span>
-      <code>Directory.Build.props</code> (lu avant le projet) et <code>Directory.Build.targets</code> (lu après), s'ils existent dans un dossier parent. Magpie y met ce que ses cinq projets partagent.
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 05</b></div>
+<p class="rubrique">Schéma 2 · Anatomie d'un .csproj</p>
+<h2>Des propriétés, des listes, des étapes</h2>
+<p style="max-width:165mm">Tout fichier MSBuild se range en trois sortes de blocs. Une propriété est une valeur unique, lue par <code>$(Nom)</code> ; un élément est une entrée de liste, lue par <code>@(Type)</code> ; une cible est une suite de tâches.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 420" width="100%">
+<rect fill="#EFE9E1" height="420" width="600" x="0" y="0"></rect>
+<!-- XML -->
+<rect fill="#fff" height="390" rx="6" stroke="#D9D2C8" width="330" x="16" y="16"></rect>
+<g class="mono">
+<text class="mono" style="font-size:9.2px" x="28" y="38">&lt;Project Sdk="Microsoft.NET.Sdk"&gt;</text>
+<rect fill="#F1E6F5" height="96" width="318" x="22" y="48"></rect>
+<text class="mono" fill="#7B1FA2" style="font-size:9.2px" x="34" y="64">&lt;PropertyGroup&gt;</text>
+<text class="mono" style="font-size:9.2px" x="46" y="80">&lt;TargetFramework&gt;net7.0-windows&lt;/…&gt;</text>
+<text class="mono" style="font-size:9.2px" x="46" y="96">&lt;TargetExt&gt;.gha&lt;/TargetExt&gt;</text>
+<text class="mono" style="font-size:9.2px" x="46" y="112">&lt;RhinoRoot&gt;D:\programme\Rhino&lt;/…&gt;</text>
+<text class="mono" fill="#7B1FA2" style="font-size:9.2px" x="34" y="132">&lt;/PropertyGroup&gt;</text>
+<rect fill="#E5EEF9" height="112" width="318" x="22" y="152"></rect>
+<text class="mono" fill="#1565C0" style="font-size:9.2px" x="34" y="168">&lt;ItemGroup&gt;</text>
+<text class="mono" style="font-size:9.2px" x="46" y="184">&lt;Reference Include="Grasshopper"&gt;</text>
+<text class="mono" style="font-size:9.2px" x="46" y="200">&lt;PackageReference Include="…" /&gt;</text>
+<text class="mono" style="font-size:9.2px" x="46" y="216">&lt;ProjectReference Include="…" /&gt;</text>
+<text class="mono" style="font-size:9.2px" x="46" y="232">&lt;Compile Include="../../schema/…" /&gt;</text>
+<text class="mono" fill="#1565C0" style="font-size:9.2px" x="34" y="252">&lt;/ItemGroup&gt;</text>
+<rect fill="#FCEDE2" height="108" width="318" x="22" y="272"></rect>
+<text class="mono" fill="#E65100" style="font-size:9.2px" x="34" y="288">&lt;Target Name="CopierVersLibraries"</text>
+<text class="mono" fill="#E65100" style="font-size:9.2px" x="46" y="304">AfterTargets="Build"&gt;</text>
+<text class="mono" style="font-size:9.2px" x="46" y="320">&lt;MakeDir … /&gt;</text>
+<text class="mono" style="font-size:9.2px" x="46" y="336">&lt;Copy SourceFiles="$(TargetPath)" … /&gt;</text>
+<text class="mono" style="font-size:9.2px" x="46" y="352">&lt;Error Condition="…" … /&gt;</text>
+<text class="mono" fill="#E65100" style="font-size:9.2px" x="34" y="370">&lt;/Target&gt;</text>
+<text class="mono" style="font-size:9.2px" x="28" y="396">&lt;/Project&gt;</text>
+</g>
+<!-- annotations -->
+<g font-size="9.5">
+<line stroke="#7B1FA2" x1="342" x2="368" y1="96" y2="96"></line>
+<circle cx="380" cy="96" fill="#7B1FA2" r="9"></circle><text fill="#fff" font-weight="700" text-anchor="middle" x="380" y="99.5">1</text>
+<text fill="#7B1FA2" font-weight="700" x="396" y="76">Propriétés</text>
+<text x="396" y="92">une valeur par nom ;</text>
+<text x="396" y="106">lue ailleurs par <tspan class="mono" style="font-size:9px">$(RhinoRoot)</tspan></text>
+<text x="396" y="120">la dernière écrite gagne</text>
+<line stroke="#1565C0" x1="342" x2="368" y1="208" y2="208"></line>
+<circle cx="380" cy="208" fill="#1565C0" r="9"></circle><text fill="#fff" font-weight="700" text-anchor="middle" x="380" y="211.5">2</text>
+<text fill="#1565C0" font-weight="700" x="396" y="176">Éléments</text>
+<text x="396" y="192">des listes typées : fichiers</text>
+<text x="396" y="206">à compiler, références…</text>
+<text x="396" y="220">lues par <tspan class="mono" style="font-size:9px">@(Compile)</tspan></text>
+<text x="396" y="234">métadonnée : <tspan class="mono" style="font-size:9px">%(Filename)</tspan></text>
+<line stroke="#E65100" x1="342" x2="368" y1="326" y2="326"></line>
+<circle cx="380" cy="326" fill="#E65100" r="9"></circle><text fill="#fff" font-weight="700" text-anchor="middle" x="380" y="329.5">3</text>
+<text fill="#E65100" font-weight="700" x="396" y="292">Cibles</text>
+<text x="396" y="308">des étapes nommées, faites</text>
+<text x="396" y="322">de tâches (Copy, MakeDir,</text>
+<text x="396" y="336">Error…), accrochées par</text>
+<text x="396" y="350"><tspan class="mono" style="font-size:9px">AfterTargets</tspan> ou <tspan class="mono" style="font-size:9px">BeforeTargets</tspan></text>
+<text fill="#6B7378" x="396" y="378">Condition="…" s'applique</text>
+<text fill="#6B7378" x="396" y="392">aux trois sortes de blocs</text>
+</g>
+</svg>
+<div class="deuxcol" style="margin-top:4mm; gap:6mm">
+<div class="encadre" style="margin:0">
+<span class="titre">Les fichiers importés d'office</span>
+<code>Directory.Build.props</code> (lu avant le projet) et <code>Directory.Build.targets</code> (lu après), s'ils existent dans un dossier parent. Magpie y met ce que ses cinq projets partagent.
     </div>
-    <div class="encadre piege" style="margin:0">
-      <span class="titre">Piège courant</span>
+<div class="encadre piege" style="margin:0">
+<span class="titre">Piège courant</span>
       Écrire <code>$(Compile)</code> au lieu de <code>@(Compile)</code>. Le premier cherche une propriété nommée Compile, qui n'existe pas : MSBuild rend une chaîne vide, sans erreur.
     </div>
-  </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 05 · Construire un projet : solution, csproj, MSBuild, NuGet</div>
+</div>
+<div class="folio">3</div>
+<div class="pied">Cours 05 · Construire un projet : solution, csproj, MSBuild, NuGet</div>
 </section>
-
 <!-- ============ PAGE 4 · RÉFÉRENCES ET NUGET ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 05</b></div>
-  <p class="rubrique">Schéma 3 · Trouver Grasshopper</p>
-  <h2>Trois façons de référencer, trois compromis</h2>
-  <p style="max-width:165mm">Pour compiler, le projet doit voir les types de Grasshopper. Tes dépôts utilisent les trois mécanismes possibles. Aucun n'est faux ; chacun dit d'où viennent les fichiers, et donc où le build peut casser.</p>
-
-  <svg viewBox="0 0 600 330" width="100%" style="margin-top:2mm">
-    <defs><marker id="a4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2B2F33"/></marker></defs>
-    <rect x="0" y="0" width="600" height="330" fill="#EFE9E1"/>
-    <!-- colonnes -->
-    <g font-size="9.5">
-      <rect x="14" y="14" width="184" height="302" rx="6" fill="#fff" stroke="#2E7D32" stroke-width="1.5"/>
-      <text x="26" y="34" font-size="10.5" font-weight="700" fill="#2E7D32">PackageReference</text>
-      <text x="26" y="50" fill="#6B7378">Cuttlefish, Magpie</text>
-      <rect x="26" y="62" width="160" height="28" rx="4" fill="#E8F3E8"/>
-      <text x="34" y="80" font-size="9">nuget.org (ou une source locale)</text>
-      <path d="M106 92 V 108" stroke="#2B2F33" stroke-width="1.2" marker-end="url(#a4)"/>
-      <rect x="26" y="112" width="160" height="28" rx="4" fill="#E8F3E8"/>
-      <text x="34" y="130" font-size="9">cache ~/.nuget/packages</text>
-      <path d="M106 142 V 158" stroke="#2B2F33" stroke-width="1.2" marker-end="url(#a4)"/>
-      <rect x="26" y="162" width="160" height="28" rx="4" fill="#E8F3E8"/>
-      <text x="34" y="180" font-size="9">obj/project.assets.json</text>
-      <text x="26" y="212" font-weight="700" fill="#2E7D32">+ marche sur tout poste,</text>
-      <text x="26" y="226" font-weight="700" fill="#2E7D32">  sans Rhino installé</text>
-      <text x="26" y="246" font-weight="700" fill="#C62828">– version figée (8.0.23304),</text>
-      <text x="26" y="260" font-weight="700" fill="#C62828">  pas forcément celle du Rhino</text>
-      <text x="26" y="274" font-weight="700" fill="#C62828">  qui exécutera</text>
-      <text x="26" y="298" font-size="8.8" fill="#6B7378">version choisie par condition</text>
-      <text x="26" y="310" font-size="8.8" fill="#6B7378">sur la cible chez Cuttlefish</text>
-
-      <rect x="208" y="14" width="184" height="302" rx="6" fill="#fff" stroke="#1F5F7A" stroke-width="1.5"/>
-      <text x="220" y="34" font-size="10.5" font-weight="700" fill="#1F5F7A">Reference + HintPath</text>
-      <text x="220" y="50" fill="#6B7378">SnapSet</text>
-      <rect x="220" y="62" width="160" height="44" rx="4" fill="#E6EFF2"/>
-      <text x="228" y="80" class="mono" style="font-size:8.2px">$(RhinoRoot)\Plug-ins\</text>
-      <text x="228" y="94" class="mono" style="font-size:8.2px">Grasshopper\Grasshopper.dll</text>
-      <text x="220" y="128">la DLL de l'installation</text>
-      <text x="220" y="142">de Rhino, sur ce poste</text>
-      <text x="220" y="212" font-weight="700" fill="#2E7D32">+ exactement le Rhino</text>
-      <text x="220" y="226" font-weight="700" fill="#2E7D32">  qui exécutera</text>
-      <text x="220" y="246" font-weight="700" fill="#C62828">– ne compile que là où</text>
-      <text x="220" y="260" font-weight="700" fill="#C62828">  Rhino est à ce chemin</text>
-      <text x="220" y="298" font-size="8.8" fill="#6B7378">autre poste : -p:RhinoRoot=…</text>
-      <text x="220" y="310" font-size="8.8" fill="#6B7378">en ligne de commande</text>
-
-      <rect x="402" y="14" width="184" height="302" rx="6" fill="#fff" stroke="#6D4C41" stroke-width="1.5"/>
-      <text x="414" y="34" font-size="10.5" font-weight="700" fill="#6D4C41">ProjectReference</text>
-      <text x="414" y="50" fill="#6B7378">SnapSet, Magpie</text>
-      <rect x="414" y="62" width="160" height="44" rx="4" fill="#EFE8E5"/>
-      <text x="422" y="80" font-size="9">un autre projet de la</text>
-      <text x="422" y="94" font-size="9">solution, construit avant</text>
-      <text x="414" y="128">Conception → Constituants</text>
-      <text x="414" y="142">chaque .gha → Magpie.Core</text>
-      <text x="414" y="212" font-weight="700" fill="#2E7D32">+ toujours à jour,</text>
-      <text x="414" y="226" font-weight="700" fill="#2E7D32">  ordre de build automatique</text>
-      <text x="414" y="246" font-weight="700" fill="#C62828">– la DLL produite doit</text>
-      <text x="414" y="260" font-weight="700" fill="#C62828">  voyager avec le .gha</text>
-      <text x="414" y="298" font-size="8.8" fill="#6B7378">ou être embarquée, comme</text>
-      <text x="414" y="310" font-size="8.8" fill="#6B7378">Magpie le fait (cours 04)</text>
-    </g>
-  </svg>
-
-  <div class="deuxcol" style="margin-top:4mm; gap:6mm">
-    <div>
-      <h3>Trois façons de déployer</h3>
-      <p style="font-size:8.8pt"><b>Cuttlefish</b> compile directement dans le dossier Libraries (<code>BaseOutputPath</code>). <b>SnapSet</b> compile dans bin/, puis une cible copie (page 5). <b>Magpie</b> ne copie pas en développement : Rhino est lancé avec <code>RHINO_PACKAGE_DIRS</code> pointé sur bin/.</p>
-    </div>
-    <div class="encadre piege" style="margin:0">
-      <span class="titre">Piège courant</span>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 05</b></div>
+<p class="rubrique">Schéma 3 · Trouver Grasshopper</p>
+<h2>Trois façons de référencer, trois compromis</h2>
+<p style="max-width:165mm">Pour compiler, le projet doit voir les types de Grasshopper. Tes dépôts utilisent les trois mécanismes possibles. Aucun n'est faux ; chacun dit d'où viennent les fichiers, et donc où le build peut casser.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 330" width="100%">
+<defs><marker id="a4" markerheight="7" markerwidth="7" orient="auto" refx="9" refy="5" viewbox="0 0 10 10"><path d="M0 0 L10 5 L0 10 z" fill="#2B2F33"></path></marker></defs>
+<rect fill="#EFE9E1" height="330" width="600" x="0" y="0"></rect>
+<!-- colonnes -->
+<g font-size="9.5">
+<rect fill="#fff" height="302" rx="6" stroke="#2E7D32" stroke-width="1.5" width="184" x="14" y="14"></rect>
+<text fill="#2E7D32" font-size="10.5" font-weight="700" x="26" y="34">PackageReference</text>
+<text fill="#6B7378" x="26" y="50">Cuttlefish, Magpie</text>
+<rect fill="#E8F3E8" height="28" rx="4" width="160" x="26" y="62"></rect>
+<text font-size="9" x="34" y="80">nuget.org (ou une source locale)</text>
+<path d="M106 92 V 108" marker-end="url(#a4)" stroke="#2B2F33" stroke-width="1.2"></path>
+<rect fill="#E8F3E8" height="28" rx="4" width="160" x="26" y="112"></rect>
+<text font-size="9" x="34" y="130">cache ~/.nuget/packages</text>
+<path d="M106 142 V 158" marker-end="url(#a4)" stroke="#2B2F33" stroke-width="1.2"></path>
+<rect fill="#E8F3E8" height="28" rx="4" width="160" x="26" y="162"></rect>
+<text font-size="9" x="34" y="180">obj/project.assets.json</text>
+<text fill="#2E7D32" font-weight="700" x="26" y="212">+ marche sur tout poste,</text>
+<text fill="#2E7D32" font-weight="700" x="26" y="226">  sans Rhino installé</text>
+<text fill="#C62828" font-weight="700" x="26" y="246">– version figée (8.0.23304),</text>
+<text fill="#C62828" font-weight="700" x="26" y="260">  pas forcément celle du Rhino</text>
+<text fill="#C62828" font-weight="700" x="26" y="274">  qui exécutera</text>
+<text fill="#6B7378" font-size="8.8" x="26" y="298">version choisie par condition</text>
+<text fill="#6B7378" font-size="8.8" x="26" y="310">sur la cible chez Cuttlefish</text>
+<rect fill="#fff" height="302" rx="6" stroke="#1F5F7A" stroke-width="1.5" width="184" x="208" y="14"></rect>
+<text fill="#1F5F7A" font-size="10.5" font-weight="700" x="220" y="34">Reference + HintPath</text>
+<text fill="#6B7378" x="220" y="50">SnapSet</text>
+<rect fill="#E6EFF2" height="44" rx="4" width="160" x="220" y="62"></rect>
+<text class="mono" style="font-size:8.2px" x="228" y="80">$(RhinoRoot)\Plug-ins\</text>
+<text class="mono" style="font-size:8.2px" x="228" y="94">Grasshopper\Grasshopper.dll</text>
+<text x="220" y="128">la DLL de l'installation</text>
+<text x="220" y="142">de Rhino, sur ce poste</text>
+<text fill="#2E7D32" font-weight="700" x="220" y="212">+ exactement le Rhino</text>
+<text fill="#2E7D32" font-weight="700" x="220" y="226">  qui exécutera</text>
+<text fill="#C62828" font-weight="700" x="220" y="246">– ne compile que là où</text>
+<text fill="#C62828" font-weight="700" x="220" y="260">  Rhino est à ce chemin</text>
+<text fill="#6B7378" font-size="8.8" x="220" y="298">autre poste : -p:RhinoRoot=…</text>
+<text fill="#6B7378" font-size="8.8" x="220" y="310">en ligne de commande</text>
+<rect fill="#fff" height="302" rx="6" stroke="#6D4C41" stroke-width="1.5" width="184" x="402" y="14"></rect>
+<text fill="#6D4C41" font-size="10.5" font-weight="700" x="414" y="34">ProjectReference</text>
+<text fill="#6B7378" x="414" y="50">SnapSet, Magpie</text>
+<rect fill="#EFE8E5" height="44" rx="4" width="160" x="414" y="62"></rect>
+<text font-size="9" x="422" y="80">un autre projet de la</text>
+<text font-size="9" x="422" y="94">solution, construit avant</text>
+<text x="414" y="128">Conception → Constituants</text>
+<text x="414" y="142">chaque .gha → Magpie.Core</text>
+<text fill="#2E7D32" font-weight="700" x="414" y="212">+ toujours à jour,</text>
+<text fill="#2E7D32" font-weight="700" x="414" y="226">  ordre de build automatique</text>
+<text fill="#C62828" font-weight="700" x="414" y="246">– la DLL produite doit</text>
+<text fill="#C62828" font-weight="700" x="414" y="260">  voyager avec le .gha</text>
+<text fill="#6B7378" font-size="8.8" x="414" y="298">ou être embarquée, comme</text>
+<text fill="#6B7378" font-size="8.8" x="414" y="310">Magpie le fait (cours 04)</text>
+</g>
+</svg>
+<div class="deuxcol" style="margin-top:4mm; gap:6mm">
+<div>
+<h3>Trois façons de déployer</h3>
+<p style="font-size:8.8pt"><b>Cuttlefish</b> compile directement dans le dossier Libraries (<code>BaseOutputPath</code>). <b>SnapSet</b> compile dans bin/, puis une cible copie (page 5). <b>Magpie</b> ne copie pas en développement : Rhino est lancé avec <code>RHINO_PACKAGE_DIRS</code> pointé sur bin/.</p>
+</div>
+<div class="encadre piege" style="margin:0">
+<span class="titre">Piège courant</span>
       Un chemin de poste dans un fichier versionné. <code>C:\Users\carol\…</code> (Cuttlefish) ou <code>D:\programme\Rhino</code> (SnapSet) ne compilent nulle part ailleurs. Magpie l'évite : le chemin de Rhino vit dans une variable d'environnement, <code>RHINO_PATH</code>.
     </div>
-  </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 05 · Construire un projet : solution, csproj, MSBuild, NuGet</div>
+</div>
+<div class="folio">4</div>
+<div class="pied">Cours 05 · Construire un projet : solution, csproj, MSBuild, NuGet</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 05</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>La cible qui refuse un déploiement à moitié</h2>
-  <p style="max-width:165mm">Le .csproj du .gha de conception de SnapSet. Le .gha se remplace même Rhino ouvert, mais la DLL d'exécution non. Plutôt que de laisser un mélange d'ancien et de nouveau, la cible échoue franchement.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 05</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>La cible qui refuse un déploiement à moitié</h2>
+<p style="max-width:165mm">Le .csproj du .gha de conception de SnapSet. Le .gha se remplace même Rhino ouvert, mais la DLL d'exécution non. Plutôt que de laisser un mélange d'ancien et de nouveau, la cible échoue franchement.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="n"> </span><span class="cm">&lt;!-- SnapSet.Conception.csproj --&gt;</span></div>
 <div class="l k3"><span class="n">16</span>&lt;<span class="kw">TargetFramework</span>&gt;net7.0-windows&lt;/…&gt;<span class="rep r3">1</span></div>
@@ -356,138 +327,58 @@
 <div class="l"><span class="n">87</span>  &lt;<span class="kw">Message</span> Importance=<span class="st">"high"</span> Text=<span class="st">"Déployé : …"</span> /&gt;</div>
 <div class="l"><span class="n">88</span>&lt;/Target&gt;</div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r3">1</span><b>Propriétés</b>La cible du cours 04, l'extension .gha, et le chemin de Rhino sur ce poste.</li>
-      <li><span class="rep r2">2</span><b>Référence par chemin</b>$(RhinoRoot) est remplacé à l'évaluation. Private=false : compiler contre, ne pas copier.</li>
-      <li><span class="rep r7">3</span><b>Référence de projet</b>Constituants est construit avant, et sa DLL copiée à côté du .gha (Private par défaut).</li>
-      <li><span class="rep r4">4</span><b>Une cible accrochée</b>Elle s'exécute après Build, sauf si on passe <em>-p:DeployerVersLibraries=false</em>.</li>
-      <li><span class="rep r1">5</span><b>Copier sans s'arrêter</b>ContinueOnError : un échec ici n'arrête pas la cible…</li>
-      <li><span class="rep r6">6</span><b>… mais on note ce qui a été copié</b>Output range les fichiers réellement copiés dans une liste d'éléments.</li>
-      <li><span class="rep r5">7</span><b>L'échec volontaire</b>Si la liste est vide, Rhino tenait la DLL : erreur ATC911, avec la marche à suivre.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À retenir</span>
+<ul class="notes">
+<li><span class="rep r3">1</span><b>Propriétés</b>La cible du cours 04, l'extension .gha, et le chemin de Rhino sur ce poste.</li>
+<li><span class="rep r2">2</span><b>Référence par chemin</b>$(RhinoRoot) est remplacé à l'évaluation. Private=false : compiler contre, ne pas copier.</li>
+<li><span class="rep r7">3</span><b>Référence de projet</b>Constituants est construit avant, et sa DLL copiée à côté du .gha (Private par défaut).</li>
+<li><span class="rep r4">4</span><b>Une cible accrochée</b>Elle s'exécute après Build, sauf si on passe <em>-p:DeployerVersLibraries=false</em>.</li>
+<li><span class="rep r1">5</span><b>Copier sans s'arrêter</b>ContinueOnError : un échec ici n'arrête pas la cible…</li>
+<li><span class="rep r6">6</span><b>… mais on note ce qui a été copié</b>Output range les fichiers réellement copiés dans une liste d'éléments.</li>
+<li><span class="rep r5">7</span><b>L'échec volontaire</b>Si la liste est vide, Rhino tenait la DLL : erreur ATC911, avec la marche à suivre.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À retenir</span>
     Un build qui échoue en expliquant pourquoi vaut mieux qu'un build qui réussit à moitié. Le message d'ATC911 dit ce qui s'est passé, ce que ça aurait causé, et quoi faire : c'est le modèle d'un bon message d'erreur.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 05 · Construire un projet : solution, csproj, MSBuild, NuGet</div>
+<div class="folio">5</div>
+<div class="pied">Cours 05 · Construire un projet : solution, csproj, MSBuild, NuGet</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 05</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 05</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">Que fait un fichier .sln ?</div><ul>
-      <li><span>A</span>il compile le code</li><li><span>B</span>il liste les projets à ouvrir et construire ensemble</li><li><span>C</span>il remplace le csproj</li><li><span>D</span>il installe Rhino</li></ul></div>
 
-    <div class="q"><div class="enonce">Comment lit-on la propriété RhinoRoot ?</div><ul>
-      <li><span>A</span>@(RhinoRoot)</li><li><span>B</span>%(RhinoRoot)</li><li><span>C</span>$(RhinoRoot)</li><li><span>D</span>{RhinoRoot}</li></ul></div>
 
-    <div class="q"><div class="enonce">Qu'est-ce qu'un élément MSBuild ?</div><ul>
-      <li><span>A</span>une valeur unique</li><li><span>B</span>une entrée d'une liste typée (Compile, Reference…)</li><li><span>C</span>une étape de build</li><li><span>D</span>un paquet NuGet</li></ul></div>
 
-    <div class="q"><div class="enonce">Quand s'exécute la cible CopierVersLibraries ?</div><ul>
-      <li><span>A</span>avant la compilation</li><li><span>B</span>après Build, sauf DeployerVersLibraries=false</li><li><span>C</span>au démarrage de Rhino</li><li><span>D</span>jamais</li></ul></div>
-
-    <div class="q"><div class="enonce">Pourquoi un csproj SDK-style ne liste-t-il pas les .cs ?</div><ul>
-      <li><span>A</span>ils sont dans la solution</li><li><span>B</span>le SDK compile par défaut tous les .cs du dossier</li><li><span>C</span>NuGet les fournit</li><li><span>D</span>c'est un oubli</li></ul></div>
-
-    <div class="q"><div class="enonce">Avantages de PackageReference pour Grasshopper ? <span class="tag" style="color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>compile sans Rhino installé</li><li><span>B</span>même version que le Rhino qui exécute, garanti</li><li><span>C</span>marche sur tout poste</li><li><span>D</span>aucune version à choisir</li></ul></div>
-
-    <div class="q"><div class="enonce">Que se passe-t-il si Rhino est ailleurs que D:\programme\Rhino ?</div><ul>
-      <li><span>A</span>MSBuild le trouve seul</li><li><span>B</span>SnapSet ne compile pas, sauf -p:RhinoRoot=…</li><li><span>C</span>NuGet le télécharge</li><li><span>D</span>rien ne change</li></ul></div>
-
-    <div class="q"><div class="enonce">Que garantit une ProjectReference ?</div><ul>
-      <li><span>A</span>que l'autre projet est construit avant</li><li><span>B</span>que la DLL est embarquée</li><li><span>C</span>que la version est figée</li><li><span>D</span>que le projet est sur nuget.org</li></ul></div>
-
-    <div class="q"><div class="enonce">Pourquoi l'erreur ATC911 ? </div><ul>
-      <li><span>A</span>le .gha n'a pas compilé</li><li><span>B</span>la DLL d'exécution n'a pas pu être copiée : déploiement à moitié périmé</li><li><span>C</span>NuGet est hors ligne</li><li><span>D</span>la cible est mauvaise</li></ul></div>
-
-    <div class="q"><div class="enonce">Directory.Build.props… <span class="tag" style="color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>est importé de lui-même par les projets en dessous</li><li><span>B</span>doit être ajouté à chaque csproj</li><li><span>C</span>sert à partager cible et version</li><li><span>D</span>remplace la solution</li></ul></div>
-
-    <div class="q"><div class="enonce">Pourquoi compiler schema/*.cs dans un seul projet ?</div><ul>
-      <li><span>A</span>pour aller plus vite</li><li><span>B</span>sinon les types existent deux fois (CS0433)</li><li><span>C</span>Grasshopper l'exige</li><li><span>D</span>pour les tests</li></ul></div>
-
-    <div class="q"><div class="enonce">Comment Magpie évite-t-il un chemin de Rhino en dur ?</div><ul>
-      <li><span>A</span>avec BaseOutputPath</li><li><span>B</span>avec la variable d'environnement RHINO_PATH</li><li><span>C</span>avec un .sln</li><li><span>D</span>il ne l'évite pas</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 05 · Construire un projet : solution, csproj, MSBuild, NuGet</div>
+<p class="rubrique" style="">Aide-mémoire · les balises qui reviennent</p>
+<table class="aide">
+<thead><tr><th>Balise</th><th>Sorte</th><th>Rôle</th><th>Où</th></tr></thead>
+<tbody>
+<tr><td class="c">TargetFramework(s)</td><td>propriété</td><td>la ou les cibles</td><td class="c">les trois</td></tr>
+<tr><td class="c">TargetExt</td><td>propriété</td><td>.gha au lieu de .dll</td><td class="c">les trois</td></tr>
+<tr><td class="c">PackageReference</td><td>élément</td><td>paquet NuGet</td><td class="c">Cuttlefish, Magpie</td></tr>
+<tr><td class="c">Reference + HintPath</td><td>élément</td><td>DLL prise sur le disque</td><td class="c">SnapSet</td></tr>
+<tr><td class="c">ProjectReference</td><td>élément</td><td>autre projet de la solution</td><td class="c">SnapSet, Magpie</td></tr>
+<tr><td class="c">Compile Include … Link</td><td>élément</td><td>fichier pris hors du dossier</td><td class="c">SnapSet schema/</td></tr>
+<tr><td class="c">EmbeddedResource</td><td>élément</td><td>fichier rangé dans l'assembly</td><td class="c">Magpie (Core)</td></tr>
+<tr><td class="c">Target AfterTargets</td><td>cible</td><td>étape ajoutée au build</td><td class="c">SnapSet, Magpie</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:6mm">Glossaire</p>
+<dl class="glossaire">
+<dt>MSBuild</dt><dd>Le moteur de build : évalue le XML, puis exécute les cibles.</dd>
+<dt>NuGet</dt><dd>Le gestionnaire de paquets .NET : télécharge et met en cache.</dd>
+<dt>Restauration</dt><dd>Étape qui rapatrie les paquets avant la compilation.</dd>
+<dt>Cible MSBuild</dt><dd>Étape nommée faite de tâches (Copy, Error…).</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 27</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 05 · Construire un projet : solution, csproj, MSBuild, NuGet</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET AIDE-MÉMOIRE ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 05</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · B.</b> La solution regroupe ; ce sont les csproj qui disent quoi compiler.</div>
-    <div><b>02 · C.</b> $ pour une propriété, @ pour une liste, % pour une métadonnée d'élément.</div>
-    <div><b>03 · B.</b> Compile, Reference, PackageReference… sont des types d'éléments.</div>
-    <div><b>04 · B.</b> AfterTargets="Build" et la Condition sur DeployerVersLibraries.</div>
-    <div><b>05 · B.</b> Le SDK inclut **/*.cs par défaut ; le fichier ne garde que les écarts.</div>
-    <div><b>06 · A et C.</b> La version est figée dans le fichier, pas lue dans le Rhino installé.</div>
-    <div><b>07 · B.</b> HintPath pointe vers un fichier absent : la référence est introuvable.</div>
-    <div><b>08 · A.</b> MSBuild déduit l'ordre de build des références entre projets.</div>
-    <div><b>09 · B.</b> Rhino tient la DLL ouverte ; le .gha, lui, a été remplacé.</div>
-    <div><b>10 · A et C.</b> Il est trouvé en remontant les dossiers, lu avant le projet.</div>
-    <div><b>11 · B.</b> Deux copies d'un même type dans deux assemblies se contredisent.</div>
-    <div><b>12 · B.</b> Chaque poste définit RHINO_PATH ; rien de personnel n'est versionné.</div>
-  </div>
-
-  <div class="panneau" style="padding:3.5mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:30mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.3pt; line-height:1.45"><b>0 à 6</b> : relis la page 3, bloc par bloc. <b>7 à 9</b> : ouvre Cuttlefish.csproj et classe chaque ligne en propriété, élément ou cible. <b>10 à 12</b> : passe au cours 27, « Chargement d'assemblies ».</div>
-  </div>
-
-  <p class="rubrique" style="margin-top:6mm">Aide-mémoire · les balises qui reviennent</p>
-  <table class="aide">
-    <thead><tr><th>Balise</th><th>Sorte</th><th>Rôle</th><th>Où</th></tr></thead>
-    <tbody>
-      <tr><td class="c">TargetFramework(s)</td><td>propriété</td><td>la ou les cibles</td><td class="c">les trois</td></tr>
-      <tr><td class="c">TargetExt</td><td>propriété</td><td>.gha au lieu de .dll</td><td class="c">les trois</td></tr>
-      <tr><td class="c">PackageReference</td><td>élément</td><td>paquet NuGet</td><td class="c">Cuttlefish, Magpie</td></tr>
-      <tr><td class="c">Reference + HintPath</td><td>élément</td><td>DLL prise sur le disque</td><td class="c">SnapSet</td></tr>
-      <tr><td class="c">ProjectReference</td><td>élément</td><td>autre projet de la solution</td><td class="c">SnapSet, Magpie</td></tr>
-      <tr><td class="c">Compile Include … Link</td><td>élément</td><td>fichier pris hors du dossier</td><td class="c">SnapSet schema/</td></tr>
-      <tr><td class="c">EmbeddedResource</td><td>élément</td><td>fichier rangé dans l'assembly</td><td class="c">Magpie (Core)</td></tr>
-      <tr><td class="c">Target AfterTargets</td><td>cible</td><td>étape ajoutée au build</td><td class="c">SnapSet, Magpie</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:6mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>MSBuild</dt><dd>Le moteur de build : évalue le XML, puis exécute les cibles.</dd>
-    <dt>NuGet</dt><dd>Le gestionnaire de paquets .NET : télécharge et met en cache.</dd>
-    <dt>Restauration</dt><dd>Étape qui rapatrie les paquets avant la compilation.</dd>
-    <dt>Cible MSBuild</dt><dd>Étape nommée faite de tâches (Copy, Error…).</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 27</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 05 · Construire un projet : solution, csproj, MSBuild, NuGet</div>
-</section>
-
 </body>
 </html>

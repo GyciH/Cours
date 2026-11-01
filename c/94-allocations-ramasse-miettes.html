@@ -1,266 +1,239 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>94 · Allocations et ramasse-miettes</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-11">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 94</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Allocations et ramasse-miettes</h1>
-  <p class="chapeau">En .NET, créer un objet ne coûte presque rien ; c'est le ménage qui coûte. Chaque objet abandonné devra être repéré par le <b>ramasse-miettes</b>, qui interrompt le programme pour le faire. Dans une boucle chaude, une peinture de canvas ou un calcul répété, réduire les <b>allocations</b> réduit ces pauses. Le cours 58 a posé la pile et le tas ; celui-ci mesure ce qu'ils coûtent.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>58</b> et <b>91</b></span>
-    <span class="pastille">Exemples · <b>Metrique.cs</b>, <b>ModeleFeuilles.cs</b>, <b>CapsuleExecution.cs</b> (SnapSet)</span>
-  </div>
-
-  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
-    <svg viewBox="0 0 600 200" width="100%">
-<rect x="20" y="30" width="200" height="50" rx="4" fill="#ECEBFA" stroke="#4F46B8" stroke-width="1.2"/>
-<text x="120.0" y="50" font-size="9" fill="#4F46B8" text-anchor="middle" font-weight="700">génération 0</text>
-<text x="120.0" y="66" font-size="7.4" fill="#2B2F33" text-anchor="middle">les objets neufs ; ramassée souvent, vite</text>
-<line x1="222" y1="55" x2="232" y2="55" stroke="#6B7378" stroke-width="1.2"/><polygon points="232,55 225.6,57.7 225.6,52.3" fill="#6B7378"/>
-<rect x="234" y="30" width="120" height="50" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
-<text x="294.0" y="50" font-size="9" fill="#E65100" text-anchor="middle" font-weight="700">génération 1</text>
-<text x="294.0" y="66" font-size="7.4" fill="#2B2F33" text-anchor="middle">les survivants d'un ramassage</text>
-<line x1="356" y1="55" x2="366" y2="55" stroke="#6B7378" stroke-width="1.2"/><polygon points="366,55 359.6,57.7 359.6,52.3" fill="#6B7378"/>
-<rect x="368" y="30" width="210" height="50" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
-<text x="473.0" y="50" font-size="9" fill="#C62828" text-anchor="middle" font-weight="700">génération 2</text>
-<text x="473.0" y="66" font-size="7.4" fill="#2B2F33" text-anchor="middle">les objets durables ; ramassée rarement</text>
-<text x="20" y="106" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">new : on avance un pointeur dans la génération 0 (quelques nanosecondes).</text>
-<text x="20" y="122" font-size="8.2" fill="#2B2F33" text-anchor="start">Quand elle est pleine, le ramasse-miettes s'arrête, garde les vivants, jette le reste.</text>
-<line x1="20" y1="136" x2="580" y2="136" stroke="#CFC6B8"/>
-<text x="20" y="156" font-size="8.2" fill="#4F46B8" text-anchor="start" font-weight="700">Mesuré : 200 chaînes construites par 2 000 « += » (.NET 8, Release)</text>
-<text x="20" y="178" font-size="7.6" fill="#6B7378" text-anchor="start">durée</text>
-<text x="20" y="192" font-size="9" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">287 ms</text>
-<text x="134" y="178" font-size="7.6" fill="#6B7378" text-anchor="start">ramassages gen 0</text>
-<text x="134" y="192" font-size="9" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">47</text>
-<text x="248" y="178" font-size="7.6" fill="#6B7378" text-anchor="start">gen 1</text>
-<text x="248" y="192" font-size="9" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">1</text>
-<text x="362" y="178" font-size="7.6" fill="#6B7378" text-anchor="start">gen 2</text>
-<text x="362" y="192" font-size="9" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">0</text>
-<text x="476" y="178" font-size="7.6" fill="#6B7378" text-anchor="start">pauses cumulées</text>
-<text x="476" y="192" font-size="9" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">12,4 ms</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 94</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Allocations et ramasse-miettes</h1>
+<p class="chapeau">En .NET, créer un objet ne coûte presque rien ; c'est le ménage qui coûte. Chaque objet abandonné devra être repéré par le <b>ramasse-miettes</b>, qui interrompt le programme pour le faire. Dans une boucle chaude, une peinture de canvas ou un calcul répété, réduire les <b>allocations</b> réduit ces pauses. Le cours 58 a posé la pile et le tas ; celui-ci mesure ce qu'ils coûtent.</p>
+<div class="meta">
+<span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>58</b> et <b>91</b></span>
+<span class="pastille">Exemples · <b>Metrique.cs</b>, <b>ModeleFeuilles.cs</b>, <b>CapsuleExecution.cs</b> (SnapSet)</span>
+</div>
+<div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+<svg viewbox="0 0 600 200" width="100%">
+<rect fill="#ECEBFA" height="50" rx="4" stroke="#4F46B8" stroke-width="1.2" width="200" x="20" y="30"></rect>
+<text fill="#4F46B8" font-size="9" font-weight="700" text-anchor="middle" x="120.0" y="50">génération 0</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="middle" x="120.0" y="66">les objets neufs ; ramassée souvent, vite</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="222" x2="232" y1="55" y2="55"></line><polygon fill="#6B7378" points="232,55 225.6,57.7 225.6,52.3"></polygon>
+<rect fill="#fff" height="50" rx="4" stroke="#E65100" stroke-width="1.2" width="120" x="234" y="30"></rect>
+<text fill="#E65100" font-size="9" font-weight="700" text-anchor="middle" x="294.0" y="50">génération 1</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="middle" x="294.0" y="66">les survivants d'un ramassage</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="356" x2="366" y1="55" y2="55"></line><polygon fill="#6B7378" points="366,55 359.6,57.7 359.6,52.3"></polygon>
+<rect fill="#fff" height="50" rx="4" stroke="#C62828" stroke-width="1.2" width="210" x="368" y="30"></rect>
+<text fill="#C62828" font-size="9" font-weight="700" text-anchor="middle" x="473.0" y="50">génération 2</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="middle" x="473.0" y="66">les objets durables ; ramassée rarement</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="20" y="106">new : on avance un pointeur dans la génération 0 (quelques nanosecondes).</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="start" x="20" y="122">Quand elle est pleine, le ramasse-miettes s'arrête, garde les vivants, jette le reste.</text>
+<line stroke="#CFC6B8" x1="20" x2="580" y1="136" y2="136"></line>
+<text fill="#4F46B8" font-size="8.2" font-weight="700" text-anchor="start" x="20" y="156">Mesuré : 200 chaînes construites par 2 000 « += » (.NET 8, Release)</text>
+<text fill="#6B7378" font-size="7.6" text-anchor="start" x="20" y="178">durée</text>
+<text class="mono" fill="#2B2F33" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="20" y="192">287 ms</text>
+<text fill="#6B7378" font-size="7.6" text-anchor="start" x="134" y="178">ramassages gen 0</text>
+<text class="mono" fill="#2B2F33" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="134" y="192">47</text>
+<text fill="#6B7378" font-size="7.6" text-anchor="start" x="248" y="178">gen 1</text>
+<text class="mono" fill="#2B2F33" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="248" y="192">1</text>
+<text fill="#6B7378" font-size="7.6" text-anchor="start" x="362" y="178">gen 2</text>
+<text class="mono" fill="#2B2F33" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="362" y="192">0</text>
+<text fill="#6B7378" font-size="7.6" text-anchor="start" x="476" y="178">pauses cumulées</text>
+<text class="mono" fill="#2B2F33" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="476" y="192">12,4 ms</text>
 </svg>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Moins d'objets jetables dans les chemins chauds, c'est moins de ramassages, donc moins de saccades.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Des gobelets jetables au bureau : en prendre un est instantané, mais quelqu'un doit vider la poubelle, et pendant ce temps la machine à café est fermée.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>mesurer les octets alloués ;</li>
+<li>choisir entre struct et classe ;</li>
+<li>construire une chaîne sans gaspiller ;</li>
+<li>repérer les allocations cachées.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À retenir</span>
+<code>GC.GetAllocatedBytesForCurrentThread()</code> donne le total des octets alloués par le fil courant. Lu avant et après un bloc, il en mesure exactement les allocations. Toutes les valeurs en octets de ce cours viennent de là.
   </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Moins d'objets jetables dans les chemins chauds, c'est moins de ramassages, donc moins de saccades.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Des gobelets jetables au bureau : en prendre un est instantané, mais quelqu'un doit vider la poubelle, et pendant ce temps la machine à café est fermée.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>mesurer les octets alloués ;</li>
-        <li>choisir entre struct et classe ;</li>
-        <li>construire une chaîne sans gaspiller ;</li>
-        <li>repérer les allocations cachées.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À retenir</span>
-    <code>GC.GetAllocatedBytesForCurrentThread()</code> donne le total des octets alloués par le fil courant. Lu avant et après un bloc, il en mesure exactement les allocations. Toutes les valeurs en octets de ce cours viennent de là.
-  </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 94 · Allocations et ramasse-miettes</div>
+<div class="folio">1</div>
+<div class="pied">Cours 94 · Allocations et ramasse-miettes</div>
 </section>
-
 <!-- ============ PAGE 2 · VALEUR OU RÉFÉRENCE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 94</b></div>
-  <p class="rubrique">Schéma 1 · Valeur ou référence</p>
-  <h2>Struct ou classe</h2>
-  <p style="max-width:165mm">Une classe vit sur le tas, avec un en-tête, et on la manipule par référence. Une <b>struct</b> est une valeur : rangée dans un tableau, elle s'y trouve directement, sans en-tête et sans objet séparé. Pour de petites données nombreuses, l'écart est net.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">Un million de points (deux double) : en classe, ou en struct. Mesuré avec .NET 8, Release</text>
-<text x="16" y="56" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700">classe</text>
-<rect x="80" y="44" width="200" height="18" fill="#C62828"/>
-<text x="286.0" y="57" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">40 Mo</text>
-<rect x="360" y="44" width="157" height="18" fill="#C62828"/>
-<text x="522.8" y="57" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">3,92 ms</text>
-<text x="16" y="86" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700">struct</text>
-<rect x="80" y="74" width="80" height="18" fill="#2E7D32"/>
-<text x="166.0" y="87" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">16 Mo</text>
-<rect x="360" y="74" width="67" height="18" fill="#2E7D32"/>
-<text x="432.8" y="87" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">1,67 ms</text>
-<text x="80" y="106" font-size="7.6" fill="#6B7378" text-anchor="start">mémoire allouée</text>
-<text x="360" y="106" font-size="7.6" fill="#6B7378" text-anchor="start">parcourir et additionner</text>
-<line x1="16" y1="118" x2="584" y2="118" stroke="#CFC6B8"/>
-<text x="16" y="138" font-size="8" fill="#2B2F33" text-anchor="start">Classe : 1 million d'objets de 32 octets (16 d'en-tête, 16 de données) + 8 Mo de références.</text>
-<text x="16" y="152" font-size="8" fill="#2B2F33" text-anchor="start">Struct : les données à la suite dans un seul tableau de 16 Mo, lues dans l'ordre.</text>
-<text x="16" y="176" font-size="8.2" fill="#C62828" text-anchor="start" font-weight="700">Le piège du boxing : un million d'int rangés dans une List&lt;object&gt; : 32 Mo ; dans une List&lt;int&gt; : 4 Mo.</text>
-<text x="16" y="192" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Chaque int casé dans un object devient un petit objet de 24 octets sur le tas, plus sa référence.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 94</b></div>
+<p class="rubrique">Schéma 1 · Valeur ou référence</p>
+<h2>Struct ou classe</h2>
+<p style="max-width:165mm">Une classe vit sur le tas, avec un en-tête, et on la manipule par référence. Une <b>struct</b> est une valeur : rangée dans un tableau, elle s'y trouve directement, sans en-tête et sans objet séparé. Pour de petites données nombreuses, l'écart est net.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">Un million de points (deux double) : en classe, ou en struct. Mesuré avec .NET 8, Release</text>
+<text fill="#2B2F33" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="56">classe</text>
+<rect fill="#C62828" height="18" width="200" x="80" y="44"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="286.0" y="57">40 Mo</text>
+<rect fill="#C62828" height="18" width="157" x="360" y="44"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="522.8" y="57">3,92 ms</text>
+<text fill="#2B2F33" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="86">struct</text>
+<rect fill="#2E7D32" height="18" width="80" x="80" y="74"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="166.0" y="87">16 Mo</text>
+<rect fill="#2E7D32" height="18" width="67" x="360" y="74"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="432.8" y="87">1,67 ms</text>
+<text fill="#6B7378" font-size="7.6" text-anchor="start" x="80" y="106">mémoire allouée</text>
+<text fill="#6B7378" font-size="7.6" text-anchor="start" x="360" y="106">parcourir et additionner</text>
+<line stroke="#CFC6B8" x1="16" x2="584" y1="118" y2="118"></line>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="16" y="138">Classe : 1 million d'objets de 32 octets (16 d'en-tête, 16 de données) + 8 Mo de références.</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="16" y="152">Struct : les données à la suite dans un seul tableau de 16 Mo, lues dans l'ordre.</text>
+<text fill="#C62828" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="176">Le piège du boxing : un million d'int rangés dans une List&lt;object&gt; : 32 Mo ; dans une List&lt;int&gt; : 4 Mo.</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="16" y="192">Chaque int casé dans un object devient un petit objet de 24 octets sur le tas, plus sa référence.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">SnapSet/schema/Metrique.cs · lignes 1168 à 1172 et 1182 à 1185 (extrait)</span>/// UNE STRUCTURE, ET SANS AUCUN CHAMP OBLIGATOIRE : la valeur par défaut du type —
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">SnapSet/schema/Metrique.cs · lignes 1168 à 1172 et 1182 à 1185 (extrait)</span>/// UNE STRUCTURE, ET SANS AUCUN CHAMP OBLIGATOIRE : la valeur par défaut du type —
 /// quatre zéros — est exactement ce que le schéma dit d'un espacement dont un côté
 /// manque. Aucun test de nullité à faire nulle part, donc aucun oubli possible.
 public readonly struct Espacement
 …   public float Haut { get; }    public float Droite { get; }
     public float Bas { get; }     public float Gauche { get; }</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Quand choisir une struct</h3>
-      <p>Petite (Espacement : quatre <code>float</code>, 16 octets), immuable, sans identité propre : deux espacements égaux sont interchangeables. Au-delà de quelques dizaines d'octets, chaque copie coûte plus que la référence qu'on évite.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Pourquoi readonly</h3>
-      <p>Une struct modifiable surprend : <code>liste[i].X = 3</code> ne compile pas, parce que <code>liste[i]</code> rend une copie. <code>readonly struct</code> interdit toute modification après construction et permet au compilateur d'éviter des copies de précaution.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Quand choisir une struct</h3>
+<p>Petite (Espacement : quatre <code>float</code>, 16 octets), immuable, sans identité propre : deux espacements égaux sont interchangeables. Au-delà de quelques dizaines d'octets, chaque copie coûte plus que la référence qu'on évite.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Pourquoi readonly</h3>
+<p>Une struct modifiable surprend : <code>liste[i].X = 3</code> ne compile pas, parce que <code>liste[i]</code> rend une copie. <code>readonly struct</code> interdit toute modification après construction et permet au compilateur d'éviter des copies de précaution.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Ranger des valeurs dans un <code>object</code>, une <code>List&lt;object&gt;</code> ou un <code>ArrayList</code>. Chaque entier y est emballé dans un objet (boxing) : 32 Mo au lieu de 4 pour un million d'entiers, dans la mesure ci-dessus.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 94 · Allocations et ramasse-miettes</div>
+<div class="folio">2</div>
+<div class="pied">Cours 94 · Allocations et ramasse-miettes</div>
 </section>
-
 <!-- ============ PAGE 3 · LES CHAÎNES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 94</b></div>
-  <p class="rubrique">Schéma 2 · Les chaînes</p>
-  <h2>Une chaîne ne se modifie pas</h2>
-  <p style="max-width:165mm">Une <code>string</code> .NET est immuable : <code>s += "x"</code> crée une nouvelle chaîne et recopie l'ancienne. Dans une boucle, le coût devient quadratique. Le <code>StringBuilder</code> écrit dans un tampon modifiable et ne crée la chaîne qu'à la fin.</p>
-
-  <svg viewBox="0 0 600 204" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="204" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">Construire une chaîne de 10 000 caractères, un caractère à la fois : mesuré avec .NET 8, Release</text>
-<text x="30" y="44" font-size="8" fill="#6B7378" text-anchor="start" font-weight="700">méthode</text>
-<text x="260" y="44" font-size="8" fill="#6B7378" text-anchor="start" font-weight="700">octets alloués</text>
-<text x="430" y="44" font-size="8" fill="#6B7378" text-anchor="start" font-weight="700">durée (médiane)</text>
-<rect x="16" y="52" width="568" height="26" rx="3" fill="#ECEBFA"/>
-<text x="30" y="69" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">s += "x"</text>
-<text x="260" y="69" font-size="8.8" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:8.8px">100 Mo</text>
-<text x="430" y="69" font-size="8.8" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:8.8px">28 ms</text>
-<rect x="16" y="82" width="568" height="26" rx="3" fill="#fff"/>
-<text x="30" y="99" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">new StringBuilder()</text>
-<text x="260" y="99" font-size="8.8" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:8.8px">53 200 o</text>
-<text x="430" y="99" font-size="8.8" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:8.8px">54 µs</text>
-<rect x="16" y="112" width="568" height="26" rx="3" fill="#ECEBFA"/>
-<text x="30" y="129" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">new StringBuilder(10 000)</text>
-<text x="260" y="129" font-size="8.8" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8.8px">40 096 o</text>
-<text x="430" y="129" font-size="8.8" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8.8px">42 µs</text>
-<text x="16" y="160" font-size="7.8" fill="#2B2F33" text-anchor="start">Chaque « += » recopie toute la chaîne : 1 + 2 + … + 10 000 caractères, soit 50 millions de caractères de 2 octets.</text>
-<text x="16" y="176" font-size="7.8" fill="#2B2F33" text-anchor="start">Le StringBuilder sans capacité double son tampon en grandissant ; avec la bonne capacité, il ne garde</text>
-<text x="16" y="190" font-size="7.8" fill="#2B2F33" text-anchor="start">que son tampon et la chaîne finale : 2 × 20 000 octets, plus quelques en-têtes.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 94</b></div>
+<p class="rubrique">Schéma 2 · Les chaînes</p>
+<h2>Une chaîne ne se modifie pas</h2>
+<p style="max-width:165mm">Une <code>string</code> .NET est immuable : <code>s += "x"</code> crée une nouvelle chaîne et recopie l'ancienne. Dans une boucle, le coût devient quadratique. Le <code>StringBuilder</code> écrit dans un tampon modifiable et ne crée la chaîne qu'à la fin.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 204" width="100%">
+<rect fill="#EFE9E1" height="204" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">Construire une chaîne de 10 000 caractères, un caractère à la fois : mesuré avec .NET 8, Release</text>
+<text fill="#6B7378" font-size="8" font-weight="700" text-anchor="start" x="30" y="44">méthode</text>
+<text fill="#6B7378" font-size="8" font-weight="700" text-anchor="start" x="260" y="44">octets alloués</text>
+<text fill="#6B7378" font-size="8" font-weight="700" text-anchor="start" x="430" y="44">durée (médiane)</text>
+<rect fill="#ECEBFA" height="26" rx="3" width="568" x="16" y="52"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="30" y="69">s += "x"</text>
+<text class="mono" fill="#C62828" font-size="8.8" font-weight="700" style="font-size:8.8px" text-anchor="start" x="260" y="69">100 Mo</text>
+<text class="mono" fill="#C62828" font-size="8.8" font-weight="700" style="font-size:8.8px" text-anchor="start" x="430" y="69">28 ms</text>
+<rect fill="#fff" height="26" rx="3" width="568" x="16" y="82"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="30" y="99">new StringBuilder()</text>
+<text class="mono" fill="#E65100" font-size="8.8" font-weight="700" style="font-size:8.8px" text-anchor="start" x="260" y="99">53 200 o</text>
+<text class="mono" fill="#E65100" font-size="8.8" font-weight="700" style="font-size:8.8px" text-anchor="start" x="430" y="99">54 µs</text>
+<rect fill="#ECEBFA" height="26" rx="3" width="568" x="16" y="112"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="30" y="129">new StringBuilder(10 000)</text>
+<text class="mono" fill="#2E7D32" font-size="8.8" font-weight="700" style="font-size:8.8px" text-anchor="start" x="260" y="129">40 096 o</text>
+<text class="mono" fill="#2E7D32" font-size="8.8" font-weight="700" style="font-size:8.8px" text-anchor="start" x="430" y="129">42 µs</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="16" y="160">Chaque « += » recopie toute la chaîne : 1 + 2 + … + 10 000 caractères, soit 50 millions de caractères de 2 octets.</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="16" y="176">Le StringBuilder sans capacité double son tampon en grandissant ; avec la bonne capacité, il ne garde</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="16" y="190">que son tampon et la chaîne finale : 2 × 20 000 octets, plus quelques en-têtes.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">SnapSet/src/SnapSet.Constituants/Pur/ModeleFeuilles.cs · lignes 95 à 98</span>public static string UneLigne(string texte)
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">SnapSet/src/SnapSet.Constituants/Pur/ModeleFeuilles.cs · lignes 95 à 98</span>public static string UneLigne(string texte)
 {
     if (string.IsNullOrEmpty(texte)) return string.Empty;
     var sb = new StringBuilder(texte.Length);</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>La capacité connue</h3>
-      <p><code>UneLigne</code> remplace les sauts de ligne par des espaces : le résultat a au plus la longueur de l'entrée. Annoncer <code>texte.Length</code> évite au tampon de grandir par doublements. Le même réflexe se retrouve aux lignes 683 et 705.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Le chemin court</h3>
-      <p>La ligne 97 rend <code>string.Empty</code> sans rien allouer quand il n'y a rien à faire. Traiter d'abord le cas trivial, sans objet, est l'optimisation la plus simple et la plus fréquente des fonctions de texte.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>La capacité connue</h3>
+<p><code>UneLigne</code> remplace les sauts de ligne par des espaces : le résultat a au plus la longueur de l'entrée. Annoncer <code>texte.Length</code> évite au tampon de grandir par doublements. Le même réflexe se retrouve aux lignes 683 et 705.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Le chemin court</h3>
+<p>La ligne 97 rend <code>string.Empty</code> sans rien allouer quand il n'y a rien à faire. Traiter d'abord le cas trivial, sans objet, est l'optimisation la plus simple et la plus fréquente des fonctions de texte.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Remplacer chaque concaténation par un StringBuilder. Pour assembler trois morceaux une fois, <code>a + b + c</code> est compilé en un seul appel et reste le plus simple. Le StringBuilder ne sert que dans une boucle.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 94 · Allocations et ramasse-miettes</div>
+<div class="folio">3</div>
+<div class="pied">Cours 94 · Allocations et ramasse-miettes</div>
 </section>
-
 <!-- ============ PAGE 4 · LES ALLOCATIONS CACHÉES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 94</b></div>
-  <p class="rubrique">Schéma 3 · Les allocations cachées</p>
-  <h2>Allouer sans écrire new</h2>
-  <p style="max-width:165mm">Beaucoup d'allocations ne se voient pas dans le code : une collection parcourue à travers une interface, une requête LINQ, une chaîne interpolée. Chacune est minuscule ; répétée à chaque image ou pour chaque élément, elle remplit la génération 0.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.4" fill="#4F46B8" text-anchor="start" font-weight="700">Ce qui alloue sans « new » visible : octets par appel, mesurés avec GC.GetAllocatedBytesForCurrentThread</text>
-<text x="30" y="44" font-size="8" fill="#2E7D32" text-anchor="start" font-weight="700">sans allocation</text>
-<text x="300" y="44" font-size="8" fill="#C62828" text-anchor="start" font-weight="700">avec allocation</text>
-<rect x="16" y="52" width="568" height="24" rx="3" fill="#ECEBFA"/>
-<text x="30" y="68" font-size="8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8px">foreach sur un Dictionary</text>
-<text x="262" y="68" font-size="8.4" fill="#2E7D32" text-anchor="end" font-weight="700" class="mono" style="font-size:8.4px">0 o</text>
-<text x="300" y="68" font-size="8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8px">foreach sur le même, vu comme IReadOnlyDictionary</text>
-<text x="574" y="68" font-size="8.4" fill="#C62828" text-anchor="end" font-weight="700" class="mono" style="font-size:8.4px">64 o</text>
-<rect x="16" y="80" width="568" height="24" rx="3" fill="#fff"/>
-<text x="30" y="96" font-size="8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8px">foreach sur une List&lt;int&gt;</text>
-<text x="262" y="96" font-size="8.4" fill="#2E7D32" text-anchor="end" font-weight="700" class="mono" style="font-size:8.4px">0 o</text>
-<text x="300" y="96" font-size="8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8px">la même, vue comme IEnumerable&lt;int&gt;</text>
-<text x="574" y="96" font-size="8.4" fill="#C62828" text-anchor="end" font-weight="700" class="mono" style="font-size:8.4px">40 o</text>
-<rect x="16" y="108" width="568" height="24" rx="3" fill="#ECEBFA"/>
-<text x="30" y="124" font-size="8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8px">Array.Empty&lt;int&gt;()</text>
-<text x="262" y="124" font-size="8.4" fill="#2E7D32" text-anchor="end" font-weight="700" class="mono" style="font-size:8.4px">0 o</text>
-<text x="300" y="124" font-size="8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8px">new int[0]</text>
-<text x="574" y="124" font-size="8.4" fill="#C62828" text-anchor="end" font-weight="700" class="mono" style="font-size:8.4px">24 o</text>
-<rect x="16" y="136" width="568" height="24" rx="3" fill="#fff"/>
-<text x="30" y="152" font-size="8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8px">boucle for qui additionne</text>
-<text x="262" y="152" font-size="8.4" fill="#2E7D32" text-anchor="end" font-weight="700" class="mono" style="font-size:8.4px">0 o</text>
-<text x="300" y="152" font-size="8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8px">Where(…).Select(…).Sum() sur 1 000 nombres</text>
-<text x="574" y="152" font-size="8.4" fill="#C62828" text-anchor="end" font-weight="700" class="mono" style="font-size:8.4px">104 o</text>
-<rect x="16" y="164" width="568" height="24" rx="3" fill="#ECEBFA"/>
-<text x="30" y="180" font-size="8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8px">stackalloc double[16]</text>
-<text x="262" y="180" font-size="8.4" fill="#2E7D32" text-anchor="end" font-weight="700" class="mono" style="font-size:8.4px">0 o</text>
-<text x="300" y="180" font-size="8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8px">$"{g:F1} px" (interpolation)</text>
-<text x="574" y="180" font-size="8.4" fill="#C62828" text-anchor="end" font-weight="700" class="mono" style="font-size:8.4px">72 o</text>
-<text x="16" y="204" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Vu à travers une interface, l'énumérateur d'une collection (une struct) est emballé dans un objet : c'est du boxing.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 94</b></div>
+<p class="rubrique">Schéma 3 · Les allocations cachées</p>
+<h2>Allouer sans écrire new</h2>
+<p style="max-width:165mm">Beaucoup d'allocations ne se voient pas dans le code : une collection parcourue à travers une interface, une requête LINQ, une chaîne interpolée. Chacune est minuscule ; répétée à chaque image ou pour chaque élément, elle remplit la génération 0.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="22">Ce qui alloue sans « new » visible : octets par appel, mesurés avec GC.GetAllocatedBytesForCurrentThread</text>
+<text fill="#2E7D32" font-size="8" font-weight="700" text-anchor="start" x="30" y="44">sans allocation</text>
+<text fill="#C62828" font-size="8" font-weight="700" text-anchor="start" x="300" y="44">avec allocation</text>
+<rect fill="#ECEBFA" height="24" rx="3" width="568" x="16" y="52"></rect>
+<text class="mono" fill="#2B2F33" font-size="8" style="font-size:8px" text-anchor="start" x="30" y="68">foreach sur un Dictionary</text>
+<text class="mono" fill="#2E7D32" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="end" x="262" y="68">0 o</text>
+<text class="mono" fill="#2B2F33" font-size="8" style="font-size:8px" text-anchor="start" x="300" y="68">foreach sur le même, vu comme IReadOnlyDictionary</text>
+<text class="mono" fill="#C62828" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="end" x="574" y="68">64 o</text>
+<rect fill="#fff" height="24" rx="3" width="568" x="16" y="80"></rect>
+<text class="mono" fill="#2B2F33" font-size="8" style="font-size:8px" text-anchor="start" x="30" y="96">foreach sur une List&lt;int&gt;</text>
+<text class="mono" fill="#2E7D32" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="end" x="262" y="96">0 o</text>
+<text class="mono" fill="#2B2F33" font-size="8" style="font-size:8px" text-anchor="start" x="300" y="96">la même, vue comme IEnumerable&lt;int&gt;</text>
+<text class="mono" fill="#C62828" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="end" x="574" y="96">40 o</text>
+<rect fill="#ECEBFA" height="24" rx="3" width="568" x="16" y="108"></rect>
+<text class="mono" fill="#2B2F33" font-size="8" style="font-size:8px" text-anchor="start" x="30" y="124">Array.Empty&lt;int&gt;()</text>
+<text class="mono" fill="#2E7D32" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="end" x="262" y="124">0 o</text>
+<text class="mono" fill="#2B2F33" font-size="8" style="font-size:8px" text-anchor="start" x="300" y="124">new int[0]</text>
+<text class="mono" fill="#C62828" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="end" x="574" y="124">24 o</text>
+<rect fill="#fff" height="24" rx="3" width="568" x="16" y="136"></rect>
+<text class="mono" fill="#2B2F33" font-size="8" style="font-size:8px" text-anchor="start" x="30" y="152">boucle for qui additionne</text>
+<text class="mono" fill="#2E7D32" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="end" x="262" y="152">0 o</text>
+<text class="mono" fill="#2B2F33" font-size="8" style="font-size:8px" text-anchor="start" x="300" y="152">Where(…).Select(…).Sum() sur 1 000 nombres</text>
+<text class="mono" fill="#C62828" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="end" x="574" y="152">104 o</text>
+<rect fill="#ECEBFA" height="24" rx="3" width="568" x="16" y="164"></rect>
+<text class="mono" fill="#2B2F33" font-size="8" style="font-size:8px" text-anchor="start" x="30" y="180">stackalloc double[16]</text>
+<text class="mono" fill="#2E7D32" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="end" x="262" y="180">0 o</text>
+<text class="mono" fill="#2B2F33" font-size="8" style="font-size:8px" text-anchor="start" x="300" y="180">$"{g:F1} px" (interpolation)</text>
+<text class="mono" fill="#C62828" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="end" x="574" y="180">72 o</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="16" y="204">Vu à travers une interface, l'énumérateur d'une collection (une struct) est emballé dans un objet : c'est du boxing.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">SnapSet/src/SnapSet.Constituants/Execution/CapsuleExecution.cs · lignes 108 et 222</span>private IReadOnlyDictionary&lt;object, RectangleF&gt; _boites = new Dictionary&lt;object, RectangleF&gt;();
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">SnapSet/src/SnapSet.Constituants/Execution/CapsuleExecution.cs · lignes 108 et 222</span>private IReadOnlyDictionary&lt;object, RectangleF&gt; _boites = new Dictionary&lt;object, RectangleF&gt;();
 …
 foreach (var paire in _boites)</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>L'énumérateur emballé</h3>
-      <p>Le <code>Dictionary</code> fournit un énumérateur qui est une struct : parcouru directement, il ne coûte rien. Parcouru à travers <code>IReadOnlyDictionary</code>, il doit devenir un <code>IEnumerator</code>, donc un objet : 64 octets mesurés, à chaque <code>foreach</code>.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Sur la pile</h3>
-      <p><code>stackalloc</code> réserve un petit tableau sur la pile, rendu automatiquement à la sortie de la méthode ; <code>Span&lt;T&gt;</code> le manipule sans copie. <code>ArrayPool&lt;T&gt;.Shared</code> prête de grands tableaux et les reprend. Les trois évitent le tas.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>L'énumérateur emballé</h3>
+<p>Le <code>Dictionary</code> fournit un énumérateur qui est une struct : parcouru directement, il ne coûte rien. Parcouru à travers <code>IReadOnlyDictionary</code>, il doit devenir un <code>IEnumerator</code>, donc un objet : 64 octets mesurés, à chaque <code>foreach</code>.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Sur la pile</h3>
+<p><code>stackalloc</code> réserve un petit tableau sur la pile, rendu automatiquement à la sortie de la méthode ; <code>Span&lt;T&gt;</code> le manipule sans copie. <code>ArrayPool&lt;T&gt;.Shared</code> prête de grands tableaux et les reprend. Les trois évitent le tas.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Chasser les allocations partout. Une requête LINQ de 104 octets dans une méthode appelée une fois par clic est sans effet ; elle se paie seulement dans une boucle chaude. Le cours 91 s'applique : mesurer avant de réécrire.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 94 · Allocations et ramasse-miettes</div>
+<div class="folio">4</div>
+<div class="pied">Cours 94 · Allocations et ramasse-miettes</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 94</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>Les valeurs de SnapSet</h2>
-  <p style="max-width:165mm">SnapSet emploie des structs pour ses petites données immuables, et un chemin de pile réutilisé pour parcourir l'arbre des conteneurs sans allouer à chaque pas. La peinture, elle, parcourt les boîtes de chaque capsule à chaque image.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 94</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>Les valeurs de SnapSet</h2>
+<p style="max-width:165mm">SnapSet emploie des structs pour ses petites données immuables, et un chemin de pile réutilisé pour parcourir l'arbre des conteneurs sans allouer à chaque pas. La peinture, elle, parcourt les boîtes de chaque capsule à chaque image.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">SnapSet/schema/Metrique.cs</span></div>
 <div class="l k1"><span class="n">1172</span><span class="kw">public readonly struct</span> Espacement<span class="rep r1">1</span></div>
@@ -274,137 +247,55 @@ foreach (var paire in _boites)</div>
 <div class="l"><span class="cm">SnapSet/src/SnapSet.Constituants/Execution/CapsuleExecution.cs</span></div>
 <div class="l k5"><span class="n">222</span><span class="kw">foreach</span> (<span class="kw">var</span> paire <span class="kw">in</span> _boites)<span class="rep r5">5</span></div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>Valeurs</b>Immuables, 16 octets.</li>
-      <li><span class="rep r2">2</span><b>Un pas</b>Struct dans une liste.</li>
-      <li><span class="rep r3">3</span><b>Pile réutilisée</b>Ajout, puis retrait.</li>
-      <li><span class="rep r4">4</span><b>new T[0]</b>24 octets, mesurés.</li>
-      <li><span class="rep r5">5</span><b>À chaque image</b>Via une interface.</li>
-    </ul>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>Valeurs</b>Immuables, 16 octets.</li>
+<li><span class="rep r2">2</span><b>Un pas</b>Struct dans une liste.</li>
+<li><span class="rep r3">3</span><b>Pile réutilisée</b>Ajout, puis retrait.</li>
+<li><span class="rep r4">4</span><b>new T[0]</b>24 octets, mesurés.</li>
+<li><span class="rep r5">5</span><b>À chaque image</b>Via une interface.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À surveiller · deux petites allocations évitables</span>
+<code>Peindre</code> parcourt <code>_boites</code>, déclaré <code>IReadOnlyDictionary</code> : chaque peinture de chaque capsule alloue un énumérateur (64 octets dans la reproduction mesurée). Et <code>PlacementPrises</code> crée un <code>new T[0]</code> chaque fois que la fonction <code>enfants</code> rend <code>null</code> (ligne 135), là où <code>Array.Empty&lt;T&gt;()</code> ne coûte rien. Les deux sont négligeables aujourd'hui ; ils ne compteraient que sur un canvas de centaines de capsules repeint en continu. Déduit du code, coût unitaire mesuré sur une reproduction.
   </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À surveiller · deux petites allocations évitables</span>
-    <code>Peindre</code> parcourt <code>_boites</code>, déclaré <code>IReadOnlyDictionary</code> : chaque peinture de chaque capsule alloue un énumérateur (64 octets dans la reproduction mesurée). Et <code>PlacementPrises</code> crée un <code>new T[0]</code> chaque fois que la fonction <code>enfants</code> rend <code>null</code> (ligne 135), là où <code>Array.Empty&lt;T&gt;()</code> ne coûte rien. Les deux sont négligeables aujourd'hui ; ils ne compteraient que sur un canvas de centaines de capsules repeint en continu. Déduit du code, coût unitaire mesuré sur une reproduction.
-  </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 94 · Allocations et ramasse-miettes</div>
+<div class="folio">5</div>
+<div class="pied">Cours 94 · Allocations et ramasse-miettes</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 94</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 94</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">En .NET, ce qui coûte surtout, c'est…</div><ul>
-      <li><span>A</span>l'instruction new elle-même</li><li><span>B</span>le ramassage des objets abandonnés</li><li><span>C</span>la lecture d'un champ</li><li><span>D</span>l'appel d'une méthode</li></ul></div>
 
-    <div class="q"><div class="enonce">La génération 0 contient…</div><ul>
-      <li><span>A</span>les objets durables</li><li><span>B</span>les objets récemment créés</li><li><span>C</span>les structs</li><li><span>D</span>les chaînes seulement</li></ul></div>
 
-    <div class="q"><div class="enonce">Mesuré : un million de points en classe allouent…</div><ul>
-      <li><span>A</span>40 Mo, contre 16 en struct</li><li><span>B</span>100 Mo</li><li><span>C</span>16 Mo, comme en struct</li><li><span>D</span>8 Mo</li></ul></div>
 
-    <div class="q"><div class="enonce">Espacement est une struct parce qu'elle est… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>partagée par référence</li><li><span>B</span>immuable, avec une valeur par défaut utile</li><li><span>C</span>petite</li><li><span>D</span>très grande</li></ul></div>
-
-    <div class="q"><div class="enonce">Le boxing, c'est…</div><ul>
-      <li><span>A</span>libérer un objet</li><li><span>B</span>copier un tableau</li><li><span>C</span>compresser une chaîne</li><li><span>D</span>emballer une valeur dans un objet du tas</li></ul></div>
-
-    <div class="q"><div class="enonce"><code>s += "x"</code> dix mille fois a alloué (mesuré)…</div><ul>
-      <li><span>A</span>40 Ko</li><li><span>B</span>100 Mo</li><li><span>C</span>10 Ko</li><li><span>D</span>rien</li></ul></div>
-
-    <div class="q"><div class="enonce"><code>new StringBuilder(texte.Length)</code> évite…</div><ul>
-      <li><span>A</span>les agrandissements successifs du tampon</li><li><span>B</span>toute allocation</li><li><span>C</span>la chaîne finale</li><li><span>D</span>le ramasse-miettes</li></ul></div>
-
-    <div class="q"><div class="enonce">Un foreach sur un Dictionary vu comme IReadOnlyDictionary…</div><ul>
-      <li><span>A</span>copie le dictionnaire</li><li><span>B</span>n'alloue rien</li><li><span>C</span>est interdit</li><li><span>D</span>alloue un énumérateur</li></ul></div>
-
-    <div class="q"><div class="enonce">Pour obtenir un tableau vide sans allouer…</div><ul>
-      <li><span>A</span>new T[0]</li><li><span>B</span>new List&lt;T&gt;()</li><li><span>C</span>Array.Empty&lt;T&gt;()</li><li><span>D</span>null</li></ul></div>
-
-    <div class="q"><div class="enonce"><code>stackalloc</code> réserve la mémoire…</div><ul>
-      <li><span>A</span>dans un fichier</li><li><span>B</span>sur la carte graphique</li><li><span>C</span>sur la pile, rendue à la sortie de la méthode</li><li><span>D</span>sur le tas</li></ul></div>
-
-    <div class="q"><div class="enonce">L'outil qui mesure les octets alloués par un bloc est…</div><ul>
-      <li><span>A</span>Stopwatch</li><li><span>B</span>Environment.WorkingSet</li><li><span>C</span>GC.GetAllocatedBytesForCurrentThread</li><li><span>D</span>GC.Collect</li></ul></div>
-
-    <div class="q"><div class="enonce">Une requête LINQ de 104 octets mérite d'être réécrite…</div><ul>
-      <li><span>A</span>seulement si elle est dans une boucle chaude</li><li><span>B</span>toujours</li><li><span>C</span>jamais</li><li><span>D</span>si elle trie</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 94 · Allocations et ramasse-miettes</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">public readonly struct T</td><td>une petite valeur immuable</td><td>Metrique.cs:1172</td></tr>
+<tr><td class="c">new StringBuilder(capacité)</td><td>un tampon à la bonne taille</td><td>ModeleFeuilles.cs:98</td></tr>
+<tr><td class="c">Array.Empty&lt;T&gt;()</td><td>un tableau vide sans allocation</td><td>schéma 3, page 4</td></tr>
+<tr><td class="c">Span&lt;T&gt; s = stackalloc T[n]</td><td>un petit tableau sur la pile</td><td>schéma 3, page 4</td></tr>
+<tr><td class="c">ArrayPool&lt;T&gt;.Shared.Rent(n)</td><td>emprunter un grand tableau</td><td>page 4</td></tr>
+<tr><td class="c">GC.CollectionCount(0)</td><td>compter les ramassages d'une génération</td><td>schéma, page 1</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Allocation</dt><dd>La réservation de mémoire sur le tas pour un nouvel objet.</dd>
+<dt>Génération</dt><dd>Une classe d'âge des objets, ramassée plus ou moins souvent.</dd>
+<dt>Boxing</dt><dd>L'emballage d'une valeur dans un objet du tas.</dd>
+<dt>Struct</dt><dd>Un type valeur, copié et rangé sans en-tête.</dd>
+<dt>Span&lt;T&gt;</dt><dd>Une vue sur une zone de mémoire contiguë, sans copie.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 95</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 94 · Allocations et ramasse-miettes</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 94</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · B.</b> new avance un pointeur.</div>
-    <div><b>02 · B.</b> Ramassée souvent et vite.</div>
-    <div><b>03 · A.</b> En-têtes et références en plus.</div>
-    <div><b>04 · B et C.</b> Metrique.cs:1168–1172.</div>
-    <div><b>05 · D.</b> 24 octets par entier emballé.</div>
-    <div><b>06 · B.</b> Chaque += recopie tout.</div>
-    <div><b>07 · A.</b> La chaîne finale reste allouée.</div>
-    <div><b>08 · D.</b> 64 octets, mesuré.</div>
-    <div><b>09 · C.</b> Un tableau vide partagé.</div>
-    <div><b>10 · C.</b> Rien à ramasser.</div>
-    <div><b>11 · C.</b> Lu avant et après le bloc.</div>
-    <div><b>12 · A.</b> Mesurer avant de réécrire.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 95, « Le parallélisme de données ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">public readonly struct T</td><td>une petite valeur immuable</td><td>Metrique.cs:1172</td></tr>
-      <tr><td class="c">new StringBuilder(capacité)</td><td>un tampon à la bonne taille</td><td>ModeleFeuilles.cs:98</td></tr>
-      <tr><td class="c">Array.Empty&lt;T&gt;()</td><td>un tableau vide sans allocation</td><td>schéma 3, page 4</td></tr>
-      <tr><td class="c">Span&lt;T&gt; s = stackalloc T[n]</td><td>un petit tableau sur la pile</td><td>schéma 3, page 4</td></tr>
-      <tr><td class="c">ArrayPool&lt;T&gt;.Shared.Rent(n)</td><td>emprunter un grand tableau</td><td>page 4</td></tr>
-      <tr><td class="c">GC.CollectionCount(0)</td><td>compter les ramassages d'une génération</td><td>schéma, page 1</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Allocation</dt><dd>La réservation de mémoire sur le tas pour un nouvel objet.</dd>
-    <dt>Génération</dt><dd>Une classe d'âge des objets, ramassée plus ou moins souvent.</dd>
-    <dt>Boxing</dt><dd>L'emballage d'une valeur dans un objet du tas.</dd>
-    <dt>Struct</dt><dd>Un type valeur, copié et rangé sans en-tête.</dd>
-    <dt>Span&lt;T&gt;</dt><dd>Une vue sur une zone de mémoire contiguë, sans copie.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 95</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 94 · Allocations et ramasse-miettes</div>
-</section>
-
 </body>
 </html>

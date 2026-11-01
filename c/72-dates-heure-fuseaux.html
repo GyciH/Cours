@@ -1,258 +1,231 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>72 · Les dates, l'heure et les fuseaux</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-9">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 72</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Les dates, l'heure et les fuseaux</h1>
-  <p class="chapeau">Une date paraît simple jusqu'à ce qu'on la stocke, la compare ou l'affiche. Un <b>instant</b> est un point unique du temps ; l'<b>heure locale</b> en est une lecture, qui dépend du fuseau, des changements d'heure et de la culture qui l'écrit. La plupart des bugs de date viennent de la confusion entre les deux.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>56</b> et <b>67</b></span>
-    <span class="pastille">Exemples · <b>TrainingManager</b>, <b>MagpieCertificateGenerator</b>, <b>banc.mjs</b> (Magpie)</span>
-  </div>
-
-  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
-    <svg viewBox="0 0 600 186" width="100%">
-<rect x="150" y="10" width="300" height="50" rx="4" fill="#fff" stroke="#A03A2C" stroke-width="1.2"/>
-<text x="300" y="31" font-size="9.4" fill="#A03A2C" text-anchor="middle" font-weight="700">un seul instant</text>
-<text x="300" y="49" font-size="8.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.4px">2026-10-24T12:00:00Z  ·  1792843200000 ms</text>
-<line x1="300" y1="62" x2="80" y2="92" stroke="#CFC6B8" stroke-width="1"/><polygon points="80,92 86.0,88.4 86.8,93.8" fill="#CFC6B8"/>
-<rect x="16" y="96" width="128" height="46" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
-<text x="80" y="115" font-size="11" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:11px">12:00</text>
-<text x="80" y="132" font-size="7.8" fill="#2B2F33" text-anchor="middle">UTC</text>
-<line x1="300" y1="62" x2="226" y2="92" stroke="#CFC6B8" stroke-width="1"/><polygon points="226,92 231.0,87.1 233.0,92.1" fill="#CFC6B8"/>
-<rect x="162" y="96" width="128" height="46" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
-<text x="226" y="115" font-size="11" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:11px">14:00</text>
-<text x="226" y="132" font-size="7.8" fill="#2B2F33" text-anchor="middle">Paris</text>
-<line x1="300" y1="62" x2="372" y2="92" stroke="#CFC6B8" stroke-width="1"/><polygon points="372,92 365.0,92.0 367.1,87.0" fill="#CFC6B8"/>
-<rect x="308" y="96" width="128" height="46" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
-<text x="372" y="115" font-size="11" fill="#7B1FA2" text-anchor="middle" font-weight="700" class="mono" style="font-size:11px">08:00</text>
-<text x="372" y="132" font-size="7.8" fill="#2B2F33" text-anchor="middle">New York</text>
-<line x1="300" y1="62" x2="518" y2="92" stroke="#CFC6B8" stroke-width="1"/><polygon points="518,92 511.2,93.8 512.0,88.4" fill="#CFC6B8"/>
-<rect x="454" y="96" width="128" height="46" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="518" y="115" font-size="11" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:11px">21:00</text>
-<text x="518" y="132" font-size="7.8" fill="#2B2F33" text-anchor="middle">Tokyo</text>
-<text x="300" y="172" font-size="7.8" fill="#6B7378" text-anchor="middle" font-style="italic">Quatre heures affichées, un seul moment : on stocke l'instant, on choisit le fuseau à l'affichage.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 72</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Les dates, l'heure et les fuseaux</h1>
+<p class="chapeau">Une date paraît simple jusqu'à ce qu'on la stocke, la compare ou l'affiche. Un <b>instant</b> est un point unique du temps ; l'<b>heure locale</b> en est une lecture, qui dépend du fuseau, des changements d'heure et de la culture qui l'écrit. La plupart des bugs de date viennent de la confusion entre les deux.</p>
+<div class="meta">
+<span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>56</b> et <b>67</b></span>
+<span class="pastille">Exemples · <b>TrainingManager</b>, <b>MagpieCertificateGenerator</b>, <b>banc.mjs</b> (Magpie)</span>
+</div>
+<div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+<svg viewbox="0 0 600 186" width="100%">
+<rect fill="#fff" height="50" rx="4" stroke="#A03A2C" stroke-width="1.2" width="300" x="150" y="10"></rect>
+<text fill="#A03A2C" font-size="9.4" font-weight="700" text-anchor="middle" x="300" y="31">un seul instant</text>
+<text class="mono" fill="#2B2F33" font-size="8.4" style="font-size:8.4px" text-anchor="middle" x="300" y="49">2026-10-24T12:00:00Z  ·  1792843200000 ms</text>
+<line stroke="#CFC6B8" stroke-width="1" x1="300" x2="80" y1="62" y2="92"></line><polygon fill="#CFC6B8" points="80,92 86.0,88.4 86.8,93.8"></polygon>
+<rect fill="#fff" height="46" rx="4" stroke="#6B7378" stroke-width="1.2" width="128" x="16" y="96"></rect>
+<text class="mono" fill="#6B7378" font-size="11" font-weight="700" style="font-size:11px" text-anchor="middle" x="80" y="115">12:00</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="middle" x="80" y="132">UTC</text>
+<line stroke="#CFC6B8" stroke-width="1" x1="300" x2="226" y1="62" y2="92"></line><polygon fill="#CFC6B8" points="226,92 231.0,87.1 233.0,92.1"></polygon>
+<rect fill="#fff" height="46" rx="4" stroke="#1565C0" stroke-width="1.2" width="128" x="162" y="96"></rect>
+<text class="mono" fill="#1565C0" font-size="11" font-weight="700" style="font-size:11px" text-anchor="middle" x="226" y="115">14:00</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="middle" x="226" y="132">Paris</text>
+<line stroke="#CFC6B8" stroke-width="1" x1="300" x2="372" y1="62" y2="92"></line><polygon fill="#CFC6B8" points="372,92 365.0,92.0 367.1,87.0"></polygon>
+<rect fill="#fff" height="46" rx="4" stroke="#7B1FA2" stroke-width="1.2" width="128" x="308" y="96"></rect>
+<text class="mono" fill="#7B1FA2" font-size="11" font-weight="700" style="font-size:11px" text-anchor="middle" x="372" y="115">08:00</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="middle" x="372" y="132">New York</text>
+<line stroke="#CFC6B8" stroke-width="1" x1="300" x2="518" y1="62" y2="92"></line><polygon fill="#CFC6B8" points="518,92 511.2,93.8 512.0,88.4"></polygon>
+<rect fill="#fff" height="46" rx="4" stroke="#2E7D32" stroke-width="1.2" width="128" x="454" y="96"></rect>
+<text class="mono" fill="#2E7D32" font-size="11" font-weight="700" style="font-size:11px" text-anchor="middle" x="518" y="115">21:00</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="middle" x="518" y="132">Tokyo</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="middle" x="300" y="172">Quatre heures affichées, un seul moment : on stocke l'instant, on choisit le fuseau à l'affichage.</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>On <b>stocke</b> des instants en UTC (ou avec leur décalage), on <b>mesure</b> des durées avec une horloge monotone, et on ne convertit en heure locale qu'au moment d'<b>afficher</b>.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Un prix en euros et son affichage en dollars : on garde le prix dans une seule monnaie de référence, et on convertit pour chaque client, au dernier moment. Additionner des euros et des dollars donne n'importe quoi.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>distinguer instant et heure locale ;</li>
-        <li>éviter le piège du changement d'heure ;</li>
-        <li>écrire une date pour la stocker et pour l'afficher ;</li>
-        <li>mesurer une durée correctement.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:5mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>On <b>stocke</b> des instants en UTC (ou avec leur décalage), on <b>mesure</b> des durées avec une horloge monotone, et on ne convertit en heure locale qu'au moment d'<b>afficher</b>.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Un prix en euros et son affichage en dollars : on garde le prix dans une seule monnaie de référence, et on convertit pour chaque client, au dernier moment. Additionner des euros et des dollars donne n'importe quoi.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>distinguer instant et heure locale ;</li>
+<li>éviter le piège du changement d'heure ;</li>
+<li>écrire une date pour la stocker et pour l'afficher ;</li>
+<li>mesurer une durée correctement.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:5mm">
+<span class="titre">À retenir</span>
     Un ordinateur compte le temps en nombre d'unités depuis une origine : millisecondes depuis le 1<sup>er</sup> janvier 1970 UTC en JavaScript, « ticks » de 100 ns depuis l'an 1 en .NET. Tout le reste (jour, heure, fuseau) est un calcul fait à partir de ce nombre.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 72 · Les dates, l'heure et les fuseaux</div>
+<div class="folio">1</div>
+<div class="pied">Cours 72 · Les dates, l'heure et les fuseaux</div>
 </section>
-
 <!-- ============ PAGE 2 · LE CHANGEMENT D'HEURE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 72</b></div>
-  <p class="rubrique">Schéma 1 · Le changement d'heure</p>
-  <h2>Une heure qui existe deux fois</h2>
-  <p style="max-width:165mm">L'heure locale n'est pas continue. En France, elle avance d'une heure fin mars et recule d'une heure fin octobre. La nuit du 24 au 25 octobre 2026 en offre un exemple : la mesure ci-dessous a été faite avec le fuseau <code>Europe/Paris</code>.</p>
-
-  <svg viewBox="0 0 600 208" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="208" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#A03A2C" text-anchor="start" font-weight="700">Nuit du 24 au 25 octobre 2026, à Paris : à 3 h, les horloges reviennent à 2 h (mesuré en Node)</text>
-<text x="16" y="52" font-size="8" fill="#6B7378" text-anchor="start" font-weight="700">heure UTC</text>
-<text x="16" y="96" font-size="8" fill="#6B7378" text-anchor="start" font-weight="700">heure de Paris</text>
-<text x="110" y="52" font-size="8.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.4px">23:00</text>
-<text x="110" y="96" font-size="9" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">01:00</text>
-<line x1="110" y1="58" x2="110" y2="82" stroke="#CFC6B8"/>
-<text x="178" y="52" font-size="8.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.4px">23:30</text>
-<text x="178" y="96" font-size="9" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">01:30</text>
-<line x1="178" y1="58" x2="178" y2="82" stroke="#CFC6B8"/>
-<text x="246" y="52" font-size="8.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.4px">00:00</text>
-<text x="246" y="96" font-size="9" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">02:00</text>
-<line x1="246" y1="58" x2="246" y2="82" stroke="#CFC6B8"/>
-<text x="314" y="52" font-size="8.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.4px">00:30</text>
-<text x="314" y="96" font-size="9" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">02:30</text>
-<line x1="314" y1="58" x2="314" y2="82" stroke="#CFC6B8"/>
-<text x="382" y="52" font-size="8.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.4px">01:00</text>
-<text x="382" y="96" font-size="9" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">02:00</text>
-<line x1="382" y1="58" x2="382" y2="82" stroke="#CFC6B8"/>
-<text x="450" y="52" font-size="8.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.4px">01:30</text>
-<text x="450" y="96" font-size="9" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">02:30</text>
-<line x1="450" y1="58" x2="450" y2="82" stroke="#CFC6B8"/>
-<text x="518" y="52" font-size="8.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.4px">02:00</text>
-<text x="518" y="96" font-size="9" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">03:00</text>
-<line x1="518" y1="58" x2="518" y2="82" stroke="#CFC6B8"/>
-<rect x="222" y="104" width="252" height="4" fill="#C62828"/>
-<text x="348.0" y="122" font-size="7.8" fill="#C62828" text-anchor="middle" font-weight="700">02:00 à 02:59 existent deux fois</text>
-<line x1="16" y1="136" x2="584" y2="136" stroke="#CFC6B8" stroke-dasharray="3 3"/>
-<text x="16" y="156" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">Entre 01:00 et 04:00, heure de Paris, il s'écoule 4 heures réelles, pas 3.</text>
-<text x="16" y="174" font-size="8" fill="#2B2F33" text-anchor="start">Une durée calculée avec l'heure locale (DateTime.Now) est donc fausse d'une heure si elle chevauche ce moment.</text>
-<text x="16" y="192" font-size="8" fill="#6B7378" text-anchor="start" font-style="italic">Au printemps, c'est l'inverse : 02:00 à 02:59 n'existent pas du tout.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 72</b></div>
+<p class="rubrique">Schéma 1 · Le changement d'heure</p>
+<h2>Une heure qui existe deux fois</h2>
+<p style="max-width:165mm">L'heure locale n'est pas continue. En France, elle avance d'une heure fin mars et recule d'une heure fin octobre. La nuit du 24 au 25 octobre 2026 en offre un exemple : la mesure ci-dessous a été faite avec le fuseau <code>Europe/Paris</code>.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 208" width="100%">
+<rect fill="#EFE9E1" height="208" width="600" x="0" y="0"></rect>
+<text fill="#A03A2C" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">Nuit du 24 au 25 octobre 2026, à Paris : à 3 h, les horloges reviennent à 2 h (mesuré en Node)</text>
+<text fill="#6B7378" font-size="8" font-weight="700" text-anchor="start" x="16" y="52">heure UTC</text>
+<text fill="#6B7378" font-size="8" font-weight="700" text-anchor="start" x="16" y="96">heure de Paris</text>
+<text class="mono" fill="#2B2F33" font-size="8.4" style="font-size:8.4px" text-anchor="middle" x="110" y="52">23:00</text>
+<text class="mono" fill="#2B2F33" font-size="9" font-weight="700" style="font-size:9px" text-anchor="middle" x="110" y="96">01:00</text>
+<line stroke="#CFC6B8" x1="110" x2="110" y1="58" y2="82"></line>
+<text class="mono" fill="#2B2F33" font-size="8.4" style="font-size:8.4px" text-anchor="middle" x="178" y="52">23:30</text>
+<text class="mono" fill="#2B2F33" font-size="9" font-weight="700" style="font-size:9px" text-anchor="middle" x="178" y="96">01:30</text>
+<line stroke="#CFC6B8" x1="178" x2="178" y1="58" y2="82"></line>
+<text class="mono" fill="#2B2F33" font-size="8.4" style="font-size:8.4px" text-anchor="middle" x="246" y="52">00:00</text>
+<text class="mono" fill="#C62828" font-size="9" font-weight="700" style="font-size:9px" text-anchor="middle" x="246" y="96">02:00</text>
+<line stroke="#CFC6B8" x1="246" x2="246" y1="58" y2="82"></line>
+<text class="mono" fill="#2B2F33" font-size="8.4" style="font-size:8.4px" text-anchor="middle" x="314" y="52">00:30</text>
+<text class="mono" fill="#C62828" font-size="9" font-weight="700" style="font-size:9px" text-anchor="middle" x="314" y="96">02:30</text>
+<line stroke="#CFC6B8" x1="314" x2="314" y1="58" y2="82"></line>
+<text class="mono" fill="#2B2F33" font-size="8.4" style="font-size:8.4px" text-anchor="middle" x="382" y="52">01:00</text>
+<text class="mono" fill="#C62828" font-size="9" font-weight="700" style="font-size:9px" text-anchor="middle" x="382" y="96">02:00</text>
+<line stroke="#CFC6B8" x1="382" x2="382" y1="58" y2="82"></line>
+<text class="mono" fill="#2B2F33" font-size="8.4" style="font-size:8.4px" text-anchor="middle" x="450" y="52">01:30</text>
+<text class="mono" fill="#C62828" font-size="9" font-weight="700" style="font-size:9px" text-anchor="middle" x="450" y="96">02:30</text>
+<line stroke="#CFC6B8" x1="450" x2="450" y1="58" y2="82"></line>
+<text class="mono" fill="#2B2F33" font-size="8.4" style="font-size:8.4px" text-anchor="middle" x="518" y="52">02:00</text>
+<text class="mono" fill="#2B2F33" font-size="9" font-weight="700" style="font-size:9px" text-anchor="middle" x="518" y="96">03:00</text>
+<line stroke="#CFC6B8" x1="518" x2="518" y1="58" y2="82"></line>
+<rect fill="#C62828" height="4" width="252" x="222" y="104"></rect>
+<text fill="#C62828" font-size="7.8" font-weight="700" text-anchor="middle" x="348.0" y="122">02:00 à 02:59 existent deux fois</text>
+<line stroke="#CFC6B8" stroke-dasharray="3 3" x1="16" x2="584" y1="136" y2="136"></line>
+<text fill="#2B2F33" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="156">Entre 01:00 et 04:00, heure de Paris, il s'écoule 4 heures réelles, pas 3.</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="16" y="174">Une durée calculée avec l'heure locale (DateTime.Now) est donc fausse d'une heure si elle chevauche ce moment.</text>
+<text fill="#6B7378" font-size="8" font-style="italic" text-anchor="start" x="16" y="192">Au printemps, c'est l'inverse : 02:00 à 02:59 n'existent pas du tout.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#</span>DateTime.UtcNow                       // l'instant, en UTC : pour stocker et comparer
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#</span>DateTime.UtcNow                       // l'instant, en UTC : pour stocker et comparer
 DateTime.Now                          // l'heure locale : pour afficher, seulement
 DateTimeOffset.Now                    // l'heure locale ET son décalage (+02:00)
 TimeZoneInfo.ConvertTimeFromUtc(t, TimeZoneInfo.FindSystemTimeZoneById("Romance Standard Time"))</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Fuseau et décalage</h3>
-      <p>Un <b>décalage</b> (+02:00) est un nombre ; un <b>fuseau</b> (Europe/Paris) est une règle, qui donne +02:00 l'été et +01:00 l'hiver, et qui change parfois par décision politique. Pour planifier un rendez-vous futur, on garde le fuseau.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Les noms de fuseau</h3>
-      <p>Linux, Node et les navigateurs nomment les fuseaux « Europe/Paris » (base IANA). Windows a ses propres noms, comme « Romance Standard Time ». .NET 6 et plus accepte les deux sur les systèmes récents.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Fuseau et décalage</h3>
+<p>Un <b>décalage</b> (+02:00) est un nombre ; un <b>fuseau</b> (Europe/Paris) est une règle, qui donne +02:00 l'été et +01:00 l'hiver, et qui change parfois par décision politique. Pour planifier un rendez-vous futur, on garde le fuseau.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Les noms de fuseau</h3>
+<p>Linux, Node et les navigateurs nomment les fuseaux « Europe/Paris » (base IANA). Windows a ses propres noms, comme « Romance Standard Time ». .NET 6 et plus accepte les deux sur les systèmes récents.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Mesurer une durée avec <code>DateTime.Now - debut</code>. Si la mesure chevauche le changement d'heure, elle se trompe d'une heure ; si l'horloge est resynchronisée, de quelques secondes. Pour une durée : <code>Stopwatch</code>, ou au minimum <code>UtcNow</code>.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 72 · Les dates, l'heure et les fuseaux</div>
+<div class="folio">2</div>
+<div class="pied">Cours 72 · Les dates, l'heure et les fuseaux</div>
 </section>
-
 <!-- ============ PAGE 3 · ÉCRIRE UNE DATE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 72</b></div>
-  <p class="rubrique">Schéma 2 · Écrire une date</p>
-  <h2>Pour la machine, pour l'humain</h2>
-  <p style="max-width:165mm">Deux usages, deux formats. Pour stocker ou échanger, un format unique et sans ambiguïté : <b>ISO 8601</b>, qui se trie comme du texte. Pour afficher, le format de la culture du lecteur, que le système connaît. Mélanger les deux produit des dates mal lues.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#A03A2C" text-anchor="start" font-weight="700">Le 24 octobre 2026, selon la culture (mesuré avec Intl.DateTimeFormat)</text>
-<rect x="16" y="34" width="568" height="32" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="28" y="55" font-size="8.6" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">ISO 8601</text>
-<text x="140" y="55" font-size="10" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:10px">2026-10-24</text>
-<text x="574" y="55" font-size="7.8" fill="#6B7378" text-anchor="end" font-style="italic">pour stocker et échanger : se trie comme du texte</text>
-<rect x="16" y="74" width="568" height="32" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
-<text x="28" y="95" font-size="8.6" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">fr-FR</text>
-<text x="140" y="95" font-size="10" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:10px">24/10/2026</text>
-<text x="574" y="95" font-size="7.8" fill="#6B7378" text-anchor="end" font-style="italic">jour, mois, année</text>
-<rect x="16" y="114" width="568" height="32" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
-<text x="28" y="135" font-size="8.6" fill="#7B1FA2" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">de-DE</text>
-<text x="140" y="135" font-size="10" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:10px">24.10.2026</text>
-<text x="574" y="135" font-size="7.8" fill="#6B7378" text-anchor="end" font-style="italic">d'autres séparateurs</text>
-<rect x="16" y="154" width="568" height="32" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
-<text x="28" y="175" font-size="8.6" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">en-US</text>
-<text x="140" y="175" font-size="10" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:10px">10/24/2026</text>
-<text x="574" y="175" font-size="7.8" fill="#6B7378" text-anchor="end" font-style="italic">le mois d'abord : 03/04 est le 4 mars</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 72</b></div>
+<p class="rubrique">Schéma 2 · Écrire une date</p>
+<h2>Pour la machine, pour l'humain</h2>
+<p style="max-width:165mm">Deux usages, deux formats. Pour stocker ou échanger, un format unique et sans ambiguïté : <b>ISO 8601</b>, qui se trie comme du texte. Pour afficher, le format de la culture du lecteur, que le système connaît. Mélanger les deux produit des dates mal lues.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#A03A2C" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">Le 24 octobre 2026, selon la culture (mesuré avec Intl.DateTimeFormat)</text>
+<rect fill="#fff" height="32" rx="4" stroke="#2E7D32" stroke-width="1.2" width="568" x="16" y="34"></rect>
+<text class="mono" fill="#2E7D32" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="28" y="55">ISO 8601</text>
+<text class="mono" fill="#2B2F33" font-size="10" font-weight="700" style="font-size:10px" text-anchor="start" x="140" y="55">2026-10-24</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="end" x="574" y="55">pour stocker et échanger : se trie comme du texte</text>
+<rect fill="#fff" height="32" rx="4" stroke="#1565C0" stroke-width="1.2" width="568" x="16" y="74"></rect>
+<text class="mono" fill="#1565C0" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="28" y="95">fr-FR</text>
+<text class="mono" fill="#2B2F33" font-size="10" font-weight="700" style="font-size:10px" text-anchor="start" x="140" y="95">24/10/2026</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="end" x="574" y="95">jour, mois, année</text>
+<rect fill="#fff" height="32" rx="4" stroke="#7B1FA2" stroke-width="1.2" width="568" x="16" y="114"></rect>
+<text class="mono" fill="#7B1FA2" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="28" y="135">de-DE</text>
+<text class="mono" fill="#2B2F33" font-size="10" font-weight="700" style="font-size:10px" text-anchor="start" x="140" y="135">24.10.2026</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="end" x="574" y="135">d'autres séparateurs</text>
+<rect fill="#fff" height="32" rx="4" stroke="#C62828" stroke-width="1.2" width="568" x="16" y="154"></rect>
+<text class="mono" fill="#C62828" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="28" y="175">en-US</text>
+<text class="mono" fill="#2B2F33" font-size="10" font-weight="700" style="font-size:10px" text-anchor="start" x="140" y="175">10/24/2026</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="end" x="574" y="175">le mois d'abord : 03/04 est le 4 mars</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript et C#</span>new Date().toISOString()                // "2026-10-24T12:00:00.000Z"
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript et C#</span>new Date().toISOString()                // "2026-10-24T12:00:00.000Z"
 new Intl.DateTimeFormat("fr-FR").format(d)  // "24/10/2026"
 t.ToString("o")                           // ISO 8601, aller-retour sans perte
 t.ToString("d", new CultureInfo("fr-FR"))  // la date courte française</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Le / qui n'en est pas un</h3>
-      <p>Dans un format .NET personnalisé, <code>/</code> ne désigne pas une barre oblique mais « le séparateur de date de la culture courante ». <code>ToString("dd/MM/yyyy")</code> donne 24/10/2026 en France, et 24.10.2026 sur un Windows réglé en allemand.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Lire une date en JavaScript</h3>
-      <p><code>new Date("2026-10-24")</code> est lu en UTC, mais <code>new Date("2026-10-24T00:00")</code> en heure locale : à Paris, ce dernier vaut 22:00 UTC la veille (mesuré). Une date sans heure ni fuseau est une source d'erreurs.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Le / qui n'en est pas un</h3>
+<p>Dans un format .NET personnalisé, <code>/</code> ne désigne pas une barre oblique mais « le séparateur de date de la culture courante ». <code>ToString("dd/MM/yyyy")</code> donne 24/10/2026 en France, et 24.10.2026 sur un Windows réglé en allemand.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Lire une date en JavaScript</h3>
+<p><code>new Date("2026-10-24")</code> est lu en UTC, mais <code>new Date("2026-10-24T00:00")</code> en heure locale : à Paris, ce dernier vaut 22:00 UTC la veille (mesuré). Une date sans heure ni fuseau est une source d'erreurs.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Stocker une date déjà formatée pour l'affichage (« 03/04/2026 »). Relue ailleurs, elle devient le 4 mars au lieu du 3 avril, et elle ne se trie plus. On stocke en ISO 8601, on formate à la dernière étape.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 72 · Les dates, l'heure et les fuseaux</div>
+<div class="folio">3</div>
+<div class="pied">Cours 72 · Les dates, l'heure et les fuseaux</div>
 </section>
-
 <!-- ============ PAGE 4 · MESURER UNE DURÉE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 72</b></div>
-  <p class="rubrique">Schéma 3 · Deux horloges</p>
-  <h2>Horodater n'est pas chronométrer</h2>
-  <p style="max-width:165mm">Le système offre deux horloges. L'une donne l'heure, et peut sauter en avant ou en arrière. L'autre ne donne pas l'heure, mais avance régulièrement, sans jamais reculer : c'est elle qu'il faut pour mesurer le temps écoulé.</p>
-
-  <svg viewBox="0 0 600 204" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="204" fill="#EFE9E1"/>
-<text x="150" y="22" font-size="9" fill="#E65100" text-anchor="middle" font-weight="700">L'horloge murale</text>
-<text x="450" y="22" font-size="9" fill="#2E7D32" text-anchor="middle" font-weight="700">L'horloge monotone</text>
-<line x1="300" y1="12" x2="300" y2="194" stroke="#CFC6B8" stroke-dasharray="3 3"/>
-<text x="150" y="46" font-size="8" fill="#2B2F33" text-anchor="middle">dit quelle heure il est</text>
-<text x="150" y="62" font-size="8" fill="#2B2F33" text-anchor="middle">peut sauter : synchronisation</text>
-<text x="150" y="78" font-size="8" fill="#2B2F33" text-anchor="middle">réseau, changement d'heure,</text>
-<text x="150" y="94" font-size="8" fill="#2B2F33" text-anchor="middle">réglage par l'utilisateur</text>
-<text x="450" y="46" font-size="8" fill="#2B2F33" text-anchor="middle">ne dit pas l'heure</text>
-<text x="450" y="62" font-size="8" fill="#2B2F33" text-anchor="middle">avance toujours, régulièrement</text>
-<text x="450" y="78" font-size="8" fill="#2B2F33" text-anchor="middle">depuis un point quelconque</text>
-<text x="450" y="94" font-size="8" fill="#2B2F33" text-anchor="middle">(le démarrage du PC)</text>
-<rect x="40" y="120" width="220" height="26" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
-<text x="150.0" y="135.66666666666666" font-size="8" fill="#E65100" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">DateTime.UtcNow · Date.now()</text>
-<rect x="340" y="120" width="220" height="26" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="450.0" y="135.66666666666666" font-size="8" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">Stopwatch · performance.now()</text>
-<text x="150" y="170" font-size="8" fill="#E65100" text-anchor="middle" font-weight="700">pour horodater un événement</text>
-<text x="450" y="170" font-size="8" fill="#2E7D32" text-anchor="middle" font-weight="700">pour mesurer une durée</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 72</b></div>
+<p class="rubrique">Schéma 3 · Deux horloges</p>
+<h2>Horodater n'est pas chronométrer</h2>
+<p style="max-width:165mm">Le système offre deux horloges. L'une donne l'heure, et peut sauter en avant ou en arrière. L'autre ne donne pas l'heure, mais avance régulièrement, sans jamais reculer : c'est elle qu'il faut pour mesurer le temps écoulé.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 204" width="100%">
+<rect fill="#EFE9E1" height="204" width="600" x="0" y="0"></rect>
+<text fill="#E65100" font-size="9" font-weight="700" text-anchor="middle" x="150" y="22">L'horloge murale</text>
+<text fill="#2E7D32" font-size="9" font-weight="700" text-anchor="middle" x="450" y="22">L'horloge monotone</text>
+<line stroke="#CFC6B8" stroke-dasharray="3 3" x1="300" x2="300" y1="12" y2="194"></line>
+<text fill="#2B2F33" font-size="8" text-anchor="middle" x="150" y="46">dit quelle heure il est</text>
+<text fill="#2B2F33" font-size="8" text-anchor="middle" x="150" y="62">peut sauter : synchronisation</text>
+<text fill="#2B2F33" font-size="8" text-anchor="middle" x="150" y="78">réseau, changement d'heure,</text>
+<text fill="#2B2F33" font-size="8" text-anchor="middle" x="150" y="94">réglage par l'utilisateur</text>
+<text fill="#2B2F33" font-size="8" text-anchor="middle" x="450" y="46">ne dit pas l'heure</text>
+<text fill="#2B2F33" font-size="8" text-anchor="middle" x="450" y="62">avance toujours, régulièrement</text>
+<text fill="#2B2F33" font-size="8" text-anchor="middle" x="450" y="78">depuis un point quelconque</text>
+<text fill="#2B2F33" font-size="8" text-anchor="middle" x="450" y="94">(le démarrage du PC)</text>
+<rect fill="#fff" height="26" rx="4" stroke="#E65100" stroke-width="1.2" width="220" x="40" y="120"></rect>
+<text class="mono" fill="#E65100" font-size="8" font-weight="700" style="font-size:8px" text-anchor="middle" x="150.0" y="135.66666666666666">DateTime.UtcNow · Date.now()</text>
+<rect fill="#fff" height="26" rx="4" stroke="#2E7D32" stroke-width="1.2" width="220" x="340" y="120"></rect>
+<text class="mono" fill="#2E7D32" font-size="8" font-weight="700" style="font-size:8px" text-anchor="middle" x="450.0" y="135.66666666666666">Stopwatch · performance.now()</text>
+<text fill="#E65100" font-size="8" font-weight="700" text-anchor="middle" x="150" y="170">pour horodater un événement</text>
+<text fill="#2E7D32" font-size="8" font-weight="700" text-anchor="middle" x="450" y="170">pour mesurer une durée</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C# et JavaScript</span>var chrono = Stopwatch.StartNew();
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C# et JavaScript</span>var chrono = Stopwatch.StartNew();
 Calculer();
 TimeSpan duree = chrono.Elapsed;          // monotone, précis
 const t0 = performance.now(); calculer(); const ms = performance.now() - t0;</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Une date sans heure</h3>
-      <p>Un anniversaire, une date de délivrance : ce ne sont pas des instants. Les stocker comme un instant à minuit, c'est risquer qu'un fuseau les décale d'un jour. .NET 6 offre <code>DateOnly</code> ; en texte, <code>2026-10-24</code> suffit.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Le temps dans les tests</h3>
-      <p>Un code qui lit <code>DateTime.Now</code> lui-même ne se teste pas à une date choisie. On lui passe l'heure en paramètre, ou une « horloge » (<code>TimeProvider</code> en .NET 8) que le test remplace.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Une date sans heure</h3>
+<p>Un anniversaire, une date de délivrance : ce ne sont pas des instants. Les stocker comme un instant à minuit, c'est risquer qu'un fuseau les décale d'un jour. .NET 6 offre <code>DateOnly</code> ; en texte, <code>2026-10-24</code> suffit.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Le temps dans les tests</h3>
+<p>Un code qui lit <code>DateTime.Now</code> lui-même ne se teste pas à une date choisie. On lui passe l'heure en paramètre, ou une « horloge » (<code>TimeProvider</code> en .NET 8) que le test remplace.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Comparer une date venue d'un autre poste avec <code>DateTime.Now</code> du sien. Les deux horloges ne sont jamais tout à fait d'accord, et peut-être pas dans le même fuseau. Pour décider d'un ordre entre machines, c'est le serveur qui horodate.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 72 · Les dates, l'heure et les fuseaux</div>
+<div class="folio">4</div>
+<div class="pied">Cours 72 · Les dates, l'heure et les fuseaux</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 72</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>Heures locales côté plugin, ISO côté banc d'essai</h2>
-  <p style="max-width:165mm">Le plugin Magpie date les résultats et le certificat avec l'heure locale de l'élève, ce qui convient à l'affichage. Le banc d'essai pédagogique écrit en ISO 8601, et l'éditeur web utilise <code>Date.now()</code> pour un simple délai.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 72</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>Heures locales côté plugin, ISO côté banc d'essai</h2>
+<p style="max-width:165mm">Le plugin Magpie date les résultats et le certificat avec l'heure locale de l'élève, ce qui convient à l'affichage. Le banc d'essai pédagogique écrit en ISO 8601, et l'éditeur web utilise <code>Date.now()</code> pour un simple délai.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">magpie/plugin/Core/TrainingManager.cs</span></div>
 <div class="l k1"><span class="n">124</span>… { StartedAt = DateTime.Now };<span class="rep r1">1</span></div>
@@ -265,136 +238,54 @@ const t0 = performance.now(); calculer(); const ms = performance.now() - t0;</di
 <div class="l k3"><span class="n">174</span>ecrireJson(…, { …, a: <span class="kw">new</span> Date().toISOString() });<span class="rep r3">3</span></div>
 <div class="l k4"><span class="n">94</span><span class="kw">if</span> (Date.now() - editStartRef.current &lt; 250) <span class="kw">return</span>;<span class="rep r4">4</span></div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>L'heure de l'élève</b>Pour dater et nommer, l'heure locale est la bonne.</li>
-      <li><span class="rep r2">2</span><b>Le certificat</b>Numéro et date tirés du même instant.</li>
-      <li><span class="rep r3">3</span><b>ISO 8601</b>En UTC, avec son Z : se relit partout.</li>
-      <li><span class="rep r4">4</span><b>Un délai court</b>250 ms : l'horloge murale suffit.</li>
-    </ul>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>L'heure de l'élève</b>Pour dater et nommer, l'heure locale est la bonne.</li>
+<li><span class="rep r2">2</span><b>Le certificat</b>Numéro et date tirés du même instant.</li>
+<li><span class="rep r3">3</span><b>ISO 8601</b>En UTC, avec son Z : se relit partout.</li>
+<li><span class="rep r4">4</span><b>Un délai court</b>250 ms : l'horloge murale suffit.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À surveiller · deux détails de date dans le plugin</span>
+<b>La durée</b> (TrainingManager.cs:328) soustrait deux heures locales : un exercice commencé avant 3 h la nuit du changement d'heure d'octobre compterait une heure de trop. Cas très rare en classe ; <code>UtcNow</code> ou un <code>Stopwatch</code> l'écarterait. <b>La date du certificat</b> (MagpieCertificateGenerator.cs:63) suit le séparateur de la culture de Windows : 24.10.2026 sur un poste réglé en allemand. Passer <code>CultureInfo.InvariantCulture</code> fixerait les barres obliques.
   </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À surveiller · deux détails de date dans le plugin</span>
-    <b>La durée</b> (TrainingManager.cs:328) soustrait deux heures locales : un exercice commencé avant 3 h la nuit du changement d'heure d'octobre compterait une heure de trop. Cas très rare en classe ; <code>UtcNow</code> ou un <code>Stopwatch</code> l'écarterait. <b>La date du certificat</b> (MagpieCertificateGenerator.cs:63) suit le séparateur de la culture de Windows : 24.10.2026 sur un poste réglé en allemand. Passer <code>CultureInfo.InvariantCulture</code> fixerait les barres obliques.
-  </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 72 · Les dates, l'heure et les fuseaux</div>
+<div class="folio">5</div>
+<div class="pied">Cours 72 · Les dates, l'heure et les fuseaux</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 72</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 72</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">Pour stocker un instant, on préfère…</div><ul>
-      <li><span>A</span>le jour de la semaine</li><li><span>B</span>l'heure locale seule</li><li><span>C</span>UTC ou une heure avec son décalage</li><li><span>D</span>le texte affiché</li></ul></div>
 
-    <div class="q"><div class="enonce">12:00 UTC le 24/10/2026, c'est à Paris…</div><ul>
-      <li><span>A</span>12:00</li><li><span>B</span>10:00</li><li><span>C</span>14:00</li><li><span>D</span>13:00</li></ul></div>
 
-    <div class="q"><div class="enonce">La nuit du 25/10/2026 à Paris, 02:30 locale…</div><ul>
-      <li><span>A</span>n'existe pas</li><li><span>B</span>existe une fois</li><li><span>C</span>vaut 03:30</li><li><span>D</span>existe deux fois</li></ul></div>
 
-    <div class="q"><div class="enonce">Un fuseau, contrairement à un décalage…</div><ul>
-      <li><span>A</span>est un nombre fixe</li><li><span>B</span>est une règle qui change selon la date</li><li><span>C</span>n'existe qu'en UTC</li><li><span>D</span>est une culture</li></ul></div>
-
-    <div class="q"><div class="enonce">Pour mesurer une durée : <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>la date du fichier</li><li><span>B</span>performance.now()</li><li><span>C</span>DateTime.Now - debut</li><li><span>D</span>Stopwatch</li></ul></div>
-
-    <div class="q"><div class="enonce">ISO 8601 a l'avantage…</div><ul>
-      <li><span>A</span>de cacher le fuseau</li><li><span>B</span>d'être plus court</li><li><span>C</span>d'être le format français</li><li><span>D</span>de se trier comme du texte</li></ul></div>
-
-    <div class="q"><div class="enonce">En en-US, <code>03/04/2026</code> se lit…</div><ul>
-      <li><span>A</span>invalide</li><li><span>B</span>4 mars</li><li><span>C</span>3 mars</li><li><span>D</span>3 avril</li></ul></div>
-
-    <div class="q"><div class="enonce">Dans <code>ToString("dd/MM/yyyy")</code>, le <code>/</code>…</div><ul>
-      <li><span>A</span>est une division</li><li><span>B</span>est toujours une barre oblique</li><li><span>C</span>est interdit</li><li><span>D</span>est le séparateur de la culture</li></ul></div>
-
-    <div class="q"><div class="enonce"><code>new Date("2026-10-24T00:00")</code> à Paris vaut…</div><ul>
-      <li><span>A</span>une erreur</li><li><span>B</span>2026-10-24T02:00Z</li><li><span>C</span>2026-10-23T22:00Z</li><li><span>D</span>2026-10-24T00:00Z</li></ul></div>
-
-    <div class="q"><div class="enonce">Une date de naissance se stocke de préférence…</div><ul>
-      <li><span>A</span>comme une date sans heure</li><li><span>B</span>formatée en français</li><li><span>C</span>à minuit UTC</li><li><span>D</span>en ticks</li></ul></div>
-
-    <div class="q"><div class="enonce">Le risque de TrainingManager.cs:328 est…</div><ul>
-      <li><span>A</span>une durée fausse d'une heure au changement d'heure</li><li><span>B</span>aucun</li><li><span>C</span>un mauvais nom de fichier</li><li><span>D</span>une exception</li></ul></div>
-
-    <div class="q"><div class="enonce">Pour départager l'ordre d'événements venus de plusieurs postes…</div><ul>
-      <li><span>A</span>le serveur horodate</li><li><span>B</span>on trie par nom</li><li><span>C</span>chaque poste son Now</li><li><span>D</span>on demande à l'élève</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 72 · Les dates, l'heure et les fuseaux</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">DateTime.Now</td><td>l'heure locale du poste</td><td>TrainingManager.cs:124</td></tr>
+<tr><td class="c">{DateTime.Now:yyyyMMdd}</td><td>date compacte, triable, pour un nom</td><td>TrainingManager.cs:382</td></tr>
+<tr><td class="c">date.ToString("dd/MM/yyyy")</td><td>date affichée, selon la culture</td><td>MagpieCertificateGenerator.cs:63</td></tr>
+<tr><td class="c">new Date().toISOString()</td><td>instant en ISO 8601, UTC</td><td>banc.mjs:174</td></tr>
+<tr><td class="c">Date.now() - debut</td><td>délai court, en millisecondes</td><td>nodeEditors.jsx:94</td></tr>
+<tr><td class="c">Stopwatch.StartNew()</td><td>mesurer une durée</td><td>exemple autonome, page 4</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>UTC</dt><dd>Le temps universel coordonné, référence sans changement d'heure.</dd>
+<dt>Fuseau horaire</dt><dd>La règle qui donne le décalage d'un lieu par rapport à UTC, selon la date.</dd>
+<dt>Décalage</dt><dd>L'écart, à un instant donné, entre l'heure locale et UTC (+02:00).</dd>
+<dt>ISO 8601</dt><dd>Le format international des dates : année-mois-jour, puis l'heure.</dd>
+<dt>Horloge monotone</dt><dd>Une horloge qui ne recule jamais, faite pour mesurer des durées.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 70</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 72 · Les dates, l'heure et les fuseaux</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 72</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · C.</b> L'heure locale seule est ambiguë.</div>
-    <div><b>02 · C.</b> Encore à l'heure d'été (+02:00).</div>
-    <div><b>03 · D.</b> Avant et après le recul.</div>
-    <div><b>04 · B.</b> +02:00 l'été, +01:00 l'hiver.</div>
-    <div><b>05 · B et D.</b> Les horloges monotones.</div>
-    <div><b>06 · D.</b> Année, mois, jour.</div>
-    <div><b>07 · B.</b> Le mois d'abord.</div>
-    <div><b>08 · D.</b> MagpieCertificateGenerator.cs:63.</div>
-    <div><b>09 · C.</b> Lue en heure locale (mesuré).</div>
-    <div><b>10 · A.</b> DateOnly, ou « 2026-10-24 ».</div>
-    <div><b>11 · A.</b> Deux heures locales soustraites.</div>
-    <div><b>12 · A.</b> Une seule horloge de référence.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 70, « IP, ports, DNS et TCP ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">DateTime.Now</td><td>l'heure locale du poste</td><td>TrainingManager.cs:124</td></tr>
-      <tr><td class="c">{DateTime.Now:yyyyMMdd}</td><td>date compacte, triable, pour un nom</td><td>TrainingManager.cs:382</td></tr>
-      <tr><td class="c">date.ToString("dd/MM/yyyy")</td><td>date affichée, selon la culture</td><td>MagpieCertificateGenerator.cs:63</td></tr>
-      <tr><td class="c">new Date().toISOString()</td><td>instant en ISO 8601, UTC</td><td>banc.mjs:174</td></tr>
-      <tr><td class="c">Date.now() - debut</td><td>délai court, en millisecondes</td><td>nodeEditors.jsx:94</td></tr>
-      <tr><td class="c">Stopwatch.StartNew()</td><td>mesurer une durée</td><td>exemple autonome, page 4</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>UTC</dt><dd>Le temps universel coordonné, référence sans changement d'heure.</dd>
-    <dt>Fuseau horaire</dt><dd>La règle qui donne le décalage d'un lieu par rapport à UTC, selon la date.</dd>
-    <dt>Décalage</dt><dd>L'écart, à un instant donné, entre l'heure locale et UTC (+02:00).</dd>
-    <dt>ISO 8601</dt><dd>Le format international des dates : année-mois-jour, puis l'heure.</dd>
-    <dt>Horloge monotone</dt><dd>Une horloge qui ne recule jamais, faite pour mesurer des durées.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 70</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 72 · Les dates, l'heure et les fuseaux</div>
-</section>
-
 </body>
 </html>

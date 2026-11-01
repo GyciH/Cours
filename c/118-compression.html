@@ -1,306 +1,279 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>118 · La compression</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-10">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 118</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>La compression</h1>
-  <p class="chapeau">Compresser sans perte, c'est réécrire un fichier plus court en exploitant ce qu'il a de prévisible : des répétitions, des symboles plus fréquents que d'autres. Le .gh de Grasshopper, le .docx, le PNG et les objets de Git reposent tous sur le même algorithme, <b>deflate</b>. Il gagne beaucoup sur du texte, rien sur ce qui est déjà compressé.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>115</b>, <b>103</b></span>
-    <span class="pastille">Exemples · <b>Magpie</b> plugin, exercices, dépôt</span>
-  </div>
-
-  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
-    <svg viewBox="0 0 600 212" width="100%">
-<text x="10" y="16" font-size="8.4" fill="#4A4A68" text-anchor="start" font-weight="700">1 · répétitions : ce qui a déjà été écrit est remplacé par « recule de d, recopie n »</text>
-<text x="22" y="38" font-size="8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8px">&lt;item name="X" type_code="3"&gt;5&lt;/item&gt;</text>
-<rect x="22" y="43" width="120" height="16" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
-<text x="82.0" y="53.4" font-size="7.2" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.2px">(recule 37, recopie 12)</text>
-<text x="147" y="55" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">Y</text>
-<rect x="158" y="43" width="120" height="16" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
-<text x="218.0" y="53.4" font-size="7.2" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.2px">(recule 37, recopie 13)</text>
-<text x="283" y="55" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">7</text>
-<rect x="294" y="43" width="120" height="16" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
-<text x="354.0" y="53.4" font-size="7.2" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.2px">(recule 37, recopie 10)</text>
-<text x="424" y="55" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">le 2e item : 2 lettres neuves</text>
-<text x="10" y="74" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Un .ghx répète ses balises des milliers de fois : chaque répétition ne coûte plus que quelques bits.</text>
-<text x="10" y="96" font-size="8.4" fill="#4A4A68" text-anchor="start" font-weight="700">2 · fréquences : les symboles courants reçoivent des codes courts (codage de Huffman)</text>
-<text x="22" y="116" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">« e »</text>
-<text x="56" y="116" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">→ 010</text>
-<text x="172" y="116" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">« &lt; »</text>
-<text x="206" y="116" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">→ 0110</text>
-<text x="322" y="116" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">« Q »</text>
-<text x="356" y="116" font-size="8.4" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">→ 1110111001</text>
-<text x="470" y="116" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">(codes illustratifs)</text>
-<text x="10" y="140" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">Deflate enchaîne les deux. C'est l'algorithme du .gh, du zip, du .docx, du PNG, du gzip et des objets de Git.</text>
-<rect x="10" y="150" width="280" height="40" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="22" y="166" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700">65 306 octets nuls</text>
-<text x="22" y="182" font-size="7.6" fill="#2B2F33" text-anchor="start">65 306 → 80 octets, deflate niveau 9 (mesuré)</text>
-<rect x="302" y="150" width="280" height="40" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
-<text x="314" y="166" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700">65 306 octets au hasard</text>
-<text x="314" y="182" font-size="7.6" fill="#2B2F33" text-anchor="start">65 306 → 65 326 octets, deflate niveau 9 (mesuré)</text>
-<text x="10" y="206" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Sans répétition ni fréquence inégale, il n'y a rien à gagner : le hasard grossit un peu.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 118</b></div>
+<p class="rubrique">Le concept</p>
+<h1>La compression</h1>
+<p class="chapeau">Compresser sans perte, c'est réécrire un fichier plus court en exploitant ce qu'il a de prévisible : des répétitions, des symboles plus fréquents que d'autres. Le .gh de Grasshopper, le .docx, le PNG et les objets de Git reposent tous sur le même algorithme, <b>deflate</b>. Il gagne beaucoup sur du texte, rien sur ce qui est déjà compressé.</p>
+<div class="meta">
+<span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>115</b>, <b>103</b></span>
+<span class="pastille">Exemples · <b>Magpie</b> plugin, exercices, dépôt</span>
+</div>
+<div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+<svg viewbox="0 0 600 212" width="100%">
+<text fill="#4A4A68" font-size="8.4" font-weight="700" text-anchor="start" x="10" y="16">1 · répétitions : ce qui a déjà été écrit est remplacé par « recule de d, recopie n »</text>
+<text class="mono" fill="#2B2F33" font-size="8" style="font-size:8px" text-anchor="start" x="22" y="38">&lt;item name="X" type_code="3"&gt;5&lt;/item&gt;</text>
+<rect fill="#fff" height="16" rx="4" stroke="#1565C0" stroke-width="1.2" width="120" x="22" y="43"></rect>
+<text class="mono" fill="#1565C0" font-size="7.2" font-weight="700" style="font-size:7.2px" text-anchor="middle" x="82.0" y="53.4">(recule 37, recopie 12)</text>
+<text class="mono" fill="#2B2F33" font-size="8" font-weight="700" style="font-size:8px" text-anchor="start" x="147" y="55">Y</text>
+<rect fill="#fff" height="16" rx="4" stroke="#1565C0" stroke-width="1.2" width="120" x="158" y="43"></rect>
+<text class="mono" fill="#1565C0" font-size="7.2" font-weight="700" style="font-size:7.2px" text-anchor="middle" x="218.0" y="53.4">(recule 37, recopie 13)</text>
+<text class="mono" fill="#2B2F33" font-size="8" font-weight="700" style="font-size:8px" text-anchor="start" x="283" y="55">7</text>
+<rect fill="#fff" height="16" rx="4" stroke="#1565C0" stroke-width="1.2" width="120" x="294" y="43"></rect>
+<text class="mono" fill="#1565C0" font-size="7.2" font-weight="700" style="font-size:7.2px" text-anchor="middle" x="354.0" y="53.4">(recule 37, recopie 10)</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="424" y="55">le 2e item : 2 lettres neuves</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="10" y="74">Un .ghx répète ses balises des milliers de fois : chaque répétition ne coûte plus que quelques bits.</text>
+<text fill="#4A4A68" font-size="8.4" font-weight="700" text-anchor="start" x="10" y="96">2 · fréquences : les symboles courants reçoivent des codes courts (codage de Huffman)</text>
+<text class="mono" fill="#2B2F33" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="22" y="116">« e »</text>
+<text class="mono" fill="#2E7D32" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="56" y="116">→ 010</text>
+<text class="mono" fill="#2B2F33" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="172" y="116">« &lt; »</text>
+<text class="mono" fill="#2E7D32" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="206" y="116">→ 0110</text>
+<text class="mono" fill="#2B2F33" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="322" y="116">« Q »</text>
+<text class="mono" fill="#E65100" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="356" y="116">→ 1110111001</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="470" y="116">(codes illustratifs)</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="10" y="140">Deflate enchaîne les deux. C'est l'algorithme du .gh, du zip, du .docx, du PNG, du gzip et des objets de Git.</text>
+<rect fill="#fff" height="40" rx="4" stroke="#2E7D32" stroke-width="1.2" width="280" x="10" y="150"></rect>
+<text fill="#2E7D32" font-size="7.8" font-weight="700" text-anchor="start" x="22" y="166">65 306 octets nuls</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="22" y="182">65 306 → 80 octets, deflate niveau 9 (mesuré)</text>
+<rect fill="#fff" height="40" rx="4" stroke="#C62828" stroke-width="1.2" width="280" x="302" y="150"></rect>
+<text fill="#C62828" font-size="7.8" font-weight="700" text-anchor="start" x="314" y="166">65 306 octets au hasard</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="314" y="182">65 306 → 65 326 octets, deflate niveau 9 (mesuré)</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="10" y="206">Sans répétition ni fréquence inégale, il n'y a rien à gagner : le hasard grossit un peu.</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>On ne compresse que ce qui se répète ou se devine ; un contenu déjà compressé ressemble au hasard, et le recompresser ne fait que l'alourdir d'un en-tête.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>La nomenclature qui écrit « vis M6 × 20, 48 fois » au lieu de 48 lignes identiques. Elle raccourcit une liste répétitive ; appliquée à une liste déjà regroupée, elle n'a plus rien à regrouper.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>expliquer les deux idées de deflate ;</li>
-        <li>choisir un algorithme et un niveau ;</li>
-        <li>repérer une double compression ;</li>
-        <li>prévoir ce que Git fera d'un fichier.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>On ne compresse que ce qui se répète ou se devine ; un contenu déjà compressé ressemble au hasard, et le recompresser ne fait que l'alourdir d'un en-tête.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>La nomenclature qui écrit « vis M6 × 20, 48 fois » au lieu de 48 lignes identiques. Elle raccourcit une liste répétitive ; appliquée à une liste déjà regroupée, elle n'a plus rien à regrouper.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>expliquer les deux idées de deflate ;</li>
+<li>choisir un algorithme et un niveau ;</li>
+<li>repérer une double compression ;</li>
+<li>prévoir ce que Git fera d'un fichier.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À retenir</span>
     Le gain dépend du contenu, pas de l'algorithme : sur le binaire de A_01.gh, cinq compresseurs tiennent dans 4 %. Sur un brep déjà déflaté, tous perdent.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 118 · La compression</div>
+<div class="folio">1</div>
+<div class="pied">Cours 118 · La compression</div>
 </section>
-
 <!-- ============ PAGE 2 · ALGORITHMES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 118</b></div>
-  <p class="rubrique">Schéma 1 · Algorithmes et niveaux</p>
-  <h2>Plus fort, plus lent, à peine plus court</h2>
-  <p style="max-width:165mm">Chaque compresseur propose des niveaux : plus le niveau est haut, plus il cherche loin les répétitions. On a mesuré les plus courants sur le même contenu, celui d'un exercice Grasshopper de Magpie.</p>
-
-  <svg viewBox="0 0 600 222" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="222" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#4A4A68" text-anchor="start" font-weight="700">Le binaire de A_01.gh (65 306 octets) compressé par la bibliothèque standard de Python, 20 essais (mesuré)</text>
-<text x="212" y="42" font-size="7.2" fill="#6B7378" text-anchor="start" font-weight="700">taille (octets)</text>
-<text x="452" y="42" font-size="7.2" fill="#6B7378" text-anchor="start" font-weight="700">temps de compression</text>
-<text x="16" y="60" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">deflate, niveau 1</text>
-<rect x="150" y="51" width="137.9" height="12" rx="2" fill="#2E7D32"/>
-<text x="293.86875" y="60" font-size="7.4" fill="#2E7D32" text-anchor="start" font-weight="700">47 451</text>
-<rect x="420" y="51" width="8.2" height="12" rx="2" fill="#6B7378"/>
-<text x="434.25" y="60" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">1,05 ms</text>
-<text x="16" y="80" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">deflate, niveau 6</text>
-<rect x="150" y="71" width="97.0" height="12" rx="2" fill="#2E7D32"/>
-<text x="252.975" y="80" font-size="7.4" fill="#2E7D32" text-anchor="start" font-weight="700">46 724</text>
-<rect x="420" y="71" width="10.9" height="12" rx="2" fill="#6B7378"/>
-<text x="436.9214285714286" y="80" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">1,39 ms</text>
-<text x="16" y="100" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">deflate, niveau 9</text>
-<rect x="150" y="91" width="94.0" height="12" rx="2" fill="#2E7D32"/>
-<text x="250.05" y="100" font-size="7.4" fill="#2E7D32" text-anchor="start" font-weight="700">46 672</text>
-<rect x="420" y="91" width="13.3" height="12" rx="2" fill="#6B7378"/>
-<text x="439.2785714285714" y="100" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">1,69 ms</text>
-<text x="16" y="120" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">gzip, niveau 9</text>
-<rect x="150" y="111" width="95.1" height="12" rx="2" fill="#1565C0"/>
-<text x="251.0625" y="120" font-size="7.4" fill="#1565C0" text-anchor="start" font-weight="700">46 690</text>
-<rect x="420" y="111" width="16.8" height="12" rx="2" fill="#6B7378"/>
-<text x="442.8142857142857" y="120" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">2,14 ms</text>
-<text x="16" y="140" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">bzip2, niveau 9</text>
-<rect x="150" y="131" width="167.5" height="12" rx="2" fill="#7B1FA2"/>
-<text x="323.51250000000005" y="140" font-size="7.4" fill="#7B1FA2" text-anchor="start" font-weight="700">47 978</text>
-<rect x="420" y="131" width="56.7" height="12" rx="2" fill="#6B7378"/>
-<text x="482.7285714285714" y="140" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">7,22 ms</text>
-<text x="16" y="160" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">xz (lzma), niveau 6</text>
-<rect x="150" y="151" width="54.4" height="12" rx="2" fill="#E65100"/>
-<text x="210.45" y="160" font-size="7.4" fill="#E65100" text-anchor="start" font-weight="700">45 968</text>
-<rect x="420" y="151" width="107.9" height="12" rx="2" fill="#6B7378"/>
-<text x="533.8785714285714" y="160" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">13,73 ms</text>
-<text x="150" y="178" font-size="7" fill="#6B7378" text-anchor="start" font-style="italic">échelle à partir de 45 000 octets</text>
-<text x="16" y="196" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Le .gh sur le disque pèse 46 710 octets : entre les niveaux 6 et 9 de deflate. Décompresser prend 0,2 ms (mesuré).</text>
-<text x="16" y="212" font-size="7.6" fill="#2B2F33" text-anchor="start">Passer de 1 à 9 gagne 1,6 %, xz 1,5 % de plus pour un temps multiplié par huit : sur ce fichier, tous se valent à peu près.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 118</b></div>
+<p class="rubrique">Schéma 1 · Algorithmes et niveaux</p>
+<h2>Plus fort, plus lent, à peine plus court</h2>
+<p style="max-width:165mm">Chaque compresseur propose des niveaux : plus le niveau est haut, plus il cherche loin les répétitions. On a mesuré les plus courants sur le même contenu, celui d'un exercice Grasshopper de Magpie.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 222" width="100%">
+<rect fill="#EFE9E1" height="222" width="600" x="0" y="0"></rect>
+<text fill="#4A4A68" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">Le binaire de A_01.gh (65 306 octets) compressé par la bibliothèque standard de Python, 20 essais (mesuré)</text>
+<text fill="#6B7378" font-size="7.2" font-weight="700" text-anchor="start" x="212" y="42">taille (octets)</text>
+<text fill="#6B7378" font-size="7.2" font-weight="700" text-anchor="start" x="452" y="42">temps de compression</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="60">deflate, niveau 1</text>
+<rect fill="#2E7D32" height="12" rx="2" width="137.9" x="150" y="51"></rect>
+<text fill="#2E7D32" font-size="7.4" font-weight="700" text-anchor="start" x="293.86875" y="60">47 451</text>
+<rect fill="#6B7378" height="12" rx="2" width="8.2" x="420" y="51"></rect>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="434.25" y="60">1,05 ms</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="80">deflate, niveau 6</text>
+<rect fill="#2E7D32" height="12" rx="2" width="97.0" x="150" y="71"></rect>
+<text fill="#2E7D32" font-size="7.4" font-weight="700" text-anchor="start" x="252.975" y="80">46 724</text>
+<rect fill="#6B7378" height="12" rx="2" width="10.9" x="420" y="71"></rect>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="436.9214285714286" y="80">1,39 ms</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="100">deflate, niveau 9</text>
+<rect fill="#2E7D32" height="12" rx="2" width="94.0" x="150" y="91"></rect>
+<text fill="#2E7D32" font-size="7.4" font-weight="700" text-anchor="start" x="250.05" y="100">46 672</text>
+<rect fill="#6B7378" height="12" rx="2" width="13.3" x="420" y="91"></rect>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="439.2785714285714" y="100">1,69 ms</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="120">gzip, niveau 9</text>
+<rect fill="#1565C0" height="12" rx="2" width="95.1" x="150" y="111"></rect>
+<text fill="#1565C0" font-size="7.4" font-weight="700" text-anchor="start" x="251.0625" y="120">46 690</text>
+<rect fill="#6B7378" height="12" rx="2" width="16.8" x="420" y="111"></rect>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="442.8142857142857" y="120">2,14 ms</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="140">bzip2, niveau 9</text>
+<rect fill="#7B1FA2" height="12" rx="2" width="167.5" x="150" y="131"></rect>
+<text fill="#7B1FA2" font-size="7.4" font-weight="700" text-anchor="start" x="323.51250000000005" y="140">47 978</text>
+<rect fill="#6B7378" height="12" rx="2" width="56.7" x="420" y="131"></rect>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="482.7285714285714" y="140">7,22 ms</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="160">xz (lzma), niveau 6</text>
+<rect fill="#E65100" height="12" rx="2" width="54.4" x="150" y="151"></rect>
+<text fill="#E65100" font-size="7.4" font-weight="700" text-anchor="start" x="210.45" y="160">45 968</text>
+<rect fill="#6B7378" height="12" rx="2" width="107.9" x="420" y="151"></rect>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="533.8785714285714" y="160">13,73 ms</text>
+<text fill="#6B7378" font-size="7" font-style="italic" text-anchor="start" x="150" y="178">échelle à partir de 45 000 octets</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="196">Le .gh sur le disque pèse 46 710 octets : entre les niveaux 6 et 9 de deflate. Décompresser prend 0,2 ms (mesuré).</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="16" y="212">Passer de 1 à 9 gagne 1,6 %, xz 1,5 % de plus pour un temps multiplié par huit : sur ce fichier, tous se valent à peu près.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Python, écrire un deflate brut comme un .gh</span>import zlib
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Python, écrire un deflate brut comme un .gh</span>import zlib
 c = zlib.compressobj(6, zlib.DEFLATED, -15)      # niveau 6, -15 : sans en-tête zlib
 gh = c.compress(arbre) + c.flush()
 assert zlib.decompress(gh, -15) == arbre         # sans perte : on retrouve chaque octet</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Compresser, décompresser</h3>
-      <p>Deflate est asymétrique : 1,4 ms pour compresser au niveau 6, 0,2 ms pour décompresser (mesuré). On écrit un .gh une fois, on le lit souvent : c'est le bon sens du compromis.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Brut, zlib, gzip</h3>
-      <p>Même flux deflate, trois emballages. Le brut n'a rien (le .gh) ; zlib ajoute 2 octets devant et une somme de contrôle de 4 octets ; gzip un en-tête de 10 octets, un CRC et la taille. L'en-tête sert à détecter un fichier abîmé.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Compresser, décompresser</h3>
+<p>Deflate est asymétrique : 1,4 ms pour compresser au niveau 6, 0,2 ms pour décompresser (mesuré). On écrit un .gh une fois, on le lit souvent : c'est le bon sens du compromis.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Brut, zlib, gzip</h3>
+<p>Même flux deflate, trois emballages. Le brut n'a rien (le .gh) ; zlib ajoute 2 octets devant et une somme de contrôle de 4 octets ; gzip un en-tête de 10 octets, un CRC et la taille. L'en-tête sert à détecter un fichier abîmé.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Ouvrir un .gh avec <code>zlib.decompress(brut)</code>, sans le -15. La fonction attend l'en-tête zlib, ne le trouve pas, et répond « incorrect header check ». Le fichier n'est pas abîmé : il est brut.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 118 · La compression</div>
+<div class="folio">2</div>
+<div class="pied">Cours 118 · La compression</div>
 </section>
-
 <!-- ============ PAGE 3 · DEUX FOIS ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 118</b></div>
-  <p class="rubrique">Schéma 2 · Compresser deux fois</p>
-  <h2>Quand la compression alourdit</h2>
-  <p style="max-width:165mm">Magpie range les géométries de référence des exercices dans le JSON, sous forme d'un chunk GH_IO sérialisé, puis codé en base64. Serialize_Binary déflate toujours. On a décodé les huit géométries du dépôt.</p>
-
-  <svg viewBox="0 0 600 226" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="226" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#4A4A68" text-anchor="start" font-weight="700">5 des 8 géométries des exercices de Magpie : brut, puis déflaté par GH_IO, puis en base64 dans le JSON (mesuré)</text>
-<text x="28" y="42" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">exercice · type</text>
-<text x="220" y="42" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">brut</text>
-<text x="300" y="42" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">déflaté</text>
-<text x="390" y="42" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">écart</text>
-<text x="470" y="42" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">base64</text>
-<rect x="16" y="50" width="568" height="17" rx="3" fill="#fff"/>
-<text x="28" y="62" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">A-02 · point</text>
-<text x="220" y="62" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">70</text>
-<text x="300" y="62" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">56</text>
-<text x="470" y="62" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">76</text>
-<text x="390" y="62" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">-20 %</text>
-<rect x="16" y="70" width="568" height="17" rx="3" fill="#ECECF2"/>
-<text x="28" y="82" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">A-31 · courbe</text>
-<text x="220" y="82" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">479</text>
-<text x="300" y="82" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">460</text>
-<text x="470" y="82" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">616</text>
-<text x="390" y="82" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">-4 %</text>
-<rect x="16" y="90" width="568" height="17" rx="3" fill="#fff"/>
-<text x="28" y="102" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">A-36 · courbe</text>
-<text x="220" y="102" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">552</text>
-<text x="300" y="102" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">536</text>
-<text x="470" y="102" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">716</text>
-<text x="390" y="102" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">-3 %</text>
-<rect x="16" y="110" width="568" height="17" rx="3" fill="#ECECF2"/>
-<text x="28" y="122" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">A-41 · brep</text>
-<text x="220" y="122" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">1 106</text>
-<text x="300" y="122" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">1 115</text>
-<text x="470" y="122" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">1 488</text>
-<text x="390" y="122" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">+0,8 %</text>
-<rect x="16" y="130" width="568" height="17" rx="3" fill="#fff"/>
-<text x="28" y="142" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">A-42 · brep</text>
-<text x="220" y="142" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">12 300</text>
-<text x="300" y="142" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">12 312</text>
-<text x="470" y="142" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">16 416</text>
-<text x="390" y="142" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">+0,1 %</text>
-<text x="16" y="166" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Le point gagne 20 %, les courbes 3 à 4 %, les breps grossissent : leur item ON_Data, comme celui des courbes, est déjà déflaté :</text>
-<text x="16" y="182" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">pour A-42, 12 200 octets qui en redonnent 22 240. On compresse une seconde fois un flux sans répétition.</text>
-<text x="16" y="204" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Mesure de l'entropie : 3,55 bits par octet pour le point, 7,6 pour le brep A-41 (8 = hasard parfait).</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 118</b></div>
+<p class="rubrique">Schéma 2 · Compresser deux fois</p>
+<h2>Quand la compression alourdit</h2>
+<p style="max-width:165mm">Magpie range les géométries de référence des exercices dans le JSON, sous forme d'un chunk GH_IO sérialisé, puis codé en base64. Serialize_Binary déflate toujours. On a décodé les huit géométries du dépôt.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 226" width="100%">
+<rect fill="#EFE9E1" height="226" width="600" x="0" y="0"></rect>
+<text fill="#4A4A68" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">5 des 8 géométries des exercices de Magpie : brut, puis déflaté par GH_IO, puis en base64 dans le JSON (mesuré)</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="28" y="42">exercice · type</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="220" y="42">brut</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="300" y="42">déflaté</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="390" y="42">écart</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="470" y="42">base64</text>
+<rect fill="#fff" height="17" rx="3" width="568" x="16" y="50"></rect>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="28" y="62">A-02 · point</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="220" y="62">70</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="300" y="62">56</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="470" y="62">76</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="390" y="62">-20 %</text>
+<rect fill="#ECECF2" height="17" rx="3" width="568" x="16" y="70"></rect>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="28" y="82">A-31 · courbe</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="220" y="82">479</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="300" y="82">460</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="470" y="82">616</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="390" y="82">-4 %</text>
+<rect fill="#fff" height="17" rx="3" width="568" x="16" y="90"></rect>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="28" y="102">A-36 · courbe</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="220" y="102">552</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="300" y="102">536</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="470" y="102">716</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="390" y="102">-3 %</text>
+<rect fill="#ECECF2" height="17" rx="3" width="568" x="16" y="110"></rect>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="28" y="122">A-41 · brep</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="220" y="122">1 106</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="300" y="122">1 115</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="470" y="122">1 488</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="390" y="122">+0,8 %</text>
+<rect fill="#fff" height="17" rx="3" width="568" x="16" y="130"></rect>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="28" y="142">A-42 · brep</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="220" y="142">12 300</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="300" y="142">12 312</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="470" y="142">16 416</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="390" y="142">+0,1 %</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="166">Le point gagne 20 %, les courbes 3 à 4 %, les breps grossissent : leur item ON_Data, comme celui des courbes, est déjà déflaté :</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="182">pour A-42, 12 200 octets qui en redonnent 22 240. On compresse une seconde fois un flux sans répétition.</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="16" y="204">Mesure de l'entropie : 3,55 bits par octet pour le point, 7,6 pour le brep A-41 (8 = hasard parfait).</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Python, ne compresser que si l'on y gagne</span>def emballer(donnees):
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Python, ne compresser que si l'on y gagne</span>def emballer(donnees):
     c = zlib.compress(donnees, 6)
     return (b"Z" + c) if len(c) &lt; len(donnees) else (b"B" + donnees)   # 1 octet dit lequel
 def deballer(b):
     return zlib.decompress(b[1:]) if b[:1] == b"Z" else b[1:]</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>L'entropie</h3>
-      <p>Elle mesure l'imprévisibilité d'un octet, de 0 à 8 bits. Un contenu à 7,6 bits par octet n'a presque plus de marge : c'est la signature d'un flux déjà compressé, ou chiffré.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Le base64 par-dessus</h3>
-      <p>Le base64 ajoute un tiers à ce qui sort de deflate (12 312 octets deviennent 16 416 caractères). Compresser après le base64 regagnerait une partie de ce tiers, jamais la compression perdue avant.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>L'entropie</h3>
+<p>Elle mesure l'imprévisibilité d'un octet, de 0 à 8 bits. Un contenu à 7,6 bits par octet n'a presque plus de marge : c'est la signature d'un flux déjà compressé, ou chiffré.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Le base64 par-dessus</h3>
+<p>Le base64 ajoute un tiers à ce qui sort de deflate (12 312 octets deviennent 16 416 caractères). Compresser après le base64 regagnerait une partie de ce tiers, jamais la compression perdue avant.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Zipper un dossier de PNG, de .docx ou de .gh pour « gagner de la place ». Ils sont déjà déflatés : l'archive pèse presque autant que les fichiers. On compresse le texte, on range le reste tel quel (méthode « stored » du zip).
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 118 · La compression</div>
+<div class="folio">3</div>
+<div class="pied">Cours 118 · La compression</div>
 </section>
-
 <!-- ============ PAGE 4 · GIT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 118</b></div>
-  <p class="rubrique">Schéma 3 · Ce que Git en fait</p>
-  <h2>Le texte fond, le compressé reste</h2>
-  <p style="max-width:165mm">Git range ses objets compressés et, dans un pack, écrit beaucoup de versions comme une différence avec une version voisine. On a additionné, pour chaque type de fichier, la taille de toutes ses versions et la place qu'elles prennent dans le pack.</p>
-
-  <svg viewBox="0 0 600 220" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="220" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8" fill="#4A4A68" text-anchor="start" font-weight="700">Toutes les versions de chaque type de fichier dans ce clone de Magpie, et la place qu'elles prennent dans le pack (mesuré)</text>
-<text x="16" y="51" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">.cs</text>
-<text x="64" y="51" font-size="7.4" fill="#6B7378" text-anchor="start">164 versions</text>
-<rect x="150" y="41" width="300" height="14" rx="2" fill="#ECECF2"/>
-<rect x="150" y="41" width="37.9" height="14" rx="2" fill="#2E7D32"/>
-<text x="458" y="51" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">13 % de leur taille</text>
-<text x="16" y="75" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">.json</text>
-<text x="64" y="75" font-size="7.4" fill="#6B7378" text-anchor="start">175 versions</text>
-<rect x="150" y="65" width="300" height="14" rx="2" fill="#ECECF2"/>
-<rect x="150" y="65" width="51.3" height="14" rx="2" fill="#2E7D32"/>
-<text x="458" y="75" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">17 % de leur taille</text>
-<text x="16" y="99" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">.gh</text>
-<text x="64" y="99" font-size="7.4" fill="#6B7378" text-anchor="start">151 versions</text>
-<rect x="150" y="89" width="300" height="14" rx="2" fill="#ECECF2"/>
-<rect x="150" y="89" width="251.4" height="14" rx="2" fill="#E65100"/>
-<text x="458" y="99" font-size="7.6" fill="#E65100" text-anchor="start" font-weight="700">84 % de leur taille</text>
-<text x="16" y="123" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">.png</text>
-<text x="64" y="123" font-size="7.4" fill="#6B7378" text-anchor="start">2402 versions</text>
-<rect x="150" y="113" width="300" height="14" rx="2" fill="#ECECF2"/>
-<rect x="150" y="113" width="262.8" height="14" rx="2" fill="#E65100"/>
-<text x="458" y="123" font-size="7.6" fill="#E65100" text-anchor="start" font-weight="700">88 % de leur taille</text>
-<text x="16" y="147" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">.docx</text>
-<text x="64" y="147" font-size="7.4" fill="#6B7378" text-anchor="start">116 versions</text>
-<rect x="150" y="137" width="300" height="14" rx="2" fill="#ECECF2"/>
-<rect x="150" y="137" width="294.0" height="14" rx="2" fill="#C62828"/>
-<text x="458" y="147" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">98 % de leur taille</text>
-<text x="16" y="172" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Git compresse chaque objet avec deflate et range les versions voisines en différences : le texte fond à 13–17 %.</text>
-<text x="16" y="188" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Un fichier déjà compressé ne se laisse ni compresser ni différencier : une petite retouche change presque tous ses octets.</text>
-<text x="16" y="208" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Pack de 71 274 Kio : png 44 %, docx 26 %, gh 5 % ; les sources .cs, 0,3 %.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 118</b></div>
+<p class="rubrique">Schéma 3 · Ce que Git en fait</p>
+<h2>Le texte fond, le compressé reste</h2>
+<p style="max-width:165mm">Git range ses objets compressés et, dans un pack, écrit beaucoup de versions comme une différence avec une version voisine. On a additionné, pour chaque type de fichier, la taille de toutes ses versions et la place qu'elles prennent dans le pack.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 220" width="100%">
+<rect fill="#EFE9E1" height="220" width="600" x="0" y="0"></rect>
+<text fill="#4A4A68" font-size="8" font-weight="700" text-anchor="start" x="16" y="22">Toutes les versions de chaque type de fichier dans ce clone de Magpie, et la place qu'elles prennent dans le pack (mesuré)</text>
+<text class="mono" fill="#2B2F33" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="16" y="51">.cs</text>
+<text fill="#6B7378" font-size="7.4" text-anchor="start" x="64" y="51">164 versions</text>
+<rect fill="#ECECF2" height="14" rx="2" width="300" x="150" y="41"></rect>
+<rect fill="#2E7D32" height="14" rx="2" width="37.9" x="150" y="41"></rect>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="458" y="51">13 % de leur taille</text>
+<text class="mono" fill="#2B2F33" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="16" y="75">.json</text>
+<text fill="#6B7378" font-size="7.4" text-anchor="start" x="64" y="75">175 versions</text>
+<rect fill="#ECECF2" height="14" rx="2" width="300" x="150" y="65"></rect>
+<rect fill="#2E7D32" height="14" rx="2" width="51.3" x="150" y="65"></rect>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="458" y="75">17 % de leur taille</text>
+<text class="mono" fill="#2B2F33" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="16" y="99">.gh</text>
+<text fill="#6B7378" font-size="7.4" text-anchor="start" x="64" y="99">151 versions</text>
+<rect fill="#ECECF2" height="14" rx="2" width="300" x="150" y="89"></rect>
+<rect fill="#E65100" height="14" rx="2" width="251.4" x="150" y="89"></rect>
+<text fill="#E65100" font-size="7.6" font-weight="700" text-anchor="start" x="458" y="99">84 % de leur taille</text>
+<text class="mono" fill="#2B2F33" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="16" y="123">.png</text>
+<text fill="#6B7378" font-size="7.4" text-anchor="start" x="64" y="123">2402 versions</text>
+<rect fill="#ECECF2" height="14" rx="2" width="300" x="150" y="113"></rect>
+<rect fill="#E65100" height="14" rx="2" width="262.8" x="150" y="113"></rect>
+<text fill="#E65100" font-size="7.6" font-weight="700" text-anchor="start" x="458" y="123">88 % de leur taille</text>
+<text class="mono" fill="#2B2F33" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="16" y="147">.docx</text>
+<text fill="#6B7378" font-size="7.4" text-anchor="start" x="64" y="147">116 versions</text>
+<rect fill="#ECECF2" height="14" rx="2" width="300" x="150" y="137"></rect>
+<rect fill="#C62828" height="14" rx="2" width="294.0" x="150" y="137"></rect>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="458" y="147">98 % de leur taille</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="172">Git compresse chaque objet avec deflate et range les versions voisines en différences : le texte fond à 13–17 %.</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="188">Un fichier déjà compressé ne se laisse ni compresser ni différencier : une petite retouche change presque tous ses octets.</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="16" y="208">Pack de 71 274 Kio : png 44 %, docx 26 %, gh 5 % ; les sources .cs, 0,3 %.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Git, la place réelle d'un objet</span>git rev-list --objects --all \
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Git, la place réelle d'un objet</span>git rev-list --objects --all \
   | git cat-file --batch-check="%(objectsize) %(objectsize:disk) %(rest)"
 # objectsize : taille du contenu   objectsize:disk : place dans le pack</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Le .docx, un zip de XML</h3>
-      <p>Les 126 fiches .docx de Magpie contiennent 2 444 fichiers, tous déflatés : 127 Mo de XML qui tiennent en 20 Mo. Un seul styles.xml passe de 349 538 à 11 620 octets. Le texte y est, mais Git ne le voit pas.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Les PNG</h3>
-      <p>Leur contenu est déflaté, mais faiblement : redéflater les 1 593 PNG au niveau 9 gagne 15 % (27,5 Mo à 23,5 Mo, mesuré). Un outil d'optimisation de PNG le ferait sans changer un pixel.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Le .docx, un zip de XML</h3>
+<p>Les 126 fiches .docx de Magpie contiennent 2 444 fichiers, tous déflatés : 127 Mo de XML qui tiennent en 20 Mo. Un seul styles.xml passe de 349 538 à 11 620 octets. Le texte y est, mais Git ne le voit pas.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Les PNG</h3>
+<p>Leur contenu est déflaté, mais faiblement : redéflater les 1 593 PNG au niveau 9 gagne 15 % (27,5 Mo à 23,5 Mo, mesuré). Un outil d'optimisation de PNG le ferait sans changer un pixel.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Croire que Git stocke « seulement les différences » de tout fichier. Pour un .docx ou un .gh retouché, la différence avec la version voisine est presque tout le fichier : chaque version coûte sa taille pleine.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 118 · La compression</div>
+<div class="folio">4</div>
+<div class="pied">Cours 118 · La compression</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 118</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>GeometrySerializer, trois écritures en chaîne</h2>
-  <p style="max-width:165mm">Une géométrie passe par trois formes avant d'entrer dans le JSON d'un exercice : le chunk, ses octets déflatés, leur base64.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 118</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>GeometrySerializer, trois écritures en chaîne</h2>
+<p style="max-width:165mm">Une géométrie passe par trois formes avant d'entrer dans le JSON d'un exercice : le chunk, ses octets déflatés, leur base64.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">magpie/plugin/Core/GeometrySerializer.cs</span></div>
 <div class="l k1"><span class="n">17</span>var chunk = new GH_LooseChunk(ChunkName);<span class="rep r1">1</span></div>
@@ -310,137 +283,55 @@ def deballer(b):
 <div class="l"><span class="n">29</span>byte[] bytes = Convert.FromBase64String(base64);</div>
 <div class="l k5"><span class="n">32</span>chunk.Deserialize_Binary(bytes);<span class="rep r5">5</span></div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>Un chunk</b>Libre, nommé.</li>
-      <li><span class="rep r2">2</span><b>Le brep écrit</b>Déjà déflaté.</li>
-      <li><span class="rep r3">3</span><b>Déflate</b>Toujours.</li>
-      <li><span class="rep r4">4</span><b>Base64</b>+ un tiers.</li>
-      <li><span class="rep r5">5</span><b>Retour</b>Inflate.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À surveiller · le poids du dépôt</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>Un chunk</b>Libre, nommé.</li>
+<li><span class="rep r2">2</span><b>Le brep écrit</b>Déjà déflaté.</li>
+<li><span class="rep r3">3</span><b>Déflate</b>Toujours.</li>
+<li><span class="rep r4">4</span><b>Base64</b>+ un tiers.</li>
+<li><span class="rep r5">5</span><b>Retour</b>Inflate.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À surveiller · le poids du dépôt</span>
     Mesuré sur ce clone : le pack pèse 71 274 Kio, dont 44 % de PNG, 26 % de .docx et 5 % de .gh, contre 0,3 % pour toutes les versions des sources C#. Ces fichiers déjà compressés ne se différencient pas : chaque retouche d'une fiche .docx ajoute sa taille entière à l'historique, pour toujours. Déduit : Git LFS, ou des fiches générées au lieu d'être versionnées, garderaient le dépôt léger. Relevé sans rien modifier.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 118 · La compression</div>
+<div class="folio">5</div>
+<div class="pied">Cours 118 · La compression</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 118</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 118</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">Deflate combine… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>un chiffrement</li><li><span>B</span>des codes courts pour les symboles fréquents</li><li><span>C</span>une perte de précision</li><li><span>D</span>des renvois aux répétitions</li></ul></div>
 
-    <div class="q"><div class="enonce">65 306 octets au hasard, déflatés…</div><ul>
-      <li><span>A</span>ne changent pas d'un octet</li><li><span>B</span>diminuent de moitié</li><li><span>C</span>grossissent un peu</li><li><span>D</span>tombent à 80 octets</li></ul></div>
 
-    <div class="q"><div class="enonce">De deflate 1 à deflate 9, sur A_01, on gagne…</div><ul>
-      <li><span>A</span>16 %</li><li><span>B</span>rien</li><li><span>C</span>50 %</li><li><span>D</span>1,6 %</li></ul></div>
 
-    <div class="q"><div class="enonce">Le plus court sur A_01 est…</div><ul>
-      <li><span>A</span>gzip</li><li><span>B</span>bzip2</li><li><span>C</span>xz, mais treize fois plus lent que deflate 1</li><li><span>D</span>deflate 1</li></ul></div>
-
-    <div class="q"><div class="enonce">zlib.decompress(brut) sur un .gh répond…</div><ul>
-      <li><span>A</span>rien</li><li><span>B</span>le contenu</li><li><span>C</span>un fichier vide</li><li><span>D</span>incorrect header check</li></ul></div>
-
-    <div class="q"><div class="enonce">Le brep A-42, déflaté par GH_IO…</div><ul>
-      <li><span>A</span>perd 20 %</li><li><span>B</span>grossit de 12 octets</li><li><span>C</span>ne peut pas être déflaté</li><li><span>D</span>perd la moitié</li></ul></div>
-
-    <div class="q"><div class="enonce">Une entropie de 7,6 bits par octet signale…</div><ul>
-      <li><span>A</span>du texte</li><li><span>B</span>un contenu déjà compressé</li><li><span>C</span>un fichier vide</li><li><span>D</span>des zéros</li></ul></div>
-
-    <div class="q"><div class="enonce">gzip et zlib, par rapport au deflate brut, ajoutent…</div><ul>
-      <li><span>A</span>rien</li><li><span>B</span>un en-tête et une somme de contrôle</li><li><span>C</span>un chiffrement</li><li><span>D</span>un meilleur algorithme</li></ul></div>
-
-    <div class="q"><div class="enonce">Dans le pack de Magpie, les .cs occupent…</div><ul>
-      <li><span>A</span>13 % de leur taille</li><li><span>B</span>98 %</li><li><span>C</span>100 %</li><li><span>D</span>84 %</li></ul></div>
-
-    <div class="q"><div class="enonce">Un .docx est…</div><ul>
-      <li><span>A</span>un binaire sans structure</li><li><span>B</span>un PDF</li><li><span>C</span>un zip de fichiers XML déflatés</li><li><span>D</span>un texte brut</li></ul></div>
-
-    <div class="q"><div class="enonce">Redéflater les PNG du dépôt au niveau 9…</div><ul>
-      <li><span>A</span>double leur taille</li><li><span>B</span>ne gagne rien</li><li><span>C</span>les abîme</li><li><span>D</span>gagne 15 %</li></ul></div>
-
-    <div class="q"><div class="enonce">Serialize_Binary de GH_IO…</div><ul>
-      <li><span>A</span>déflate toujours</li><li><span>B</span>écrit du XML</li><li><span>C</span>ne compresse jamais</li><li><span>D</span>compresse si on y gagne</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 118 · La compression</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">zlib.decompress(b, -15)</td><td>deflate brut, comme un .gh</td><td>page 2</td></tr>
+<tr><td class="c">zlib.compressobj(6, DEFLATED, -15)</td><td>écrire un deflate brut</td><td>page 2</td></tr>
+<tr><td class="c">gzip · bz2 · lzma</td><td>autres emballages, autres algorithmes</td><td>schéma 1</td></tr>
+<tr><td class="c">chunk.Serialize_Binary()</td><td>GH_IO, toujours déflaté</td><td>GeometrySerializer.cs:20</td></tr>
+<tr><td class="c">%(objectsize:disk)</td><td>place réelle d'un objet Git</td><td>page 4</td></tr>
+<tr><td class="c">zipfile.ZipFile(f).infolist()</td><td>lire les entrées d'un .docx</td><td>page 4</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Sans perte</dt><dd>Une compression qui rend chaque octet d'origine.</dd>
+<dt>Deflate</dt><dd>Renvois aux répétitions (LZ77) puis codage de Huffman.</dd>
+<dt>Entropie</dt><dd>L'imprévisibilité moyenne d'un octet, de 0 à 8 bits.</dd>
+<dt>Somme de contrôle</dt><dd>Un nombre calculé sur les données pour détecter une altération.</dd>
+<dt>Pack</dt><dd>Le fichier où Git range ses objets compressés et différenciés.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 119</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 118 · La compression</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 118</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · B et D.</b> Sans perte, sans clé.</div>
-    <div><b>02 · C.</b> 65 326 octets.</div>
-    <div><b>03 · D.</b> 47 451 à 46 672.</div>
-    <div><b>04 · C.</b> 45 968 octets, 13,7 ms.</div>
-    <div><b>05 · D.</b> Il faut -15.</div>
-    <div><b>06 · B.</b> 12 300 à 12 312.</div>
-    <div><b>07 · B.</b> Presque plus de marge.</div>
-    <div><b>08 · B.</b> Même flux dedans.</div>
-    <div><b>09 · A.</b> Texte et différences.</div>
-    <div><b>10 · C.</b> 2 444 entrées déflatées.</div>
-    <div><b>11 · D.</b> 27,5 à 23,5 Mo.</div>
-    <div><b>12 · A.</b> Même pour un brep.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 119, « Ranger des nombres ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">zlib.decompress(b, -15)</td><td>deflate brut, comme un .gh</td><td>page 2</td></tr>
-      <tr><td class="c">zlib.compressobj(6, DEFLATED, -15)</td><td>écrire un deflate brut</td><td>page 2</td></tr>
-      <tr><td class="c">gzip · bz2 · lzma</td><td>autres emballages, autres algorithmes</td><td>schéma 1</td></tr>
-      <tr><td class="c">chunk.Serialize_Binary()</td><td>GH_IO, toujours déflaté</td><td>GeometrySerializer.cs:20</td></tr>
-      <tr><td class="c">%(objectsize:disk)</td><td>place réelle d'un objet Git</td><td>page 4</td></tr>
-      <tr><td class="c">zipfile.ZipFile(f).infolist()</td><td>lire les entrées d'un .docx</td><td>page 4</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Sans perte</dt><dd>Une compression qui rend chaque octet d'origine.</dd>
-    <dt>Deflate</dt><dd>Renvois aux répétitions (LZ77) puis codage de Huffman.</dd>
-    <dt>Entropie</dt><dd>L'imprévisibilité moyenne d'un octet, de 0 à 8 bits.</dd>
-    <dt>Somme de contrôle</dt><dd>Un nombre calculé sur les données pour détecter une altération.</dd>
-    <dt>Pack</dt><dd>Le fichier où Git range ses objets compressés et différenciés.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 119</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 118 · La compression</div>
-</section>
-
 </body>
 </html>

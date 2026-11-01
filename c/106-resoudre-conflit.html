@@ -1,255 +1,228 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>106 · Résoudre un conflit</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-11">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 106</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Résoudre un conflit</h1>
-  <p class="chapeau">Une fusion combine seule les changements qui touchent des endroits différents. Quand deux branches modifient les mêmes lignes, Git ne choisit pas : il s'arrête, écrit les deux versions dans le fichier et te laisse décider. Un conflit n'est pas une erreur, c'est une question posée.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>105</b></span>
-    <span class="pastille">Exemples · <b>SnapSet</b>, <b>Magpie</b>, trois dépôts d'essai</span>
-  </div>
-
-  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
-    <svg viewBox="0 0 600 206" width="100%">
-<text x="10" y="16" font-size="8.2" fill="#4F46B8" text-anchor="start" font-weight="700">Deux branches changent la même ligne de M.cs : main met Marge à 5, la branche a la met à 6 (dépôt d'essai, mesuré)</text>
-<rect x="10" y="26" width="290" height="152" rx="3" fill="#fff" stroke="#CFC6B8"/>
-<rect x="14" y="66" width="282" height="16" fill="#ECEBFA"/>
-<rect x="14" y="98" width="282" height="16" fill="#E8F5E9"/>
-<text x="20" y="42" font-size="8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8px">public static class Metrique</text>
-<text x="20" y="58" font-size="8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8px">{</text>
-<text x="20" y="74" font-size="8" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</text>
-<line x1="318" y1="71" x2="304" y2="71" stroke="#6B7378" stroke-width="1"/><polygon points="304,71 310.4,68.3 310.4,73.7" fill="#6B7378"/>
-<text x="324" y="74" font-size="7.8" fill="#2B2F33" text-anchor="start">début : ta version, celle de la branche où tu es</text>
-<text x="20" y="90" font-size="8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8px">    public const int Marge = 5;</text>
-<text x="20" y="106" font-size="8" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">=======</text>
-<line x1="318" y1="103" x2="304" y2="103" stroke="#6B7378" stroke-width="1"/><polygon points="304,103 310.4,100.3 310.4,105.7" fill="#6B7378"/>
-<text x="324" y="106" font-size="7.8" fill="#2B2F33" text-anchor="start">séparation</text>
-<text x="20" y="122" font-size="8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8px">    public const int Marge = 6;</text>
-<text x="20" y="138" font-size="8" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">&gt;&gt;&gt;&gt;&gt;&gt;&gt; a</text>
-<line x1="318" y1="135" x2="304" y2="135" stroke="#6B7378" stroke-width="1"/><polygon points="304,135 310.4,132.3 310.4,137.7" fill="#6B7378"/>
-<text x="324" y="138" font-size="7.8" fill="#2B2F33" text-anchor="start">fin : la version de la branche fusionnée</text>
-<text x="20" y="154" font-size="8" fill="#6B7378" text-anchor="start" class="mono" style="font-size:8px">    public const int Pas = 8;</text>
-<line x1="318" y1="151" x2="304" y2="151" stroke="#6B7378" stroke-width="1"/><polygon points="304,151 310.4,148.3 310.4,153.7" fill="#6B7378"/>
-<text x="324" y="154" font-size="7.8" fill="#2B2F33" text-anchor="start">hors conflit : déjà fusionné</text>
-<text x="20" y="170" font-size="8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8px">}</text>
-<text x="10" y="196" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">Git a écrit dans le fichier les deux versions entre des marqueurs : le fichier est à corriger à la main, puis à ajouter.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 106</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Résoudre un conflit</h1>
+<p class="chapeau">Une fusion combine seule les changements qui touchent des endroits différents. Quand deux branches modifient les mêmes lignes, Git ne choisit pas : il s'arrête, écrit les deux versions dans le fichier et te laisse décider. Un conflit n'est pas une erreur, c'est une question posée.</p>
+<div class="meta">
+<span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>105</b></span>
+<span class="pastille">Exemples · <b>SnapSet</b>, <b>Magpie</b>, trois dépôts d'essai</span>
+</div>
+<div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+<svg viewbox="0 0 600 206" width="100%">
+<text fill="#4F46B8" font-size="8.2" font-weight="700" text-anchor="start" x="10" y="16">Deux branches changent la même ligne de M.cs : main met Marge à 5, la branche a la met à 6 (dépôt d'essai, mesuré)</text>
+<rect fill="#fff" height="152" rx="3" stroke="#CFC6B8" width="290" x="10" y="26"></rect>
+<rect fill="#ECEBFA" height="16" width="282" x="14" y="66"></rect>
+<rect fill="#E8F5E9" height="16" width="282" x="14" y="98"></rect>
+<text class="mono" fill="#2B2F33" font-size="8" style="font-size:8px" text-anchor="start" x="20" y="42">public static class Metrique</text>
+<text class="mono" fill="#2B2F33" font-size="8" style="font-size:8px" text-anchor="start" x="20" y="58">{</text>
+<text class="mono" fill="#C62828" font-size="8" font-weight="700" style="font-size:8px" text-anchor="start" x="20" y="74">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</text>
+<line stroke="#6B7378" stroke-width="1" x1="318" x2="304" y1="71" y2="71"></line><polygon fill="#6B7378" points="304,71 310.4,68.3 310.4,73.7"></polygon>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="324" y="74">début : ta version, celle de la branche où tu es</text>
+<text class="mono" fill="#2B2F33" font-size="8" style="font-size:8px" text-anchor="start" x="20" y="90">    public const int Marge = 5;</text>
+<text class="mono" fill="#C62828" font-size="8" font-weight="700" style="font-size:8px" text-anchor="start" x="20" y="106">=======</text>
+<line stroke="#6B7378" stroke-width="1" x1="318" x2="304" y1="103" y2="103"></line><polygon fill="#6B7378" points="304,103 310.4,100.3 310.4,105.7"></polygon>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="324" y="106">séparation</text>
+<text class="mono" fill="#2B2F33" font-size="8" style="font-size:8px" text-anchor="start" x="20" y="122">    public const int Marge = 6;</text>
+<text class="mono" fill="#C62828" font-size="8" font-weight="700" style="font-size:8px" text-anchor="start" x="20" y="138">&gt;&gt;&gt;&gt;&gt;&gt;&gt; a</text>
+<line stroke="#6B7378" stroke-width="1" x1="318" x2="304" y1="135" y2="135"></line><polygon fill="#6B7378" points="304,135 310.4,132.3 310.4,137.7"></polygon>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="324" y="138">fin : la version de la branche fusionnée</text>
+<text class="mono" fill="#6B7378" font-size="8" style="font-size:8px" text-anchor="start" x="20" y="154">    public const int Pas = 8;</text>
+<line stroke="#6B7378" stroke-width="1" x1="318" x2="304" y1="151" y2="151"></line><polygon fill="#6B7378" points="304,151 310.4,148.3 310.4,153.7"></polygon>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="324" y="154">hors conflit : déjà fusionné</text>
+<text class="mono" fill="#2B2F33" font-size="8" style="font-size:8px" text-anchor="start" x="20" y="170">}</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="10" y="196">Git a écrit dans le fichier les deux versions entre des marqueurs : le fichier est à corriger à la main, puis à ajouter.</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Un conflit, c'est trois versions d'un même passage (l'ancêtre, la tienne, l'autre) que Git ne sait pas réunir ; le résoudre, c'est écrire la quatrième.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Deux relecteurs corrigent la même phrase d'un rapport, chacun à sa façon. La secrétaire qui reporte les corrections ne tranche pas : elle recopie les deux en marge et demande à l'auteur laquelle garder.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>lire les marqueurs d'un conflit ;</li>
-        <li>voir la base avec zdiff3 ;</li>
-        <li>prévenir les conflits de fins de ligne ;</li>
-        <li>trancher un binaire sans te tromper de côté.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Un conflit, c'est trois versions d'un même passage (l'ancêtre, la tienne, l'autre) que Git ne sait pas réunir ; le résoudre, c'est écrire la quatrième.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Deux relecteurs corrigent la même phrase d'un rapport, chacun à sa façon. La secrétaire qui reporte les corrections ne tranche pas : elle recopie les deux en marge et demande à l'auteur laquelle garder.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>lire les marqueurs d'un conflit ;</li>
+<li>voir la base avec zdiff3 ;</li>
+<li>prévenir les conflits de fins de ligne ;</li>
+<li>trancher un binaire sans te tromper de côté.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À retenir</span>
     Tant que le conflit n'est pas résolu, rien n'est perdu : <code>git merge --abort</code> ou <code>git rebase --abort</code> ramène exactement à l'état d'avant. Mesuré : après l'abandon, le dépôt d'essai est revenu sur son commit, sans fichier modifié.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 106 · Résoudre un conflit</div>
+<div class="folio">1</div>
+<div class="pied">Cours 106 · Résoudre un conflit</div>
 </section>
-
 <!-- ============ PAGE 2 · LES MARQUEURS ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 106</b></div>
-  <p class="rubrique">Schéma 1 · Les trois versions</p>
-  <h2>Ce que Git garde pendant le conflit</h2>
-  <p style="max-width:165mm">Pendant le conflit, l'index ne contient plus une version du fichier mais trois, numérotées : la base, la tienne, l'autre. <code>git status</code> marque le fichier <code>UU</code> (modifié des deux côtés, non fusionné). Le fichier de travail, lui, contient le mélange avec marqueurs.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">Pendant le conflit, l'index garde trois versions du fichier : git ls-files -s M.cs (mesuré)</text>
-<text x="30" y="44" font-size="7.8" fill="#6B7378" text-anchor="start" font-weight="700">étage</text>
-<text x="90" y="44" font-size="7.8" fill="#6B7378" text-anchor="start" font-weight="700">blob</text>
-<text x="170" y="44" font-size="7.8" fill="#6B7378" text-anchor="start" font-weight="700">nom</text>
-<text x="300" y="44" font-size="7.8" fill="#6B7378" text-anchor="start" font-weight="700">contenu</text>
-<rect x="16" y="52" width="568" height="24" rx="3" fill="#ECEBFA"/>
-<text x="36" y="68" font-size="9" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">1</text>
-<text x="90" y="68" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px">2def283</text>
-<text x="170" y="68" font-size="8.4" fill="#6B7378" text-anchor="start" font-weight="700">la base</text>
-<text x="300" y="68" font-size="8.2" fill="#2B2F33" text-anchor="start">l'ancêtre commun : Marge = 4</text>
-<rect x="16" y="80" width="568" height="24" rx="3" fill="#fff"/>
-<text x="36" y="96" font-size="9" fill="#4F46B8" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">2</text>
-<text x="90" y="96" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px">cffcd59</text>
-<text x="170" y="96" font-size="8.4" fill="#4F46B8" text-anchor="start" font-weight="700">ours (« nous »)</text>
-<text x="300" y="96" font-size="8.2" fill="#2B2F33" text-anchor="start">HEAD, la branche où l'on est : Marge = 5</text>
-<rect x="16" y="108" width="568" height="24" rx="3" fill="#ECEBFA"/>
-<text x="36" y="124" font-size="9" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">3</text>
-<text x="90" y="124" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px">cb9b967</text>
-<text x="170" y="124" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700">theirs (« eux »)</text>
-<text x="300" y="124" font-size="8.2" fill="#2B2F33" text-anchor="start">la branche fusionnée, a : Marge = 6</text>
-<text x="16" y="160" font-size="8" fill="#2B2F33" text-anchor="start">Les marqueurs n'en montrent que deux. Avec merge.conflictStyle = zdiff3, la base apparaît aussi :</text>
-<text x="30" y="178" font-size="8.2" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:8.2px">||||||| 3e9bc4c</text>
-<text x="150" y="178" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px">Marge = 4</text>
-<text x="240" y="178" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">entre la version HEAD et =======</text>
-<text x="16" y="200" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Voir la base dit qui a changé quoi : ici les deux côtés ont modifié le 4, il faut choisir ou combiner.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 106</b></div>
+<p class="rubrique">Schéma 1 · Les trois versions</p>
+<h2>Ce que Git garde pendant le conflit</h2>
+<p style="max-width:165mm">Pendant le conflit, l'index ne contient plus une version du fichier mais trois, numérotées : la base, la tienne, l'autre. <code>git status</code> marque le fichier <code>UU</code> (modifié des deux côtés, non fusionné). Le fichier de travail, lui, contient le mélange avec marqueurs.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">Pendant le conflit, l'index garde trois versions du fichier : git ls-files -s M.cs (mesuré)</text>
+<text fill="#6B7378" font-size="7.8" font-weight="700" text-anchor="start" x="30" y="44">étage</text>
+<text fill="#6B7378" font-size="7.8" font-weight="700" text-anchor="start" x="90" y="44">blob</text>
+<text fill="#6B7378" font-size="7.8" font-weight="700" text-anchor="start" x="170" y="44">nom</text>
+<text fill="#6B7378" font-size="7.8" font-weight="700" text-anchor="start" x="300" y="44">contenu</text>
+<rect fill="#ECEBFA" height="24" rx="3" width="568" x="16" y="52"></rect>
+<text class="mono" fill="#6B7378" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="36" y="68">1</text>
+<text class="mono" fill="#2B2F33" font-size="8.4" style="font-size:8.4px" text-anchor="start" x="90" y="68">2def283</text>
+<text fill="#6B7378" font-size="8.4" font-weight="700" text-anchor="start" x="170" y="68">la base</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="start" x="300" y="68">l'ancêtre commun : Marge = 4</text>
+<rect fill="#fff" height="24" rx="3" width="568" x="16" y="80"></rect>
+<text class="mono" fill="#4F46B8" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="36" y="96">2</text>
+<text class="mono" fill="#2B2F33" font-size="8.4" style="font-size:8.4px" text-anchor="start" x="90" y="96">cffcd59</text>
+<text fill="#4F46B8" font-size="8.4" font-weight="700" text-anchor="start" x="170" y="96">ours (« nous »)</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="start" x="300" y="96">HEAD, la branche où l'on est : Marge = 5</text>
+<rect fill="#ECEBFA" height="24" rx="3" width="568" x="16" y="108"></rect>
+<text class="mono" fill="#2E7D32" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="36" y="124">3</text>
+<text class="mono" fill="#2B2F33" font-size="8.4" style="font-size:8.4px" text-anchor="start" x="90" y="124">cb9b967</text>
+<text fill="#2E7D32" font-size="8.4" font-weight="700" text-anchor="start" x="170" y="124">theirs (« eux »)</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="start" x="300" y="124">la branche fusionnée, a : Marge = 6</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="16" y="160">Les marqueurs n'en montrent que deux. Avec merge.conflictStyle = zdiff3, la base apparaît aussi :</text>
+<text class="mono" fill="#C62828" font-size="8.2" font-weight="700" style="font-size:8.2px" text-anchor="start" x="30" y="178">||||||| 3e9bc4c</text>
+<text class="mono" fill="#2B2F33" font-size="8.2" style="font-size:8.2px" text-anchor="start" x="150" y="178">Marge = 4</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="start" x="240" y="178">entre la version HEAD et =======</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="200">Voir la base dit qui a changé quoi : ici les deux côtés ont modifié le 4, il faut choisir ou combiner.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Git, voir et résoudre</span>git config --global merge.conflictStyle zdiff3   # montrer la base
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Git, voir et résoudre</span>git config --global merge.conflictStyle zdiff3   # montrer la base
 git status --short           # UU M.cs
 git diff                     # diff combiné : ++ et + en deux colonnes
 # corriger M.cs, retirer les marqueurs, puis
 git add M.cs
 git commit                   # ou git rebase --continue</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Le diff combiné</h3>
-      <p>Pendant le conflit, <code>git diff</code> affiche deux colonnes de signes : la première compare à ta version, la seconde à l'autre. Une ligne <code>++</code> n'existe dans aucune des deux : ce sont les marqueurs.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Résoudre, c'est écrire</h3>
-      <p>Garder 5, garder 6, ou écrire autre chose : Git ne vérifie rien. <code>git add</code> enregistre le fichier tel qu'il est et ramène l'index à une seule version ; la fusion se termine par un commit ordinaire.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Le diff combiné</h3>
+<p>Pendant le conflit, <code>git diff</code> affiche deux colonnes de signes : la première compare à ta version, la seconde à l'autre. Une ligne <code>++</code> n'existe dans aucune des deux : ce sont les marqueurs.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Résoudre, c'est écrire</h3>
+<p>Garder 5, garder 6, ou écrire autre chose : Git ne vérifie rien. <code>git add</code> enregistre le fichier tel qu'il est et ramène l'index à une seule version ; la fusion se termine par un commit ordinaire.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Faire <code>git add</code> en laissant un marqueur dans le fichier. Git l'accepte sans broncher et le commit part avec <code>=======</code> au milieu du code. <code>git diff --check</code> avant d'ajouter signale les marqueurs restés.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 106 · Résoudre un conflit</div>
+<div class="folio">2</div>
+<div class="pied">Cours 106 · Résoudre un conflit</div>
 </section>
-
 <!-- ============ PAGE 3 · LES FINS DE LIGNE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 106</b></div>
-  <p class="rubrique">Schéma 2 · Le faux conflit</p>
-  <h2>Un fichier entier en conflit pour une ligne</h2>
-  <p style="max-width:165mm">Windows termine les lignes par deux caractères (<code>\r\n</code>), Linux et macOS par un seul (<code>\n</code>). Si un éditeur réécrit un fichier avec l'autre convention, chaque ligne change pour Git, même si personne n'y a touché. La fusion qui suit met tout le fichier en conflit.</p>
-
-  <svg viewBox="0 0 600 204" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="204" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#4F46B8" text-anchor="start" font-weight="700">Un fichier de 100 lignes ; une branche change une ligne, l'autre l'enregistre depuis un éditeur Windows (CRLF)</text>
-<rect x="16" y="36" width="276" height="100" rx="4" fill="#ECEBFA" stroke="#C62828" stroke-width="1.2"/>
-<text x="28" y="56" font-size="9" fill="#C62828" text-anchor="start" font-weight="700">sans .gitattributes</text>
-<text x="28" y="82" font-size="8" fill="#2B2F33" text-anchor="start">le diff : 100 insertions, 100 suppressions</text>
-<text x="28" y="102" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">la fusion : 1 conflit, 201 lignes entre marqueurs</text>
-<text x="28" y="124" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">mesuré, dépôt d'essai</text>
-<rect x="304" y="36" width="276" height="100" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="316" y="56" font-size="9" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">avec * text=auto eol=lf</text>
-<text x="316" y="82" font-size="8" fill="#2B2F33" text-anchor="start">le diff : la seule ligne changée</text>
-<text x="316" y="102" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">la fusion : propre, 0 conflit</text>
-<text x="316" y="124" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">mesuré, dépôt d'essai</text>
-<text x="16" y="160" font-size="7.8" fill="#2B2F33" text-anchor="start">Sans règle, chaque ligne change de fin (\n devient \r\n) : pour Git, tout le fichier est réécrit, et tout entre en conflit.</text>
-<text x="16" y="176" font-size="7.8" fill="#2B2F33" text-anchor="start">Avec la règle, Git range toujours le texte en LF dans le dépôt : la différence de fin de ligne disparaît avant la fusion.</text>
-<text x="16" y="194" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700">Ce conflit-là ne se résout pas ligne à ligne : il se prévient, par un fichier .gitattributes.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 106</b></div>
+<p class="rubrique">Schéma 2 · Le faux conflit</p>
+<h2>Un fichier entier en conflit pour une ligne</h2>
+<p style="max-width:165mm">Windows termine les lignes par deux caractères (<code>\r\n</code>), Linux et macOS par un seul (<code>\n</code>). Si un éditeur réécrit un fichier avec l'autre convention, chaque ligne change pour Git, même si personne n'y a touché. La fusion qui suit met tout le fichier en conflit.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 204" width="100%">
+<rect fill="#EFE9E1" height="204" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">Un fichier de 100 lignes ; une branche change une ligne, l'autre l'enregistre depuis un éditeur Windows (CRLF)</text>
+<rect fill="#ECEBFA" height="100" rx="4" stroke="#C62828" stroke-width="1.2" width="276" x="16" y="36"></rect>
+<text fill="#C62828" font-size="9" font-weight="700" text-anchor="start" x="28" y="56">sans .gitattributes</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="28" y="82">le diff : 100 insertions, 100 suppressions</text>
+<text fill="#2B2F33" font-size="8" font-weight="700" text-anchor="start" x="28" y="102">la fusion : 1 conflit, 201 lignes entre marqueurs</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="28" y="124">mesuré, dépôt d'essai</text>
+<rect fill="#fff" height="100" rx="4" stroke="#2E7D32" stroke-width="1.2" width="276" x="304" y="36"></rect>
+<text class="mono" fill="#2E7D32" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="316" y="56">avec * text=auto eol=lf</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="316" y="82">le diff : la seule ligne changée</text>
+<text fill="#2B2F33" font-size="8" font-weight="700" text-anchor="start" x="316" y="102">la fusion : propre, 0 conflit</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="316" y="124">mesuré, dépôt d'essai</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="16" y="160">Sans règle, chaque ligne change de fin (\n devient \r\n) : pour Git, tout le fichier est réécrit, et tout entre en conflit.</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="16" y="176">Avec la règle, Git range toujours le texte en LF dans le dépôt : la différence de fin de ligne disparaît avant la fusion.</text>
+<text fill="#C62828" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="194">Ce conflit-là ne se résout pas ligne à ligne : il se prévient, par un fichier .gitattributes.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Git, régler les fins de ligne d'un dépôt</span># .gitattributes, à la racine
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Git, régler les fins de ligne d'un dépôt</span># .gitattributes, à la racine
 * text=auto eol=lf           # texte : LF dans le dépôt et sur le disque
 *.gha binary                 # jamais converti, jamais fusionné ligne à ligne
 # puis, une fois, pour renormaliser ce qui est déjà suivi
 git add --renormalize .</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>text=auto</h3>
-      <p>Git décide seul si un fichier est du texte (il cherche un octet nul au début). Le texte est rangé en LF dans le dépôt ; sur le disque, il prend la convention du poste, sauf si <code>eol=lf</code> l'impose.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Dans le dépôt, pas dans le poste</h3>
-      <p>Le réglage <code>core.autocrlf</code> dépend de chaque machine ; <code>.gitattributes</code> est versionné et vaut pour tous. C'est lui qui garantit que deux postes produisent les mêmes octets.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>text=auto</h3>
+<p>Git décide seul si un fichier est du texte (il cherche un octet nul au début). Le texte est rangé en LF dans le dépôt ; sur le disque, il prend la convention du poste, sauf si <code>eol=lf</code> l'impose.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Dans le dépôt, pas dans le poste</h3>
+<p>Le réglage <code>core.autocrlf</code> dépend de chaque machine ; <code>.gitattributes</code> est versionné et vaut pour tous. C'est lui qui garantit que deux postes produisent les mêmes octets.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Ajouter <code>.gitattributes</code> à un dépôt existant sans renormaliser. Les fichiers déjà suivis en CRLF le restent jusqu'à leur prochaine modification, qui apparaît alors comme une réécriture complète : le faux conflit arrive plus tard.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 106 · Résoudre un conflit</div>
+<div class="folio">3</div>
+<div class="pied">Cours 106 · Résoudre un conflit</div>
 </section>
-
 <!-- ============ PAGE 4 · CHOISIR UN CÔTÉ ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 106</b></div>
-  <p class="rubrique">Schéma 3 · Choisir un côté</p>
-  <h2>Quand on ne peut pas combiner</h2>
-  <p style="max-width:165mm">Un binaire (une DLL, un .gha, un .gh) ne se fusionne pas ligne à ligne. Git annonce le conflit, laisse le fichier tel qu'il était sur ta branche et attend qu'on désigne une version entière. Le piège est dans le nom des côtés, qui change de sens selon l'opération.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">Deux cas où les marqueurs ne servent à rien, ou trompent (dépôt d'essai, mesuré)</text>
-<rect x="16" y="34" width="276" height="120" rx="4" fill="#ECEBFA" stroke="#C62828" stroke-width="1.2"/>
-<text x="28" y="54" font-size="9" fill="#C62828" text-anchor="start" font-weight="700">un binaire modifié des deux côtés</text>
-<text x="28" y="74" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">warning: Cannot merge binary files:</text>
-<text x="28" y="87" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">Magpie.gha (HEAD vs. a)</text>
-<text x="28" y="106" font-size="7.8" fill="#2B2F33" text-anchor="start">aucun marqueur : le fichier reste celui de HEAD.</text>
-<text x="28" y="122" font-size="7.8" fill="#2B2F33" text-anchor="start">On choisit un côté entier :</text>
-<text x="28" y="138" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">git checkout --theirs Magpie.gha</text>
-<rect x="308" y="34" width="276" height="120" rx="4" fill="#fff" stroke="#4F46B8" stroke-width="1.2"/>
-<text x="320" y="54" font-size="9" fill="#4F46B8" text-anchor="start" font-weight="700">pendant un rebase, les noms s'inversent</text>
-<text x="320" y="74" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">sur a (Marge = 6) : git rebase main</text>
-<text x="320" y="92" font-size="7.8" fill="#2B2F33" text-anchor="start">HEAD est main, qui reçoit tes commits ;</text>
-<text x="320" y="108" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">git checkout --ours M.cs donne Marge = 5,</text>
-<text x="320" y="124" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">la valeur de main, pas la tienne.</text>
-<text x="320" y="140" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">« theirs » désigne ton commit rejoué.</text>
-<text x="16" y="176" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">En fusion, ours = la branche où l'on est. En rebasage, ours = la branche sur laquelle on rejoue.</text>
-<text x="16" y="194" font-size="7.8" fill="#2B2F33" text-anchor="start">Avant de choisir un côté entier, relire le fichier : le nom de la commande ne garantit pas le contenu.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 106</b></div>
+<p class="rubrique">Schéma 3 · Choisir un côté</p>
+<h2>Quand on ne peut pas combiner</h2>
+<p style="max-width:165mm">Un binaire (une DLL, un .gha, un .gh) ne se fusionne pas ligne à ligne. Git annonce le conflit, laisse le fichier tel qu'il était sur ta branche et attend qu'on désigne une version entière. Le piège est dans le nom des côtés, qui change de sens selon l'opération.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">Deux cas où les marqueurs ne servent à rien, ou trompent (dépôt d'essai, mesuré)</text>
+<rect fill="#ECEBFA" height="120" rx="4" stroke="#C62828" stroke-width="1.2" width="276" x="16" y="34"></rect>
+<text fill="#C62828" font-size="9" font-weight="700" text-anchor="start" x="28" y="54">un binaire modifié des deux côtés</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="28" y="74">warning: Cannot merge binary files:</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="28" y="87">Magpie.gha (HEAD vs. a)</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="28" y="106">aucun marqueur : le fichier reste celui de HEAD.</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="28" y="122">On choisit un côté entier :</text>
+<text class="mono" fill="#2E7D32" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="28" y="138">git checkout --theirs Magpie.gha</text>
+<rect fill="#fff" height="120" rx="4" stroke="#4F46B8" stroke-width="1.2" width="276" x="308" y="34"></rect>
+<text fill="#4F46B8" font-size="9" font-weight="700" text-anchor="start" x="320" y="54">pendant un rebase, les noms s'inversent</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="320" y="74">sur a (Marge = 6) : git rebase main</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="320" y="92">HEAD est main, qui reçoit tes commits ;</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="320" y="108">git checkout --ours M.cs donne Marge = 5,</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="320" y="124">la valeur de main, pas la tienne.</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="start" x="320" y="140">« theirs » désigne ton commit rejoué.</text>
+<text fill="#2B2F33" font-size="8" font-weight="700" text-anchor="start" x="16" y="176">En fusion, ours = la branche où l'on est. En rebasage, ours = la branche sur laquelle on rejoue.</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="16" y="194">Avant de choisir un côté entier, relire le fichier : le nom de la commande ne garantit pas le contenu.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Git, prendre une version entière</span>git checkout --theirs Magpie.gha    # la version de l'autre côté
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Git, prendre une version entière</span>git checkout --theirs Magpie.gha    # la version de l'autre côté
 git checkout --ours M.cs            # la version de HEAD
 git add Magpie.gha M.cs
 git merge --abort                   # ou tout annuler</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Un binaire produit se refait</h3>
-      <p>Si le binaire est construit à partir du code (une compilation), aucun des deux côtés n'est juste : chacun vient d'un code incomplet. On résout le code source, puis on recompile, et c'est ce nouveau fichier qu'on ajoute.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Un conflit par commit rejoué</h3>
-      <p>En rebasage, Git s'arrête sur le premier commit qui bute (mesuré : « Could not apply c7b5f78… marge 6 »). Les marqueurs portent alors le nom du commit, pas celui d'une branche.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Un binaire produit se refait</h3>
+<p>Si le binaire est construit à partir du code (une compilation), aucun des deux côtés n'est juste : chacun vient d'un code incomplet. On résout le code source, puis on recompile, et c'est ce nouveau fichier qu'on ajoute.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Un conflit par commit rejoué</h3>
+<p>En rebasage, Git s'arrête sur le premier commit qui bute (mesuré : « Could not apply c7b5f78… marge 6 »). Les marqueurs portent alors le nom du commit, pas celui d'une branche.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Taper <code>--ours</code> pendant un rebasage pour « garder mes changements ». C'est la branche de destination qui est « ours » : on jette son propre travail, et le rebasage continue sans rien signaler.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 106 · Résoudre un conflit</div>
+<div class="folio">4</div>
+<div class="pied">Cours 106 · Résoudre un conflit</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 106</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>Ce que tes dépôts disent à la fusion</h2>
-  <p style="max-width:165mm">SnapSet et Magpie ont chacun un <code>.gitattributes</code>, l'un écrit à la main, l'autre hérité du modèle de Visual Studio. Magpie, en plus, versionne exprès ses binaires compilés.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 106</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>Ce que tes dépôts disent à la fusion</h2>
+<p style="max-width:165mm">SnapSet et Magpie ont chacun un <code>.gitattributes</code>, l'un écrit à la main, l'autre hérité du modèle de Visual Studio. Magpie, en plus, versionne exprès ses binaires compilés.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">SnapSet · .gitattributes</span></div>
 <div class="l k1"><span class="n">3</span>* text=auto eol=lf<span class="rep r1">1</span></div>
@@ -262,137 +235,55 @@ git merge --abort                   # ou tout annuler</div>
 <div class="l"><span class="cm">git log --oneline -- plugin/bin/Debug/net7.0/Magpie.gha</span></div>
 <div class="l k5"><span class="n">—</span>17 versions, sur 30 fichiers suivis<span class="rep r5">5</span></div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>LF partout</b>Dépôt et disque.</li>
-      <li><span class="rep r2">2</span><b>Binaire</b>Jamais fusionné.</li>
-      <li><span class="rep r3">3</span><b>LF au dépôt</b>Disque libre.</li>
-      <li><span class="rep r4">4</span><b>Exception</b>bin/ versionné.</li>
-      <li><span class="rep r5">5</span><b>Points chauds</b>17 commits.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À surveiller · des binaires compilés versionnés</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>LF partout</b>Dépôt et disque.</li>
+<li><span class="rep r2">2</span><b>Binaire</b>Jamais fusionné.</li>
+<li><span class="rep r3">3</span><b>LF au dépôt</b>Disque libre.</li>
+<li><span class="rep r4">4</span><b>Exception</b>bin/ versionné.</li>
+<li><span class="rep r5">5</span><b>Points chauds</b>17 commits.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À surveiller · des binaires compilés versionnés</span>
     Depuis 66023b0 (2026-09-02, « Versionne les binaires du plugin pour les collaborateurs »), Magpie suit 30 fichiers de plugin/bin ; Magpie.gha et son .pdb sont parmi les fichiers les plus modifiés du dépôt (17 commits chacun). Deux branches qui recompilent entrent forcément en conflit sur eux, sans marqueur possible : la seule résolution juste est de recompiler après la fusion. Déduit : publier les binaires par release, hors de l'histoire, éviterait ces arrêts. Relevé sans rien modifier.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 106 · Résoudre un conflit</div>
+<div class="folio">5</div>
+<div class="pied">Cours 106 · Résoudre un conflit</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 106</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 106</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">Git déclare un conflit quand…</div><ul>
-      <li><span>A</span>une branche est plus ancienne</li><li><span>B</span>un fichier est nouveau</li><li><span>C</span>les deux branches changent le même fichier</li><li><span>D</span>les deux branches changent les mêmes lignes</li></ul></div>
 
-    <div class="q"><div class="enonce">Entre &lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD et ======= se trouve…</div><ul>
-      <li><span>A</span>la version de la branche où l'on est</li><li><span>B</span>le résultat final</li><li><span>C</span>la base</li><li><span>D</span>la version fusionnée</li></ul></div>
 
-    <div class="q"><div class="enonce">Pendant un conflit, l'index contient pour le fichier…</div><ul>
-      <li><span>A</span>aucune version</li><li><span>B</span>trois versions, numérotées 1 à 3</li><li><span>C</span>deux versions</li><li><span>D</span>une seule version</li></ul></div>
 
-    <div class="q"><div class="enonce">merge.conflictStyle = zdiff3 ajoute…</div><ul>
-      <li><span>A</span>une troisième branche</li><li><span>B</span>la version de la base</li><li><span>C</span>un commit</li><li><span>D</span>la couleur</li></ul></div>
-
-    <div class="q"><div class="enonce">git add sur un fichier en conflit…</div><ul>
-      <li><span>A</span>choisit HEAD</li><li><span>B</span>annule la fusion</li><li><span>C</span>le déclare résolu tel qu'il est, marqueurs compris</li><li><span>D</span>refuse s'il reste un marqueur</li></ul></div>
-
-    <div class="q"><div class="enonce">Sans .gitattributes, une sauvegarde en CRLF donne dans l'essai…</div><ul>
-      <li><span>A</span>un conflit de 201 lignes</li><li><span>B</span>un fichier binaire</li><li><span>C</span>aucun conflit</li><li><span>D</span>un conflit d'une ligne</li></ul></div>
-
-    <div class="q"><div class="enonce">Avec * text=auto eol=lf, la même fusion…</div><ul>
-      <li><span>A</span>échoue</li><li><span>B</span>crée 100 conflits</li><li><span>C</span>supprime le fichier</li><li><span>D</span>est propre</li></ul></div>
-
-    <div class="q"><div class="enonce">Pour un binaire en conflit, Git… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>laisse la version de HEAD sur le disque</li><li><span>B</span>prend la plus récente</li><li><span>C</span>n'écrit aucun marqueur</li><li><span>D</span>fusionne octet par octet</li></ul></div>
-
-    <div class="q"><div class="enonce">Pendant git rebase main, --ours désigne…</div><ul>
-      <li><span>A</span>ton commit rejoué</li><li><span>B</span>la base</li><li><span>C</span>le dépôt distant</li><li><span>D</span>main, la branche sur laquelle on rejoue</li></ul></div>
-
-    <div class="q"><div class="enonce">git merge --abort…</div><ul>
-      <li><span>A</span>ramène à l'état d'avant la fusion</li><li><span>B</span>supprime la branche</li><li><span>C</span>pousse le résultat</li><li><span>D</span>garde HEAD et termine la fusion</li></ul></div>
-
-    <div class="q"><div class="enonce">Un Magpie.gha en conflit entre deux branches se résout…</div><ul>
-      <li><span>A</span>en le supprimant</li><li><span>B</span>en gardant le plus gros</li><li><span>C</span>en recompilant après avoir résolu le code</li><li><span>D</span>par les marqueurs</li></ul></div>
-
-    <div class="q"><div class="enonce">Le .gitattributes de SnapSet impose…</div><ul>
-      <li><span>A</span>rien pour les .cs</li><li><span>B</span>LF dans le dépôt et sur le disque</li><li><span>C</span>CRLF partout</li><li><span>D</span>la fusion des .gh</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 106 · Résoudre un conflit</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">git ls-files -s M.cs</td><td>les trois versions en conflit</td><td>schéma 1, page 2</td></tr>
+<tr><td class="c">merge.conflictStyle zdiff3</td><td>montrer la base</td><td>page 2</td></tr>
+<tr><td class="c">git diff --check</td><td>repérer un marqueur oublié</td><td>page 2</td></tr>
+<tr><td class="c">* text=auto eol=lf</td><td>prévenir les faux conflits</td><td>schéma 2, page 3</td></tr>
+<tr><td class="c">git checkout --theirs f</td><td>prendre l'autre version entière</td><td>schéma 3, page 4</td></tr>
+<tr><td class="c">git merge --abort</td><td>tout annuler</td><td>pages 1 et 4</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Conflit</dt><dd>Deux changements d'un même passage que Git ne sait pas réunir.</dd>
+<dt>Marqueurs</dt><dd>Les lignes &lt;&lt;&lt;, ===, &gt;&gt;&gt; qui encadrent les deux versions.</dd>
+<dt>Base</dt><dd>La version de l'ancêtre commun, avant les deux changements.</dd>
+<dt>Ours, theirs</dt><dd>Le côté de HEAD et l'autre ; inversés en rebasage.</dd>
+<dt>Fin de ligne</dt><dd>LF (\n) ou CRLF (\r\n), selon le système qui écrit.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 107</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 106 · Résoudre un conflit</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 106</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · D.</b> Ailleurs, Git combine.</div>
-    <div><b>02 · A.</b> Le côté HEAD.</div>
-    <div><b>03 · B.</b> Base, ours, theirs.</div>
-    <div><b>04 · B.</b> Après |||||||.</div>
-    <div><b>05 · C.</b> Git ne vérifie rien.</div>
-    <div><b>06 · A.</b> Toutes les lignes changent.</div>
-    <div><b>07 · D.</b> 0 conflit, mesuré.</div>
-    <div><b>08 · A et C.</b> Un côté entier.</div>
-    <div><b>09 · D.</b> HEAD est main.</div>
-    <div><b>10 · A.</b> Rien n'est perdu.</div>
-    <div><b>11 · C.</b> Aucun côté n'est juste.</div>
-    <div><b>12 · B.</b> Ligne 3, eol=lf.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 107, « Retrouver et réparer ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">git ls-files -s M.cs</td><td>les trois versions en conflit</td><td>schéma 1, page 2</td></tr>
-      <tr><td class="c">merge.conflictStyle zdiff3</td><td>montrer la base</td><td>page 2</td></tr>
-      <tr><td class="c">git diff --check</td><td>repérer un marqueur oublié</td><td>page 2</td></tr>
-      <tr><td class="c">* text=auto eol=lf</td><td>prévenir les faux conflits</td><td>schéma 2, page 3</td></tr>
-      <tr><td class="c">git checkout --theirs f</td><td>prendre l'autre version entière</td><td>schéma 3, page 4</td></tr>
-      <tr><td class="c">git merge --abort</td><td>tout annuler</td><td>pages 1 et 4</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Conflit</dt><dd>Deux changements d'un même passage que Git ne sait pas réunir.</dd>
-    <dt>Marqueurs</dt><dd>Les lignes &lt;&lt;&lt;, ===, &gt;&gt;&gt; qui encadrent les deux versions.</dd>
-    <dt>Base</dt><dd>La version de l'ancêtre commun, avant les deux changements.</dd>
-    <dt>Ours, theirs</dt><dd>Le côté de HEAD et l'autre ; inversés en rebasage.</dd>
-    <dt>Fin de ligne</dt><dd>LF (\n) ou CRLF (\r\n), selon le système qui écrit.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 107</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 106 · Résoudre un conflit</div>
-</section>
-
 </body>
 </html>

@@ -1,163 +1,147 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>74 · L'intégration continue</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-11">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 74</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>L'intégration continue</h1>
-  <p class="chapeau">Tes vérifications existent déjà : construire sans avertissement, lancer les tests. L'<b>intégration continue</b> (CI) les confie à une machine, qui les rejoue <b>à chaque envoi</b> de code, sur un système neuf, et affiche le verdict à côté du commit. Ce n'est pas un outil de plus : c'est ta liste de contrôle, rendue automatique et impossible à oublier.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>06</b>, <b>69</b> et <b>73</b></span>
-    <span class="pastille">Exemples · <b>tests de web/</b> (Magpie), <b>ResolutionTests</b> (SnapSet), <b>Cuttlefish.csproj</b></span>
-  </div>
-
-  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
-    <svg viewBox="0 0 600 176" width="100%">
-<rect x="6" y="20" width="104" height="50" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
-<text x="58" y="41" font-size="9" fill="#1565C0" text-anchor="middle" font-weight="700">git push</text>
-<text x="58" y="58" font-size="7.6" fill="#2B2F33" text-anchor="middle">le code part</text>
-<line x1="112" y1="45" x2="124" y2="45" stroke="#6B7378" stroke-width="1.3"/><polygon points="124,45 117.6,47.7 117.6,42.3" fill="#6B7378"/>
-<rect x="126" y="20" width="104" height="50" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
-<text x="178" y="41" font-size="9" fill="#6B7378" text-anchor="middle" font-weight="700">machine neuve</text>
-<text x="178" y="58" font-size="7.6" fill="#2B2F33" text-anchor="middle">rien d'installé</text>
-<line x1="232" y1="45" x2="244" y2="45" stroke="#6B7378" stroke-width="1.3"/><polygon points="244,45 237.6,47.7 237.6,42.3" fill="#6B7378"/>
-<rect x="246" y="20" width="104" height="50" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
-<text x="298" y="41" font-size="9" fill="#7B1FA2" text-anchor="middle" font-weight="700">installer</text>
-<text x="298" y="58" font-size="7.6" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.6px">npm ci</text>
-<line x1="352" y1="45" x2="364" y2="45" stroke="#6B7378" stroke-width="1.3"/><polygon points="364,45 357.6,47.7 357.6,42.3" fill="#6B7378"/>
-<rect x="366" y="20" width="104" height="50" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
-<text x="418" y="41" font-size="9" fill="#E65100" text-anchor="middle" font-weight="700">compiler</text>
-<text x="418" y="58" font-size="7.6" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.6px">npm run build</text>
-<line x1="472" y1="45" x2="484" y2="45" stroke="#6B7378" stroke-width="1.3"/><polygon points="484,45 477.6,47.7 477.6,42.3" fill="#6B7378"/>
-<rect x="486" y="20" width="104" height="50" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="538" y="41" font-size="9" fill="#2E7D32" text-anchor="middle" font-weight="700">tester</text>
-<text x="538" y="58" font-size="7.6" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.6px">npm test</text>
-<rect x="150" y="96" width="130" height="34" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="215.0" y="115.8" font-size="8.4" fill="#2E7D32" text-anchor="middle" font-weight="700">vert : on fusionne</text>
-<rect x="320" y="96" width="130" height="34" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
-<text x="385.0" y="115.8" font-size="8.4" fill="#C62828" text-anchor="middle" font-weight="700">rouge : on répare</text>
-<line x1="540" y1="72" x2="290" y2="96" stroke="#CFC6B8" stroke-width="1"/><polygon points="290,96 296.2,92.7 296.7,98.1" fill="#CFC6B8"/>
-<line x1="540" y1="72" x2="400" y2="96" stroke="#CFC6B8" stroke-width="1"/><polygon points="400,96 405.9,92.2 406.8,97.6" fill="#CFC6B8"/>
-<text x="300" y="158" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">À chaque envoi, la même recette, sur une machine qui ne connaît que le dépôt : « ça marche chez moi » ne compte plus.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 74</b></div>
+<p class="rubrique">Le concept</p>
+<h1>L'intégration continue</h1>
+<p class="chapeau">Tes vérifications existent déjà : construire sans avertissement, lancer les tests. L'<b>intégration continue</b> (CI) les confie à une machine, qui les rejoue <b>à chaque envoi</b> de code, sur un système neuf, et affiche le verdict à côté du commit. Ce n'est pas un outil de plus : c'est ta liste de contrôle, rendue automatique et impossible à oublier.</p>
+<div class="meta">
+<span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>06</b>, <b>69</b> et <b>73</b></span>
+<span class="pastille">Exemples · <b>tests de web/</b> (Magpie), <b>ResolutionTests</b> (SnapSet), <b>Cuttlefish.csproj</b></span>
+</div>
+<div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+<svg viewbox="0 0 600 176" width="100%">
+<rect fill="#fff" height="50" rx="4" stroke="#1565C0" stroke-width="1.2" width="104" x="6" y="20"></rect>
+<text fill="#1565C0" font-size="9" font-weight="700" text-anchor="middle" x="58" y="41">git push</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="middle" x="58" y="58">le code part</text>
+<line stroke="#6B7378" stroke-width="1.3" x1="112" x2="124" y1="45" y2="45"></line><polygon fill="#6B7378" points="124,45 117.6,47.7 117.6,42.3"></polygon>
+<rect fill="#fff" height="50" rx="4" stroke="#6B7378" stroke-width="1.2" width="104" x="126" y="20"></rect>
+<text fill="#6B7378" font-size="9" font-weight="700" text-anchor="middle" x="178" y="41">machine neuve</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="middle" x="178" y="58">rien d'installé</text>
+<line stroke="#6B7378" stroke-width="1.3" x1="232" x2="244" y1="45" y2="45"></line><polygon fill="#6B7378" points="244,45 237.6,47.7 237.6,42.3"></polygon>
+<rect fill="#fff" height="50" rx="4" stroke="#7B1FA2" stroke-width="1.2" width="104" x="246" y="20"></rect>
+<text fill="#7B1FA2" font-size="9" font-weight="700" text-anchor="middle" x="298" y="41">installer</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="middle" x="298" y="58">npm ci</text>
+<line stroke="#6B7378" stroke-width="1.3" x1="352" x2="364" y1="45" y2="45"></line><polygon fill="#6B7378" points="364,45 357.6,47.7 357.6,42.3"></polygon>
+<rect fill="#fff" height="50" rx="4" stroke="#E65100" stroke-width="1.2" width="104" x="366" y="20"></rect>
+<text fill="#E65100" font-size="9" font-weight="700" text-anchor="middle" x="418" y="41">compiler</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="middle" x="418" y="58">npm run build</text>
+<line stroke="#6B7378" stroke-width="1.3" x1="472" x2="484" y1="45" y2="45"></line><polygon fill="#6B7378" points="484,45 477.6,47.7 477.6,42.3"></polygon>
+<rect fill="#fff" height="50" rx="4" stroke="#2E7D32" stroke-width="1.2" width="104" x="486" y="20"></rect>
+<text fill="#2E7D32" font-size="9" font-weight="700" text-anchor="middle" x="538" y="41">tester</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="middle" x="538" y="58">npm test</text>
+<rect fill="#fff" height="34" rx="4" stroke="#2E7D32" stroke-width="1.2" width="130" x="150" y="96"></rect>
+<text fill="#2E7D32" font-size="8.4" font-weight="700" text-anchor="middle" x="215.0" y="115.8">vert : on fusionne</text>
+<rect fill="#fff" height="34" rx="4" stroke="#C62828" stroke-width="1.2" width="130" x="320" y="96"></rect>
+<text fill="#C62828" font-size="8.4" font-weight="700" text-anchor="middle" x="385.0" y="115.8">rouge : on répare</text>
+<line stroke="#CFC6B8" stroke-width="1" x1="540" x2="290" y1="72" y2="96"></line><polygon fill="#CFC6B8" points="290,96 296.2,92.7 296.7,98.1"></polygon>
+<line stroke="#CFC6B8" stroke-width="1" x1="540" x2="400" y1="72" y2="96"></line><polygon fill="#CFC6B8" points="400,96 405.9,92.2 406.8,97.6"></polygon>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="middle" x="300" y="158">À chaque envoi, la même recette, sur une machine qui ne connaît que le dépôt : « ça marche chez moi » ne compte plus.</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Une recette écrite dans le dépôt dit comment installer, compiler et tester ; un service l'exécute sur une machine vierge à chaque push ou pull request, et refuse de passer au vert si une seule étape échoue.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Le contrôle technique d'une voiture. Le garagiste n'a jamais vu la voiture, il suit une grille fixe, et il ne croit pas le propriétaire sur parole : seul compte ce que la grille mesure ce jour-là.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>dire ce qu'une machine neuve révèle ;</li>
-        <li>lire un workflow GitHub Actions ;</li>
-        <li>rendre un projet constructible ailleurs ;</li>
-        <li>réagir à un verdict rouge.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:5mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Une recette écrite dans le dépôt dit comment installer, compiler et tester ; un service l'exécute sur une machine vierge à chaque push ou pull request, et refuse de passer au vert si une seule étape échoue.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Le contrôle technique d'une voiture. Le garagiste n'a jamais vu la voiture, il suit une grille fixe, et il ne croit pas le propriétaire sur parole : seul compte ce que la grille mesure ce jour-là.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>dire ce qu'une machine neuve révèle ;</li>
+<li>lire un workflow GitHub Actions ;</li>
+<li>rendre un projet constructible ailleurs ;</li>
+<li>réagir à un verdict rouge.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:5mm">
+<span class="titre">À retenir</span>
     « Intégration » parce que chaque changement est fusionné tôt et souvent dans la branche commune ; « continue » parce que la vérification suit chaque envoi, et pas une grande séance avant la livraison. Plus un problème est vu tôt, moins il coûte : on sait encore quel changement l'a causé.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 74 · L'intégration continue</div>
+<div class="folio">1</div>
+<div class="pied">Cours 74 · L'intégration continue</div>
 </section>
-
 <!-- ============ PAGE 2 · LA MACHINE NEUVE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 74</b></div>
-  <p class="rubrique">Schéma 1 · Ce que révèle une machine neuve</p>
-  <h2>« Ça marche chez moi »</h2>
-  <p style="max-width:165mm">Ton poste accumule des choses que le dépôt ne contient pas : des paquets déjà installés, un Rhino dans un dossier précis, des variables d'environnement, des fichiers générés hier. Une machine neuve n'a que le dépôt. L'expérience ci-dessous a été faite sur une copie du dossier <code>web/</code> de Magpie.</p>
-
-  <svg viewBox="0 0 600 204" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="204" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">Les tests du canevas web de Magpie, sur une copie du dossier web/ (mesuré)</text>
-<text x="16" y="44" font-size="8.6" fill="#C62828" text-anchor="start" font-weight="700">sans installer les dépendances</text>
-<rect x="16" y="52" width="387.20000000000005" height="18" fill="#2E7D32"/>
-<rect x="403.20000000000005" y="52" width="52.800000000000004" height="18" fill="#C62828"/>
-<text x="468" y="65" font-size="9" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">22 / 25</text>
-<text x="16" y="86" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">3 échecs : « Cannot find package 'rhino3dm' »</text>
-<text x="16" y="108" font-size="8.6" fill="#2E7D32" text-anchor="start" font-weight="700">après npm ci (85 paquets, 4 s)</text>
-<rect x="16" y="116" width="440.00000000000006" height="18" fill="#2E7D32"/>
-<text x="468" y="129" font-size="9" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">25 / 25</text>
-<text x="16" y="150" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">25 réussis en 0,3 s</text>
-<line x1="16" y1="172" x2="584" y2="172" stroke="#CFC6B8" stroke-dasharray="3 3"/>
-<text x="16" y="192" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">Sur ton poste, node_modules existe depuis longtemps : l'oubli d'une étape d'installation ne s'y voit jamais.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 74</b></div>
+<p class="rubrique">Schéma 1 · Ce que révèle une machine neuve</p>
+<h2>« Ça marche chez moi »</h2>
+<p style="max-width:165mm">Ton poste accumule des choses que le dépôt ne contient pas : des paquets déjà installés, un Rhino dans un dossier précis, des variables d'environnement, des fichiers générés hier. Une machine neuve n'a que le dépôt. L'expérience ci-dessous a été faite sur une copie du dossier <code>web/</code> de Magpie.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 204" width="100%">
+<rect fill="#EFE9E1" height="204" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">Les tests du canevas web de Magpie, sur une copie du dossier web/ (mesuré)</text>
+<text fill="#C62828" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="44">sans installer les dépendances</text>
+<rect fill="#2E7D32" height="18" width="387.20000000000005" x="16" y="52"></rect>
+<rect fill="#C62828" height="18" width="52.800000000000004" x="403.20000000000005" y="52"></rect>
+<text class="mono" fill="#C62828" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="468" y="65">22 / 25</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="start" x="16" y="86">3 échecs : « Cannot find package 'rhino3dm' »</text>
+<text fill="#2E7D32" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="108">après npm ci (85 paquets, 4 s)</text>
+<rect fill="#2E7D32" height="18" width="440.00000000000006" x="16" y="116"></rect>
+<text class="mono" fill="#2E7D32" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="468" y="129">25 / 25</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="start" x="16" y="150">25 réussis en 0,3 s</text>
+<line stroke="#CFC6B8" stroke-dasharray="3 3" x1="16" x2="584" y1="172" y2="172"></line>
+<text fill="#2B2F33" font-size="8" font-weight="700" text-anchor="start" x="16" y="192">Sur ton poste, node_modules existe depuis longtemps : l'oubli d'une étape d'installation ne s'y voit jamais.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · terminal, l'expérience reproduite</span>cp -r web /tmp/essai &amp;&amp; cd /tmp/essai   # sans node_modules
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · terminal, l'expérience reproduite</span>cp -r web /tmp/essai &amp;&amp; cd /tmp/essai   # sans node_modules
 npm test          # 22 réussis, 3 échecs : rhino3dm introuvable
 npm ci            # installe le verrou (cours 73)
 npm test          # 25 réussis</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Reproductible</h3>
-      <p>Une CI n'a de valeur que si son résultat ne dépend que du commit. D'où <code>npm ci</code> plutôt que <code>npm install</code>, des versions figées, et aucun accès à un fichier de ton poste.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Rapide</h3>
-      <p>Une vérification qui prend une heure ne sera pas attendue. Les 25 tests du canevas tournent en 0,3 s et la construction Vite en 5 s (mesurés) : une CI de ce dossier rendrait son verdict en moins d'une minute.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Reproductible</h3>
+<p>Une CI n'a de valeur que si son résultat ne dépend que du commit. D'où <code>npm ci</code> plutôt que <code>npm install</code>, des versions figées, et aucun accès à un fichier de ton poste.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Rapide</h3>
+<p>Une vérification qui prend une heure ne sera pas attendue. Les 25 tests du canevas tournent en 0,3 s et la construction Vite en 5 s (mesurés) : une CI de ce dossier rendrait son verdict en moins d'une minute.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Un test qui dépend de l'ordre ou de l'heure : il passe 49 fois sur 50. Un tel test « instable » apprend vite à tout le monde à ignorer le rouge, et la CI ne sert plus à rien. On le corrige ou on le rend déterministe, on ne le relance pas jusqu'au vert.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 74 · L'intégration continue</div>
+<div class="folio">2</div>
+<div class="pied">Cours 74 · L'intégration continue</div>
 </section>
-
 <!-- ============ PAGE 3 · GITHUB ACTIONS ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 74</b></div>
-  <p class="rubrique">Schéma 2 · Un workflow GitHub Actions</p>
-  <h2>La recette, versionnée avec le code</h2>
-  <p style="max-width:165mm">Sur GitHub, la CI s'appelle <b>Actions</b>. Un fichier YAML placé dans <code>.github/workflows/</code> décrit quand se lancer, sur quelle machine, et quelles étapes enchaîner. Aucun de tes trois dépôts n'en a encore : l'exemple est donc autonome, écrit pour le dossier <code>web/</code> de Magpie.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">Un fichier .github/workflows/web.yml : quatre niveaux emboîtés</text>
-<rect x="16" y="32" width="568" height="168" rx="4" fill="#fff" stroke="#4F46B8" stroke-width="1.2"/>
-<text x="28" y="50" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">on : push, pull_request</text>
-<text x="220" y="50" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">quand lancer</text>
-<rect x="28" y="60" width="544" height="130" rx="4" fill="#ECEBFA" stroke="#1565C0" stroke-width="1.2"/>
-<text x="40" y="78" font-size="8.6" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">job « tests » · runs-on : ubuntu-latest</text>
-<text x="330" y="78" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">une machine neuve, jetée après</text>
-<rect x="40" y="90" width="250" height="20" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
-<text x="50" y="104" font-size="8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8px">uses: actions/checkout</text>
-<text x="304" y="104" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">récupère le dépôt</text>
-<rect x="40" y="114" width="250" height="20" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
-<text x="50" y="128" font-size="8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8px">uses: actions/setup-node</text>
-<text x="304" y="128" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">installe Node 24</text>
-<rect x="40" y="138" width="250" height="20" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
-<text x="50" y="152" font-size="8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8px">run: npm ci</text>
-<text x="304" y="152" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">installe le verrou</text>
-<rect x="40" y="162" width="250" height="20" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
-<text x="50" y="176" font-size="8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8px">run: npm test</text>
-<text x="304" y="176" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">un échec arrête tout</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 74</b></div>
+<p class="rubrique">Schéma 2 · Un workflow GitHub Actions</p>
+<h2>La recette, versionnée avec le code</h2>
+<p style="max-width:165mm">Sur GitHub, la CI s'appelle <b>Actions</b>. Un fichier YAML placé dans <code>.github/workflows/</code> décrit quand se lancer, sur quelle machine, et quelles étapes enchaîner. Aucun de tes trois dépôts n'en a encore : l'exemple est donc autonome, écrit pour le dossier <code>web/</code> de Magpie.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">Un fichier .github/workflows/web.yml : quatre niveaux emboîtés</text>
+<rect fill="#fff" height="168" rx="4" stroke="#4F46B8" stroke-width="1.2" width="568" x="16" y="32"></rect>
+<text class="mono" fill="#4F46B8" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="28" y="50">on : push, pull_request</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="start" x="220" y="50">quand lancer</text>
+<rect fill="#ECEBFA" height="130" rx="4" stroke="#1565C0" stroke-width="1.2" width="544" x="28" y="60"></rect>
+<text class="mono" fill="#1565C0" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="40" y="78">job « tests » · runs-on : ubuntu-latest</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="start" x="330" y="78">une machine neuve, jetée après</text>
+<rect fill="#fff" height="20" rx="4" stroke="#7B1FA2" stroke-width="1.2" width="250" x="40" y="90"></rect>
+<text class="mono" fill="#2B2F33" font-size="8" style="font-size:8px" text-anchor="start" x="50" y="104">uses: actions/checkout</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="start" x="304" y="104">récupère le dépôt</text>
+<rect fill="#fff" height="20" rx="4" stroke="#7B1FA2" stroke-width="1.2" width="250" x="40" y="114"></rect>
+<text class="mono" fill="#2B2F33" font-size="8" style="font-size:8px" text-anchor="start" x="50" y="128">uses: actions/setup-node</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="start" x="304" y="128">installe Node 24</text>
+<rect fill="#fff" height="20" rx="4" stroke="#7B1FA2" stroke-width="1.2" width="250" x="40" y="138"></rect>
+<text class="mono" fill="#2B2F33" font-size="8" style="font-size:8px" text-anchor="start" x="50" y="152">run: npm ci</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="start" x="304" y="152">installe le verrou</text>
+<rect fill="#fff" height="20" rx="4" stroke="#7B1FA2" stroke-width="1.2" width="250" x="40" y="162"></rect>
+<text class="mono" fill="#2B2F33" font-size="8" style="font-size:8px" text-anchor="start" x="50" y="176">run: npm test</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="start" x="304" y="176">un échec arrête tout</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · .github/workflows/web.yml</span>on: [push, pull_request]
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · .github/workflows/web.yml</span>on: [push, pull_request]
 jobs:
   tests:
     runs-on: ubuntu-latest
@@ -169,86 +153,75 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>uses et run</h3>
-      <p><code>run</code> lance une commande, comme dans un terminal. <code>uses</code> appelle une action toute faite, publiée par quelqu'un d'autre et versionnée (<code>@v4</code>) : c'est une dépendance, à choisir comme un paquet npm.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Les secrets</h3>
-      <p>Une étape qui déploie a besoin d'une clé. Elle se range dans les réglages du dépôt et se lit par <code>${{ secrets.NOM }}</code> ; elle n'apparaît ni dans le YAML ni dans les journaux (cours 63).</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>uses et run</h3>
+<p><code>run</code> lance une commande, comme dans un terminal. <code>uses</code> appelle une action toute faite, publiée par quelqu'un d'autre et versionnée (<code>@v4</code>) : c'est une dépendance, à choisir comme un paquet npm.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Les secrets</h3>
+<p>Une étape qui déploie a besoin d'une clé. Elle se range dans les réglages du dépôt et se lit par <code>${{ secrets.NOM }}</code> ; elle n'apparaît ni dans le YAML ni dans les journaux (cours 63).</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Lancer la CI sur une pull request venue d'un inconnu avec accès aux secrets. Son code s'exécute sur la machine de CI : il peut lire tout ce qu'on lui confie. GitHub retient par défaut les secrets pour les pull requests issues d'un fork ; ne pas contourner ce garde-fou.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 74 · L'intégration continue</div>
+<div class="folio">3</div>
+<div class="pied">Cours 74 · L'intégration continue</div>
 </section>
-
 <!-- ============ PAGE 4 · LE CAS RHINO ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 74</b></div>
-  <p class="rubrique">Schéma 3 · Construire sans Rhino</p>
-  <h2>Ce que la machine de CI ne peut pas avoir</h2>
-  <p style="max-width:165mm">Une machine de CI ne contient pas Rhino : il ne s'y installe pas en une ligne, et il demande une licence. Compiler un plugin Grasshopper y reste possible ; l'exécuter dans Rhino, non. Tes dépôts montrent les deux manières de référencer Grasshopper.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">Compiler du code Grasshopper sur une machine sans Rhino : deux approches de tes dépôts</text>
-<rect x="16" y="34" width="276" height="136" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
-<text x="154" y="54" font-size="9.6" fill="#C62828" text-anchor="middle" font-weight="700">SnapSet</text>
-<text x="154" y="70" font-size="7.8" fill="#2B2F33" text-anchor="middle" font-weight="700">référence les DLL installées</text>
-<text x="154" y="96" font-size="7.8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.8px">D:\programme\Rhino\…\Grasshopper.dll</text>
-<text x="154" y="118" font-size="7.8" fill="#2B2F33" text-anchor="middle">il faut Rhino sur la machine</text>
-<text x="154" y="140" font-size="7.8" fill="#2B2F33" text-anchor="middle">un runner de GitHub n'en a pas</text>
-<rect x="308" y="34" width="276" height="136" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="446" y="54" font-size="9.6" fill="#2E7D32" text-anchor="middle" font-weight="700">Cuttlefish</text>
-<text x="446" y="70" font-size="7.8" fill="#2B2F33" text-anchor="middle" font-weight="700">référence le paquet NuGet</text>
-<text x="446" y="96" font-size="7.8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.8px">PackageReference "Grasshopper"</text>
-<text x="446" y="118" font-size="7.8" fill="#2B2F33" text-anchor="middle">téléchargé comme toute dépendance</text>
-<text x="446" y="140" font-size="7.8" fill="#2B2F33" text-anchor="middle">ExcludeAssets="runtime" : non copié</text>
-<text x="16" y="196" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">Le paquet NuGet sert à compiler ; seul Rhino peut exécuter. Un test qui a besoin de Rhino reste un test de poste.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 74</b></div>
+<p class="rubrique">Schéma 3 · Construire sans Rhino</p>
+<h2>Ce que la machine de CI ne peut pas avoir</h2>
+<p style="max-width:165mm">Une machine de CI ne contient pas Rhino : il ne s'y installe pas en une ligne, et il demande une licence. Compiler un plugin Grasshopper y reste possible ; l'exécuter dans Rhino, non. Tes dépôts montrent les deux manières de référencer Grasshopper.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">Compiler du code Grasshopper sur une machine sans Rhino : deux approches de tes dépôts</text>
+<rect fill="#fff" height="136" rx="4" stroke="#C62828" stroke-width="1.2" width="276" x="16" y="34"></rect>
+<text fill="#C62828" font-size="9.6" font-weight="700" text-anchor="middle" x="154" y="54">SnapSet</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="middle" x="154" y="70">référence les DLL installées</text>
+<text class="mono" fill="#2B2F33" font-size="7.8" style="font-size:7.8px" text-anchor="middle" x="154" y="96">D:\programme\Rhino\…\Grasshopper.dll</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="middle" x="154" y="118">il faut Rhino sur la machine</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="middle" x="154" y="140">un runner de GitHub n'en a pas</text>
+<rect fill="#fff" height="136" rx="4" stroke="#2E7D32" stroke-width="1.2" width="276" x="308" y="34"></rect>
+<text fill="#2E7D32" font-size="9.6" font-weight="700" text-anchor="middle" x="446" y="54">Cuttlefish</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="middle" x="446" y="70">référence le paquet NuGet</text>
+<text class="mono" fill="#2B2F33" font-size="7.8" style="font-size:7.8px" text-anchor="middle" x="446" y="96">PackageReference "Grasshopper"</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="middle" x="446" y="118">téléchargé comme toute dépendance</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="middle" x="446" y="140">ExcludeAssets="runtime" : non copié</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="start" x="16" y="196">Le paquet NuGet sert à compiler ; seul Rhino peut exécuter. Un test qui a besoin de Rhino reste un test de poste.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · séparer les tests qui ont besoin de Rhino (xUnit)</span>[Fact, Trait("Besoin", "Rhino")]
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · séparer les tests qui ont besoin de Rhino (xUnit)</span>[Fact, Trait("Besoin", "Rhino")]
 public void LeCodeEmisCompile() { … }
 
 dotnet test --filter "Besoin!=Rhino"      // en CI
 dotnet test                              // sur le poste, tout</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Une CI Windows</h3>
-      <p>Les projets SnapSet visent <code>net7.0-windows</code> et WinForms : ils se construisent sur un runner <code>windows-latest</code>. Le changement d'étiquette suffit, mais la machine Windows est plus lente à démarrer.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Ce qui reste à la main</h3>
-      <p>Le rendu sur le canvas, les gestes, l'apparence d'une capsule : README.md:88–89 de SnapSet le dit, ils se vérifient dans Rhino. La CI ne remplace pas ce passage, elle évite d'y arriver avec un code qui ne compile pas.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Une CI Windows</h3>
+<p>Les projets SnapSet visent <code>net7.0-windows</code> et WinForms : ils se construisent sur un runner <code>windows-latest</code>. Le changement d'étiquette suffit, mais la machine Windows est plus lente à démarrer.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Ce qui reste à la main</h3>
+<p>Le rendu sur le canvas, les gestes, l'apparence d'une capsule : README.md:88–89 de SnapSet le dit, ils se vérifient dans Rhino. La CI ne remplace pas ce passage, elle évite d'y arriver avec un code qui ne compile pas.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Désactiver un test qui échoue en CI « parce qu'il passe chez moi ». La différence entre les deux machines est justement l'information : un chemin figé, un fichier oublié dans le dépôt, une version différente. On la trouve avant de toucher au test.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 74 · L'intégration continue</div>
+<div class="folio">4</div>
+<div class="pied">Cours 74 · L'intégration continue</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 74</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>Des vérifications prêtes, une machine absente</h2>
-  <p style="max-width:165mm">Aucun dépôt n'a de dossier <code>.github/workflows</code> : les vérifications se font à la main, et AMORCE.md les écrit noir sur blanc. Le canevas web serait prêt pour une CI tel quel ; SnapSet a besoin de Rhino sur la machine.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 74</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>Des vérifications prêtes, une machine absente</h2>
+<p style="max-width:165mm">Aucun dépôt n'a de dossier <code>.github/workflows</code> : les vérifications se font à la main, et AMORCE.md les écrit noir sur blanc. Le canevas web serait prêt pour une CI tel quel ; SnapSet a besoin de Rhino sur la machine.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">SnapSet/src/SnapSet.Constituants/….csproj</span></div>
 <div class="l k1"><span class="n">39</span>&lt;RhinoRoot&gt;D:\programme\Rhino&lt;/RhinoRoot&gt;<span class="rep r1">1</span></div>
@@ -263,137 +236,55 @@ dotnet test                              // sur le poste, tout</div>
 <div class="l k5"><span class="n">119</span>dotnet build SnapSet.sln --no-incremental<span class="rep r5">5</span></div>
 <div class="l k5"><span class="n">120</span>dotnet test tests/ResolutionTests</div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>Un chemin de poste</b>Réglable : -p:RhinoRoot=… (README.md:28).</li>
-      <li><span class="rep r2">2</span><b>Une constante</b>Que -p:RhinoRoot ne change pas.</li>
-      <li><span class="rep r3">3</span><b>Le paquet NuGet</b>Se compile partout, non copié.</li>
-      <li><span class="rep r4">4</span><b>Prêt pour la CI</b>25 tests, 0,3 s après npm ci.</li>
-      <li><span class="rep r5">5</span><b>La recette</b>0 avertissement, 0 échec.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À surveiller · un chemin que la ligne de commande n'atteint pas</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>Un chemin de poste</b>Réglable : -p:RhinoRoot=… (README.md:28).</li>
+<li><span class="rep r2">2</span><b>Une constante</b>Que -p:RhinoRoot ne change pas.</li>
+<li><span class="rep r3">3</span><b>Le paquet NuGet</b>Se compile partout, non copié.</li>
+<li><span class="rep r4">4</span><b>Prêt pour la CI</b>25 tests, 0,3 s après npm ci.</li>
+<li><span class="rep r5">5</span><b>La recette</b>0 avertissement, 0 échec.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À surveiller · un chemin que la ligne de commande n'atteint pas</span>
     README.md:24–28 indique qu'on construit SnapSet sur un autre poste en passant <code>-p:RhinoRoot</code>. La construction suit, mais CoupleCompileTests.cs:37 garde sa propre constante : sur ce poste, ses 15 tests lèveraient l'exception de la ligne 795. Le chemin pourrait arriver par un <code>AssemblyMetadata</code>, comme <code>CheminConstituants</code> le fait déjà (ResolutionTests.csproj:223–225). C'est le premier obstacle d'une future CI.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 74 · L'intégration continue</div>
+<div class="folio">5</div>
+<div class="pied">Cours 74 · L'intégration continue</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 74</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 74</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">L'intégration continue rejoue les vérifications…</div><ul>
-      <li><span>A</span>à chaque envoi, sur une machine neuve</li><li><span>B</span>une fois avant la livraison</li><li><span>C</span>chaque nuit, sur le serveur de production</li><li><span>D</span>sur le poste du développeur</li></ul></div>
 
-    <div class="q"><div class="enonce">Sans <code>npm ci</code>, les tests de web/ donnent (mesuré)…</div><ul>
-      <li><span>A</span>25 réussis</li><li><span>B</span>0 réussi</li><li><span>C</span>une boucle infinie</li><li><span>D</span>22 réussis, 3 échecs</li></ul></div>
 
-    <div class="q"><div class="enonce">En CI, on installe avec…</div><ul>
-      <li><span>A</span>npm update</li><li><span>B</span>npm install --force</li><li><span>C</span>npm ci</li><li><span>D</span>une copie de node_modules</li></ul></div>
 
-    <div class="q"><div class="enonce">Un workflow GitHub Actions se range dans…</div><ul>
-      <li><span>A</span>.github/workflows/</li><li><span>B</span>les réglages du compte</li><li><span>C</span>.git/hooks/</li><li><span>D</span>node_modules/.bin/</li></ul></div>
-
-    <div class="q"><div class="enonce">Dans un workflow, <code>uses:</code>…</div><ul>
-      <li><span>A</span>lance une commande shell</li><li><span>B</span>choisit la machine</li><li><span>C</span>appelle une action publiée et versionnée</li><li><span>D</span>déclare un secret</li></ul></div>
-
-    <div class="q"><div class="enonce">Un secret de CI… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>s'affiche dans les journaux</li><li><span>B</span>s'écrit dans le YAML</li><li><span>C</span>se range dans les réglages du dépôt</li><li><span>D</span>se lit par ${{ secrets.NOM }}</li></ul></div>
-
-    <div class="q"><div class="enonce">Un test qui passe 49 fois sur 50…</div><ul>
-      <li><span>A</span>se supprime</li><li><span>B</span>se relance jusqu'au vert</li><li><span>C</span>ne pose pas de problème</li><li><span>D</span>se corrige ou se rend déterministe</li></ul></div>
-
-    <div class="q"><div class="enonce">Sur un runner GitHub, SnapSet ne se construit pas tel quel parce que…</div><ul>
-      <li><span>A</span>il a trop de tests</li><li><span>B</span>il référence les DLL d'un Rhino installé</li><li><span>C</span>il n'a pas de .sln</li><li><span>D</span>il est écrit en C#</li></ul></div>
-
-    <div class="q"><div class="enonce">Cuttlefish compile sans Rhino grâce à…</div><ul>
-      <li><span>A</span>un test désactivé</li><li><span>B</span>la référence au paquet NuGet Grasshopper</li><li><span>C</span>une copie de Rhino dans le dépôt</li><li><span>D</span>net48 seulement</li></ul></div>
-
-    <div class="q"><div class="enonce"><code>ExcludeAssets="runtime"</code> signifie que Grasshopper.dll…</div><ul>
-      <li><span>A</span>est téléchargé à l'exécution</li><li><span>B</span>est signé</li><li><span>C</span>est exclu de la compilation</li><li><span>D</span>sert à compiler, sans être copié à côté du .gha</li></ul></div>
-
-    <div class="q"><div class="enonce">Avec <code>-p:RhinoRoot=…</code>, CoupleCompileTests…</div><ul>
-      <li><span>A</span>suit le nouveau chemin</li><li><span>B</span>télécharge Rhino</li><li><span>C</span>cherche toujours dans D:\programme\Rhino</li><li><span>D</span>est ignoré</li></ul></div>
-
-    <div class="q"><div class="enonce">Restent à vérifier à la main, même avec une CI : <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>les tests de logique pure</li><li><span>B</span>le rendu sur le canvas</li><li><span>C</span>la compilation</li><li><span>D</span>les gestes dans Rhino</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 74 · L'intégration continue</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">npm test</td><td>lance les tests du canevas web</td><td>web/package.json:10</td></tr>
+<tr><td class="c">dotnet test tests/ResolutionTests</td><td>lance les tests de SnapSet</td><td>AMORCE.md:120</td></tr>
+<tr><td class="c">-p:RhinoRoot="…"</td><td>indique où trouver Rhino</td><td>SnapSet README.md:28</td></tr>
+<tr><td class="c">ExcludeAssets="runtime"</td><td>compiler contre, sans copier</td><td>Cuttlefish.csproj:36–37</td></tr>
+<tr><td class="c">runs-on: ubuntu-latest</td><td>choisir la machine de CI</td><td>exemple autonome, page 3</td></tr>
+<tr><td class="c">--filter "Besoin!=Rhino"</td><td>écarter les tests de poste</td><td>exemple autonome, page 4</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Intégration continue</dt><dd>Rejouer construction et tests à chaque envoi, sur une machine neuve.</dd>
+<dt>Workflow</dt><dd>Le fichier YAML qui décrit quand et comment la CI travaille.</dd>
+<dt>Runner</dt><dd>La machine, souvent jetable, qui exécute un job.</dd>
+<dt>Test instable</dt><dd>Un test dont le verdict change sans que le code change.</dd>
+<dt>Reproductible</dt><dd>Qui donne le même résultat à partir du même commit, où qu'on le lance.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 75</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 74 · L'intégration continue</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 74</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · A.</b> Tôt et souvent, sans ton poste.</div>
-    <div><b>02 · D.</b> rhino3dm introuvable.</div>
-    <div><b>03 · C.</b> Le verrou, tel quel.</div>
-    <div><b>04 · A.</b> Versionné avec le code.</div>
-    <div><b>05 · C.</b> run lance une commande.</div>
-    <div><b>06 · C et D.</b> Jamais dans le YAML.</div>
-    <div><b>07 · D.</b> Sinon le rouge n'informe plus.</div>
-    <div><b>08 · B.</b> SnapSet.Constituants.csproj:39.</div>
-    <div><b>09 · B.</b> Cuttlefish.csproj:36–37.</div>
-    <div><b>10 · D.</b> Rhino le fournit à l'exécution.</div>
-    <div><b>11 · C.</b> Une constante, ligne 37.</div>
-    <div><b>12 · B et D.</b> README.md:88–89.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 75, « Journaux et diagnostic ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">npm test</td><td>lance les tests du canevas web</td><td>web/package.json:10</td></tr>
-      <tr><td class="c">dotnet test tests/ResolutionTests</td><td>lance les tests de SnapSet</td><td>AMORCE.md:120</td></tr>
-      <tr><td class="c">-p:RhinoRoot="…"</td><td>indique où trouver Rhino</td><td>SnapSet README.md:28</td></tr>
-      <tr><td class="c">ExcludeAssets="runtime"</td><td>compiler contre, sans copier</td><td>Cuttlefish.csproj:36–37</td></tr>
-      <tr><td class="c">runs-on: ubuntu-latest</td><td>choisir la machine de CI</td><td>exemple autonome, page 3</td></tr>
-      <tr><td class="c">--filter "Besoin!=Rhino"</td><td>écarter les tests de poste</td><td>exemple autonome, page 4</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Intégration continue</dt><dd>Rejouer construction et tests à chaque envoi, sur une machine neuve.</dd>
-    <dt>Workflow</dt><dd>Le fichier YAML qui décrit quand et comment la CI travaille.</dd>
-    <dt>Runner</dt><dd>La machine, souvent jetable, qui exécute un job.</dd>
-    <dt>Test instable</dt><dd>Un test dont le verdict change sans que le code change.</dd>
-    <dt>Reproductible</dt><dd>Qui donne le même résultat à partir du même commit, où qu'on le lance.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 75</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 74 · L'intégration continue</div>
-</section>
-
 </body>
 </html>

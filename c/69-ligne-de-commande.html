@@ -1,266 +1,239 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>69 · La ligne de commande</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-9">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 69</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>La ligne de commande</h1>
-  <p class="chapeau">La <b>ligne de commande</b> est une façon de lancer des programmes en tapant leur nom et leurs arguments, dans un <b>interpréteur</b> (shell) : cmd ou PowerShell sous Windows, bash sur un serveur Linux. Tout ce que tu y tapes peut s'écrire dans un fichier : c'est un <b>script</b>, qui refait la même chose à chaque fois, sans oubli.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>35</b> et <b>46</b></span>
-    <span class="pastille">Exemples · <b>deployer.sh</b>, <b>demarrer_magpie.bat</b> (Magpie), <b>LotATests</b> (SnapSet)</span>
-  </div>
-
-  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
-    <svg viewBox="0 0 600 196" width="100%">
-<rect x="220" y="60" width="160" height="64" rx="4" fill="#fff" stroke="#A03A2C" stroke-width="1.2"/>
-<text x="300" y="86" font-size="9.4" fill="#A03A2C" text-anchor="middle" font-weight="700">un programme</text>
-<text x="300" y="104" font-size="7.8" fill="#6B7378" text-anchor="middle" font-style="italic">node, git, dotnet…</text>
-<text x="16" y="22" font-size="8.4" fill="#1565C0" text-anchor="start" font-weight="700">arguments</text>
-<text x="16" y="35" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">import-exercise.mjs ex.json</text>
-<line x1="176" y1="24" x2="216" y2="70.66666666666667" stroke="#1565C0" stroke-width="1.2"/><polygon points="216,70.66666666666667 209.7,67.5 213.9,64.0" fill="#1565C0"/>
-<text x="16" y="78" font-size="8.4" fill="#7B1FA2" text-anchor="start" font-weight="700">variables d'environnement</text>
-<text x="16" y="91" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">PATH, PORT, APPDATA…</text>
-<line x1="176" y1="80" x2="216" y2="80.0" stroke="#7B1FA2" stroke-width="1.2"/><polygon points="216,80.0 209.6,82.7 209.6,77.3" fill="#7B1FA2"/>
-<text x="16" y="134" font-size="8.4" fill="#1565C0" text-anchor="start" font-weight="700">entrée standard (stdin)</text>
-<text x="16" y="147" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">ce qu'on lui envoie</text>
-<line x1="176" y1="136" x2="216" y2="89.33333333333333" stroke="#1565C0" stroke-width="1.2"/><polygon points="216,89.33333333333333 213.9,96.0 209.7,92.5" fill="#1565C0"/>
-<line x1="384" y1="70.66666666666667" x2="424" y2="24" stroke="#2E7D32" stroke-width="1.2"/><polygon points="424,24 421.9,30.7 417.7,27.1" fill="#2E7D32"/>
-<text x="430" y="22" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700">sortie standard (stdout)</text>
-<text x="430" y="35" font-size="7.6" fill="#2B2F33" text-anchor="start">les résultats</text>
-<line x1="384" y1="80.0" x2="424" y2="80" stroke="#E65100" stroke-width="1.2"/><polygon points="424,80 417.6,82.7 417.6,77.3" fill="#E65100"/>
-<text x="430" y="78" font-size="8.4" fill="#E65100" text-anchor="start" font-weight="700">sortie d'erreur (stderr)</text>
-<text x="430" y="91" font-size="7.6" fill="#2B2F33" text-anchor="start">les messages d'erreur</text>
-<line x1="384" y1="89.33333333333333" x2="424" y2="136" stroke="#C62828" stroke-width="1.2"/><polygon points="424,136 417.7,132.9 421.9,129.3" fill="#C62828"/>
-<text x="430" y="134" font-size="8.4" fill="#C62828" text-anchor="start" font-weight="700">code de sortie</text>
-<text x="430" y="147" font-size="7.6" fill="#2B2F33" text-anchor="start">0 = réussi, autre = échec</text>
-<text x="300" y="186" font-size="7.8" fill="#6B7378" text-anchor="middle" font-style="italic">Trois entrées, trois sorties : c'est tout ce qu'un programme échange avec celui qui le lance.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 69</b></div>
+<p class="rubrique">Le concept</p>
+<h1>La ligne de commande</h1>
+<p class="chapeau">La <b>ligne de commande</b> est une façon de lancer des programmes en tapant leur nom et leurs arguments, dans un <b>interpréteur</b> (shell) : cmd ou PowerShell sous Windows, bash sur un serveur Linux. Tout ce que tu y tapes peut s'écrire dans un fichier : c'est un <b>script</b>, qui refait la même chose à chaque fois, sans oubli.</p>
+<div class="meta">
+<span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>35</b> et <b>46</b></span>
+<span class="pastille">Exemples · <b>deployer.sh</b>, <b>demarrer_magpie.bat</b> (Magpie), <b>LotATests</b> (SnapSet)</span>
+</div>
+<div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+<svg viewbox="0 0 600 196" width="100%">
+<rect fill="#fff" height="64" rx="4" stroke="#A03A2C" stroke-width="1.2" width="160" x="220" y="60"></rect>
+<text fill="#A03A2C" font-size="9.4" font-weight="700" text-anchor="middle" x="300" y="86">un programme</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="middle" x="300" y="104">node, git, dotnet…</text>
+<text fill="#1565C0" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="22">arguments</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="16" y="35">import-exercise.mjs ex.json</text>
+<line stroke="#1565C0" stroke-width="1.2" x1="176" x2="216" y1="24" y2="70.66666666666667"></line><polygon fill="#1565C0" points="216,70.66666666666667 209.7,67.5 213.9,64.0"></polygon>
+<text fill="#7B1FA2" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="78">variables d'environnement</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="16" y="91">PATH, PORT, APPDATA…</text>
+<line stroke="#7B1FA2" stroke-width="1.2" x1="176" x2="216" y1="80" y2="80.0"></line><polygon fill="#7B1FA2" points="216,80.0 209.6,82.7 209.6,77.3"></polygon>
+<text fill="#1565C0" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="134">entrée standard (stdin)</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="16" y="147">ce qu'on lui envoie</text>
+<line stroke="#1565C0" stroke-width="1.2" x1="176" x2="216" y1="136" y2="89.33333333333333"></line><polygon fill="#1565C0" points="216,89.33333333333333 213.9,96.0 209.7,92.5"></polygon>
+<line stroke="#2E7D32" stroke-width="1.2" x1="384" x2="424" y1="70.66666666666667" y2="24"></line><polygon fill="#2E7D32" points="424,24 421.9,30.7 417.7,27.1"></polygon>
+<text fill="#2E7D32" font-size="8.4" font-weight="700" text-anchor="start" x="430" y="22">sortie standard (stdout)</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="430" y="35">les résultats</text>
+<line stroke="#E65100" stroke-width="1.2" x1="384" x2="424" y1="80.0" y2="80"></line><polygon fill="#E65100" points="424,80 417.6,82.7 417.6,77.3"></polygon>
+<text fill="#E65100" font-size="8.4" font-weight="700" text-anchor="start" x="430" y="78">sortie d'erreur (stderr)</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="430" y="91">les messages d'erreur</text>
+<line stroke="#C62828" stroke-width="1.2" x1="384" x2="424" y1="89.33333333333333" y2="136"></line><polygon fill="#C62828" points="424,136 417.7,132.9 421.9,129.3"></polygon>
+<text fill="#C62828" font-size="8.4" font-weight="700" text-anchor="start" x="430" y="134">code de sortie</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="430" y="147">0 = réussi, autre = échec</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="middle" x="300" y="186">Trois entrées, trois sorties : c'est tout ce qu'un programme échange avec celui qui le lance.</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Un programme reçoit des arguments, des variables d'environnement et une entrée ; il rend une sortie, des erreurs et un <b>code de sortie</b>. Le shell sert à les brancher entre eux.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Une chaîne de montage : chaque poste fait une seule chose, reçoit les pièces du précédent et passe les siennes au suivant, et lève un drapeau rouge s'il échoue. Le script, c'est la fiche qui dit dans quel ordre brancher les postes.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>lire et utiliser un code de sortie ;</li>
-        <li>séparer stdout et stderr ;</li>
-        <li>mettre les bons guillemets ;</li>
-        <li>lancer un programme depuis C#.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:5mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Un programme reçoit des arguments, des variables d'environnement et une entrée ; il rend une sortie, des erreurs et un <b>code de sortie</b>. Le shell sert à les brancher entre eux.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Une chaîne de montage : chaque poste fait une seule chose, reçoit les pièces du précédent et passe les siennes au suivant, et lève un drapeau rouge s'il échoue. Le script, c'est la fiche qui dit dans quel ordre brancher les postes.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>lire et utiliser un code de sortie ;</li>
+<li>séparer stdout et stderr ;</li>
+<li>mettre les bons guillemets ;</li>
+<li>lancer un programme depuis C#.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:5mm">
+<span class="titre">À retenir</span>
     Le code de sortie est la seule réponse qu'un script lit sans effort : <b>0</b> veut dire réussi, tout autre nombre veut dire échec. Un outil qui écrit « Erreur » mais sort avec 0 trompe chaque script qui l'appelle.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 69 · La ligne de commande</div>
+<div class="folio">1</div>
+<div class="pied">Cours 69 · La ligne de commande</div>
 </section>
-
 <!-- ============ PAGE 2 · LES INTERPRÉTEURS ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 69</b></div>
-  <p class="rubrique">Schéma 1 · Trois interpréteurs</p>
-  <h2>Mêmes idées, syntaxes différentes</h2>
-  <p style="max-width:165mm">Tes projets mélangent les trois : un <code>.bat</code> pour démarrer Magpie en local, un script <code>sh</code> pour le mettre en ligne, et PowerShell comme terminal par défaut de Windows. Les notions sont les mêmes ; seule l'écriture change.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="220" y="22" font-size="9" fill="#1565C0" text-anchor="middle" font-weight="700">cmd (.bat)</text>
-<text x="360" y="22" font-size="9" fill="#7B1FA2" text-anchor="middle" font-weight="700">PowerShell</text>
-<text x="500" y="22" font-size="9" fill="#2E7D32" text-anchor="middle" font-weight="700">sh, bash (.sh)</text>
-<rect x="16" y="34" width="568" height="28" rx="3" fill="#fff" stroke="#E2DACB"/>
-<text x="26" y="52" font-size="8.4" fill="#A03A2C" text-anchor="start" font-weight="700">variable</text>
-<text x="220" y="52" font-size="8.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.2px">%PORT%</text>
-<text x="360" y="52" font-size="8.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.2px">$env:PORT</text>
-<text x="500" y="52" font-size="8.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.2px">$PORT</text>
-<rect x="16" y="68" width="568" height="28" rx="3" fill="#fff" stroke="#E2DACB"/>
-<text x="26" y="86" font-size="8.4" fill="#A03A2C" text-anchor="start" font-weight="700">code de sortie</text>
-<text x="220" y="86" font-size="8.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.2px">%ERRORLEVEL%</text>
-<text x="360" y="86" font-size="8.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.2px">$LASTEXITCODE</text>
-<text x="500" y="86" font-size="8.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.2px">$?</text>
-<rect x="16" y="102" width="568" height="28" rx="3" fill="#fff" stroke="#E2DACB"/>
-<text x="26" y="120" font-size="8.4" fill="#A03A2C" text-anchor="start" font-weight="700">arrêt sur erreur</text>
-<text x="220" y="120" font-size="8.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.2px">if errorlevel 1 …</text>
-<text x="360" y="120" font-size="8.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.2px">$ErrorActionPreference</text>
-<text x="500" y="120" font-size="8.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.2px">set -e</text>
-<rect x="16" y="136" width="568" height="28" rx="3" fill="#fff" stroke="#E2DACB"/>
-<text x="26" y="154" font-size="8.4" fill="#A03A2C" text-anchor="start" font-weight="700">dossier du script</text>
-<text x="220" y="154" font-size="8.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.2px">%~dp0</text>
-<text x="360" y="154" font-size="8.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.2px">$PSScriptRoot</text>
-<text x="500" y="154" font-size="8.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.2px">$(dirname "$0")</text>
-<rect x="16" y="170" width="568" height="28" rx="3" fill="#fff" stroke="#E2DACB"/>
-<text x="26" y="188" font-size="8.4" fill="#A03A2C" text-anchor="start" font-weight="700">commentaire</text>
-<text x="220" y="188" font-size="8.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.2px">REM …</text>
-<text x="360" y="188" font-size="8.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.2px"># …</text>
-<text x="500" y="188" font-size="8.2" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.2px"># …</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 69</b></div>
+<p class="rubrique">Schéma 1 · Trois interpréteurs</p>
+<h2>Mêmes idées, syntaxes différentes</h2>
+<p style="max-width:165mm">Tes projets mélangent les trois : un <code>.bat</code> pour démarrer Magpie en local, un script <code>sh</code> pour le mettre en ligne, et PowerShell comme terminal par défaut de Windows. Les notions sont les mêmes ; seule l'écriture change.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#1565C0" font-size="9" font-weight="700" text-anchor="middle" x="220" y="22">cmd (.bat)</text>
+<text fill="#7B1FA2" font-size="9" font-weight="700" text-anchor="middle" x="360" y="22">PowerShell</text>
+<text fill="#2E7D32" font-size="9" font-weight="700" text-anchor="middle" x="500" y="22">sh, bash (.sh)</text>
+<rect fill="#fff" height="28" rx="3" stroke="#E2DACB" width="568" x="16" y="34"></rect>
+<text fill="#A03A2C" font-size="8.4" font-weight="700" text-anchor="start" x="26" y="52">variable</text>
+<text class="mono" fill="#2B2F33" font-size="8.2" style="font-size:8.2px" text-anchor="middle" x="220" y="52">%PORT%</text>
+<text class="mono" fill="#2B2F33" font-size="8.2" style="font-size:8.2px" text-anchor="middle" x="360" y="52">$env:PORT</text>
+<text class="mono" fill="#2B2F33" font-size="8.2" style="font-size:8.2px" text-anchor="middle" x="500" y="52">$PORT</text>
+<rect fill="#fff" height="28" rx="3" stroke="#E2DACB" width="568" x="16" y="68"></rect>
+<text fill="#A03A2C" font-size="8.4" font-weight="700" text-anchor="start" x="26" y="86">code de sortie</text>
+<text class="mono" fill="#2B2F33" font-size="8.2" style="font-size:8.2px" text-anchor="middle" x="220" y="86">%ERRORLEVEL%</text>
+<text class="mono" fill="#2B2F33" font-size="8.2" style="font-size:8.2px" text-anchor="middle" x="360" y="86">$LASTEXITCODE</text>
+<text class="mono" fill="#2B2F33" font-size="8.2" style="font-size:8.2px" text-anchor="middle" x="500" y="86">$?</text>
+<rect fill="#fff" height="28" rx="3" stroke="#E2DACB" width="568" x="16" y="102"></rect>
+<text fill="#A03A2C" font-size="8.4" font-weight="700" text-anchor="start" x="26" y="120">arrêt sur erreur</text>
+<text class="mono" fill="#2B2F33" font-size="8.2" style="font-size:8.2px" text-anchor="middle" x="220" y="120">if errorlevel 1 …</text>
+<text class="mono" fill="#2B2F33" font-size="8.2" style="font-size:8.2px" text-anchor="middle" x="360" y="120">$ErrorActionPreference</text>
+<text class="mono" fill="#2B2F33" font-size="8.2" style="font-size:8.2px" text-anchor="middle" x="500" y="120">set -e</text>
+<rect fill="#fff" height="28" rx="3" stroke="#E2DACB" width="568" x="16" y="136"></rect>
+<text fill="#A03A2C" font-size="8.4" font-weight="700" text-anchor="start" x="26" y="154">dossier du script</text>
+<text class="mono" fill="#2B2F33" font-size="8.2" style="font-size:8.2px" text-anchor="middle" x="220" y="154">%~dp0</text>
+<text class="mono" fill="#2B2F33" font-size="8.2" style="font-size:8.2px" text-anchor="middle" x="360" y="154">$PSScriptRoot</text>
+<text class="mono" fill="#2B2F33" font-size="8.2" style="font-size:8.2px" text-anchor="middle" x="500" y="154">$(dirname "$0")</text>
+<rect fill="#fff" height="28" rx="3" stroke="#E2DACB" width="568" x="16" y="170"></rect>
+<text fill="#A03A2C" font-size="8.4" font-weight="700" text-anchor="start" x="26" y="188">commentaire</text>
+<text class="mono" fill="#2B2F33" font-size="8.2" style="font-size:8.2px" text-anchor="middle" x="220" y="188">REM …</text>
+<text class="mono" fill="#2B2F33" font-size="8.2" style="font-size:8.2px" text-anchor="middle" x="360" y="188"># …</text>
+<text class="mono" fill="#2B2F33" font-size="8.2" style="font-size:8.2px" text-anchor="middle" x="500" y="188"># …</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · les trois</span>node script.mjs &amp;&amp; echo ok || echo échec   # &amp;&amp; si 0, || sinon
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · les trois</span>node script.mjs &amp;&amp; echo ok || echo échec   # &amp;&amp; si 0, || sinon
 where node            # cmd : où est le programme « node » ?
 Get-Command node      # PowerShell
 command -v node       # sh, bash</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Le PATH</h3>
-      <p>Quand tu tapes <code>node</code>, le shell cherche un programme de ce nom dans chaque dossier de la variable <code>PATH</code>, dans l'ordre. « Commande introuvable » veut presque toujours dire : installé, mais pas dans le PATH de ce terminal.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Le shebang</h3>
-      <p>La première ligne <code>#!/bin/sh</code> d'un script dit à Linux quel interpréteur l'exécute. Sous Windows, c'est l'extension qui décide : <code>.bat</code> pour cmd, <code>.ps1</code> pour PowerShell.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Le PATH</h3>
+<p>Quand tu tapes <code>node</code>, le shell cherche un programme de ce nom dans chaque dossier de la variable <code>PATH</code>, dans l'ordre. « Commande introuvable » veut presque toujours dire : installé, mais pas dans le PATH de ce terminal.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Le shebang</h3>
+<p>La première ligne <code>#!/bin/sh</code> d'un script dit à Linux quel interpréteur l'exécute. Sous Windows, c'est l'extension qui décide : <code>.bat</code> pour cmd, <code>.ps1</code> pour PowerShell.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Un script qui continue après une erreur. Par défaut, sh et cmd passent à la ligne suivante même si la précédente a échoué : on construit puis on déploie un build raté. <code>set -e</code> en sh arrête tout au premier code non nul.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 69 · La ligne de commande</div>
+<div class="folio">2</div>
+<div class="pied">Cours 69 · La ligne de commande</div>
 </section>
-
 <!-- ============ PAGE 3 · LES GUILLEMETS ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 69</b></div>
-  <p class="rubrique">Schéma 2 · Arguments et guillemets</p>
-  <h2>Ce que le programme reçoit vraiment</h2>
-  <p style="max-width:165mm">Avant de lancer le programme, le shell transforme la ligne : il remplace les variables, puis découpe aux espaces. Le programme reçoit une <b>liste</b> d'arguments, sans les guillemets. Les guillemets servent seulement à dire au shell où couper, et quoi remplacer.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#A03A2C" text-anchor="start" font-weight="700">Le shell découpe la ligne en arguments aux espaces, sauf entre guillemets</text>
-<text x="16" y="54" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px;white-space:pre">x="deux mots" ; printf '[%s]' $x</text>
-<line x1="286" y1="50" x2="318" y2="50" stroke="#6B7378" stroke-width="1.1"/><polygon points="318,50 311.6,52.7 311.6,47.3" fill="#6B7378"/>
-<rect x="326" y="38" width="38.8" height="22" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
-<text x="345.4" y="51.733333333333334" font-size="8.2" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.2px">deux</text>
-<rect x="372.8" y="38" width="38.8" height="22" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
-<text x="392.2" y="51.733333333333334" font-size="8.2" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.2px">mots</text>
-<text x="16" y="96" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px;white-space:pre">printf '[%s]' "$x"</text>
-<line x1="286" y1="92" x2="318" y2="92" stroke="#6B7378" stroke-width="1.1"/><polygon points="318,92 311.6,94.7 311.6,89.3" fill="#6B7378"/>
-<rect x="326" y="80" width="69.80000000000001" height="22" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="360.9" y="93.73333333333333" font-size="8.2" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.2px">deux mots</text>
-<text x="16" y="138" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px;white-space:pre">echo 'sq: $C'</text>
-<line x1="286" y1="134" x2="318" y2="134" stroke="#6B7378" stroke-width="1.1"/><polygon points="318,134 311.6,136.7 311.6,131.3" fill="#6B7378"/>
-<rect x="326" y="122" width="51.2" height="22" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
-<text x="351.6" y="135.73333333333332" font-size="8.2" fill="#7B1FA2" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.2px">sq: $C</text>
-<text x="16" y="180" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px;white-space:pre">echo "dq: $C"</text>
-<line x1="286" y1="176" x2="318" y2="176" stroke="#6B7378" stroke-width="1.1"/><polygon points="318,176 311.6,178.7 311.6,173.3" fill="#6B7378"/>
-<rect x="326" y="164" width="57.4" height="22" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="354.7" y="177.73333333333332" font-size="8.2" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.2px">dq: abc</text>
-<text x="16" y="206" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Mesuré dans bash, avec C=abc. Entre apostrophes : rien n'est remplacé ; entre guillemets : les variables le sont.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 69</b></div>
+<p class="rubrique">Schéma 2 · Arguments et guillemets</p>
+<h2>Ce que le programme reçoit vraiment</h2>
+<p style="max-width:165mm">Avant de lancer le programme, le shell transforme la ligne : il remplace les variables, puis découpe aux espaces. Le programme reçoit une <b>liste</b> d'arguments, sans les guillemets. Les guillemets servent seulement à dire au shell où couper, et quoi remplacer.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#A03A2C" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">Le shell découpe la ligne en arguments aux espaces, sauf entre guillemets</text>
+<text class="mono" fill="#2B2F33" font-size="8.4" style="font-size:8.4px;white-space:pre" text-anchor="start" x="16" y="54">x="deux mots" ; printf '[%s]' $x</text>
+<line stroke="#6B7378" stroke-width="1.1" x1="286" x2="318" y1="50" y2="50"></line><polygon fill="#6B7378" points="318,50 311.6,52.7 311.6,47.3"></polygon>
+<rect fill="#fff" height="22" rx="4" stroke="#C62828" stroke-width="1.2" width="38.8" x="326" y="38"></rect>
+<text class="mono" fill="#C62828" font-size="8.2" font-weight="700" style="font-size:8.2px" text-anchor="middle" x="345.4" y="51.733333333333334">deux</text>
+<rect fill="#fff" height="22" rx="4" stroke="#C62828" stroke-width="1.2" width="38.8" x="372.8" y="38"></rect>
+<text class="mono" fill="#C62828" font-size="8.2" font-weight="700" style="font-size:8.2px" text-anchor="middle" x="392.2" y="51.733333333333334">mots</text>
+<text class="mono" fill="#2B2F33" font-size="8.4" style="font-size:8.4px;white-space:pre" text-anchor="start" x="16" y="96">printf '[%s]' "$x"</text>
+<line stroke="#6B7378" stroke-width="1.1" x1="286" x2="318" y1="92" y2="92"></line><polygon fill="#6B7378" points="318,92 311.6,94.7 311.6,89.3"></polygon>
+<rect fill="#fff" height="22" rx="4" stroke="#2E7D32" stroke-width="1.2" width="69.80000000000001" x="326" y="80"></rect>
+<text class="mono" fill="#2E7D32" font-size="8.2" font-weight="700" style="font-size:8.2px" text-anchor="middle" x="360.9" y="93.73333333333333">deux mots</text>
+<text class="mono" fill="#2B2F33" font-size="8.4" style="font-size:8.4px;white-space:pre" text-anchor="start" x="16" y="138">echo 'sq: $C'</text>
+<line stroke="#6B7378" stroke-width="1.1" x1="286" x2="318" y1="134" y2="134"></line><polygon fill="#6B7378" points="318,134 311.6,136.7 311.6,131.3"></polygon>
+<rect fill="#fff" height="22" rx="4" stroke="#7B1FA2" stroke-width="1.2" width="51.2" x="326" y="122"></rect>
+<text class="mono" fill="#7B1FA2" font-size="8.2" font-weight="700" style="font-size:8.2px" text-anchor="middle" x="351.6" y="135.73333333333332">sq: $C</text>
+<text class="mono" fill="#2B2F33" font-size="8.4" style="font-size:8.4px;white-space:pre" text-anchor="start" x="16" y="180">echo "dq: $C"</text>
+<line stroke="#6B7378" stroke-width="1.1" x1="286" x2="318" y1="176" y2="176"></line><polygon fill="#6B7378" points="318,176 311.6,178.7 311.6,173.3"></polygon>
+<rect fill="#fff" height="22" rx="4" stroke="#2E7D32" stroke-width="1.2" width="57.4" x="326" y="164"></rect>
+<text class="mono" fill="#2E7D32" font-size="8.2" font-weight="700" style="font-size:8.2px" text-anchor="middle" x="354.7" y="177.73333333333332">dq: abc</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="16" y="206">Mesuré dans bash, avec C=abc. Entre apostrophes : rien n'est remplacé ; entre guillemets : les variables le sont.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Node et C#</span>const [, , chemin] = process.argv;   // [node, script, 1er argument, …]
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Node et C#</span>const [, , chemin] = process.argv;   // [node, script, 1er argument, …]
 static int Main(string[] args)       // args : déjà découpés, sans guillemets
   { …; return 0; }                   // le code de sortie
 node import-exercise.mjs "D:\Mes exercices\ex.json"   // un seul argument</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Les chemins avec espaces</h3>
-      <p>Sous Windows, les espaces sont partout : <code>Program Files</code>, <code>Mes exercices</code>. Tout chemin passé en argument se met entre guillemets, dans un script comme dans le code qui fabrique une ligne de commande.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Variables et injection</h3>
-      <p>Une variable non protégée se redécoupe, et ses <code>*</code> se développent en noms de fichiers. Une donnée venue d'ailleurs collée dans une ligne de commande, c'est l'injection du cours 64. On la passe en argument séparé, jamais en texte.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Les chemins avec espaces</h3>
+<p>Sous Windows, les espaces sont partout : <code>Program Files</code>, <code>Mes exercices</code>. Tout chemin passé en argument se met entre guillemets, dans un script comme dans le code qui fabrique une ligne de commande.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Variables et injection</h3>
+<p>Une variable non protégée se redécoupe, et ses <code>*</code> se développent en noms de fichiers. Une donnée venue d'ailleurs collée dans une ligne de commande, c'est l'injection du cours 64. On la passe en argument séparé, jamais en texte.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Croire que les guillemets arrivent au programme. <code>printf '[%s]' "$x"</code> reçoit <code>deux mots</code>, pas <code>"deux mots"</code>. Pour envoyer des guillemets à un autre shell (par ssh, par exemple), il faut deux niveaux : c'est ce que fait <code>deployer.sh</code>, page 5.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 69 · La ligne de commande</div>
+<div class="folio">3</div>
+<div class="pied">Cours 69 · La ligne de commande</div>
 </section>
-
 <!-- ============ PAGE 4 · TUYAUX ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 69</b></div>
-  <p class="rubrique">Schéma 3 · Tuyaux et redirections</p>
-  <h2>Brancher les programmes entre eux</h2>
-  <p style="max-width:165mm">Chaque programme a trois canaux standard. Le tuyau <code>|</code> relie la sortie de l'un à l'entrée de l'autre, sans fichier intermédiaire ; les redirections envoient un canal dans un fichier. La ligne de mise en ligne de Magpie (cours 35) en est l'exemple parfait.</p>
-
-  <svg viewBox="0 0 600 196" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="196" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#A03A2C" text-anchor="start" font-weight="700">Le tuyau | branche la sortie d'un programme sur l'entrée du suivant</text>
-<rect x="16" y="40" width="176" height="40" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
-<text x="104.0" y="62.86666666666667" font-size="8.6" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">git archive …</text>
-<text x="104" y="98" font-size="7.8" fill="#2B2F33" text-anchor="middle">fabrique une archive tar</text>
-<line x1="194" y1="60" x2="210" y2="60" stroke="#6B7378" stroke-width="1.4"/><polygon points="210,60 203.6,62.7 203.6,57.3" fill="#6B7378"/>
-<rect x="212" y="40" width="176" height="40" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
-<text x="300.0" y="62.86666666666667" font-size="8.6" fill="#7B1FA2" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">ssh o2switch</text>
-<text x="300" y="98" font-size="7.8" fill="#2B2F33" text-anchor="middle">transporte les octets</text>
-<line x1="390" y1="60" x2="406" y2="60" stroke="#6B7378" stroke-width="1.4"/><polygon points="406,60 399.6,62.7 399.6,57.3" fill="#6B7378"/>
-<rect x="408" y="40" width="176" height="40" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="496.0" y="62.86666666666667" font-size="8.6" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">tar -x</text>
-<text x="496" y="98" font-size="7.8" fill="#2B2F33" text-anchor="middle">déballe sur le serveur</text>
-<line x1="16" y1="114" x2="584" y2="114" stroke="#CFC6B8" stroke-dasharray="3 3"/>
-<text x="16" y="134" font-size="8.6" fill="#A03A2C" text-anchor="start" font-weight="700">Les redirections</text>
-<text x="16" y="152" font-size="8.6" fill="#7B1FA2" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">&gt; f</text>
-<text x="72" y="152" font-size="8" fill="#2B2F33" text-anchor="start">stdout dans un fichier (écrasé)</text>
-<text x="306" y="152" font-size="8.6" fill="#7B1FA2" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">&gt;&gt; f</text>
-<text x="362" y="152" font-size="8" fill="#2B2F33" text-anchor="start">stdout ajouté au fichier</text>
-<text x="16" y="172" font-size="8.6" fill="#7B1FA2" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">2&gt; f</text>
-<text x="72" y="172" font-size="8" fill="#2B2F33" text-anchor="start">stderr dans un fichier</text>
-<text x="306" y="172" font-size="8.6" fill="#7B1FA2" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">2&gt;&amp;1</text>
-<text x="362" y="172" font-size="8" fill="#2B2F33" text-anchor="start">stderr mêlé à stdout</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 69</b></div>
+<p class="rubrique">Schéma 3 · Tuyaux et redirections</p>
+<h2>Brancher les programmes entre eux</h2>
+<p style="max-width:165mm">Chaque programme a trois canaux standard. Le tuyau <code>|</code> relie la sortie de l'un à l'entrée de l'autre, sans fichier intermédiaire ; les redirections envoient un canal dans un fichier. La ligne de mise en ligne de Magpie (cours 35) en est l'exemple parfait.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 196" width="100%">
+<rect fill="#EFE9E1" height="196" width="600" x="0" y="0"></rect>
+<text fill="#A03A2C" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">Le tuyau | branche la sortie d'un programme sur l'entrée du suivant</text>
+<rect fill="#fff" height="40" rx="4" stroke="#1565C0" stroke-width="1.2" width="176" x="16" y="40"></rect>
+<text class="mono" fill="#1565C0" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="104.0" y="62.86666666666667">git archive …</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="middle" x="104" y="98">fabrique une archive tar</text>
+<line stroke="#6B7378" stroke-width="1.4" x1="194" x2="210" y1="60" y2="60"></line><polygon fill="#6B7378" points="210,60 203.6,62.7 203.6,57.3"></polygon>
+<rect fill="#fff" height="40" rx="4" stroke="#7B1FA2" stroke-width="1.2" width="176" x="212" y="40"></rect>
+<text class="mono" fill="#7B1FA2" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="300.0" y="62.86666666666667">ssh o2switch</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="middle" x="300" y="98">transporte les octets</text>
+<line stroke="#6B7378" stroke-width="1.4" x1="390" x2="406" y1="60" y2="60"></line><polygon fill="#6B7378" points="406,60 399.6,62.7 399.6,57.3"></polygon>
+<rect fill="#fff" height="40" rx="4" stroke="#2E7D32" stroke-width="1.2" width="176" x="408" y="40"></rect>
+<text class="mono" fill="#2E7D32" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="496.0" y="62.86666666666667">tar -x</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="middle" x="496" y="98">déballe sur le serveur</text>
+<line stroke="#CFC6B8" stroke-dasharray="3 3" x1="16" x2="584" y1="114" y2="114"></line>
+<text fill="#A03A2C" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="134">Les redirections</text>
+<text class="mono" fill="#7B1FA2" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="16" y="152">&gt; f</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="72" y="152">stdout dans un fichier (écrasé)</text>
+<text class="mono" fill="#7B1FA2" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="306" y="152">&gt;&gt; f</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="362" y="152">stdout ajouté au fichier</text>
+<text class="mono" fill="#7B1FA2" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="16" y="172">2&gt; f</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="72" y="172">stderr dans un fichier</text>
+<text class="mono" fill="#7B1FA2" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="306" y="172">2&gt;&amp;1</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="362" y="172">stderr mêlé à stdout</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · sh</span>npm run build &gt; build.log 2&gt;&amp;1     # tout dans le journal
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · sh</span>npm run build &gt; build.log 2&gt;&amp;1     # tout dans le journal
 node outil.mjs 2&gt; erreurs.txt          # seulement les erreurs
 grep -c "error" build.log              # compter les lignes qui contiennent "error"
 echo $?                                # le code de la dernière commande</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Pourquoi deux sorties</h3>
-      <p>stdout porte le résultat, que l'on peut rediriger vers un fichier ou un autre programme ; stderr porte les messages pour l'humain, qui restent à l'écran. En Node : <code>console.log</code> écrit sur stdout, <code>console.error</code> sur stderr.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Lancer depuis C#</h3>
-      <p><code>Process.Start</code> lance un programme ; avec <code>RedirectStandardOutput</code>, le code lit ses sorties ; <code>ExitCode</code> donne son code. C'est ainsi qu'un test de SnapSet exécute le générateur Node du schéma.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Pourquoi deux sorties</h3>
+<p>stdout porte le résultat, que l'on peut rediriger vers un fichier ou un autre programme ; stderr porte les messages pour l'humain, qui restent à l'écran. En Node : <code>console.log</code> écrit sur stdout, <code>console.error</code> sur stderr.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Lancer depuis C#</h3>
+<p><code>Process.Start</code> lance un programme ; avec <code>RedirectStandardOutput</code>, le code lit ses sorties ; <code>ExitCode</code> donne son code. C'est ainsi qu'un test de SnapSet exécute le générateur Node du schéma.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     L'ordre de <code>2&gt;&amp;1</code> compte. <code>cmd &gt; f 2&gt;&amp;1</code> envoie les deux canaux dans <code>f</code> ; <code>cmd 2&gt;&amp;1 &gt; f</code> envoie stderr à l'écran, là où stdout pointait avant la redirection. Les redirections se lisent de gauche à droite.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 69 · La ligne de commande</div>
+<div class="folio">4</div>
+<div class="pied">Cours 69 · La ligne de commande</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 69</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>Trois scripts, un test qui lance Node</h2>
-  <p style="max-width:165mm">Chaque fichier illustre une notion : le dossier du script, l'arrêt sur erreur, les deux niveaux de guillemets, le code de sortie, et la lecture des sorties d'un programme lancé depuis C#.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 69</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>Trois scripts, un test qui lance Node</h2>
+<p style="max-width:165mm">Chaque fichier illustre une notion : le dossier du script, l'arrêt sur erreur, les deux niveaux de guillemets, le code de sortie, et la lecture des sorties d'un programme lancé depuis C#.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">magpie/web/demarrer_magpie.bat</span></div>
 <div class="l k1"><span class="n">8</span>cd /d <span class="st">"%~dp0"</span><span class="rep r1">1</span></div>
@@ -280,136 +253,54 @@ echo $?                                # le code de la dernière commande</div>
 <div class="l k4"><span class="n">48</span><span class="kw">var</span> sortie = p.StandardOutput.ReadToEnd() + …Error.ReadToEnd();</div>
 <div class="l k4"><span class="n">50</span>Assert.True(p.ExitCode == 0, …);</div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>Partir du dossier du script</b>%~dp0, lecteur compris (/d) ; une fenêtre par serveur.</li>
-      <li><span class="rep r2">2</span><b>Deux shells</b>En guillemets doubles, $COMMIT est remplacé ICI, avant l'envoi ; les apostrophes partent telles quelles.</li>
-      <li><span class="rep r3">3</span><b>Un outil bien élevé</b>Erreur sur stderr, code 1.</li>
-      <li><span class="rep r4">4</span><b>Lire et vérifier</b>Sorties captées, code testé.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À surveiller · lire deux tuyaux l'un après l'autre (LotATests.cs:48)</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>Partir du dossier du script</b>%~dp0, lecteur compris (/d) ; une fenêtre par serveur.</li>
+<li><span class="rep r2">2</span><b>Deux shells</b>En guillemets doubles, $COMMIT est remplacé ICI, avant l'envoi ; les apostrophes partent telles quelles.</li>
+<li><span class="rep r3">3</span><b>Un outil bien élevé</b>Erreur sur stderr, code 1.</li>
+<li><span class="rep r4">4</span><b>Lire et vérifier</b>Sorties captées, code testé.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À surveiller · lire deux tuyaux l'un après l'autre (LotATests.cs:48)</span>
     Le test lit toute la sortie standard, puis toute la sortie d'erreur. Si le programme écrivait beaucoup sur stderr, son tuyau se remplirait : il attendrait qu'on le lise, pendant que le test attend la fin de stdout. C'est l'interblocage du cours 67. La documentation de .NET met en garde contre ce cas ; ici le générateur écrit peu, donc rien ne bloque. Lire l'un des deux en asynchrone (<code>ReadToEndAsync</code>) écarterait le risque.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 69 · La ligne de commande</div>
+<div class="folio">5</div>
+<div class="pied">Cours 69 · La ligne de commande</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 69</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 69</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">Un code de sortie 0 signifie…</div><ul>
-      <li><span>A</span>échec</li><li><span>B</span>premier essai</li><li><span>C</span>réussi</li><li><span>D</span>aucune sortie</li></ul></div>
 
-    <div class="q"><div class="enonce">Les messages d'erreur vont de préférence sur…</div><ul>
-      <li><span>A</span>stderr</li><li><span>B</span>un fichier .log toujours</li><li><span>C</span>stdin</li><li><span>D</span>stdout</li></ul></div>
 
-    <div class="q"><div class="enonce">« Commande introuvable », le plus souvent…</div><ul>
-      <li><span>A</span>le programme n'est pas dans le PATH</li><li><span>B</span>le disque est plein</li><li><span>C</span>le code est faux</li><li><span>D</span>le réseau</li></ul></div>
 
-    <div class="q"><div class="enonce"><code>set -e</code> dans un script sh…</div><ul>
-      <li><span>A</span>affiche les erreurs</li><li><span>B</span>ignore les erreurs</li><li><span>C</span>arrête au premier échec</li><li><span>D</span>exporte les variables</li></ul></div>
-
-    <div class="q"><div class="enonce">En bash, <code>'$C'</code> entre apostrophes donne…</div><ul>
-      <li><span>A</span>une erreur</li><li><span>B</span>la valeur de C</li><li><span>C</span>rien</li><li><span>D</span>$C tel quel</li></ul></div>
-
-    <div class="q"><div class="enonce">Le programme reçoit-il les guillemets ?</div><ul>
-      <li><span>A</span>oui, toujours</li><li><span>B</span>seulement sous Windows</li><li><span>C</span>non, le shell les retire</li><li><span>D</span>seulement les doubles</li></ul></div>
-
-    <div class="q"><div class="enonce"><code>a | b</code> signifie…</div><ul>
-      <li><span>A</span>a puis b sans lien</li><li><span>B</span>a ou b</li><li><span>C</span>b avant a</li><li><span>D</span>la sortie de a devient l'entrée de b</li></ul></div>
-
-    <div class="q"><div class="enonce">Pour tout capturer dans un journal…</div><ul>
-      <li><span>A</span>cmd 2&gt;&amp;1 &gt; f</li><li><span>B</span>cmd &gt; f 2&gt;&amp;1</li><li><span>C</span>cmd | f</li><li><span>D</span>cmd &lt; f</li></ul></div>
-
-    <div class="q"><div class="enonce"><code>%~dp0</code> dans un .bat désigne…</div><ul>
-      <li><span>A</span>le PATH</li><li><span>B</span>le dossier du script</li><li><span>C</span>le premier argument</li><li><span>D</span>le dossier courant</li></ul></div>
-
-    <div class="q"><div class="enonce">Dans deployer.sh, <code>$COMMIT</code> à la ligne 31 est remplacé…</div><ul>
-      <li><span>A</span>par git</li><li><span>B</span>jamais</li><li><span>C</span>sur le serveur</li><li><span>D</span>sur ton poste, avant l'envoi</li></ul></div>
-
-    <div class="q"><div class="enonce">Un outil Node bien élevé, en cas d'échec : <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>process.exit(1)</li><li><span>B</span>process.exit(0)</li><li><span>C</span>console.error</li><li><span>D</span>un message clair</li></ul></div>
-
-    <div class="q"><div class="enonce">Lire stdout puis stderr en entier risque…</div><ul>
-      <li><span>A</span>un interblocage si stderr déborde</li><li><span>B</span>rien</li><li><span>C</span>une injection</li><li><span>D</span>de perdre stdout</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 69 · La ligne de commande</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">cd /d "%~dp0"</td><td>partir du dossier du .bat</td><td>demarrer_magpie.bat:8</td></tr>
+<tr><td class="c">set -e</td><td>arrêter au premier échec</td><td>deployer.sh:14</td></tr>
+<tr><td class="c">"${1:-HEAD}"</td><td>1er argument, ou HEAD par défaut</td><td>deployer.sh:16</td></tr>
+<tr><td class="c">a | b</td><td>brancher deux programmes</td><td>deployer.sh:21</td></tr>
+<tr><td class="c">console.error + process.exit(1)</td><td>signaler un échec</td><td>import-exercise.mjs:25–26</td></tr>
+<tr><td class="c">Process.Start + ExitCode</td><td>lancer et vérifier depuis C#</td><td>LotATests.cs:40–50</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Shell</dt><dd>Le programme qui lit tes commandes et lance les autres programmes.</dd>
+<dt>Code de sortie</dt><dd>Le nombre rendu par un programme qui se termine : 0 pour réussi.</dd>
+<dt>stdout, stderr</dt><dd>La sortie des résultats et la sortie des messages d'erreur.</dd>
+<dt>PATH</dt><dd>La liste des dossiers où le shell cherche les programmes.</dd>
+<dt>Tuyau</dt><dd>Le lien | qui envoie la sortie d'un programme à l'entrée du suivant.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 72</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 69 · La ligne de commande</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9A</b> · La machine</span><b>Cours 69</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · C.</b> Tout autre nombre est un échec.</div>
-    <div><b>02 · A.</b> stdout reste au résultat.</div>
-    <div><b>03 · A.</b> Le shell cherche dans le PATH.</div>
-    <div><b>04 · C.</b> deployer.sh:14.</div>
-    <div><b>05 · D.</b> Rien n'est remplacé.</div>
-    <div><b>06 · C.</b> Ils guident seulement le découpage.</div>
-    <div><b>07 · D.</b> Le tuyau.</div>
-    <div><b>08 · B.</b> De gauche à droite.</div>
-    <div><b>09 · B.</b> demarrer_magpie.bat:8.</div>
-    <div><b>10 · D.</b> Guillemets doubles extérieurs.</div>
-    <div><b>11 · A, C et D.</b> import-exercise.mjs:25–26.</div>
-    <div><b>12 · A.</b> LotATests.cs:48.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 72, « Les dates, l'heure et les fuseaux ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">cd /d "%~dp0"</td><td>partir du dossier du .bat</td><td>demarrer_magpie.bat:8</td></tr>
-      <tr><td class="c">set -e</td><td>arrêter au premier échec</td><td>deployer.sh:14</td></tr>
-      <tr><td class="c">"${1:-HEAD}"</td><td>1er argument, ou HEAD par défaut</td><td>deployer.sh:16</td></tr>
-      <tr><td class="c">a | b</td><td>brancher deux programmes</td><td>deployer.sh:21</td></tr>
-      <tr><td class="c">console.error + process.exit(1)</td><td>signaler un échec</td><td>import-exercise.mjs:25–26</td></tr>
-      <tr><td class="c">Process.Start + ExitCode</td><td>lancer et vérifier depuis C#</td><td>LotATests.cs:40–50</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Shell</dt><dd>Le programme qui lit tes commandes et lance les autres programmes.</dd>
-    <dt>Code de sortie</dt><dd>Le nombre rendu par un programme qui se termine : 0 pour réussi.</dd>
-    <dt>stdout, stderr</dt><dd>La sortie des résultats et la sortie des messages d'erreur.</dd>
-    <dt>PATH</dt><dd>La liste des dossiers où le shell cherche les programmes.</dd>
-    <dt>Tuyau</dt><dd>Le lien | qui envoie la sortie d'un programme à l'entrée du suivant.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 72</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 69 · La ligne de commande</div>
-</section>
-
 </body>
 </html>

@@ -1,263 +1,236 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>112 · La couverture</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-11">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 112</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>La couverture</h1>
-  <p class="chapeau">Pendant que les tests tournent, l'outil note chaque ligne et chaque branche du programme qui s'exécute. Le pourcentage obtenu, la <b>couverture</b>, est le chiffre le plus cité sur les tests et l'un des plus mal lus. Ce cours le mesure sur Magpie, puis regarde ce qu'il cache.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>109</b></span>
-    <span class="pastille">Exemples · <b>Magpie</b> web, <b>SnapSet</b></span>
-  </div>
-
-  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
-    <svg viewBox="0 0 600 214" width="100%">
-<text x="10" y="16" font-size="8.2" fill="#4F46B8" text-anchor="start" font-weight="700">node --test --experimental-test-coverage sur Magpie web (copie, Node 22.22) : lignes exécutées par fichier</text>
-<text x="10" y="40" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">apercu.mjs</text>
-<rect x="190" y="30" width="243" height="13" fill="#fff" stroke="#CFC6B8"/>
-<rect x="190" y="30" width="234" height="13" fill="#2E7D32"/>
-<text x="439.0" y="40" font-size="7.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">260/270  96,3 %</text>
-<text x="10" y="59" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">validation.mjs</text>
-<rect x="190" y="49" width="139" height="13" fill="#fff" stroke="#CFC6B8"/>
-<rect x="190" y="49" width="129" height="13" fill="#2E7D32"/>
-<text x="334.6" y="59" font-size="7.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">143/154  92,9 %</text>
-<text x="10" y="78" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">serializer/xml-builder.mjs</text>
-<rect x="190" y="68" width="104" height="13" fill="#fff" stroke="#CFC6B8"/>
-<rect x="190" y="68" width="100" height="13" fill="#2E7D32"/>
-<text x="299.5" y="78" font-size="7.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">111/115  96,5 %</text>
-<text x="10" y="97" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">computeOutputs.mjs</text>
-<rect x="190" y="87" width="57" height="13" fill="#fff" stroke="#CFC6B8"/>
-<rect x="190" y="87" width="57" height="13" fill="#2E7D32"/>
-<text x="252.7" y="97" font-size="7.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">63/63  100,0 %</text>
-<text x="10" y="116" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">answerMarker.js</text>
-<rect x="190" y="106" width="32" height="13" fill="#fff" stroke="#CFC6B8"/>
-<rect x="190" y="106" width="32" height="13" fill="#2E7D32"/>
-<text x="228.4" y="116" font-size="7.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">36/36  100,0 %</text>
-<text x="10" y="135" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">data/catalogSample.js</text>
-<rect x="190" y="125" width="32" height="13" fill="#fff" stroke="#CFC6B8"/>
-<rect x="190" y="125" width="32" height="13" fill="#2E7D32"/>
-<text x="227.5" y="135" font-size="7.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">35/35  100,0 %</text>
-<text x="10" y="154" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">admin/libraryCheck.js</text>
-<rect x="190" y="144" width="15" height="13" fill="#fff" stroke="#CFC6B8"/>
-<rect x="190" y="144" width="15" height="13" fill="#2E7D32"/>
-<text x="211.3" y="154" font-size="7.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">17/17  100,0 %</text>
-<text x="10" y="173" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">serializer/build-graph.mjs</text>
-<rect x="190" y="163" width="280" height="13" fill="#fff" stroke="#CFC6B8"/>
-<rect x="190" y="163" width="171" height="13" fill="#E65100"/>
-<text x="475.90000000000003" y="173" font-size="7.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">190/311  61,1 %</text>
-<text x="10" y="192" font-size="7.8" fill="#2B2F33" text-anchor="start">Vert : plus de 90 %. build-graph.mjs n'a que 61 % de ses lignes exécutées : la moitié du sérialiseur n'est jamais lancée.</text>
-<text x="10" y="207" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Barre blanche : la taille du fichier ; barre pleine : les lignes passées au moins une fois.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 112</b></div>
+<p class="rubrique">Le concept</p>
+<h1>La couverture</h1>
+<p class="chapeau">Pendant que les tests tournent, l'outil note chaque ligne et chaque branche du programme qui s'exécute. Le pourcentage obtenu, la <b>couverture</b>, est le chiffre le plus cité sur les tests et l'un des plus mal lus. Ce cours le mesure sur Magpie, puis regarde ce qu'il cache.</p>
+<div class="meta">
+<span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>109</b></span>
+<span class="pastille">Exemples · <b>Magpie</b> web, <b>SnapSet</b></span>
+</div>
+<div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+<svg viewbox="0 0 600 214" width="100%">
+<text fill="#4F46B8" font-size="8.2" font-weight="700" text-anchor="start" x="10" y="16">node --test --experimental-test-coverage sur Magpie web (copie, Node 22.22) : lignes exécutées par fichier</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="10" y="40">apercu.mjs</text>
+<rect fill="#fff" height="13" stroke="#CFC6B8" width="243" x="190" y="30"></rect>
+<rect fill="#2E7D32" height="13" width="234" x="190" y="30"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.4" font-weight="700" style="font-size:7.4px" text-anchor="start" x="439.0" y="40">260/270  96,3 %</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="10" y="59">validation.mjs</text>
+<rect fill="#fff" height="13" stroke="#CFC6B8" width="139" x="190" y="49"></rect>
+<rect fill="#2E7D32" height="13" width="129" x="190" y="49"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.4" font-weight="700" style="font-size:7.4px" text-anchor="start" x="334.6" y="59">143/154  92,9 %</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="10" y="78">serializer/xml-builder.mjs</text>
+<rect fill="#fff" height="13" stroke="#CFC6B8" width="104" x="190" y="68"></rect>
+<rect fill="#2E7D32" height="13" width="100" x="190" y="68"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.4" font-weight="700" style="font-size:7.4px" text-anchor="start" x="299.5" y="78">111/115  96,5 %</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="10" y="97">computeOutputs.mjs</text>
+<rect fill="#fff" height="13" stroke="#CFC6B8" width="57" x="190" y="87"></rect>
+<rect fill="#2E7D32" height="13" width="57" x="190" y="87"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.4" font-weight="700" style="font-size:7.4px" text-anchor="start" x="252.7" y="97">63/63  100,0 %</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="10" y="116">answerMarker.js</text>
+<rect fill="#fff" height="13" stroke="#CFC6B8" width="32" x="190" y="106"></rect>
+<rect fill="#2E7D32" height="13" width="32" x="190" y="106"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.4" font-weight="700" style="font-size:7.4px" text-anchor="start" x="228.4" y="116">36/36  100,0 %</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="10" y="135">data/catalogSample.js</text>
+<rect fill="#fff" height="13" stroke="#CFC6B8" width="32" x="190" y="125"></rect>
+<rect fill="#2E7D32" height="13" width="32" x="190" y="125"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.4" font-weight="700" style="font-size:7.4px" text-anchor="start" x="227.5" y="135">35/35  100,0 %</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="10" y="154">admin/libraryCheck.js</text>
+<rect fill="#fff" height="13" stroke="#CFC6B8" width="15" x="190" y="144"></rect>
+<rect fill="#2E7D32" height="13" width="15" x="190" y="144"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.4" font-weight="700" style="font-size:7.4px" text-anchor="start" x="211.3" y="154">17/17  100,0 %</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="10" y="173">serializer/build-graph.mjs</text>
+<rect fill="#fff" height="13" stroke="#CFC6B8" width="280" x="190" y="163"></rect>
+<rect fill="#E65100" height="13" width="171" x="190" y="163"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.4" font-weight="700" style="font-size:7.4px" text-anchor="start" x="475.90000000000003" y="173">190/311  61,1 %</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="10" y="192">Vert : plus de 90 %. build-graph.mjs n'a que 61 % de ses lignes exécutées : la moitié du sérialiseur n'est jamais lancée.</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="10" y="207">Barre blanche : la taille du fichier ; barre pleine : les lignes passées au moins une fois.</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>La couverture montre le code que les tests n'ont jamais traversé ; elle ne prouve pas que le code traversé a été vérifié.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Le relevé GPS d'un gardien de nuit. Il dit quelles allées ont été parcourues, pas si les portes ont été essayées. Une allée jamais parcourue est sûrement mal gardée ; une allée parcourue ne l'est pas forcément bien.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>lire un rapport de couverture ;</li>
-        <li>distinguer lignes et branches ;</li>
-        <li>vérifier le dénominateur ;</li>
-        <li>rendre la logique testable.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>La couverture montre le code que les tests n'ont jamais traversé ; elle ne prouve pas que le code traversé a été vérifié.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Le relevé GPS d'un gardien de nuit. Il dit quelles allées ont été parcourues, pas si les portes ont été essayées. Une allée jamais parcourue est sûrement mal gardée ; une allée parcourue ne l'est pas forcément bien.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>lire un rapport de couverture ;</li>
+<li>distinguer lignes et branches ;</li>
+<li>vérifier le dénominateur ;</li>
+<li>rendre la logique testable.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À retenir</span>
     Une couverture basse est une information sûre : ce code n'est pas testé. Une couverture haute n'est qu'un indice. On s'en sert pour trouver les trous, jamais comme objectif à atteindre.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 112 · La couverture</div>
+<div class="folio">1</div>
+<div class="pied">Cours 112 · La couverture</div>
 </section>
-
 <!-- ============ PAGE 2 · LE DÉNOMINATEUR ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 112</b></div>
-  <p class="rubrique">Schéma 1 · Le dénominateur</p>
-  <h2>88 % de quoi ?</h2>
-  <p style="max-width:165mm">Le rapport de Node ne connaît que les fichiers que les tests ont chargés. Un fichier jamais importé n'y figure pas du tout, ni à 0 %, ni ailleurs. Et par défaut, il compte aussi les fichiers de test, qui s'exécutent évidemment à 100 %.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">Le même rapport, trois pourcentages : tout dépend de ce qu'on met au dénominateur (mesuré)</text>
-<text x="16" y="48" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700">« all files » du rapport</text>
-<text x="16" y="62" font-size="8" fill="#6B7378" text-anchor="start" class="mono" style="font-size:8px">1 145 / 1 291</text>
-<rect x="200" y="36" width="300" height="20" fill="#fff" stroke="#CFC6B8"/>
-<rect x="200" y="36" width="266" height="20" fill="#E65100"/>
-<text x="508" y="51" font-size="9.4" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:9.4px">88,7 %</text>
-<text x="200" y="70" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">14 fichiers chargés, dont les 6 fichiers de test eux-mêmes</text>
-<text x="16" y="96" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700">code chargé, sans les tests</text>
-<text x="16" y="110" font-size="8" fill="#6B7378" text-anchor="start" class="mono" style="font-size:8px">855 / 1 001</text>
-<rect x="200" y="84" width="300" height="20" fill="#fff" stroke="#CFC6B8"/>
-<rect x="200" y="84" width="256" height="20" fill="#E65100"/>
-<text x="508" y="99" font-size="9.4" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:9.4px">85,4 %</text>
-<text x="200" y="118" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">les 8 fichiers que les tests importent</text>
-<text x="16" y="144" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700">tout le code web</text>
-<text x="16" y="158" font-size="8" fill="#6B7378" text-anchor="start" class="mono" style="font-size:8px">855 / 5 939</text>
-<rect x="200" y="132" width="300" height="20" fill="#fff" stroke="#CFC6B8"/>
-<rect x="200" y="132" width="43" height="20" fill="#C62828"/>
-<text x="508" y="147" font-size="9.4" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:9.4px">14,4 %</text>
-<text x="200" y="166" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">45 fichiers : 37 ne sont jamais chargés, donc absents du rapport</text>
-<text x="16" y="196" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Parmi les absents : compute-proxy.mjs (748 lignes), graphEditor.jsx (495), nodeEditors.jsx (335), importGhx.js (317).</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 112</b></div>
+<p class="rubrique">Schéma 1 · Le dénominateur</p>
+<h2>88 % de quoi ?</h2>
+<p style="max-width:165mm">Le rapport de Node ne connaît que les fichiers que les tests ont chargés. Un fichier jamais importé n'y figure pas du tout, ni à 0 %, ni ailleurs. Et par défaut, il compte aussi les fichiers de test, qui s'exécutent évidemment à 100 %.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">Le même rapport, trois pourcentages : tout dépend de ce qu'on met au dénominateur (mesuré)</text>
+<text fill="#2B2F33" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="48">« all files » du rapport</text>
+<text class="mono" fill="#6B7378" font-size="8" style="font-size:8px" text-anchor="start" x="16" y="62">1 145 / 1 291</text>
+<rect fill="#fff" height="20" stroke="#CFC6B8" width="300" x="200" y="36"></rect>
+<rect fill="#E65100" height="20" width="266" x="200" y="36"></rect>
+<text class="mono" fill="#E65100" font-size="9.4" font-weight="700" style="font-size:9.4px" text-anchor="start" x="508" y="51">88,7 %</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="200" y="70">14 fichiers chargés, dont les 6 fichiers de test eux-mêmes</text>
+<text fill="#2B2F33" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="96">code chargé, sans les tests</text>
+<text class="mono" fill="#6B7378" font-size="8" style="font-size:8px" text-anchor="start" x="16" y="110">855 / 1 001</text>
+<rect fill="#fff" height="20" stroke="#CFC6B8" width="300" x="200" y="84"></rect>
+<rect fill="#E65100" height="20" width="256" x="200" y="84"></rect>
+<text class="mono" fill="#E65100" font-size="9.4" font-weight="700" style="font-size:9.4px" text-anchor="start" x="508" y="99">85,4 %</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="200" y="118">les 8 fichiers que les tests importent</text>
+<text fill="#2B2F33" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="144">tout le code web</text>
+<text class="mono" fill="#6B7378" font-size="8" style="font-size:8px" text-anchor="start" x="16" y="158">855 / 5 939</text>
+<rect fill="#fff" height="20" stroke="#CFC6B8" width="300" x="200" y="132"></rect>
+<rect fill="#C62828" height="20" width="43" x="200" y="132"></rect>
+<text class="mono" fill="#C62828" font-size="9.4" font-weight="700" style="font-size:9.4px" text-anchor="start" x="508" y="147">14,4 %</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="200" y="166">45 fichiers : 37 ne sont jamais chargés, donc absents du rapport</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="196">Parmi les absents : compute-proxy.mjs (748 lignes), graphEditor.jsx (495), nodeEditors.jsx (335), importGhx.js (317).</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Node 22, un rapport utilisable</span>node --test --experimental-test-coverage \
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Node 22, un rapport utilisable</span>node --test --experimental-test-coverage \
      --test-coverage-exclude="test/**" \
      --test-reporter=lcov --test-reporter-destination=lcov.info "test/*.test.mjs"
 # puis comparer la liste des fichiers du rapport à celle du dépôt</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Le format lcov</h3>
-      <p>Une ligne <code>SF:</code> par fichier, <code>LF:</code> lignes trouvées, <code>LH:</code> lignes passées. C'est le format que lisent les éditeurs pour colorer les lignes, et celui qui a servi aux comptes de cette page.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Inclure les absents</h3>
-      <p>c8 ou nyc avec <code>--all</code>, Coverlet en .NET : ces outils listent aussi les fichiers jamais chargés, à 0 %. Sans cette option, le chiffre ne parle que du code que les tests connaissent déjà.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Le format lcov</h3>
+<p>Une ligne <code>SF:</code> par fichier, <code>LF:</code> lignes trouvées, <code>LH:</code> lignes passées. C'est le format que lisent les éditeurs pour colorer les lignes, et celui qui a servi aux comptes de cette page.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Inclure les absents</h3>
+<p>c8 ou nyc avec <code>--all</code>, Coverlet en .NET : ces outils listent aussi les fichiers jamais chargés, à 0 %. Sans cette option, le chiffre ne parle que du code que les tests connaissent déjà.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Annoncer le chiffre « all files » du rapport. Ici, 88,7 % décrit 14 fichiers sur plus de 50, dont 6 sont les tests eux-mêmes. Rapporté à tout le code web, la même mesure donne 14,4 %.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 112 · La couverture</div>
+<div class="folio">2</div>
+<div class="pied">Cours 112 · La couverture</div>
 </section>
-
 <!-- ============ PAGE 3 · EXÉCUTÉ N'EST PAS VÉRIFIÉ ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 112</b></div>
-  <p class="rubrique">Schéma 2 · Lignes, branches, mutants</p>
-  <h2>Exécuté n'est pas vérifié</h2>
-  <p style="max-width:165mm">Trois mesures du même fichier, de la plus indulgente à la plus exigeante. La couverture de lignes compte les lignes traversées ; celle des branches, les chemins pris à chaque décision ; le score de mutation, les défauts que les tests remarquent (cours 109).</p>
-
-  <svg viewBox="0 0 600 204" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="204" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">validation.mjs : couverture et mutants, mesurés sur la même copie, avec les mêmes 7 tests</text>
-<text x="16" y="52" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700">lignes exécutées</text>
-<rect x="230" y="38" width="280" height="20" fill="#fff" stroke="#CFC6B8"/>
-<rect x="230" y="38" width="260" height="20" fill="#2E7D32"/>
-<text x="518" y="53" font-size="9" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">92,86 %</text>
-<text x="16" y="82" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700">branches exécutées</text>
-<rect x="230" y="68" width="280" height="20" fill="#fff" stroke="#CFC6B8"/>
-<rect x="230" y="68" width="222" height="20" fill="#E65100"/>
-<text x="518" y="83" font-size="9" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">79,25 %</text>
-<text x="16" y="112" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700">mutants tués (non équivalents)</text>
-<rect x="230" y="98" width="280" height="20" fill="#fff" stroke="#CFC6B8"/>
-<rect x="230" y="98" width="206" height="20" fill="#E65100"/>
-<text x="518" y="113" font-size="9" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">73,68 %</text>
-<text x="16" y="146" font-size="7.8" fill="#2B2F33" text-anchor="start">Une branche est un chemin : le « si » et le « sinon » d'un if. Les lignes 49, 67, 89 et 92 ne sont jamais prises.</text>
-<text x="16" y="162" font-size="7.8" fill="#2B2F33" text-anchor="start">Les lignes 33 et 116 sont exécutées à chaque test, et leur Math.abs peut disparaître sans qu'un test le voie.</text>
-<text x="16" y="184" font-size="8.4" fill="#4F46B8" text-anchor="start" font-weight="700">La couverture dit ce qui n'est pas testé. Elle ne dit pas que le reste l'est.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 112</b></div>
+<p class="rubrique">Schéma 2 · Lignes, branches, mutants</p>
+<h2>Exécuté n'est pas vérifié</h2>
+<p style="max-width:165mm">Trois mesures du même fichier, de la plus indulgente à la plus exigeante. La couverture de lignes compte les lignes traversées ; celle des branches, les chemins pris à chaque décision ; le score de mutation, les défauts que les tests remarquent (cours 109).</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 204" width="100%">
+<rect fill="#EFE9E1" height="204" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">validation.mjs : couverture et mutants, mesurés sur la même copie, avec les mêmes 7 tests</text>
+<text fill="#2B2F33" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="52">lignes exécutées</text>
+<rect fill="#fff" height="20" stroke="#CFC6B8" width="280" x="230" y="38"></rect>
+<rect fill="#2E7D32" height="20" width="260" x="230" y="38"></rect>
+<text class="mono" fill="#2E7D32" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="518" y="53">92,86 %</text>
+<text fill="#2B2F33" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="82">branches exécutées</text>
+<rect fill="#fff" height="20" stroke="#CFC6B8" width="280" x="230" y="68"></rect>
+<rect fill="#E65100" height="20" width="222" x="230" y="68"></rect>
+<text class="mono" fill="#E65100" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="518" y="83">79,25 %</text>
+<text fill="#2B2F33" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="112">mutants tués (non équivalents)</text>
+<rect fill="#fff" height="20" stroke="#CFC6B8" width="280" x="230" y="98"></rect>
+<rect fill="#E65100" height="20" width="206" x="230" y="98"></rect>
+<text class="mono" fill="#E65100" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="518" y="113">73,68 %</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="16" y="146">Une branche est un chemin : le « si » et le « sinon » d'un if. Les lignes 49, 67, 89 et 92 ne sont jamais prises.</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="16" y="162">Les lignes 33 et 116 sont exécutées à chaque test, et leur Math.abs peut disparaître sans qu'un test le voie.</text>
+<text fill="#4F46B8" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="184">La couverture dit ce qui n'est pas testé. Elle ne dit pas que le reste l'est.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript, une ligne couverte, deux branches, un seul chemin pris</span>function verdict(x, tol) {
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript, une ligne couverte, deux branches, un seul chemin pris</span>function verdict(x, tol) {
   return Math.abs(x) &gt; tol ? "refusé" : "accepté";   // ligne couverte à 100 %
 }
 test("refuse", () =&gt; assert.equal(verdict(5, 1), "refusé"));   // « accepté » jamais essayé</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Le ternaire et le &amp;&amp;</h3>
-      <p>Une ligne peut contenir plusieurs branches (un <code>? :</code>, un <code>&amp;&amp;</code>, un <code>??</code>). La couverture de lignes la voit entière dès qu'elle commence ; celle des branches voit le chemin oublié.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Un tableau de bord, pas une note</h3>
-      <p>Les lignes non couvertes du rapport (49–50, 67–68, 89–90…) sont une liste de travail : chaque plage est un cas qu'aucun test ne pose. C'est leur usage le plus utile.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Le ternaire et le &amp;&amp;</h3>
+<p>Une ligne peut contenir plusieurs branches (un <code>? :</code>, un <code>&amp;&amp;</code>, un <code>??</code>). La couverture de lignes la voit entière dès qu'elle commence ; celle des branches voit le chemin oublié.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Un tableau de bord, pas une note</h3>
+<p>Les lignes non couvertes du rapport (49–50, 67–68, 89–90…) sont une liste de travail : chaque plage est un cas qu'aucun test ne pose. C'est leur usage le plus utile.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Imposer un seuil (« 80 % minimum ») comme règle de fusion. Le plus rapide pour l'atteindre est d'exécuter du code sans rien vérifier : la couverture monte, la protection non. Le seuil se surveille, il ne se vise pas.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 112 · La couverture</div>
+<div class="folio">3</div>
+<div class="pied">Cours 112 · La couverture</div>
 </section>
-
 <!-- ============ PAGE 4 · RENDRE TESTABLE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 112</b></div>
-  <p class="rubrique">Schéma 3 · L'objet humble</p>
-  <h2>Rendre la logique testable</h2>
-  <p style="max-width:165mm">Le code qui touche à une interface ou à un logiciel hôte (Grasshopper, le navigateur) est difficile à exécuter dans un test. La parade est d'en sortir la logique dans une classe pure, et de laisser une enveloppe si mince qu'elle ne peut presque pas se tromper : l'<b>objet humble</b>.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.4" fill="#4F46B8" text-anchor="start" font-weight="700">SnapSet : ce que le projet de test compile (ResolutionTests.csproj, liens vers src/ et schema/, compté)</text>
-<rect x="20" y="36" width="210" height="26" fill="#2E7D32"/>
-<rect x="230" y="36" width="350" height="26" fill="#fff" stroke="#6B7378" stroke-dasharray="4 3"/>
-<text x="125.0" y="53" font-size="8" fill="#fff" text-anchor="middle" font-weight="700">30 fichiers liés · 13 192 lignes</text>
-<text x="405.0" y="53" font-size="8" fill="#6B7378" text-anchor="middle" font-weight="700">50 non liés · 12 907 lignes (43 exigent Grasshopper)</text>
-<rect x="20" y="82" width="250" height="74" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2" stroke-dasharray="4 3"/>
-<text x="145" y="100" font-size="8.6" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">Voyant.cs · 80 lignes</text>
-<text x="145" y="118" font-size="7.6" fill="#2B2F33" text-anchor="middle">peint avec GH_Skin, Graphics</text>
-<text x="145" y="132" font-size="7.6" fill="#2B2F33" text-anchor="middle">reste mince, non lié aux tests</text>
-<text x="145" y="148" font-size="7.4" fill="#6B7378" text-anchor="middle" font-style="italic">le « humble »</text>
-<line x1="272" y1="119" x2="318" y2="119" stroke="#6B7378" stroke-width="1.2"/><polygon points="318,119 311.6,121.7 311.6,116.3" fill="#6B7378"/>
-<text x="295" y="111" font-size="7" fill="#6B7378" text-anchor="middle">appelle</text>
-<rect x="320" y="82" width="260" height="74" rx="4" fill="#E8F5E9" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="450" y="100" font-size="8.6" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">Pur/ModeleVoyant.cs · 163 lignes</text>
-<text x="450" y="118" font-size="7.6" fill="#2B2F33" text-anchor="middle">défauts, états, symboles, mesure</text>
-<text x="450" y="132" font-size="7.6" fill="#2B2F33" text-anchor="middle">sans Grasshopper : lié et testé</text>
-<text x="450" y="148" font-size="7.4" fill="#6B7378" text-anchor="middle" font-style="italic" class="mono" style="font-size:7.4px">IndicateursTests.cs</text>
-<text x="16" y="180" font-size="7.8" fill="#2B2F33" text-anchor="start">11 modèles « Pur » sortent la logique des cœurs qui dépendent de Grasshopper. La couverture monte parce que</text>
-<text x="16" y="196" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">l'architecture rend la logique testable, pas parce qu'on a écrit des tests pour atteindre un chiffre.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 112</b></div>
+<p class="rubrique">Schéma 3 · L'objet humble</p>
+<h2>Rendre la logique testable</h2>
+<p style="max-width:165mm">Le code qui touche à une interface ou à un logiciel hôte (Grasshopper, le navigateur) est difficile à exécuter dans un test. La parade est d'en sortir la logique dans une classe pure, et de laisser une enveloppe si mince qu'elle ne peut presque pas se tromper : l'<b>objet humble</b>.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="22">SnapSet : ce que le projet de test compile (ResolutionTests.csproj, liens vers src/ et schema/, compté)</text>
+<rect fill="#2E7D32" height="26" width="210" x="20" y="36"></rect>
+<rect fill="#fff" height="26" stroke="#6B7378" stroke-dasharray="4 3" width="350" x="230" y="36"></rect>
+<text fill="#fff" font-size="8" font-weight="700" text-anchor="middle" x="125.0" y="53">30 fichiers liés · 13 192 lignes</text>
+<text fill="#6B7378" font-size="8" font-weight="700" text-anchor="middle" x="405.0" y="53">50 non liés · 12 907 lignes (43 exigent Grasshopper)</text>
+<rect fill="#fff" height="74" rx="4" stroke="#6B7378" stroke-dasharray="4 3" stroke-width="1.2" width="250" x="20" y="82"></rect>
+<text class="mono" fill="#6B7378" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="145" y="100">Voyant.cs · 80 lignes</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="middle" x="145" y="118">peint avec GH_Skin, Graphics</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="middle" x="145" y="132">reste mince, non lié aux tests</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="middle" x="145" y="148">le « humble »</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="272" x2="318" y1="119" y2="119"></line><polygon fill="#6B7378" points="318,119 311.6,121.7 311.6,116.3"></polygon>
+<text fill="#6B7378" font-size="7" text-anchor="middle" x="295" y="111">appelle</text>
+<rect fill="#E8F5E9" height="74" rx="4" stroke="#2E7D32" stroke-width="1.2" width="260" x="320" y="82"></rect>
+<text class="mono" fill="#2E7D32" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="450" y="100">Pur/ModeleVoyant.cs · 163 lignes</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="middle" x="450" y="118">défauts, états, symboles, mesure</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="middle" x="450" y="132">sans Grasshopper : lié et testé</text>
+<text class="mono" fill="#6B7378" font-size="7.4" font-style="italic" style="font-size:7.4px" text-anchor="middle" x="450" y="148">IndicateursTests.cs</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="16" y="180">11 modèles « Pur » sortent la logique des cœurs qui dépendent de Grasshopper. La couverture monte parce que</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="196">l'architecture rend la logique testable, pas parce qu'on a écrit des tests pour atteindre un chiffre.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, l'enveloppe humble et le modèle pur</span>sealed class Voyant { void Peindre(Graphics g) =&gt; Peintre.Dessiner(g, _modele.Etat()); }
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, l'enveloppe humble et le modèle pur</span>sealed class Voyant { void Peindre(Graphics g) =&gt; Peintre.Dessiner(g, _modele.Etat()); }
 sealed class ModeleVoyant { public EtatVoyant Etat() { /* toute la logique */ } }
 [Fact] public void EteintSansValeur() =&gt; Assert.Equal(EtatVoyant.Eteint, new ModeleVoyant().Etat());</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Lier plutôt que copier</h3>
-      <p>Le projet de test de SnapSet compile les fichiers purs par lien (chemins relatifs), jamais par copie : le test lit exactement le code livré. Les 30 liens sont listés dans ResolutionTests.csproj.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Et l'enveloppe ?</h3>
-      <p>Le code émis qui la nomme est compilé contre les vrais Grasshopper.dll par CoupleCompileTests (15 tests). On vérifie qu'elle compile ; son comportement se voit dans Rhino.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Lier plutôt que copier</h3>
+<p>Le projet de test de SnapSet compile les fichiers purs par lien (chemins relatifs), jamais par copie : le test lit exactement le code livré. Les 30 liens sont listés dans ResolutionTests.csproj.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Et l'enveloppe ?</h3>
+<p>Le code émis qui la nomme est compilé contre les vrais Grasshopper.dll par CoupleCompileTests (15 tests). On vérifie qu'elle compile ; son comportement se voit dans Rhino.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Laisser la logique grossir dans l'enveloppe « parce que c'est plus simple ». Chaque règle ajoutée là échappe aux tests ; au bout de quelques mois, la classe pure ne contient plus que des accesseurs.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 112 · La couverture</div>
+<div class="folio">4</div>
+<div class="pied">Cours 112 · La couverture</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 112</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>Ce que chaque projet met sous test</h2>
-  <p style="max-width:165mm">SnapSet décide fichier par fichier, et l'écrit dans son projet de test. Magpie web teste ce que ses tests importent, ce qui laisse son serveur dehors.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 112</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>Ce que chaque projet met sous test</h2>
+<p style="max-width:165mm">SnapSet décide fichier par fichier, et l'écrit dans son projet de test. Magpie web teste ce que ses tests importent, ce qui laisse son serveur dehors.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">snapset/tests/ResolutionTests/ResolutionTests.csproj</span></div>
 <div class="l k1"><span class="n">163</span>   natives par état, symboles (forme, pas couleur), …<span class="rep r1">1</span></div>
@@ -267,137 +240,55 @@ sealed class ModeleVoyant { public EtatVoyant Etat() { /* toute la logique */ } 
 <div class="l k4"><span class="n">—</span># all files   |  88.69 |  86.39 |  90.63 |<span class="rep r4">4</span></div>
 <div class="l k5"><span class="n">—</span>compute-proxy.mjs : absent du rapport<span class="rep r5">5</span></div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>Ce qu'on teste</b>Écrit en clair.</li>
-      <li><span class="rep r2">2</span><b>Ce qu'on laisse</b>Et pourquoi.</li>
-      <li><span class="rep r3">3</span><b>Le lien</b>Pas de copie.</li>
-      <li><span class="rep r4">4</span><b>Le chiffre</b>Tests compris.</li>
-      <li><span class="rep r5">5</span><b>L'absent</b>748 lignes.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À surveiller · le rapport de Magpie web ne voit pas l'essentiel du code</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>Ce qu'on teste</b>Écrit en clair.</li>
+<li><span class="rep r2">2</span><b>Ce qu'on laisse</b>Et pourquoi.</li>
+<li><span class="rep r3">3</span><b>Le lien</b>Pas de copie.</li>
+<li><span class="rep r4">4</span><b>Le chiffre</b>Tests compris.</li>
+<li><span class="rep r5">5</span><b>L'absent</b>748 lignes.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À surveiller · le rapport de Magpie web ne voit pas l'essentiel du code</span>
     Mesuré sur une copie : 88,69 % « all files », mais 37 des 45 fichiers JavaScript (hors tests) ne sont jamais chargés, dont compute-proxy.mjs et l'éditeur React : 855 lignes passées sur 5 939, soit 14,4 %. build-graph.mjs, chargé, n'est exécuté qu'à 61 %. SnapSet, à l'inverse, sort sa logique dans 11 modèles « Pur » liés aux tests. Déduit : le même découpage côté web (cours 110) ouvrirait le serveur aux tests. Relevé sans rien modifier.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 112 · La couverture</div>
+<div class="folio">5</div>
+<div class="pied">Cours 112 · La couverture</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 112</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 112</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">La couverture de lignes mesure…</div><ul>
-      <li><span>A</span>les lignes exécutées pendant les tests</li><li><span>B</span>les lignes vérifiées</li><li><span>C</span>les lignes commentées</li><li><span>D</span>les lignes sans défaut</li></ul></div>
 
-    <div class="q"><div class="enonce">Un fichier jamais importé par les tests, dans le rapport de Node…</div><ul>
-      <li><span>A</span>apparaît à 100 %</li><li><span>B</span>fait échouer le rapport</li><li><span>C</span>n'apparaît pas</li><li><span>D</span>apparaît à 0 %</li></ul></div>
 
-    <div class="q"><div class="enonce">Le 88,69 % de Magpie web compte…</div><ul>
-      <li><span>A</span>tout le dépôt</li><li><span>B</span>les fichiers chargés, tests compris</li><li><span>C</span>le serveur seul</li><li><span>D</span>les fichiers React</li></ul></div>
 
-    <div class="q"><div class="enonce">Rapporté à tout le code web, la mesure donne…</div><ul>
-      <li><span>A</span>14,4 %</li><li><span>B</span>61 %</li><li><span>C</span>85,4 %</li><li><span>D</span>88,7 %</li></ul></div>
-
-    <div class="q"><div class="enonce">La couverture de branches…</div><ul>
-      <li><span>A</span>vaut toujours la couverture de lignes</li><li><span>B</span>ignore les if</li><li><span>C</span>compte les branches Git</li><li><span>D</span>compte les chemins pris à chaque décision</li></ul></div>
-
-    <div class="q"><div class="enonce">Sur validation.mjs, la mesure la plus exigeante est…</div><ul>
-      <li><span>A</span>les branches, 79,25 %</li><li><span>B</span>le score de mutation, 73,68 %</li><li><span>C</span>le nombre de tests</li><li><span>D</span>les lignes, 92,86 %</li></ul></div>
-
-    <div class="q"><div class="enonce">Une couverture basse sur un fichier signifie…</div><ul>
-      <li><span>A</span>que ce code n'est pas testé, à coup sûr</li><li><span>B</span>rien</li><li><span>C</span>que le code est faux</li><li><span>D</span>que le test est lent</li></ul></div>
-
-    <div class="q"><div class="enonce">Pour lister aussi les fichiers jamais chargés… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>c8 ou nyc avec --all</li><li><span>B</span>relancer les tests</li><li><span>C</span>augmenter le seuil</li><li><span>D</span>comparer le rapport à la liste du dépôt</li></ul></div>
-
-    <div class="q"><div class="enonce">L'objet humble…</div><ul>
-      <li><span>A</span>est un test lent</li><li><span>B</span>est une doublure</li><li><span>C</span>n'a pas de méthode</li><li><span>D</span>garde une enveloppe mince, la logique va dans une classe pure</li></ul></div>
-
-    <div class="q"><div class="enonce">SnapSet lie à ses tests…</div><ul>
-      <li><span>A</span>tous ses fichiers</li><li><span>B</span>des copies</li><li><span>C</span>30 fichiers sur 80</li><li><span>D</span>aucun fichier</li></ul></div>
-
-    <div class="q"><div class="enonce">Imposer un seuil de couverture comme règle…</div><ul>
-      <li><span>A</span>garantit la qualité</li><li><span>B</span>pousse à exécuter sans vérifier</li><li><span>C</span>supprime les défauts</li><li><span>D</span>remplace les mutants</li></ul></div>
-
-    <div class="q"><div class="enonce">Le meilleur usage des lignes non couvertes…</div><ul>
-      <li><span>A</span>une note à afficher</li><li><span>B</span>des erreurs de compilation</li><li><span>C</span>une liste de cas qu'aucun test ne pose</li><li><span>D</span>du code à supprimer</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 112 · La couverture</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">--experimental-test-coverage</td><td>couverture avec node --test</td><td>page 1</td></tr>
+<tr><td class="c">--test-coverage-exclude="test/**"</td><td>sortir les tests du chiffre</td><td>page 2</td></tr>
+<tr><td class="c">--test-reporter=lcov</td><td>fichier lu par les éditeurs</td><td>page 2</td></tr>
+<tr><td class="c">SF: / LF: / LH:</td><td>fichier, lignes trouvées, passées</td><td>page 2</td></tr>
+<tr><td class="c">&lt;Compile Include=… Link=…&gt;</td><td>lier un fichier au projet de test</td><td>page 5</td></tr>
+<tr><td class="c">Coverlet, c8 --all</td><td>couverture avec les absents</td><td>page 2</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Couverture</dt><dd>La part du code exécutée pendant les tests.</dd>
+<dt>Branche</dt><dd>Un des chemins possibles à une décision (if, ? :, &amp;&amp;, ??).</dd>
+<dt>Dénominateur</dt><dd>L'ensemble de code auquel on rapporte les lignes passées.</dd>
+<dt>Objet humble</dt><dd>Une enveloppe minimale autour d'une logique sortie pour être testée.</dd>
+<dt>lcov</dt><dd>Un format texte de rapport de couverture, ligne par ligne.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 113</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 112 · La couverture</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 112</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · A.</b> Traversées, pas vérifiées.</div>
-    <div><b>02 · C.</b> Ni 0 %, ni rien.</div>
-    <div><b>03 · B.</b> 14 fichiers dont 6 tests.</div>
-    <div><b>04 · A.</b> 855 sur 5 939.</div>
-    <div><b>05 · D.</b> Si et sinon.</div>
-    <div><b>06 · B.</b> Il faut un test qui dépende.</div>
-    <div><b>07 · A.</b> L'information sûre.</div>
-    <div><b>08 · A et D.</b> Faire voir les absents.</div>
-    <div><b>09 · D.</b> Voyant et ModeleVoyant.</div>
-    <div><b>10 · C.</b> 13 192 lignes liées.</div>
-    <div><b>11 · B.</b> Le chiffre monte seul.</div>
-    <div><b>12 · C.</b> Une liste de travail.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 113, « Tests instables ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">--experimental-test-coverage</td><td>couverture avec node --test</td><td>page 1</td></tr>
-      <tr><td class="c">--test-coverage-exclude="test/**"</td><td>sortir les tests du chiffre</td><td>page 2</td></tr>
-      <tr><td class="c">--test-reporter=lcov</td><td>fichier lu par les éditeurs</td><td>page 2</td></tr>
-      <tr><td class="c">SF: / LF: / LH:</td><td>fichier, lignes trouvées, passées</td><td>page 2</td></tr>
-      <tr><td class="c">&lt;Compile Include=… Link=…&gt;</td><td>lier un fichier au projet de test</td><td>page 5</td></tr>
-      <tr><td class="c">Coverlet, c8 --all</td><td>couverture avec les absents</td><td>page 2</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Couverture</dt><dd>La part du code exécutée pendant les tests.</dd>
-    <dt>Branche</dt><dd>Un des chemins possibles à une décision (if, ? :, &amp;&amp;, ??).</dd>
-    <dt>Dénominateur</dt><dd>L'ensemble de code auquel on rapporte les lignes passées.</dd>
-    <dt>Objet humble</dt><dd>Une enveloppe minimale autour d'une logique sortie pour être testée.</dd>
-    <dt>lcov</dt><dd>Un format texte de rapport de couverture, ligne par ligne.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 113</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 112 · La couverture</div>
-</section>
-
 </body>
 </html>

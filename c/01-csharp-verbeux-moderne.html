@@ -1,178 +1,153 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>01 · Du C# verbeux au C# moderne</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-1">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 01</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Du C# verbeux<br>au C# moderne</h1>
-  <p class="chapeau">Le C# que tu as appris n'est pas faux, il est ancien. Chaque version du langage a ajouté des raccourcis qui disent la même chose en moins de mots. Le compilateur les déplie : le programme obtenu est identique.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>aucun</b>, tu as déjà écrit des composants</span>
-    <span class="pastille">Exemples · <b>Cuttlefish, SnapSet, Magpie</b></span>
-  </div>
-
-  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
-    <svg viewBox="0 0 600 230" width="100%">
-      <defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2B2F33"/></marker></defs>
-      <text x="0" y="16" font-size="10" font-weight="700" fill="#6B2C7A" letter-spacing="1.2">CE QUE TU ÉCRIS</text>
-      <rect x="0" y="26" width="276" height="44" rx="5" fill="#fff" stroke="#6B2C7A" stroke-width="1.6"/>
-      <text x="14" y="53" class="mono" font-size="11.5"><tspan fill="#0B4F9C">public string</tspan> Name <tspan font-weight="700" fill="#6B2C7A">=&gt;</tspan> <tspan fill="#A3501B">"Cuttlefish"</tspan>;</text>
-
-      <path d="M125 72 V 100" stroke="#2B2F33" stroke-width="1.5" marker-end="url(#a1)"/>
-      <rect x="40" y="104" width="170" height="34" rx="17" fill="#2B2F33"/>
-      <text x="125" y="125" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">le compilateur déplie</text>
-      <path d="M125 140 V 160" stroke="#2B2F33" stroke-width="1.5" marker-end="url(#a1)"/>
-
-      <text x="0" y="176" font-size="10" font-weight="700" fill="#6B7378" letter-spacing="1.2">CE QU'IL COMPREND</text>
-      <rect x="0" y="184" width="250" height="40" rx="5" fill="#F3F1EE"/>
-      <text x="14" y="200" class="mono" font-size="10" fill="#5E6468">public string Name</text>
-      <text x="14" y="215" class="mono" font-size="10" fill="#5E6468">{ get { return "Cuttlefish"; } }</text>
-
-      <!-- Résultat identique -->
-      <path d="M252 204 C 300 204, 310 130, 350 128" stroke="#2B2F33" stroke-width="1.3" fill="none" marker-end="url(#a1)"/>
-      <path d="M278 48 C 310 48, 320 120, 350 124" stroke="#2B2F33" stroke-width="1.3" fill="none" stroke-dasharray="4 3"/>
-      <rect x="356" y="96" width="230" height="62" rx="6" fill="#fff" stroke="#2B2F33" stroke-width="1.4"/>
-      <text x="471" y="120" text-anchor="middle" font-size="12" font-weight="700">même code compilé</text>
-      <text x="471" y="138" text-anchor="middle" font-size="10" fill="#6B7378">même vitesse, même comportement</text>
-      <text x="471" y="186" text-anchor="middle" font-size="10.5" fill="#2B2F33">Seule la <tspan font-weight="700">lecture</tspan> change :</text>
-      <text x="471" y="201" text-anchor="middle" font-size="10.5" fill="#2B2F33">moins de bruit autour de l'essentiel.</text>
-    </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Une syntaxe moderne est un <b>raccourci d'écriture</b>, pas une capacité nouvelle. Savoir lire les deux formes te permet de lire tout le code de tes projets, l'ancien comme le récent.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Les abréviations : « c.-à-d. » se lit « c'est-à-dire ». Le lecteur, ici le compilateur, rétablit la forme complète. Encore faut-il qu'il connaisse l'abréviation : c'est la question des versions.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>reconnaître les neuf raccourcis les plus fréquents de tes dépôts et retrouver leur forme longue ;</li>
-        <li>dire quelle version de C# chaque projet autorise, et pourquoi Cuttlefish s'arrête à C# 7.3 ;</li>
-        <li>réécrire un bout de code ancien en forme moderne sans changer son comportement.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:5mm">
-    <span class="titre">À retenir</span>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 01</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Du C# verbeux<br/>au C# moderne</h1>
+<p class="chapeau">Le C# que tu as appris n'est pas faux, il est ancien. Chaque version du langage a ajouté des raccourcis qui disent la même chose en moins de mots. Le compilateur les déplie : le programme obtenu est identique.</p>
+<div class="meta">
+<span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>aucun</b>, tu as déjà écrit des composants</span>
+<span class="pastille">Exemples · <b>Cuttlefish, SnapSet, Magpie</b></span>
+</div>
+<div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+<svg viewbox="0 0 600 230" width="100%">
+<defs><marker id="a1" markerheight="7" markerwidth="7" orient="auto" refx="9" refy="5" viewbox="0 0 10 10"><path d="M0 0 L10 5 L0 10 z" fill="#2B2F33"></path></marker></defs>
+<text fill="#6B2C7A" font-size="10" font-weight="700" letter-spacing="1.2" x="0" y="16">CE QUE TU ÉCRIS</text>
+<rect fill="#fff" height="44" rx="5" stroke="#6B2C7A" stroke-width="1.6" width="276" x="0" y="26"></rect>
+<text class="mono" font-size="11.5" x="14" y="53"><tspan fill="#0B4F9C">public string</tspan> Name <tspan fill="#6B2C7A" font-weight="700">=&gt;</tspan> <tspan fill="#A3501B">"Cuttlefish"</tspan>;</text>
+<path d="M125 72 V 100" marker-end="url(#a1)" stroke="#2B2F33" stroke-width="1.5"></path>
+<rect fill="#2B2F33" height="34" rx="17" width="170" x="40" y="104"></rect>
+<text fill="#fff" font-size="11" font-weight="700" text-anchor="middle" x="125" y="125">le compilateur déplie</text>
+<path d="M125 140 V 160" marker-end="url(#a1)" stroke="#2B2F33" stroke-width="1.5"></path>
+<text fill="#6B7378" font-size="10" font-weight="700" letter-spacing="1.2" x="0" y="176">CE QU'IL COMPREND</text>
+<rect fill="#F3F1EE" height="40" rx="5" width="250" x="0" y="184"></rect>
+<text class="mono" fill="#5E6468" font-size="10" x="14" y="200">public string Name</text>
+<text class="mono" fill="#5E6468" font-size="10" x="14" y="215">{ get { return "Cuttlefish"; } }</text>
+<!-- Résultat identique -->
+<path d="M252 204 C 300 204, 310 130, 350 128" fill="none" marker-end="url(#a1)" stroke="#2B2F33" stroke-width="1.3"></path>
+<path d="M278 48 C 310 48, 320 120, 350 124" fill="none" stroke="#2B2F33" stroke-dasharray="4 3" stroke-width="1.3"></path>
+<rect fill="#fff" height="62" rx="6" stroke="#2B2F33" stroke-width="1.4" width="230" x="356" y="96"></rect>
+<text font-size="12" font-weight="700" text-anchor="middle" x="471" y="120">même code compilé</text>
+<text fill="#6B7378" font-size="10" text-anchor="middle" x="471" y="138">même vitesse, même comportement</text>
+<text fill="#2B2F33" font-size="10.5" text-anchor="middle" x="471" y="186">Seule la <tspan font-weight="700">lecture</tspan> change :</text>
+<text fill="#2B2F33" font-size="10.5" text-anchor="middle" x="471" y="201">moins de bruit autour de l'essentiel.</text>
+</svg>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Une syntaxe moderne est un <b>raccourci d'écriture</b>, pas une capacité nouvelle. Savoir lire les deux formes te permet de lire tout le code de tes projets, l'ancien comme le récent.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Les abréviations : « c.-à-d. » se lit « c'est-à-dire ». Le lecteur, ici le compilateur, rétablit la forme complète. Encore faut-il qu'il connaisse l'abréviation : c'est la question des versions.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>reconnaître les neuf raccourcis les plus fréquents de tes dépôts et retrouver leur forme longue ;</li>
+<li>dire quelle version de C# chaque projet autorise, et pourquoi Cuttlefish s'arrête à C# 7.3 ;</li>
+<li>réécrire un bout de code ancien en forme moderne sans changer son comportement.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:5mm">
+<span class="titre">À retenir</span>
     Moderne ne veut pas dire plus rapide. Le gain est la lisibilité, et parfois la sécurité : <code>?.</code> évite un oubli de test de <code>null</code>. Le reste du cours montre chaque raccourci <b>tiré de ton propre code</b>.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 01 · Du C# verbeux au C# moderne</div>
+<div class="folio">1</div>
+<div class="pied">Cours 01 · Du C# verbeux au C# moderne</div>
 </section>
-
 <!-- ============ PAGE 2 · LES VERSIONS ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 01</b></div>
-  <p class="rubrique">Schéma 1 · Les versions</p>
-  <h2>Vingt ans de raccourcis, et une frontière</h2>
-  <p style="max-width:165mm">Chaque raccourci est apparu avec une version du langage. Un projet ne connaît que les raccourcis de sa version. Or tes trois projets ne vivent pas à la même époque.</p>
-
-  <svg viewBox="0 0 600 470" width="100%" style="margin-top:3mm">
-    <defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2B2F33"/></marker></defs>
-    <!-- Axe -->
-    <line x1="20" y1="200" x2="590" y2="200" stroke="#2B2F33" stroke-width="2" marker-end="url(#a2)"/>
-    <!-- Jalons : x = position -->
-    <g font-size="10">
-      <!-- C# 3 -->
-      <circle cx="60" cy="200" r="7" fill="#6B2C7A"/>
-      <text x="60" y="226" text-anchor="middle" font-weight="700">C# 3</text><text x="60" y="240" text-anchor="middle" fill="#6B7378" font-size="9">2007</text>
-      <line x1="60" y1="193" x2="60" y2="120" stroke="#6B2C7A" stroke-width="1"/>
-      <rect x="10" y="62" width="104" height="58" rx="4" fill="#fff" stroke="#D9D2C8"/>
-      <text x="18" y="79" class="mono" font-size="9.5">var</text><text x="18" y="94" font-size="9.5">lambdas, LINQ</text><text x="18" y="109" font-size="9.5">initialiseurs</text>
-
-      <!-- C# 6 -->
-      <circle cx="190" cy="200" r="7" fill="#6B2C7A"/>
-      <text x="190" y="226" text-anchor="middle" font-weight="700">C# 6</text><text x="190" y="240" text-anchor="middle" fill="#6B7378" font-size="9">2015</text>
-      <line x1="190" y1="193" x2="190" y2="120" stroke="#6B2C7A" stroke-width="1"/>
-      <rect x="132" y="62" width="116" height="58" rx="4" fill="#fff" stroke="#D9D2C8"/>
-      <text x="140" y="79" class="mono" font-size="9.5">=&gt;  membres</text><text x="140" y="94" class="mono" font-size="9.5">?.</text><text x="140" y="109" class="mono" font-size="9.5">$"…{x}…"</text>
-
-      <!-- C# 7 -->
-      <circle cx="290" cy="200" r="7" fill="#6B2C7A"/>
-      <text x="290" y="226" text-anchor="middle" font-weight="700">C# 7</text><text x="290" y="240" text-anchor="middle" fill="#6B7378" font-size="9">2017</text>
-      <line x1="290" y1="193" x2="290" y2="140" stroke="#6B2C7A" stroke-width="1"/>
-      <rect x="262" y="82" width="104" height="58" rx="4" fill="#fff" stroke="#D9D2C8"/>
-      <text x="270" y="99" class="mono" font-size="9.5">out int g</text><text x="270" y="114" class="mono" font-size="9.5">is T x</text><text x="270" y="129" font-size="9.5">get =&gt; / set =&gt;</text>
-
-      <!-- Frontière 7.3 -->
-      <line x1="345" y1="40" x2="345" y2="420" stroke="#C62828" stroke-width="2" stroke-dasharray="6 4"/>
-      <rect x="351" y="22" width="150" height="34" rx="4" fill="#F9E5E5"/>
-      <text x="358" y="36" font-size="9.5" font-weight="700" fill="#C62828">C# 7.3 · 2018</text>
-      <text x="358" y="50" font-size="9" fill="#C62828">limite de .NET Framework 4.8</text>
-
-      <!-- C# 8 -->
-      <circle cx="400" cy="200" r="7" fill="#6B2C7A"/>
-      <text x="400" y="226" text-anchor="middle" font-weight="700">C# 8</text><text x="400" y="240" text-anchor="middle" fill="#6B7378" font-size="9">2019</text>
-      <line x1="400" y1="193" x2="400" y2="150" stroke="#6B2C7A" stroke-width="1"/>
-      <rect x="372" y="104" width="96" height="46" rx="4" fill="#fff" stroke="#D9D2C8"/>
-      <text x="380" y="121" font-size="9.5">switch =&gt; {…}</text><text x="380" y="136" class="mono" font-size="9.5">??=</text>
-
-      <!-- C# 9 -->
-      <circle cx="480" cy="200" r="7" fill="#6B2C7A"/>
-      <text x="480" y="226" text-anchor="middle" font-weight="700">C# 9</text><text x="480" y="240" text-anchor="middle" fill="#6B7378" font-size="9">2020</text>
-      <line x1="480" y1="193" x2="480" y2="170" stroke="#6B2C7A" stroke-width="1"/>
-      <rect x="476" y="62" width="110" height="58" rx="4" fill="#fff" stroke="#D9D2C8"/>
-      <text x="484" y="79" class="mono" font-size="9.5">new()</text><text x="484" y="94" class="mono" font-size="9.5">is not</text><text x="484" y="109" class="mono" font-size="9.5">is "a" or "b"</text>
-      <path d="M480 170 C 480 150, 520 140, 530 120" stroke="#6B2C7A" stroke-width="1" fill="none"/>
-
-      <!-- C# 11 -->
-      <circle cx="560" cy="200" r="7" fill="#6B2C7A"/>
-      <text x="556" y="226" text-anchor="middle" font-weight="700">C# 11</text><text x="556" y="240" text-anchor="middle" fill="#6B7378" font-size="9">2022</text>
-    </g>
-
-    <!-- Bandes projets -->
-    <g font-size="10.5">
-      <rect x="20" y="280" width="325" height="40" rx="4" fill="#6B2C7A"/>
-      <text x="32" y="298" font-weight="700" fill="#fff">Cuttlefish</text>
-      <text x="32" y="312" font-size="9" fill="#fff">.NET Framework 4.8 · C# 7.3 par défaut</text>
-
-      <rect x="20" y="332" width="570" height="40" rx="4" fill="#1F5F7A"/>
-      <text x="32" y="350" font-weight="700" fill="#fff">SnapSet et Magpie</text>
-      <text x="32" y="364" font-size="9" fill="#fff">.NET 7 · C# 11 par défaut (SnapSet : LangVersion latest)</text>
-
-      <rect x="20" y="384" width="325" height="40" rx="4" fill="#fff" stroke="#1F5F7A" stroke-width="1.4" stroke-dasharray="5 3"/>
-      <text x="32" y="402" font-weight="700" fill="#1F5F7A">Code généré par SnapSet</text>
-      <text x="32" y="416" font-size="9" fill="#1F5F7A">volontairement en C# 7.3 : il doit compiler dans tout greffon</text>
-    </g>
-    <text x="352" y="300" font-size="9.5" fill="#C62828" font-style="italic">au-delà : erreur « non disponible</text>
-    <text x="352" y="313" font-size="9.5" fill="#C62828" font-style="italic">en C# 7.3 » dans Cuttlefish</text>
-    <text x="352" y="402" font-size="9.5" fill="#6B7378" font-style="italic">docs/TAGS.md, « Version de C# »</text>
-  </svg>
-
-  <div class="encadre piege" style="margin-top:4mm">
-    <span class="titre">Piège courant</span>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 01</b></div>
+<p class="rubrique">Schéma 1 · Les versions</p>
+<h2>Vingt ans de raccourcis, et une frontière</h2>
+<p style="max-width:165mm">Chaque raccourci est apparu avec une version du langage. Un projet ne connaît que les raccourcis de sa version. Or tes trois projets ne vivent pas à la même époque.</p>
+<svg style="margin-top:3mm" viewbox="0 0 600 470" width="100%">
+<defs><marker id="a2" markerheight="7" markerwidth="7" orient="auto" refx="9" refy="5" viewbox="0 0 10 10"><path d="M0 0 L10 5 L0 10 z" fill="#2B2F33"></path></marker></defs>
+<!-- Axe -->
+<line marker-end="url(#a2)" stroke="#2B2F33" stroke-width="2" x1="20" x2="590" y1="200" y2="200"></line>
+<!-- Jalons : x = position -->
+<g font-size="10">
+<!-- C# 3 -->
+<circle cx="60" cy="200" fill="#6B2C7A" r="7"></circle>
+<text font-weight="700" text-anchor="middle" x="60" y="226">C# 3</text><text fill="#6B7378" font-size="9" text-anchor="middle" x="60" y="240">2007</text>
+<line stroke="#6B2C7A" stroke-width="1" x1="60" x2="60" y1="193" y2="120"></line>
+<rect fill="#fff" height="58" rx="4" stroke="#D9D2C8" width="104" x="10" y="62"></rect>
+<text class="mono" font-size="9.5" x="18" y="79">var</text><text font-size="9.5" x="18" y="94">lambdas, LINQ</text><text font-size="9.5" x="18" y="109">initialiseurs</text>
+<!-- C# 6 -->
+<circle cx="190" cy="200" fill="#6B2C7A" r="7"></circle>
+<text font-weight="700" text-anchor="middle" x="190" y="226">C# 6</text><text fill="#6B7378" font-size="9" text-anchor="middle" x="190" y="240">2015</text>
+<line stroke="#6B2C7A" stroke-width="1" x1="190" x2="190" y1="193" y2="120"></line>
+<rect fill="#fff" height="58" rx="4" stroke="#D9D2C8" width="116" x="132" y="62"></rect>
+<text class="mono" font-size="9.5" x="140" y="79">=&gt;  membres</text><text class="mono" font-size="9.5" x="140" y="94">?.</text><text class="mono" font-size="9.5" x="140" y="109">$"…{x}…"</text>
+<!-- C# 7 -->
+<circle cx="290" cy="200" fill="#6B2C7A" r="7"></circle>
+<text font-weight="700" text-anchor="middle" x="290" y="226">C# 7</text><text fill="#6B7378" font-size="9" text-anchor="middle" x="290" y="240">2017</text>
+<line stroke="#6B2C7A" stroke-width="1" x1="290" x2="290" y1="193" y2="140"></line>
+<rect fill="#fff" height="58" rx="4" stroke="#D9D2C8" width="104" x="262" y="82"></rect>
+<text class="mono" font-size="9.5" x="270" y="99">out int g</text><text class="mono" font-size="9.5" x="270" y="114">is T x</text><text font-size="9.5" x="270" y="129">get =&gt; / set =&gt;</text>
+<!-- Frontière 7.3 -->
+<line stroke="#C62828" stroke-dasharray="6 4" stroke-width="2" x1="345" x2="345" y1="40" y2="420"></line>
+<rect fill="#F9E5E5" height="34" rx="4" width="150" x="351" y="22"></rect>
+<text fill="#C62828" font-size="9.5" font-weight="700" x="358" y="36">C# 7.3 · 2018</text>
+<text fill="#C62828" font-size="9" x="358" y="50">limite de .NET Framework 4.8</text>
+<!-- C# 8 -->
+<circle cx="400" cy="200" fill="#6B2C7A" r="7"></circle>
+<text font-weight="700" text-anchor="middle" x="400" y="226">C# 8</text><text fill="#6B7378" font-size="9" text-anchor="middle" x="400" y="240">2019</text>
+<line stroke="#6B2C7A" stroke-width="1" x1="400" x2="400" y1="193" y2="150"></line>
+<rect fill="#fff" height="46" rx="4" stroke="#D9D2C8" width="96" x="372" y="104"></rect>
+<text font-size="9.5" x="380" y="121">switch =&gt; {…}</text><text class="mono" font-size="9.5" x="380" y="136">??=</text>
+<!-- C# 9 -->
+<circle cx="480" cy="200" fill="#6B2C7A" r="7"></circle>
+<text font-weight="700" text-anchor="middle" x="480" y="226">C# 9</text><text fill="#6B7378" font-size="9" text-anchor="middle" x="480" y="240">2020</text>
+<line stroke="#6B2C7A" stroke-width="1" x1="480" x2="480" y1="193" y2="170"></line>
+<rect fill="#fff" height="58" rx="4" stroke="#D9D2C8" width="110" x="476" y="62"></rect>
+<text class="mono" font-size="9.5" x="484" y="79">new()</text><text class="mono" font-size="9.5" x="484" y="94">is not</text><text class="mono" font-size="9.5" x="484" y="109">is "a" or "b"</text>
+<path d="M480 170 C 480 150, 520 140, 530 120" fill="none" stroke="#6B2C7A" stroke-width="1"></path>
+<!-- C# 11 -->
+<circle cx="560" cy="200" fill="#6B2C7A" r="7"></circle>
+<text font-weight="700" text-anchor="middle" x="556" y="226">C# 11</text><text fill="#6B7378" font-size="9" text-anchor="middle" x="556" y="240">2022</text>
+</g>
+<!-- Bandes projets -->
+<g font-size="10.5">
+<rect fill="#6B2C7A" height="40" rx="4" width="325" x="20" y="280"></rect>
+<text fill="#fff" font-weight="700" x="32" y="298">Cuttlefish</text>
+<text fill="#fff" font-size="9" x="32" y="312">.NET Framework 4.8 · C# 7.3 par défaut</text>
+<rect fill="#1F5F7A" height="40" rx="4" width="570" x="20" y="332"></rect>
+<text fill="#fff" font-weight="700" x="32" y="350">SnapSet et Magpie</text>
+<text fill="#fff" font-size="9" x="32" y="364">.NET 7 · C# 11 par défaut (SnapSet : LangVersion latest)</text>
+<rect fill="#fff" height="40" rx="4" stroke="#1F5F7A" stroke-dasharray="5 3" stroke-width="1.4" width="325" x="20" y="384"></rect>
+<text fill="#1F5F7A" font-weight="700" x="32" y="402">Code généré par SnapSet</text>
+<text fill="#1F5F7A" font-size="9" x="32" y="416">volontairement en C# 7.3 : il doit compiler dans tout greffon</text>
+</g>
+<text fill="#C62828" font-size="9.5" font-style="italic" x="352" y="300">au-delà : erreur « non disponible</text>
+<text fill="#C62828" font-size="9.5" font-style="italic" x="352" y="313">en C# 7.3 » dans Cuttlefish</text>
+<text fill="#6B7378" font-size="9.5" font-style="italic" x="352" y="402">docs/TAGS.md, « Version de C# »</text>
+</svg>
+<div class="encadre piege" style="margin-top:4mm">
+<span class="titre">Piège courant</span>
     Copier une ligne de SnapSet dans Cuttlefish. <code>List&lt;Curve&gt; curves = new();</code> compile dans SnapSet (C# 9 et plus) mais pas dans Cuttlefish. Le compilateur le dit clairement : la fonctionnalité n'est pas disponible en C# 7.3. La version se lit dans le <code>.csproj</code> : <code>&lt;TargetFramework&gt;</code>, et <code>&lt;LangVersion&gt;</code> s'il est présent.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 01 · Du C# verbeux au C# moderne</div>
+<div class="folio">2</div>
+<div class="pied">Cours 01 · Du C# verbeux au C# moderne</div>
 </section>
-
 <!-- ============ PAGE 3 · ÉCRIRE MOINS ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 01</b></div>
-  <p class="rubrique">Schéma 2 · Avant, après</p>
-  <h2>Écrire moins : propriétés, méthodes, types</h2>
-  <p style="max-width:165mm">À gauche la forme longue, à droite la forme moderne. Le surlignage montre exactement ce qui disparaît et ce qui le remplace. Chaque exemple vient d'un fichier de tes dépôts.</p>
-
-  <div style="margin-top:4mm">
-    <div class="paire">
-      <div class="nom"><span class="rep r1">1</span><br>Propriété en lecture<br><span class="ver">C# 6</span><span class="src">Cuttlefish/Maze.cs<br>SnapSet/Constituant.cs</span></div>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 01</b></div>
+<p class="rubrique">Schéma 2 · Avant, après</p>
+<h2>Écrire moins : propriétés, méthodes, types</h2>
+<p style="max-width:165mm">À gauche la forme longue, à droite la forme moderne. Le surlignage montre exactement ce qui disparaît et ce qui le remplace. Chaque exemple vient d'un fichier de tes dépôts.</p>
+<div style="margin-top:4mm">
+<div class="paire">
+<div class="nom"><span class="rep r1">1</span><br/>Propriété en lecture<br/><span class="ver">C# 6</span><span class="src">Cuttlefish/Maze.cs<br/>SnapSet/Constituant.cs</span></div>
 <div class="boite avant"><span class="etiq">Avant</span>protected override Bitmap Icon
 <span class="hl">{
     get
@@ -182,10 +157,9 @@
 }</span></div>
 <div class="boite apres"><span class="etiq">Après</span>protected override Bitmap Icon
     <span class="hl">=&gt;</span> Resources.Maze;</div>
-    </div>
-
-    <div class="paire">
-      <div class="nom"><span class="rep r2">2</span><br>Méthode d'une seule expression<br><span class="ver">C# 6</span><span class="src">Cuttlefish/Outils.cs</span></div>
+</div>
+<div class="paire">
+<div class="nom"><span class="rep r2">2</span><br/>Méthode d'une seule expression<br/><span class="ver">C# 6</span><span class="src">Cuttlefish/Outils.cs</span></div>
 <div class="boite avant"><span class="etiq">Avant</span>public static Point3d Milieu(
     Point3d a, Point3d b)
 <span class="hl">{
@@ -196,20 +170,18 @@
     Point3d a, Point3d b)
     <span class="hl">=&gt;</span> new Point3d((a.X + b.X) / 2,
         (a.Y + b.Y) / 2, (a.Z + b.Z) / 2);</div>
-    </div>
-
-    <div class="paire">
-      <div class="nom"><span class="rep r3">3</span><br>Laisser le compilateur déduire le type<br><span class="ver">C# 3</span> <span class="ver" style="background:#C62828">C# 9</span><span class="src">Cuttlefish/Attractor.cs</span></div>
+</div>
+<div class="paire">
+<div class="nom"><span class="rep r3">3</span><br/>Laisser le compilateur déduire le type<br/><span class="ver">C# 3</span> <span class="ver" style="background:#C62828">C# 9</span><span class="src">Cuttlefish/Attractor.cs</span></div>
 <div class="boite avant"><span class="etiq">Avant</span><span class="hl">List&lt;Curve&gt;</span> curves =
     new List&lt;Curve&gt;();</div>
 <div class="boite apres"><span class="etiq">Après</span><span class="hl">var</span> curves = new List&lt;Curve&gt;();
 
 <span style="color:#8A8F93">// ou, en C# 9 (pas dans Cuttlefish) :</span>
 List&lt;Curve&gt; curves = <span class="hl">new()</span>;</div>
-    </div>
-
-    <div class="paire">
-      <div class="nom"><span class="rep r4">4</span><br>Propriété avec get et set<br><span class="ver">C# 7</span><span class="src">SnapSet/Fichier.cs</span></div>
+</div>
+<div class="paire">
+<div class="nom"><span class="rep r4">4</span><br/>Propriété avec get et set<br/><span class="ver">C# 7</span><span class="src">SnapSet/Fichier.cs</span></div>
 <div class="boite avant"><span class="etiq">Avant</span>public string Filtre
 {
     get <span class="hl">{ return</span> _filtre; <span class="hl">}</span>
@@ -226,45 +198,39 @@ List&lt;Curve&gt; curves = <span class="hl">new()</span>;</div>
     get <span class="hl">=&gt;</span> _filtre;
     set <span class="hl">=&gt;</span> _filtre = value <span class="hl">??</span> Defaut;
 }</div>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">Comment lire =&gt;</span>
+</div>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">Comment lire =&gt;</span>
     Devant un membre, <code>=&gt;</code> se lit « vaut » ou « renvoie » : <i>Icon vaut Resources.Maze</i>. Dans un <code>.Where(p =&gt; …)</code>, c'est une lambda, autre chose, vue au cours 03. Même symbole, deux usages.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 01 · Du C# verbeux au C# moderne</div>
+<div class="folio">3</div>
+<div class="pied">Cours 01 · Du C# verbeux au C# moderne</div>
 </section>
-
 <!-- ============ PAGE 4 · NULL, TEXTE, TYPES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 01</b></div>
-  <p class="rubrique">Schéma 3 · Avant, après</p>
-  <h2>Dire plus clairement : null, texte, tests de type</h2>
-  <p style="max-width:165mm">Ces raccourcis-là font plus que raccourcir : ils évitent des oublis. Les quatre premiers sont déjà utilisables dans Cuttlefish.</p>
-
-  <div style="margin-top:4mm">
-    <div class="paire">
-      <div class="nom"><span class="rep r5">5</span><br>Valeur de secours si null<br><span class="ver">C# 2</span><span class="src">SnapSet/Fichier.cs, l. 194</span></div>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 01</b></div>
+<p class="rubrique">Schéma 3 · Avant, après</p>
+<h2>Dire plus clairement : null, texte, tests de type</h2>
+<p style="max-width:165mm">Ces raccourcis-là font plus que raccourcir : ils évitent des oublis. Les quatre premiers sont déjà utilisables dans Cuttlefish.</p>
+<div style="margin-top:4mm">
+<div class="paire">
+<div class="nom"><span class="rep r5">5</span><br/>Valeur de secours si null<br/><span class="ver">C# 2</span><span class="src">SnapSet/Fichier.cs, l. 194</span></div>
 <div class="boite avant"><span class="etiq">Avant</span>string c;
 <span class="hl">if (chemin != null)
     c = chemin;
 else
     c = string.Empty;</span></div>
 <div class="boite apres"><span class="etiq">Après</span>string c = chemin <span class="hl">??</span> string.Empty;</div>
-    </div>
-
-    <div class="paire">
-      <div class="nom"><span class="rep r6">6</span><br>Appeler seulement si non null<br><span class="ver">C# 6</span><span class="src">SnapSet/Fichier.cs, l. 197</span></div>
+</div>
+<div class="paire">
+<div class="nom"><span class="rep r6">6</span><br/>Appeler seulement si non null<br/><span class="ver">C# 6</span><span class="src">SnapSet/Fichier.cs, l. 197</span></div>
 <div class="boite avant"><span class="etiq">Avant</span><span class="hl">if (Changement != null)</span>
     Changement(this, EventArgs.Empty);</div>
 <div class="boite apres"><span class="etiq">Après</span>Changement<span class="hl">?.</span>Invoke(this, EventArgs.Empty);</div>
-    </div>
-
-    <div class="paire">
-      <div class="nom"><span class="rep r2">7</span><br>Insérer des valeurs dans un texte<br><span class="ver">C# 6</span><span class="src">Magpie/IconLoader.cs<br>MagpieCertificateGenerator.cs</span></div>
+</div>
+<div class="paire">
+<div class="nom"><span class="rep r2">7</span><br/>Insérer des valeurs dans un texte<br/><span class="ver">C# 6</span><span class="src">Magpie/IconLoader.cs<br/>MagpieCertificateGenerator.cs</span></div>
 <div class="boite avant"><span class="etiq">Avant</span><span class="hl">string.Format(</span>
     "Magpie.Resources.<span class="hl">{0}</span>"<span class="hl">,
     fileName)</span></div>
@@ -272,19 +238,17 @@ else
 
 <span style="color:#8A8F93">// avec un format :</span>
 $"GH-<span class="hl">{date:yyyy}</span>-{date:MMdd}"</div>
-    </div>
-
-    <div class="paire">
-      <div class="nom"><span class="rep r7">8</span><br>Déclarer dans l'appel<br><span class="ver">C# 7</span><span class="src">Cuttlefish/Outils.cs, l. 26</span></div>
+</div>
+<div class="paire">
+<div class="nom"><span class="rep r7">8</span><br/>Déclarer dans l'appel<br/><span class="ver">C# 7</span><span class="src">Cuttlefish/Outils.cs, l. 26</span></div>
 <div class="boite avant"><span class="etiq">Avant</span><span class="hl">int g;</span>
 if (!index.TryGetValue(cle,
         out g))</div>
 <div class="boite apres"><span class="etiq">Après</span>if (!index.TryGetValue(cle,
         out <span class="hl">int</span> g))</div>
-    </div>
-
-    <div class="paire">
-      <div class="nom"><span class="rep r3">9</span><br>Tester un type et le nommer<br><span class="ver">C# 7</span> <span class="ver" style="background:#C62828">C# 9</span><span class="src">SnapSet/ArbreExecution.cs, l. 153</span></div>
+</div>
+<div class="paire">
+<div class="nom"><span class="rep r3">9</span><br/>Tester un type et le nommer<br/><span class="ver">C# 7</span> <span class="ver" style="background:#C62828">C# 9</span><span class="src">SnapSet/ArbreExecution.cs, l. 153</span></div>
 <div class="boite avant"><span class="etiq">Avant</span>var c = <span class="hl">item as ConstituantExecution;
 if (c == null)</span> return;</div>
 <div class="boite apres"><span class="etiq">Après</span>if (!(item <span class="hl">is ConstituantExecution c</span>))
@@ -293,37 +257,33 @@ if (c == null)</span> return;</div>
 <span style="color:#8A8F93">// en C# 9 :</span>
 if (item <span class="hl">is not</span> ConstituantExecution c)
     return;</div>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="margin-top:4mm">
-    <span class="titre">Piège courant</span>
+</div>
+</div>
+<div class="encadre piege" style="margin-top:4mm">
+<span class="titre">Piège courant</span>
     Croire que <code>??</code> remplace une chaîne <b>vide</b>. Il ne réagit qu'à <code>null</code> : <code>"" ?? "défaut"</code> vaut <code>""</code>. Pour traiter aussi le vide, il faut <code>string.IsNullOrEmpty(x) ? "défaut" : x</code>.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 01 · Du C# verbeux au C# moderne</div>
+<div class="folio">4</div>
+<div class="pied">Cours 01 · Du C# verbeux au C# moderne</div>
 </section>
-
 <!-- ============ PAGE 5 · DANS TES PROJETS ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 01</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>Outils.Groupes : Cuttlefish est déjà moderne</h2>
-  <p style="max-width:165mm">Tu lis peut-être ce code comme « compliqué ». Les repères montrent qu'il est fait des raccourcis des pages 3 et 4, plus deux notions du cours 03. Tout est permis en C# 7.3.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 01</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>Outils.Groupes : Cuttlefish est déjà moderne</h2>
+<p style="max-width:165mm">Tu lis peut-être ce code comme « compliqué ». Les repères montrent qu'il est fait des raccourcis des pages 3 et 4, plus deux notions du cours 03. Tout est permis en C# 7.3.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="n">19</span><span class="kw">public static</span> <span class="ty">List</span>&lt;<span class="ty">List</span>&lt;<span class="ty">List</span>&lt;<span class="ty">Point3d</span>&gt;&gt;&gt; Groupes(</div>
-<div class="l"><span class="n"> </span>    <span class="ty">GH_Structure</span>&lt;<span class="ty">GH_Point</span>&gt; arbre)</div>
+<div class="l"><span class="n"> </span> <span class="ty">GH_Structure</span>&lt;<span class="ty">GH_Point</span>&gt; arbre)</div>
 <div class="l"><span class="n">20</span>{</div>
-<div class="l k3"><span class="n">21</span>  <span class="kw">var</span> groupes = <span class="kw">new</span> <span class="ty">List</span>&lt;<span class="ty">List</span>&lt;<span class="ty">List</span>&lt;<span class="ty">Point3d</span>&gt;&gt;&gt;();<span class="rep r3">3</span></div>
-<div class="l k3"><span class="n">22</span>  <span class="kw">var</span> index = <span class="kw">new</span> <span class="ty">Dictionary</span>&lt;<span class="kw">int</span>, <span class="kw">int</span>&gt;();</div>
-<div class="l"><span class="n">23</span>  <span class="kw">for</span> (<span class="kw">int</span> b = 0; b &lt; arbre.PathCount; b++)</div>
+<div class="l k3"><span class="n">21</span> <span class="kw">var</span> groupes = <span class="kw">new</span> <span class="ty">List</span>&lt;<span class="ty">List</span>&lt;<span class="ty">List</span>&lt;<span class="ty">Point3d</span>&gt;&gt;&gt;();<span class="rep r3">3</span></div>
+<div class="l k3"><span class="n">22</span> <span class="kw">var</span> index = <span class="kw">new</span> <span class="ty">Dictionary</span>&lt;<span class="kw">int</span>, <span class="kw">int</span>&gt;();</div>
+<div class="l"><span class="n">23</span> <span class="kw">for</span> (<span class="kw">int</span> b = 0; b &lt; arbre.PathCount; b++)</div>
 <div class="l"><span class="n">24</span>  {</div>
-<div class="l k4"><span class="n">25</span>    <span class="kw">int</span> cle = arbre.Paths[b].Length &gt; 0<span class="rep r4">T</span></div>
+<div class="l k4"><span class="n">25</span> <span class="kw">int</span> cle = arbre.Paths[b].Length &gt; 0<span class="rep r4">T</span></div>
 <div class="l k4"><span class="n"> </span>      ? arbre.Paths[b][0] : 0;</div>
-<div class="l k7"><span class="n">26</span>    <span class="kw">if</span> (!index.TryGetValue(cle, <span class="kw">out int</span> g))<span class="rep r7">8</span></div>
+<div class="l k7"><span class="n">26</span> <span class="kw">if</span> (!index.TryGetValue(cle, <span class="kw">out int</span> g))<span class="rep r7">8</span></div>
 <div class="l"><span class="n">27</span>    {</div>
 <div class="l k7"><span class="n">28</span>      g = groupes.Count;</div>
 <div class="l"><span class="n">29</span>      index[cle] = g;</div>
@@ -334,7 +294,7 @@ if (item <span class="hl">is not</span> ConstituantExecution c)
 <div class="l k1"><span class="n"> </span>      .Select(p =&gt; p.Value)</div>
 <div class="l k1"><span class="n"> </span>      .ToList());</div>
 <div class="l"><span class="n">33</span>  }</div>
-<div class="l"><span class="n">34</span>  <span class="kw">return</span> groupes;</div>
+<div class="l"><span class="n">34</span> <span class="kw">return</span> groupes;</div>
 <div class="l"><span class="n">35</span>}</div>
 <div class="l"><span class="n"> </span> </div>
 <div class="l"><span class="n"> </span><span class="cm">// SnapSet/Fichier.cs, méthode Choisir (extrait)</span></div>
@@ -344,133 +304,54 @@ if (item <span class="hl">is not</span> ConstituantExecution c)
 <div class="l k6"><span class="n">197</span>Changement?.Invoke(<span class="kw">this</span>, <span class="ty">EventArgs</span>.Empty);<span class="rep r6">6</span></div>
 <div class="l k6"><span class="n">198</span>MesureChangee?.Invoke(<span class="kw">this</span>, <span class="ty">EventArgs</span>.Empty);</div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r3">3</span><b>var (raccourci 3)</b>Le type complet est écrit une fois, à droite. L'écrire aussi à gauche, sur trois niveaux de List, n'apporterait rien.</li>
-      <li><span class="rep r4">T</span><b>L'opérateur ternaire</b><code>condition ? a : b</code> vaut a si la condition est vraie, sinon b. Un if/else qui renvoie une valeur, en une ligne. Il existe depuis C# 1.</li>
-      <li><span class="rep r7">8</span><b>out int g (raccourci 8)</b>g est déclaré dans l'appel et reste visible <em>après</em> le if : la ligne 32 s'en sert.</li>
-      <li><span class="rep r1">L</span><b>Lambdas et LINQ</b><code>p =&gt; p != null</code> est une petite fonction anonyme ; Where filtre, Select transforme. C'est tout le cours 03.</li>
-      <li><span class="rep r5">5</span><b>?? (raccourci 5)</b>Si chemin est null, c vaut la chaîne vide : la suite n'a jamais à tester null.</li>
-      <li><span class="rep r6">6</span><b>?. (raccourci 6)</b>L'événement n'est levé que si quelqu'un y est abonné. Sans ?., un événement sans abonné ferait planter Choisir.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:5mm">
-    <span class="titre">Cuttlefish mélange les deux époques</span>
+<ul class="notes">
+<li><span class="rep r3">3</span><b>var (raccourci 3)</b>Le type complet est écrit une fois, à droite. L'écrire aussi à gauche, sur trois niveaux de List, n'apporterait rien.</li>
+<li><span class="rep r4">T</span><b>L'opérateur ternaire</b><code>condition ? a : b</code> vaut a si la condition est vraie, sinon b. Un if/else qui renvoie une valeur, en une ligne. Il existe depuis C# 1.</li>
+<li><span class="rep r7">8</span><b>out int g (raccourci 8)</b>g est déclaré dans l'appel et reste visible <em>après</em> le if : la ligne 32 s'en sert.</li>
+<li><span class="rep r1">L</span><b>Lambdas et LINQ</b><code>p =&gt; p != null</code> est une petite fonction anonyme ; Where filtre, Select transforme. C'est tout le cours 03.</li>
+<li><span class="rep r5">5</span><b>?? (raccourci 5)</b>Si chemin est null, c vaut la chaîne vide : la suite n'a jamais à tester null.</li>
+<li><span class="rep r6">6</span><b>?. (raccourci 6)</b>L'événement n'est levé que si quelqu'un y est abonné. Sans ?., un événement sans abonné ferait planter Choisir.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:5mm">
+<span class="titre">Cuttlefish mélange les deux époques</span>
     Dans le même dépôt : <code>Icon { get { return … } }</code> dans Bubble et Maze, mais <code>out int g</code> et des lambdas dans Outils. Rien d'anormal : c'est du code qui a grandi. Moderniser les vieilles formes est un bon exercice, sans risque, puisque le code compilé ne change pas.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 01 · Du C# verbeux au C# moderne</div>
+<div class="folio">5</div>
+<div class="pied">Cours 01 · Du C# verbeux au C# moderne</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 01</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 01</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce"><code>public string Name =&gt; "X";</code> équivaut à…</div><ul>
-      <li><span>A</span>un champ public nommé Name</li><li><span>B</span>une propriété avec <code>get { return "X"; }</code></li><li><span>C</span>une méthode Name()</li><li><span>D</span>une constante</li></ul></div>
 
-    <div class="q"><div class="enonce">Quelle version de C# Cuttlefish (.NET Framework 4.8) utilise-t-il par défaut ?</div><ul>
-      <li><span>A</span>C# 6</li><li><span>B</span>C# 7.3</li><li><span>C</span>C# 9</li><li><span>D</span>C# 11</li></ul></div>
 
-    <div class="q"><div class="enonce">Laquelle de ces lignes ne compile PAS dans Cuttlefish ?</div><ul>
-      <li><span>A</span><code>var l = new List&lt;int&gt;();</code></li><li><span>B</span><code>List&lt;int&gt; l = new();</code></li><li><span>C</span><code>$"n = {n}"</code></li><li><span>D</span><code>TryGetValue(k, out int g)</code></li></ul></div>
 
-    <div class="q"><div class="enonce">Que vaut <code>chemin ?? string.Empty</code> ?</div><ul>
-      <li><span>A</span>string.Empty si chemin est null, sinon chemin</li><li><span>B</span>toujours string.Empty</li><li><span>C</span>null si chemin est vide</li><li><span>D</span>une exception si chemin est null</li></ul></div>
-
-    <div class="q"><div class="enonce"><code>Changement?.Invoke(this, e)</code>, quand personne n'est abonné…</div><ul>
-      <li><span>A</span>lève une NullReferenceException</li><li><span>B</span>ne fait rien</li><li><span>C</span>abonne this à l'événement</li><li><span>D</span>renvoie false</li></ul></div>
-
-    <div class="q"><div class="enonce">Le 23/10/2026, <code>$"GH-{date:yyyy}"</code> produit…</div><ul>
-      <li><span>A</span>"GH-{date:yyyy}"</li><li><span>B</span>"GH-2026"</li><li><span>C</span>"GH-date"</li><li><span>D</span>"GH-23/10/2026"</li></ul></div>
-
-    <div class="q"><div class="enonce">Que fait <code>var</code> ?</div><ul>
-      <li><span>A</span>rend la variable dynamique : son type peut changer</li><li><span>B</span>laisse le compilateur déduire le type, fixé ensuite</li><li><span>C</span>déclare une variable globale</li><li><span>D</span>désactive la vérification de type</li></ul></div>
-
-    <div class="q"><div class="enonce">Après <code>if (!(item is ConstituantExecution c)) return;</code>, que sait-on de c ?</div><ul>
-      <li><span>A</span>c vaut null</li><li><span>B</span>c est utilisable, typé ConstituantExecution</li><li><span>C</span>item a été converti en place</li><li><span>D</span>c n'existe plus</li></ul></div>
-
-    <div class="q"><div class="enonce">Quels raccourcis sont apparus en C# 6 ? <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>les membres en <code>=&gt;</code></li><li><span>B</span><code>?.</code></li><li><span>C</span><code>$"…"</code></li><li><span>D</span><code>var</code></li></ul></div>
-
-    <div class="q"><div class="enonce">Avec <code>set =&gt; _filtre = value ?? Defaut;</code>, si on affecte null, _filtre vaut…</div><ul>
-      <li><span>A</span>null</li><li><span>B</span>Defaut</li><li><span>C</span>l'ancienne valeur</li><li><span>D</span>une exception est levée</li></ul></div>
-
-    <div class="q"><div class="enonce">Pourquoi le code généré par SnapSet reste-t-il en C# 7.3 ?</div><ul>
-      <li><span>A</span>il s'exécute plus vite</li><li><span>B</span>pour compiler dans n'importe quel projet de greffon</li><li><span>C</span>Roslyn ne connaît pas C# 11</li><li><span>D</span>par habitude</li></ul></div>
-
-    <div class="q"><div class="enonce">Que vaut <code>"" ?? "défaut"</code> ?</div><ul>
-      <li><span>A</span>""</li><li><span>B</span>"défaut"</li><li><span>C</span>null</li><li><span>D</span>ne compile pas</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 01 · Du C# verbeux au C# moderne</div>
+<p class="rubrique" style="">Aide-mémoire · à garder près du clavier</p>
+<table class="aide">
+<thead><tr><th>N°</th><th>Forme longue</th><th>Forme moderne</th><th>Version</th><th>Cuttlefish</th></tr></thead>
+<tbody>
+<tr><td>1</td><td class="c">X { get { return v; } }</td><td class="c">X =&gt; v;</td><td>C# 6</td><td class="oui">oui</td></tr>
+<tr><td>2</td><td class="c">T F() { return e; }</td><td class="c">T F() =&gt; e;</td><td>C# 6</td><td class="oui">oui</td></tr>
+<tr><td>3</td><td class="c">List&lt;T&gt; l = new List&lt;T&gt;();</td><td class="c">var l = new List&lt;T&gt;();</td><td>C# 3</td><td class="oui">oui</td></tr>
+<tr><td></td><td class="c">List&lt;T&gt; l = new List&lt;T&gt;();</td><td class="c">List&lt;T&gt; l = new();</td><td>C# 9</td><td class="non">non</td></tr>
+<tr><td>4</td><td class="c">set { _x = value; }</td><td class="c">set =&gt; _x = value;</td><td>C# 7</td><td class="oui">oui</td></tr>
+<tr><td>5</td><td class="c">x != null ? x : y</td><td class="c">x ?? y</td><td>C# 2</td><td class="oui">oui</td></tr>
+<tr><td>6</td><td class="c">if (e != null) e(…);</td><td class="c">e?.Invoke(…);</td><td>C# 6</td><td class="oui">oui</td></tr>
+<tr><td>7</td><td class="c">string.Format("{0}", a)</td><td class="c">$"{a}"</td><td>C# 6</td><td class="oui">oui</td></tr>
+<tr><td>8</td><td class="c">int g; F(out g);</td><td class="c">F(out int g);</td><td>C# 7</td><td class="oui">oui</td></tr>
+<tr><td>9</td><td class="c">var c = o as T; if (c == null)</td><td class="c">if (!(o is T c))</td><td>C# 7</td><td class="oui">oui</td></tr>
+<tr><td></td><td class="c">if (!(o is T c))</td><td class="c">if (o is not T c)</td><td>C# 9</td><td class="non">non</td></tr>
+<tr><td></td><td class="c">if (x == null) x = y;</td><td class="c">x ??= y;</td><td>C# 8</td><td class="non">non</td></tr>
+</tbody>
+</table>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 02</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 01 · Du C# verbeux au C# moderne</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET AIDE-MÉMOIRE ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1A</b> · Écrire du C#</span><b>Cours 01</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · B.</b> Le <code>=&gt;</code> devant un membre crée une propriété en lecture seule. Le compilateur écrit le get pour toi.</div>
-    <div><b>02 · B.</b> Un projet .NET Framework 4.8 est en C# 7.3 par défaut. Cuttlefish ne fixe pas de LangVersion.</div>
-    <div><b>03 · B.</b> Le <code>new()</code> sans type date de C# 9. Les trois autres sont permis en C# 7.3.</div>
-    <div><b>04 · A.</b> <code>??</code> rend l'opérande de gauche s'il n'est pas null, sinon celui de droite.</div>
-    <div><b>05 · B.</b> <code>?.</code> court-circuite : rien n'est appelé, aucune exception.</div>
-    <div><b>06 · B.</b> Les accolades insèrent la valeur, <code>:yyyy</code> la formate en année sur quatre chiffres.</div>
-    <div><b>07 · B.</b> Le type est déduit à la compilation puis fixé. C# reste fortement typé ; <code>dynamic</code> est autre chose.</div>
-    <div><b>08 · B.</b> Si item n'est pas du bon type, on est sorti. Sinon c existe, déjà converti.</div>
-    <div><b>09 · A, B et C.</b> <code>var</code> est bien plus ancien : C# 3, avec LINQ.</div>
-    <div><b>10 · B.</b> <code>value</code> vaut null, donc <code>??</code> choisit Defaut. C'est la ligne réelle de Fichier.cs.</div>
-    <div><b>11 · B.</b> docs/TAGS.md : le code émis doit compiler dans tout greffon, même ancien.</div>
-    <div><b>12 · A.</b> La chaîne vide n'est pas null. <code>??</code> la laisse passer telle quelle.</div>
-  </div>
-
-  <div class="panneau" style="padding:3.5mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:30mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.3pt; line-height:1.45"><b>0 à 6</b> : relis les pages 3 et 4 en couvrant la colonne « Après ». <b>7 à 9</b> : revois la frise de la page 2. <b>10 à 12</b> : passe au cours 02, « Héritage et polymorphisme, appliqués ».</div>
-  </div>
-
-  <p class="rubrique" style="margin-top:6mm">Aide-mémoire · à garder près du clavier</p>
-  <table class="aide">
-    <thead><tr><th>N°</th><th>Forme longue</th><th>Forme moderne</th><th>Version</th><th>Cuttlefish</th></tr></thead>
-    <tbody>
-      <tr><td>1</td><td class="c">X { get { return v; } }</td><td class="c">X =&gt; v;</td><td>C# 6</td><td class="oui">oui</td></tr>
-      <tr><td>2</td><td class="c">T F() { return e; }</td><td class="c">T F() =&gt; e;</td><td>C# 6</td><td class="oui">oui</td></tr>
-      <tr><td>3</td><td class="c">List&lt;T&gt; l = new List&lt;T&gt;();</td><td class="c">var l = new List&lt;T&gt;();</td><td>C# 3</td><td class="oui">oui</td></tr>
-      <tr><td></td><td class="c">List&lt;T&gt; l = new List&lt;T&gt;();</td><td class="c">List&lt;T&gt; l = new();</td><td>C# 9</td><td class="non">non</td></tr>
-      <tr><td>4</td><td class="c">set { _x = value; }</td><td class="c">set =&gt; _x = value;</td><td>C# 7</td><td class="oui">oui</td></tr>
-      <tr><td>5</td><td class="c">x != null ? x : y</td><td class="c">x ?? y</td><td>C# 2</td><td class="oui">oui</td></tr>
-      <tr><td>6</td><td class="c">if (e != null) e(…);</td><td class="c">e?.Invoke(…);</td><td>C# 6</td><td class="oui">oui</td></tr>
-      <tr><td>7</td><td class="c">string.Format("{0}", a)</td><td class="c">$"{a}"</td><td>C# 6</td><td class="oui">oui</td></tr>
-      <tr><td>8</td><td class="c">int g; F(out g);</td><td class="c">F(out int g);</td><td>C# 7</td><td class="oui">oui</td></tr>
-      <tr><td>9</td><td class="c">var c = o as T; if (c == null)</td><td class="c">if (!(o is T c))</td><td>C# 7</td><td class="oui">oui</td></tr>
-      <tr><td></td><td class="c">if (!(o is T c))</td><td class="c">if (o is not T c)</td><td>C# 9</td><td class="non">non</td></tr>
-      <tr><td></td><td class="c">if (x == null) x = y;</td><td class="c">x ??= y;</td><td>C# 8</td><td class="non">non</td></tr>
-    </tbody>
-  </table>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 02</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 01 · Du C# verbeux au C# moderne</div>
-</section>
-
 </body>
 </html>

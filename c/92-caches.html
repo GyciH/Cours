@@ -1,269 +1,242 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>92 · Les caches</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-11">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 92</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Les caches</h1>
-  <p class="chapeau">Un <b>cache</b> garde un résultat pour ne pas le recalculer. C'est l'accélération la plus rentable qui soit, et la plus traîtresse : un résultat gardé peut devenir faux sans prévenir, et un cache qui n'oublie rien finit par occuper toute la mémoire. On en trouve dans les trois couches de tes projets : le texte des capsules SnapSet, le catalogue de Magpie, les fichiers servis au navigateur.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>58</b> et <b>91</b></span>
-    <span class="pastille">Exemples · <b>MesureurGdi.cs</b> (SnapSet), <b>useCatalog.js</b>, <b>compute-proxy.mjs</b> (Magpie)</span>
-  </div>
-
-  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
-    <svg viewBox="0 0 600 200" width="100%">
-<rect x="10" y="60" width="100" height="36" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
-<text x="60.0" y="80.8" font-size="8.4" fill="#6B7378" text-anchor="middle" font-weight="700">demande</text>
-<rect x="140" y="60" width="110" height="36" rx="4" fill="#ECEBFA" stroke="#4F46B8" stroke-width="1.2"/>
-<text x="195.0" y="80.8" font-size="8.4" fill="#4F46B8" text-anchor="middle" font-weight="700">construire la clé</text>
-<polygon points="330,52 384,78 330,104 276,78" fill="#fff" stroke="#4F46B8" stroke-width="1.2"/>
-<text x="330" y="76" font-size="8.2" fill="#4F46B8" text-anchor="middle" font-weight="700">déjà</text>
-<text x="330" y="87" font-size="8.2" fill="#4F46B8" text-anchor="middle" font-weight="700">connu ?</text>
-<rect x="440" y="20" width="140" height="36" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="510.0" y="40.8" font-size="8.4" fill="#2E7D32" text-anchor="middle" font-weight="700">rendre le résultat gardé</text>
-<rect x="410" y="110" width="80" height="36" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
-<text x="450.0" y="130.8" font-size="8.4" fill="#C62828" text-anchor="middle" font-weight="700">calculer</text>
-<rect x="500" y="110" width="80" height="36" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
-<text x="540.0" y="130.8" font-size="8.4" fill="#C62828" text-anchor="middle" font-weight="700">ranger</text>
-<line x1="112" y1="78" x2="138" y2="78" stroke="#6B7378" stroke-width="1.2"/><polygon points="138,78 131.6,80.7 131.6,75.3" fill="#6B7378"/>
-<line x1="252" y1="78" x2="274" y2="78" stroke="#6B7378" stroke-width="1.2"/><polygon points="274,78 267.6,80.7 267.6,75.3" fill="#6B7378"/>
-<path d="M 360 64 L 360 38 L 436 38" fill="none" stroke="#2E7D32" stroke-width="1.2"/>
-<polygon points="438,38 431,34 431,42" fill="#2E7D32"/>
-<text x="368" y="32" font-size="8" fill="#2E7D32" text-anchor="start" font-weight="700">succès</text>
-<path d="M 360 92 L 360 128 L 406 128" fill="none" stroke="#C62828" stroke-width="1.2"/>
-<polygon points="408,128 401,124 401,132" fill="#C62828"/>
-<text x="368" y="146" font-size="8" fill="#C62828" text-anchor="start" font-weight="700">échec</text>
-<line x1="492" y1="128" x2="498" y2="128" stroke="#6B7378" stroke-width="1.2"/><polygon points="498,128 491.6,130.7 491.6,125.3" fill="#6B7378"/>
-<path d="M 540 108 L 540 58" fill="none" stroke="#6B7378" stroke-width="1.2" stroke-dasharray="3 2"/>
-<polygon points="540,56 536,63 544,63" fill="#6B7378"/>
-<text x="300" y="176" font-size="8.8" fill="#2B2F33" text-anchor="middle" font-weight="700">Deux questions décident de tout : que met-on dans la clé, et quand oublie-t-on ?</text>
-<text x="300" y="192" font-size="7.8" fill="#6B7378" text-anchor="middle" font-style="italic">Une clé incomplète rend un résultat faux ; un cache qui n'oublie jamais grossit sans fin.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 92</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Les caches</h1>
+<p class="chapeau">Un <b>cache</b> garde un résultat pour ne pas le recalculer. C'est l'accélération la plus rentable qui soit, et la plus traîtresse : un résultat gardé peut devenir faux sans prévenir, et un cache qui n'oublie rien finit par occuper toute la mémoire. On en trouve dans les trois couches de tes projets : le texte des capsules SnapSet, le catalogue de Magpie, les fichiers servis au navigateur.</p>
+<div class="meta">
+<span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>58</b> et <b>91</b></span>
+<span class="pastille">Exemples · <b>MesureurGdi.cs</b> (SnapSet), <b>useCatalog.js</b>, <b>compute-proxy.mjs</b> (Magpie)</span>
+</div>
+<div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+<svg viewbox="0 0 600 200" width="100%">
+<rect fill="#fff" height="36" rx="4" stroke="#6B7378" stroke-width="1.2" width="100" x="10" y="60"></rect>
+<text fill="#6B7378" font-size="8.4" font-weight="700" text-anchor="middle" x="60.0" y="80.8">demande</text>
+<rect fill="#ECEBFA" height="36" rx="4" stroke="#4F46B8" stroke-width="1.2" width="110" x="140" y="60"></rect>
+<text fill="#4F46B8" font-size="8.4" font-weight="700" text-anchor="middle" x="195.0" y="80.8">construire la clé</text>
+<polygon fill="#fff" points="330,52 384,78 330,104 276,78" stroke="#4F46B8" stroke-width="1.2"></polygon>
+<text fill="#4F46B8" font-size="8.2" font-weight="700" text-anchor="middle" x="330" y="76">déjà</text>
+<text fill="#4F46B8" font-size="8.2" font-weight="700" text-anchor="middle" x="330" y="87">connu ?</text>
+<rect fill="#fff" height="36" rx="4" stroke="#2E7D32" stroke-width="1.2" width="140" x="440" y="20"></rect>
+<text fill="#2E7D32" font-size="8.4" font-weight="700" text-anchor="middle" x="510.0" y="40.8">rendre le résultat gardé</text>
+<rect fill="#fff" height="36" rx="4" stroke="#C62828" stroke-width="1.2" width="80" x="410" y="110"></rect>
+<text fill="#C62828" font-size="8.4" font-weight="700" text-anchor="middle" x="450.0" y="130.8">calculer</text>
+<rect fill="#fff" height="36" rx="4" stroke="#C62828" stroke-width="1.2" width="80" x="500" y="110"></rect>
+<text fill="#C62828" font-size="8.4" font-weight="700" text-anchor="middle" x="540.0" y="130.8">ranger</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="112" x2="138" y1="78" y2="78"></line><polygon fill="#6B7378" points="138,78 131.6,80.7 131.6,75.3"></polygon>
+<line stroke="#6B7378" stroke-width="1.2" x1="252" x2="274" y1="78" y2="78"></line><polygon fill="#6B7378" points="274,78 267.6,80.7 267.6,75.3"></polygon>
+<path d="M 360 64 L 360 38 L 436 38" fill="none" stroke="#2E7D32" stroke-width="1.2"></path>
+<polygon fill="#2E7D32" points="438,38 431,34 431,42"></polygon>
+<text fill="#2E7D32" font-size="8" font-weight="700" text-anchor="start" x="368" y="32">succès</text>
+<path d="M 360 92 L 360 128 L 406 128" fill="none" stroke="#C62828" stroke-width="1.2"></path>
+<polygon fill="#C62828" points="408,128 401,124 401,132"></polygon>
+<text fill="#C62828" font-size="8" font-weight="700" text-anchor="start" x="368" y="146">échec</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="492" x2="498" y1="128" y2="128"></line><polygon fill="#6B7378" points="498,128 491.6,130.7 491.6,125.3"></polygon>
+<path d="M 540 108 L 540 58" fill="none" stroke="#6B7378" stroke-dasharray="3 2" stroke-width="1.2"></path>
+<polygon fill="#6B7378" points="540,56 536,63 544,63"></polygon>
+<text fill="#2B2F33" font-size="8.8" font-weight="700" text-anchor="middle" x="300" y="176">Deux questions décident de tout : que met-on dans la clé, et quand oublie-t-on ?</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="middle" x="300" y="192">Une clé incomplète rend un résultat faux ; un cache qui n'oublie jamais grossit sans fin.</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Un cache échange de la mémoire contre du temps, à condition de savoir ce qui identifie un résultat et quand il cesse d'être vrai.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Un carnet de numéros de téléphone : plus rapide que l'annuaire, mais il faut le mettre à jour quand quelqu'un change de numéro, et en arracher des pages quand il est plein.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>construire une clé complète ;</li>
-        <li>choisir une façon d'oublier ;</li>
-        <li>lire un en-tête Cache-Control ;</li>
-        <li>borner un cache.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Un cache échange de la mémoire contre du temps, à condition de savoir ce qui identifie un résultat et quand il cesse d'être vrai.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Un carnet de numéros de téléphone : plus rapide que l'annuaire, mais il faut le mettre à jour quand quelqu'un change de numéro, et en arracher des pages quand il est plein.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>construire une clé complète ;</li>
+<li>choisir une façon d'oublier ;</li>
+<li>lire un en-tête Cache-Control ;</li>
+<li>borner un cache.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À retenir</span>
     Garder le résultat d'une fonction selon ses arguments s'appelle la <b>mémoïsation</b>. Elle n'est juste que si la fonction est pure : même entrée, même sortie, sans dépendre d'un état caché.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 92 · Les caches</div>
+<div class="folio">1</div>
+<div class="pied">Cours 92 · Les caches</div>
 </section>
-
 <!-- ============ PAGE 2 · LA CLÉ ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 92</b></div>
-  <p class="rubrique">Schéma 1 · La clé</p>
-  <h2>Tout ce qui change le résultat</h2>
-  <p style="max-width:165mm">Mesurer un texte avec GDI+ dépend du texte, de la taille et de la graisse. Le mesureur de SnapSet met les trois dans sa clé, séparés par un caractère qui ne peut pas apparaître dans un libellé. Oublier un ingrédient, c'est rendre la mesure d'un autre texte.</p>
-
-  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.4" fill="#4F46B8" text-anchor="start" font-weight="700">Le schéma de MesureurGdi recopié en exemple autonome : coût d'une consultation réussie, mesuré avec .NET 8</text>
-<text x="16" y="54" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">construire la clé (concaténation + ToString("R"))</text>
-<rect x="300" y="42" width="201" height="18" fill="#E65100"/>
-<text x="507" y="55" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">201 ns</text>
-<text x="16" y="84" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">verrou + TryGetValue</text>
-<rect x="300" y="72" width="17" height="18" fill="#2E7D32"/>
-<text x="323" y="85" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">17 ns</text>
-<text x="16" y="114" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">total d'un succès</text>
-<rect x="300" y="102" width="218" height="18" fill="#4F46B8"/>
-<text x="524" y="115" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">218 ns</text>
-<text x="16" y="144" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">Chaque consultation alloue 72 octets : la chaîne de la taille, puis la clé entière.</text>
-<text x="16" y="162" font-size="8" fill="#2B2F33" text-anchor="start">La clé coûte plus que la recherche. Un calcul de 4 µs reste 20 fois plus cher : le cache paie,</text>
-<text x="16" y="176" font-size="8" fill="#2B2F33" text-anchor="start">mais une clé plus simple (un tuple, un nombre) rendrait le succès presque gratuit.</text>
-<text x="16" y="196" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">MeasureString de GDI+ n'existe que sous Windows : son coût n'a pas pu être mesuré ici.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 92</b></div>
+<p class="rubrique">Schéma 1 · La clé</p>
+<h2>Tout ce qui change le résultat</h2>
+<p style="max-width:165mm">Mesurer un texte avec GDI+ dépend du texte, de la taille et de la graisse. Le mesureur de SnapSet met les trois dans sa clé, séparés par un caractère qui ne peut pas apparaître dans un libellé. Oublier un ingrédient, c'est rendre la mesure d'un autre texte.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 206" width="100%">
+<rect fill="#EFE9E1" height="206" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="22">Le schéma de MesureurGdi recopié en exemple autonome : coût d'une consultation réussie, mesuré avec .NET 8</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="54">construire la clé (concaténation + ToString("R"))</text>
+<rect fill="#E65100" height="18" width="201" x="300" y="42"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="507" y="55">201 ns</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="84">verrou + TryGetValue</text>
+<rect fill="#2E7D32" height="18" width="17" x="300" y="72"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="323" y="85">17 ns</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="114">total d'un succès</text>
+<rect fill="#4F46B8" height="18" width="218" x="300" y="102"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="524" y="115">218 ns</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="144">Chaque consultation alloue 72 octets : la chaîne de la taille, puis la clé entière.</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="16" y="162">La clé coûte plus que la recherche. Un calcul de 4 µs reste 20 fois plus cher : le cache paie,</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="16" y="176">mais une clé plus simple (un tuple, un nombre) rendrait le succès presque gratuit.</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="196">MeasureString de GDI+ n'existe que sous Windows : son coût n'a pas pu être mesuré ici.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">SnapSet/src/SnapSet.Constituants/MesureurGdi.cs · lignes 137 à 140 et 155 (ligne 137 coupée)</span>string cle = chaine + "\u0001" + taillePoints.ToString("R", …)
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">SnapSet/src/SnapSet.Constituants/MesureurGdi.cs · lignes 137 à 140 et 155 (ligne 137 coupée)</span>string cle = chaine + "\u0001" + taillePoints.ToString("R", …)
     + (gras ? "g" : "r");
 lock (_verrou)
 {
     if (_mesures.TryGetValue(cle, out var deja)) return deja;
     …
     _mesures[cle] = mesure;</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Le séparateur</h3>
-      <p>Sans séparateur, le texte « Rayon1 » en taille 0 et le texte « Rayon » en taille 10 donneraient la même clé. Le caractère <code>\u0001</code> ne s'écrit pas au clavier : il ne peut pas se glisser dans un libellé et fausser la frontière.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Le verrou</h3>
-      <p>Le dictionnaire est partagé par toutes les capsules (un seul mesureur, PeintreFeuilles.cs:71). Un <code>Dictionary</code> n'aime pas deux écritures en même temps : le <code>lock</code> les met en file. Lire, ranger et calculer se font sous le même verrou.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Le séparateur</h3>
+<p>Sans séparateur, le texte « Rayon1 » en taille 0 et le texte « Rayon » en taille 10 donneraient la même clé. Le caractère <code>\u0001</code> ne s'écrit pas au clavier : il ne peut pas se glisser dans un libellé et fausser la frontière.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Le verrou</h3>
+<p>Le dictionnaire est partagé par toutes les capsules (un seul mesureur, PeintreFeuilles.cs:71). Un <code>Dictionary</code> n'aime pas deux écritures en même temps : le <code>lock</code> les met en file. Lire, ranger et calculer se font sous le même verrou.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Mettre en cache le résultat d'une fonction qui lit un état extérieur : l'heure, un réglage, la taille de l'écran. La clé ne le contient pas, le cache rendra l'ancienne valeur. Ici, la police dépend aussi de l'écran ; le mesureur l'évite en créant ses polices en pixels.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 92 · Les caches</div>
+<div class="folio">2</div>
+<div class="pied">Cours 92 · Les caches</div>
 </section>
-
 <!-- ============ PAGE 3 · OUBLIER ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 92</b></div>
-  <p class="rubrique">Schéma 2 · L'invalidation</p>
-  <h2>Savoir oublier</h2>
-  <p style="max-width:165mm">Un résultat gardé devient faux quand l'une de ses entrées change. Il y a cinq façons de s'en protéger, et tes projets les emploient toutes. La dernière, ne pas cacher du tout, est souvent la meilleure.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">Quand un résultat gardé devient-il faux ? Cinq réponses, toutes prises dans les dépôts</text>
-<text x="30" y="44" font-size="8" fill="#6B7378" text-anchor="start" font-weight="700">stratégie</text>
-<text x="196" y="44" font-size="8" fill="#6B7378" text-anchor="start" font-weight="700">le principe</text>
-<text x="410" y="44" font-size="8" fill="#6B7378" text-anchor="start" font-weight="700">dans les dépôts</text>
-<rect x="16" y="52" width="568" height="24" rx="3" fill="#ECEBFA"/>
-<text x="30" y="68" font-size="8.4" fill="#4F46B8" text-anchor="start" font-weight="700">clé complète</text>
-<text x="196" y="68" font-size="8.2" fill="#2B2F33" text-anchor="start">tout ce qui change le résultat est dans la clé</text>
-<text x="410" y="68" font-size="7.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.8px">MesureurGdi.cs:137</text>
-<rect x="16" y="80" width="568" height="24" rx="3" fill="#fff"/>
-<text x="30" y="96" font-size="8.4" fill="#4F46B8" text-anchor="start" font-weight="700">dépendances</text>
-<text x="196" y="96" font-size="8.2" fill="#2B2F33" text-anchor="start">recalculer quand une entrée change</text>
-<text x="410" y="96" font-size="7.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.8px">useCatalog.js:27</text>
-<rect x="16" y="108" width="568" height="24" rx="3" fill="#ECEBFA"/>
-<text x="30" y="124" font-size="8.4" fill="#4F46B8" text-anchor="start" font-weight="700">revalidation</text>
-<text x="196" y="124" font-size="8.2" fill="#2B2F33" text-anchor="start">redemander au serveur à chaque visite</text>
-<text x="410" y="124" font-size="7.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.8px">compute-proxy.mjs:511</text>
-<rect x="16" y="136" width="568" height="24" rx="3" fill="#fff"/>
-<text x="30" y="152" font-size="8.4" fill="#4F46B8" text-anchor="start" font-weight="700">empreinte</text>
-<text x="196" y="152" font-size="8.2" fill="#2B2F33" text-anchor="start">un contenu nouveau prend un nom nouveau</text>
-<text x="410" y="152" font-size="7.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.8px">compute-proxy.mjs:506–508</text>
-<rect x="16" y="164" width="568" height="24" rx="3" fill="#ECEBFA"/>
-<text x="30" y="180" font-size="8.4" fill="#4F46B8" text-anchor="start" font-weight="700">pas de cache</text>
-<text x="196" y="180" font-size="8.2" fill="#2B2F33" text-anchor="start">recalculer, si c'est bon marché</text>
-<text x="410" y="180" font-size="7.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.8px">ConstituantExecution.cs:67–69</text>
-<text x="16" y="204" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Plus la donnée change souvent et moins elle coûte, plus « pas de cache » est le bon choix.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 92</b></div>
+<p class="rubrique">Schéma 2 · L'invalidation</p>
+<h2>Savoir oublier</h2>
+<p style="max-width:165mm">Un résultat gardé devient faux quand l'une de ses entrées change. Il y a cinq façons de s'en protéger, et tes projets les emploient toutes. La dernière, ne pas cacher du tout, est souvent la meilleure.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">Quand un résultat gardé devient-il faux ? Cinq réponses, toutes prises dans les dépôts</text>
+<text fill="#6B7378" font-size="8" font-weight="700" text-anchor="start" x="30" y="44">stratégie</text>
+<text fill="#6B7378" font-size="8" font-weight="700" text-anchor="start" x="196" y="44">le principe</text>
+<text fill="#6B7378" font-size="8" font-weight="700" text-anchor="start" x="410" y="44">dans les dépôts</text>
+<rect fill="#ECEBFA" height="24" rx="3" width="568" x="16" y="52"></rect>
+<text fill="#4F46B8" font-size="8.4" font-weight="700" text-anchor="start" x="30" y="68">clé complète</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="start" x="196" y="68">tout ce qui change le résultat est dans la clé</text>
+<text class="mono" fill="#2B2F33" font-size="7.8" style="font-size:7.8px" text-anchor="start" x="410" y="68">MesureurGdi.cs:137</text>
+<rect fill="#fff" height="24" rx="3" width="568" x="16" y="80"></rect>
+<text fill="#4F46B8" font-size="8.4" font-weight="700" text-anchor="start" x="30" y="96">dépendances</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="start" x="196" y="96">recalculer quand une entrée change</text>
+<text class="mono" fill="#2B2F33" font-size="7.8" style="font-size:7.8px" text-anchor="start" x="410" y="96">useCatalog.js:27</text>
+<rect fill="#ECEBFA" height="24" rx="3" width="568" x="16" y="108"></rect>
+<text fill="#4F46B8" font-size="8.4" font-weight="700" text-anchor="start" x="30" y="124">revalidation</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="start" x="196" y="124">redemander au serveur à chaque visite</text>
+<text class="mono" fill="#2B2F33" font-size="7.8" style="font-size:7.8px" text-anchor="start" x="410" y="124">compute-proxy.mjs:511</text>
+<rect fill="#fff" height="24" rx="3" width="568" x="16" y="136"></rect>
+<text fill="#4F46B8" font-size="8.4" font-weight="700" text-anchor="start" x="30" y="152">empreinte</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="start" x="196" y="152">un contenu nouveau prend un nom nouveau</text>
+<text class="mono" fill="#2B2F33" font-size="7.8" style="font-size:7.8px" text-anchor="start" x="410" y="152">compute-proxy.mjs:506–508</text>
+<rect fill="#ECEBFA" height="24" rx="3" width="568" x="16" y="164"></rect>
+<text fill="#4F46B8" font-size="8.4" font-weight="700" text-anchor="start" x="30" y="180">pas de cache</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="start" x="196" y="180">recalculer, si c'est bon marché</text>
+<text class="mono" fill="#2B2F33" font-size="7.8" style="font-size:7.8px" text-anchor="start" x="410" y="180">ConstituantExecution.cs:67–69</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="204">Plus la donnée change souvent et moins elle coûte, plus « pas de cache » est le bon choix.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/src/hooks/useCatalog.js · ligne 27 (ligne coupée)</span>const catalogByGuid = useMemo(
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/src/hooks/useCatalog.js · ligne 27 (ligne coupée)</span>const catalogByGuid = useMemo(
   () =&gt; new Map(catalog.map((e) =&gt; [e.typeGuid, e])), [catalog]);</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>useMemo et ses dépendances</h3>
-      <p>React garde la <code>Map</code> tant que <code>catalog</code> reste le même objet. Le tableau final liste les dépendances : s'il en manque une, le résultat devient périmé ; s'il en a une qui change à chaque rendu, le cache ne sert jamais.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Le choix de ne pas cacher</h3>
-      <p><code>ActifEffectif</code> remonte la chaîne des parents à chaque lecture : « rien en cache : un parent peut changer d'état entre deux peintures » (ConstituantExecution.cs:68–69). Quelques pointeurs à suivre coûtent moins qu'un état faux à traquer.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>useMemo et ses dépendances</h3>
+<p>React garde la <code>Map</code> tant que <code>catalog</code> reste le même objet. Le tableau final liste les dépendances : s'il en manque une, le résultat devient périmé ; s'il en a une qui change à chaque rendu, le cache ne sert jamais.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Le choix de ne pas cacher</h3>
+<p><code>ActifEffectif</code> remonte la chaîne des parents à chaque lecture : « rien en cache : un parent peut changer d'état entre deux peintures » (ConstituantExecution.cs:68–69). Quelques pointeurs à suivre coûtent moins qu'un état faux à traquer.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Ajouter un cache avant d'avoir mesuré (cours 91). Si le calcul coûte moins que la clé, comme ici une remontée de trois parents, le cache ralentit tout en ajoutant un risque d'erreur.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 92 · Les caches</div>
+<div class="folio">3</div>
+<div class="pied">Cours 92 · Les caches</div>
 </section>
-
 <!-- ============ PAGE 4 · BORNER ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 92</b></div>
-  <p class="rubrique">Schéma 3 · La taille et le navigateur</p>
-  <h2>Borner, et laisser le navigateur garder</h2>
-  <p style="max-width:165mm">Un cache borné doit choisir qui sortir quand il est plein. La règle <b>LRU</b> sort l'entrée la moins récemment servie : les données populaires restent. Côté web, c'est le navigateur qui tient le cache, et le serveur qui lui dit quoi garder.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#4F46B8" text-anchor="start" font-weight="700">200 000 demandes réparties selon une loi de Zipf sur 10 000 clés : part de succès selon la taille du cache (mesuré)</text>
-<rect x="50" y="143.3" width="30" height="16.7" fill="#4F46B8"/>
-<text x="65" y="137.32" font-size="7.6" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.6px">13,9</text>
-<rect x="86" y="145.5" width="30" height="14.5" fill="#B9B4E6"/>
-<text x="101" y="139.48" font-size="7.6" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.6px">12,1</text>
-<text x="83" y="174" font-size="8.2" fill="#2B2F33" text-anchor="middle" font-weight="700">10 places</text>
-<rect x="180" y="112.1" width="30" height="47.9" fill="#4F46B8"/>
-<text x="195" y="106.12" font-size="7.6" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.6px">39,9</text>
-<rect x="216" y="117.6" width="30" height="42.4" fill="#B9B4E6"/>
-<text x="231" y="111.64000000000001" font-size="7.6" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.6px">35,3</text>
-<text x="213" y="174" font-size="8.2" fill="#2B2F33" text-anchor="middle" font-weight="700">100 places</text>
-<rect x="310" y="78.6" width="30" height="81.4" fill="#4F46B8"/>
-<text x="325" y="72.64" font-size="7.6" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.6px">67,8</text>
-<rect x="346" y="83.8" width="30" height="76.2" fill="#B9B4E6"/>
-<text x="361" y="77.8" font-size="7.6" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.6px">63,5</text>
-<text x="343" y="174" font-size="8.2" fill="#2B2F33" text-anchor="middle" font-weight="700">1 000 places</text>
-<rect x="440" y="42.3" width="30" height="117.7" fill="#4F46B8"/>
-<text x="455" y="36.280000000000015" font-size="7.6" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.6px">98,1</text>
-<rect x="476" y="42.3" width="30" height="117.7" fill="#B9B4E6"/>
-<text x="491" y="36.280000000000015" font-size="7.6" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.6px">98,1</text>
-<text x="473" y="174" font-size="8.2" fill="#2B2F33" text-anchor="middle" font-weight="700">10 000 places</text>
-<rect x="380" y="184" width="10" height="10" fill="#4F46B8"/>
-<text x="394" y="193" font-size="7.6" fill="#2B2F33" text-anchor="start">LRU (le moins récent part)</text>
-<rect x="380" y="198" width="10" height="10" fill="#B9B4E6"/>
-<text x="394" y="207" font-size="7.6" fill="#2B2F33" text-anchor="start">FIFO (le plus ancien part)</text>
-<text x="16" y="193" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">3 769 clés distinctes demandées ; 1 000 places</text>
-<text x="16" y="207" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">en servent déjà les deux tiers.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 92</b></div>
+<p class="rubrique">Schéma 3 · La taille et le navigateur</p>
+<h2>Borner, et laisser le navigateur garder</h2>
+<p style="max-width:165mm">Un cache borné doit choisir qui sortir quand il est plein. La règle <b>LRU</b> sort l'entrée la moins récemment servie : les données populaires restent. Côté web, c'est le navigateur qui tient le cache, et le serveur qui lui dit quoi garder.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">200 000 demandes réparties selon une loi de Zipf sur 10 000 clés : part de succès selon la taille du cache (mesuré)</text>
+<rect fill="#4F46B8" height="16.7" width="30" x="50" y="143.3"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="middle" x="65" y="137.32">13,9</text>
+<rect fill="#B9B4E6" height="14.5" width="30" x="86" y="145.5"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="middle" x="101" y="139.48">12,1</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="middle" x="83" y="174">10 places</text>
+<rect fill="#4F46B8" height="47.9" width="30" x="180" y="112.1"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="middle" x="195" y="106.12">39,9</text>
+<rect fill="#B9B4E6" height="42.4" width="30" x="216" y="117.6"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="middle" x="231" y="111.64000000000001">35,3</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="middle" x="213" y="174">100 places</text>
+<rect fill="#4F46B8" height="81.4" width="30" x="310" y="78.6"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="middle" x="325" y="72.64">67,8</text>
+<rect fill="#B9B4E6" height="76.2" width="30" x="346" y="83.8"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="middle" x="361" y="77.8">63,5</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="middle" x="343" y="174">1 000 places</text>
+<rect fill="#4F46B8" height="117.7" width="30" x="440" y="42.3"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="middle" x="455" y="36.280000000000015">98,1</text>
+<rect fill="#B9B4E6" height="117.7" width="30" x="476" y="42.3"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="middle" x="491" y="36.280000000000015">98,1</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="middle" x="473" y="174">10 000 places</text>
+<rect fill="#4F46B8" height="10" width="10" x="380" y="184"></rect>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="394" y="193">LRU (le moins récent part)</text>
+<rect fill="#B9B4E6" height="10" width="10" x="380" y="198"></rect>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="394" y="207">FIFO (le plus ancien part)</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="16" y="193">3 769 clés distinctes demandées ; 1 000 places</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="16" y="207">en servent déjà les deux tiers.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/compute-proxy.mjs · lignes 506 à 512</span>// Les fichiers de assets/ portent une empreinte dans leur nom : mis en cache pour de
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/compute-proxy.mjs · lignes 506 à 512</span>// Les fichiers de assets/ portent une empreinte dans leur nom : mis en cache pour de
 // bon. Le reste (index.html, capsules, icônes) est revalidé à chaque visite.
 const immutable = target.startsWith(join(DIST_DIR, "assets") + sep);
 res.writeHead(200, {
   "Content-Type": MIME_TYPES[extname(target).toLowerCase()] || …,
   "Cache-Control": immutable ? "public, max-age=31536000, immutable" : "no-cache",</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>L'empreinte dans le nom</h3>
-      <p>Vite nomme chaque fichier construit d'après son contenu (<code>index-4f2a….js</code>). Un fichier modifié change de nom : le navigateur peut garder l'ancien un an sans risque. Seul <code>index.html</code>, qui pointe vers ces noms, doit être redemandé.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>no-cache n'est pas no-store</h3>
-      <p><code>no-cache</code> autorise à garder une copie, à condition de demander au serveur si elle est encore bonne avant de s'en servir. <code>no-store</code> interdit toute copie. Côté calcul, Magpie demande aussi à Rhino Compute de ne rien garder : <code>cachesolve: false</code> (ligne 202).</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>L'empreinte dans le nom</h3>
+<p>Vite nomme chaque fichier construit d'après son contenu (<code>index-4f2a….js</code>). Un fichier modifié change de nom : le navigateur peut garder l'ancien un an sans risque. Seul <code>index.html</code>, qui pointe vers ces noms, doit être redemandé.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>no-cache n'est pas no-store</h3>
+<p><code>no-cache</code> autorise à garder une copie, à condition de demander au serveur si elle est encore bonne avant de s'en servir. <code>no-store</code> interdit toute copie. Côté calcul, Magpie demande aussi à Rhino Compute de ne rien garder : <code>cachesolve: false</code> (ligne 202).</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Servir un fichier sans empreinte avec une longue durée de vie. Après une mise à jour, les visiteurs gardent l'ancien script pendant des jours, et le seul remède est de leur demander de vider leur cache.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 92 · Les caches</div>
+<div class="folio">4</div>
+<div class="pied">Cours 92 · Les caches</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 92</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>Le mesureur de texte de SnapSet</h2>
-  <p style="max-width:165mm">Un seul mesureur sert toutes les capsules ; il garde ses polices et ses mesures dans deux dictionnaires, protégés par un même verrou. Les clés sont complètes : texte, taille, graisse, et largeur pour un texte qui passe à la ligne.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 92</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>Le mesureur de texte de SnapSet</h2>
+<p style="max-width:165mm">Un seul mesureur sert toutes les capsules ; il garde ses polices et ses mesures dans deux dictionnaires, protégés par un même verrou. Les clés sont complètes : texte, taille, graisse, et largeur pour un texte qui passe à la ligne.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">SnapSet/src/SnapSet.Constituants/MesureurGdi.cs</span></div>
 <div class="l k1"><span class="n">54</span><span class="kw">private readonly object</span> _verrou = <span class="kw">new object</span>();<span class="rep r1">1</span></div>
@@ -275,137 +248,55 @@ res.writeHead(200, {
 <div class="l"><span class="cm">SnapSet/src/SnapSet.Constituants/Pur/ModeleZoneTexte.cs</span></div>
 <div class="l k5"><span class="n">39</span>Litteral = TexteDeZone.Normaliser(valeur),<span class="rep r5">5</span></div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>Un verrou</b>Pour les deux.</li>
-      <li><span class="rep r2">2</span><b>Deux caches</b>Sans limite.</li>
-      <li><span class="rep r3">3</span><b>L'échec</b>Deux mesures GDI+.</li>
-      <li><span class="rep r4">4</span><b>La zone</b>Clé avec largeur.</li>
-      <li><span class="rep r5">5</span><b>Son texte</b>Celui de l'utilisateur.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À surveiller · un cache qui ne se vide jamais</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>Un verrou</b>Pour les deux.</li>
+<li><span class="rep r2">2</span><b>Deux caches</b>Sans limite.</li>
+<li><span class="rep r3">3</span><b>L'échec</b>Deux mesures GDI+.</li>
+<li><span class="rep r4">4</span><b>La zone</b>Clé avec largeur.</li>
+<li><span class="rep r5">5</span><b>Son texte</b>Celui de l'utilisateur.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À surveiller · un cache qui ne se vide jamais</span>
     Les mesures ne sont jamais retirées, et le mesureur vit autant que Rhino. Pour les libellés, figés au dessin, c'est sans conséquence. Mais une zone de texte mesure la valeur que l'utilisateur a saisie : chaque texte validé, à chaque largeur, ajoute une entrée qui restera jusqu'à la fermeture. L'effet est minime pour quelques saisies ; une borne LRU, ou un cache à part pour les zones, l'éliminerait. Déduit du code, non mesuré.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 92 · Les caches</div>
+<div class="folio">5</div>
+<div class="pied">Cours 92 · Les caches</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 92</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 92</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">La mémoïsation n'est juste que si la fonction…</div><ul>
-      <li><span>A</span>est récursive</li><li><span>B</span>rend toujours la même sortie pour la même entrée</li><li><span>C</span>est publique</li><li><span>D</span>est rapide</li></ul></div>
 
-    <div class="q"><div class="enonce">La clé de MesurerChaine contient… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>l'heure</li><li><span>B</span>la taille et la graisse</li><li><span>C</span>le nom du composant</li><li><span>D</span>le texte</li></ul></div>
 
-    <div class="q"><div class="enonce">Le caractère \u0001 dans la clé sert à…</div><ul>
-      <li><span>A</span>accélérer la recherche</li><li><span>B</span>marquer la fin du texte</li><li><span>C</span>séparer les parties sans ambiguïté</li><li><span>D</span>chiffrer la clé</li></ul></div>
 
-    <div class="q"><div class="enonce">Mesuré : dans un succès, la part la plus chère est…</div><ul>
-      <li><span>A</span>la construction de la clé</li><li><span>B</span>le verrou</li><li><span>C</span>TryGetValue</li><li><span>D</span>le ramasse-miettes</li></ul></div>
-
-    <div class="q"><div class="enonce">Le <code>lock</code> du mesureur protège…</div><ul>
-      <li><span>A</span>la police contre la libération</li><li><span>B</span>le dictionnaire partagé des écritures simultanées</li><li><span>C</span>rien, il est décoratif</li><li><span>D</span>le disque</li></ul></div>
-
-    <div class="q"><div class="enonce">Dans <code>useMemo(f, [catalog])</code>, la Map est recalculée…</div><ul>
-      <li><span>A</span>toutes les secondes</li><li><span>B</span>à chaque rendu</li><li><span>C</span>jamais</li><li><span>D</span>quand catalog change</li></ul></div>
-
-    <div class="q"><div class="enonce">ActifEffectif n'est pas mis en cache parce que…</div><ul>
-      <li><span>A</span>il n'est jamais lu</li><li><span>B</span>un parent peut changer d'état entre deux peintures</li><li><span>C</span>C# l'interdit</li><li><span>D</span>il est trop cher</li></ul></div>
-
-    <div class="q"><div class="enonce">Un fichier avec empreinte dans son nom peut être gardé…</div><ul>
-      <li><span>A</span>jusqu'au redémarrage du serveur</li><li><span>B</span>jamais</li><li><span>C</span>une seconde</li><li><span>D</span>très longtemps, sans risque</li></ul></div>
-
-    <div class="q"><div class="enonce"><code>Cache-Control: no-cache</code> veut dire…</div><ul>
-      <li><span>A</span>garder, mais revalider avant usage</li><li><span>B</span>garder un an</li><li><span>C</span>garder sans revalider</li><li><span>D</span>ne rien garder</li></ul></div>
-
-    <div class="q"><div class="enonce">La règle LRU sort…</div><ul>
-      <li><span>A</span>une entrée au hasard</li><li><span>B</span>la plus ancienne entrée</li><li><span>C</span>l'entrée la moins récemment servie</li><li><span>D</span>la plus grosse entrée</li></ul></div>
-
-    <div class="q"><div class="enonce">Mesuré : avec 1 000 places, le cache LRU sert environ…</div><ul>
-      <li><span>A</span>40 %</li><li><span>B</span>10 %</li><li><span>C</span>98 %</li><li><span>D</span>68 % des demandes</li></ul></div>
-
-    <div class="q"><div class="enonce">Ce qui fait grandir sans fin le cache du mesureur…</div><ul>
-      <li><span>A</span>les textes saisis dans les zones</li><li><span>B</span>les polices</li><li><span>C</span>les libellés figés</li><li><span>D</span>les icônes</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 92 · Les caches</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">dict.TryGetValue(cle, out v)</td><td>chercher sans lever d'exception</td><td>MesureurGdi.cs:140</td></tr>
+<tr><td class="c">lock (_verrou) { … }</td><td>un seul fil à la fois dans le bloc</td><td>MesureurGdi.cs:138</td></tr>
+<tr><td class="c">useMemo(() =&gt; …, [deps])</td><td>recalculer quand une dépendance change</td><td>useCatalog.js:27</td></tr>
+<tr><td class="c">max-age=31536000, immutable</td><td>garder un an sans redemander</td><td>compute-proxy.mjs:511</td></tr>
+<tr><td class="c">no-cache</td><td>garder, mais revalider</td><td>compute-proxy.mjs:511</td></tr>
+<tr><td class="c">map.delete(k); map.set(k, v)</td><td>remettre en tête, pour un LRU sur Map</td><td>exemple de mesure, page 4</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Cache</dt><dd>Une réserve de résultats gardés pour ne pas les recalculer.</dd>
+<dt>Mémoïsation</dt><dd>Le cache des résultats d'une fonction, selon ses arguments.</dd>
+<dt>Invalidation</dt><dd>Le fait de retirer un résultat devenu faux.</dd>
+<dt>LRU</dt><dd>Sortir l'entrée la moins récemment servie quand le cache est plein.</dd>
+<dt>Empreinte (hash)</dt><dd>Un code tiré du contenu d'un fichier, mis dans son nom.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 94</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 92 · Les caches</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 92</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · B.</b> Une fonction pure.</div>
-    <div><b>02 · B et D.</b> MesureurGdi.cs:137.</div>
-    <div><b>03 · C.</b> « Rayon1 » et « Rayon » restent distincts.</div>
-    <div><b>04 · A.</b> 201 ns sur 218.</div>
-    <div><b>05 · B.</b> Un Dictionary n'est pas sûr à plusieurs.</div>
-    <div><b>06 · D.</b> Le tableau des dépendances.</div>
-    <div><b>07 · B.</b> ConstituantExecution.cs:68–69.</div>
-    <div><b>08 · D.</b> Un nouveau contenu, un nouveau nom.</div>
-    <div><b>09 · A.</b> no-store interdit toute copie.</div>
-    <div><b>10 · C.</b> Least Recently Used.</div>
-    <div><b>11 · D.</b> 67,8 %, mesuré.</div>
-    <div><b>12 · A.</b> ModeleZoneTexte.cs:39.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 94, « Allocations et ramasse-miettes ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">dict.TryGetValue(cle, out v)</td><td>chercher sans lever d'exception</td><td>MesureurGdi.cs:140</td></tr>
-      <tr><td class="c">lock (_verrou) { … }</td><td>un seul fil à la fois dans le bloc</td><td>MesureurGdi.cs:138</td></tr>
-      <tr><td class="c">useMemo(() =&gt; …, [deps])</td><td>recalculer quand une dépendance change</td><td>useCatalog.js:27</td></tr>
-      <tr><td class="c">max-age=31536000, immutable</td><td>garder un an sans redemander</td><td>compute-proxy.mjs:511</td></tr>
-      <tr><td class="c">no-cache</td><td>garder, mais revalider</td><td>compute-proxy.mjs:511</td></tr>
-      <tr><td class="c">map.delete(k); map.set(k, v)</td><td>remettre en tête, pour un LRU sur Map</td><td>exemple de mesure, page 4</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Cache</dt><dd>Une réserve de résultats gardés pour ne pas les recalculer.</dd>
-    <dt>Mémoïsation</dt><dd>Le cache des résultats d'une fonction, selon ses arguments.</dd>
-    <dt>Invalidation</dt><dd>Le fait de retirer un résultat devenu faux.</dd>
-    <dt>LRU</dt><dd>Sortir l'entrée la moins récemment servie quand le cache est plein.</dd>
-    <dt>Empreinte (hash)</dt><dd>Un code tiré du contenu d'un fichier, mis dans son nom.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 94</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 92 · Les caches</div>
-</section>
-
 </body>
 </html>

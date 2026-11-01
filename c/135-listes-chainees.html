@@ -1,271 +1,244 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>135 · Les listes chaînées</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-2">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 135</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Les listes chaînées</h1>
-  <p class="chapeau">Au lieu d'un bloc de cases voisines, une liste chaînée range chaque élément dans son propre nœud, qui désigne le suivant. Insérer n'importe où devient gratuit, mais trouver devient long, et la mémoire s'éparpille. Le vrai usage du chaînage est ailleurs : chaque fois qu'un objet désigne son parent.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>92</b>, <b>133</b></span>
-    <span class="pastille">Exemples · <b>SnapSet</b></span>
-  </div>
-
-  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
-    <svg viewBox="0 0 600 204" width="100%">
-<text x="10" y="16" font-size="8.4" fill="#1565C0" text-anchor="start" font-weight="700">List&lt;int&gt; : un bloc</text>
-<rect x="10" y="24" width="32" height="22" rx="4" fill="#EAF0FA" stroke="#1565C0" stroke-width="1.2"/>
-<text x="26.0" y="37.666666666666664" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">1</text>
-<rect x="44" y="24" width="32" height="22" rx="4" fill="#EAF0FA" stroke="#1565C0" stroke-width="1.2"/>
-<text x="60.0" y="37.666666666666664" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">2</text>
-<rect x="78" y="24" width="32" height="22" rx="4" fill="#EAF0FA" stroke="#1565C0" stroke-width="1.2"/>
-<text x="94.0" y="37.666666666666664" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">3</text>
-<rect x="112" y="24" width="32" height="22" rx="4" fill="#EAF0FA" stroke="#1565C0" stroke-width="1.2"/>
-<text x="128.0" y="37.666666666666664" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">4</text>
-<rect x="146" y="24" width="32" height="22" rx="4" fill="#EAF0FA" stroke="#1565C0" stroke-width="1.2"/>
-<text x="162.0" y="37.666666666666664" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">5</text>
-<rect x="180" y="24" width="32" height="22" rx="4" fill="#EAF0FA" stroke="#1565C0" stroke-width="1.2"/>
-<text x="196.0" y="37.666666666666664" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">6</text>
-<text x="10" y="62" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">voisins en mémoire, 4 octets chacun</text>
-<text x="250" y="16" font-size="8.4" fill="#5D4037" text-anchor="start" font-weight="700">LinkedList&lt;int&gt; : des nœuds reliés</text>
-<rect x="250" y="24" width="56" height="22" rx="4" fill="#EFEBE9" stroke="#5D4037" stroke-width="1.2"/>
-<text x="278.0" y="37.666666666666664" font-size="8" fill="#5D4037" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">1</text>
-<line x1="306" y1="35" x2="340" y2="67" stroke="#5D4037" stroke-width="0.9"/><polygon points="340,67 333.4,64.6 337.2,60.6" fill="#5D4037"/>
-<rect x="340" y="56" width="56" height="22" rx="4" fill="#EFEBE9" stroke="#5D4037" stroke-width="1.2"/>
-<text x="368.0" y="69.66666666666667" font-size="8" fill="#5D4037" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">2</text>
-<line x1="396" y1="67" x2="430" y2="35" stroke="#5D4037" stroke-width="0.9"/><polygon points="430,35 427.2,41.4 423.4,37.4" fill="#5D4037"/>
-<rect x="430" y="24" width="56" height="22" rx="4" fill="#EFEBE9" stroke="#5D4037" stroke-width="1.2"/>
-<text x="458.0" y="37.666666666666664" font-size="8" fill="#5D4037" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">3</text>
-<line x1="486" y1="35" x2="520" y2="67" stroke="#5D4037" stroke-width="0.9"/><polygon points="520,67 513.4,64.6 517.2,60.6" fill="#5D4037"/>
-<rect x="520" y="56" width="56" height="22" rx="4" fill="#EFEBE9" stroke="#5D4037" stroke-width="1.2"/>
-<text x="548.0" y="69.66666666666667" font-size="8" fill="#5D4037" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">4</text>
-<line x1="520" y1="67" x2="486" y2="103" stroke="#5D4037" stroke-width="0.9"/><polygon points="486,103 488.4,96.4 492.4,100.2" fill="#5D4037"/>
-<rect x="430" y="92" width="56" height="22" rx="4" fill="#EFEBE9" stroke="#5D4037" stroke-width="1.2"/>
-<text x="458.0" y="105.66666666666667" font-size="8" fill="#5D4037" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">5</text>
-<line x1="430" y1="103" x2="396" y2="103" stroke="#5D4037" stroke-width="0.9"/><polygon points="396,103 402.4,100.3 402.4,105.7" fill="#5D4037"/>
-<rect x="340" y="92" width="56" height="22" rx="4" fill="#EFEBE9" stroke="#5D4037" stroke-width="1.2"/>
-<text x="368.0" y="105.66666666666667" font-size="8" fill="#5D4037" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">6</text>
-<text x="250" y="124" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">chaque nœud : la valeur, le suivant, le précédent, la liste ; 48 octets (mesuré)</text>
-<text x="10" y="150" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">Un tableau sait où est le 1 000e élément ; une chaîne doit suivre 999 liens pour le trouver.</text>
-<text x="10" y="168" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">En échange, la chaîne insère ou retire un nœud qu'elle tient sans rien décaler.</text>
-<text x="10" y="184" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Les mêmes liens se retrouvent partout où un objet désigne son parent : c'est une chaîne qui monte.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 135</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Les listes chaînées</h1>
+<p class="chapeau">Au lieu d'un bloc de cases voisines, une liste chaînée range chaque élément dans son propre nœud, qui désigne le suivant. Insérer n'importe où devient gratuit, mais trouver devient long, et la mémoire s'éparpille. Le vrai usage du chaînage est ailleurs : chaque fois qu'un objet désigne son parent.</p>
+<div class="meta">
+<span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>92</b>, <b>133</b></span>
+<span class="pastille">Exemples · <b>SnapSet</b></span>
+</div>
+<div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+<svg viewbox="0 0 600 204" width="100%">
+<text fill="#1565C0" font-size="8.4" font-weight="700" text-anchor="start" x="10" y="16">List&lt;int&gt; : un bloc</text>
+<rect fill="#EAF0FA" height="22" rx="4" stroke="#1565C0" stroke-width="1.2" width="32" x="10" y="24"></rect>
+<text class="mono" fill="#1565C0" font-size="8" font-weight="700" style="font-size:8px" text-anchor="middle" x="26.0" y="37.666666666666664">1</text>
+<rect fill="#EAF0FA" height="22" rx="4" stroke="#1565C0" stroke-width="1.2" width="32" x="44" y="24"></rect>
+<text class="mono" fill="#1565C0" font-size="8" font-weight="700" style="font-size:8px" text-anchor="middle" x="60.0" y="37.666666666666664">2</text>
+<rect fill="#EAF0FA" height="22" rx="4" stroke="#1565C0" stroke-width="1.2" width="32" x="78" y="24"></rect>
+<text class="mono" fill="#1565C0" font-size="8" font-weight="700" style="font-size:8px" text-anchor="middle" x="94.0" y="37.666666666666664">3</text>
+<rect fill="#EAF0FA" height="22" rx="4" stroke="#1565C0" stroke-width="1.2" width="32" x="112" y="24"></rect>
+<text class="mono" fill="#1565C0" font-size="8" font-weight="700" style="font-size:8px" text-anchor="middle" x="128.0" y="37.666666666666664">4</text>
+<rect fill="#EAF0FA" height="22" rx="4" stroke="#1565C0" stroke-width="1.2" width="32" x="146" y="24"></rect>
+<text class="mono" fill="#1565C0" font-size="8" font-weight="700" style="font-size:8px" text-anchor="middle" x="162.0" y="37.666666666666664">5</text>
+<rect fill="#EAF0FA" height="22" rx="4" stroke="#1565C0" stroke-width="1.2" width="32" x="180" y="24"></rect>
+<text class="mono" fill="#1565C0" font-size="8" font-weight="700" style="font-size:8px" text-anchor="middle" x="196.0" y="37.666666666666664">6</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="10" y="62">voisins en mémoire, 4 octets chacun</text>
+<text fill="#5D4037" font-size="8.4" font-weight="700" text-anchor="start" x="250" y="16">LinkedList&lt;int&gt; : des nœuds reliés</text>
+<rect fill="#EFEBE9" height="22" rx="4" stroke="#5D4037" stroke-width="1.2" width="56" x="250" y="24"></rect>
+<text class="mono" fill="#5D4037" font-size="8" font-weight="700" style="font-size:8px" text-anchor="middle" x="278.0" y="37.666666666666664">1</text>
+<line stroke="#5D4037" stroke-width="0.9" x1="306" x2="340" y1="35" y2="67"></line><polygon fill="#5D4037" points="340,67 333.4,64.6 337.2,60.6"></polygon>
+<rect fill="#EFEBE9" height="22" rx="4" stroke="#5D4037" stroke-width="1.2" width="56" x="340" y="56"></rect>
+<text class="mono" fill="#5D4037" font-size="8" font-weight="700" style="font-size:8px" text-anchor="middle" x="368.0" y="69.66666666666667">2</text>
+<line stroke="#5D4037" stroke-width="0.9" x1="396" x2="430" y1="67" y2="35"></line><polygon fill="#5D4037" points="430,35 427.2,41.4 423.4,37.4"></polygon>
+<rect fill="#EFEBE9" height="22" rx="4" stroke="#5D4037" stroke-width="1.2" width="56" x="430" y="24"></rect>
+<text class="mono" fill="#5D4037" font-size="8" font-weight="700" style="font-size:8px" text-anchor="middle" x="458.0" y="37.666666666666664">3</text>
+<line stroke="#5D4037" stroke-width="0.9" x1="486" x2="520" y1="35" y2="67"></line><polygon fill="#5D4037" points="520,67 513.4,64.6 517.2,60.6"></polygon>
+<rect fill="#EFEBE9" height="22" rx="4" stroke="#5D4037" stroke-width="1.2" width="56" x="520" y="56"></rect>
+<text class="mono" fill="#5D4037" font-size="8" font-weight="700" style="font-size:8px" text-anchor="middle" x="548.0" y="69.66666666666667">4</text>
+<line stroke="#5D4037" stroke-width="0.9" x1="520" x2="486" y1="67" y2="103"></line><polygon fill="#5D4037" points="486,103 488.4,96.4 492.4,100.2"></polygon>
+<rect fill="#EFEBE9" height="22" rx="4" stroke="#5D4037" stroke-width="1.2" width="56" x="430" y="92"></rect>
+<text class="mono" fill="#5D4037" font-size="8" font-weight="700" style="font-size:8px" text-anchor="middle" x="458.0" y="105.66666666666667">5</text>
+<line stroke="#5D4037" stroke-width="0.9" x1="430" x2="396" y1="103" y2="103"></line><polygon fill="#5D4037" points="396,103 402.4,100.3 402.4,105.7"></polygon>
+<rect fill="#EFEBE9" height="22" rx="4" stroke="#5D4037" stroke-width="1.2" width="56" x="340" y="92"></rect>
+<text class="mono" fill="#5D4037" font-size="8" font-weight="700" style="font-size:8px" text-anchor="middle" x="368.0" y="105.66666666666667">6</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="250" y="124">chaque nœud : la valeur, le suivant, le précédent, la liste ; 48 octets (mesuré)</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="10" y="150">Un tableau sait où est le 1 000e élément ; une chaîne doit suivre 999 liens pour le trouver.</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="10" y="168">En échange, la chaîne insère ou retire un nœud qu'elle tient sans rien décaler.</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="10" y="184">Les mêmes liens se retrouvent partout où un objet désigne son parent : c'est une chaîne qui monte.</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Une chaîne échange l'accès direct contre l'insertion gratuite ; elle ne gagne que si l'on tient déjà le nœud où agir.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Un jeu de piste : chaque indice dit où trouver le suivant. Ajouter une étape est facile ; aller directement à la dixième est impossible.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>dire quand une chaîne gagne ;</li>
-        <li>mesurer le coût des sauts ;</li>
-        <li>remonter une chaîne de parents ;</li>
-        <li>détecter une boucle.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Une chaîne échange l'accès direct contre l'insertion gratuite ; elle ne gagne que si l'on tient déjà le nœud où agir.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Un jeu de piste : chaque indice dit où trouver le suivant. Ajouter une étape est facile ; aller directement à la dixième est impossible.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>dire quand une chaîne gagne ;</li>
+<li>mesurer le coût des sauts ;</li>
+<li>remonter une chaîne de parents ;</li>
+<li>détecter une boucle.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À retenir</span>
     Par défaut, une List. Une LinkedList seulement avec un accès direct aux nœuds, comme dans un cache LRU. Une chaîne de parents est une liste chaînée : ses règles s'appliquent.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 135 · Les listes chaînées</div>
+<div class="folio">1</div>
+<div class="pied">Cours 135 · Les listes chaînées</div>
 </section>
-
 <!-- ============ PAGE 2 · INSÉRER ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 135</b></div>
-  <p class="rubrique">Schéma 1 · Insérer sans décaler</p>
-  <h2>Gratuit, à condition de tenir le nœud</h2>
-  <p style="max-width:165mm">Insérer dans une chaîne, c'est changer deux liens. Mais pour savoir quels liens changer, il faut d'abord arriver au bon endroit. On a mesuré les deux moitiés du travail.</p>
-
-  <svg viewBox="0 0 600 196" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="196" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#5D4037" text-anchor="start" font-weight="700">10 000 insertions au milieu d'une collection de 100 000 entiers (.NET 8, cinq séries, mesuré)</text>
-<text x="16" y="48" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">List.Insert(Count / 2, x)</text>
-<rect x="230" y="38" width="280" height="13" fill="#C62828" opacity=".8"/>
-<text x="516.0" y="48" font-size="7.4" fill="#C62828" text-anchor="start" font-weight="700">35 à 38 ms</text>
-<text x="16" y="74" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">LinkedList.AddAfter(nœud, x)</text>
-<rect x="230" y="64" width="7" height="13" fill="#2E7D32" opacity=".8"/>
-<text x="243.09138381201043" y="74" font-size="7.4" fill="#2E7D32" text-anchor="start" font-weight="700">0,30 à 0,97 ms</text>
-<text x="16" y="106" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Mais il faut tenir le nœud. Le retrouver par sa valeur, vers la fin :</text>
-<rect x="16" y="116" width="270" height="22" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
-<text x="151.0" y="129.46666666666667" font-size="7.4" fill="#C62828" text-anchor="middle" font-weight="700">LinkedList.Find : 0,30 à 0,32 ms</text>
-<rect x="300" y="116" width="280" height="22" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="440.0" y="129.46666666666667" font-size="7.4" fill="#2E7D32" text-anchor="middle" font-weight="700">List.IndexOf : 0,029 à 0,034 ms</text>
-<text x="16" y="160" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Chercher dans une chaîne est dix fois plus lent que dans un tableau : mêmes comparaisons, plus de sauts.</text>
-<text x="16" y="180" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">L'insertion n'est gratuite que si l'on arrive au bon nœud sans chercher : par un dictionnaire, par exemple.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 135</b></div>
+<p class="rubrique">Schéma 1 · Insérer sans décaler</p>
+<h2>Gratuit, à condition de tenir le nœud</h2>
+<p style="max-width:165mm">Insérer dans une chaîne, c'est changer deux liens. Mais pour savoir quels liens changer, il faut d'abord arriver au bon endroit. On a mesuré les deux moitiés du travail.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 196" width="100%">
+<rect fill="#EFE9E1" height="196" width="600" x="0" y="0"></rect>
+<text fill="#5D4037" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">10 000 insertions au milieu d'une collection de 100 000 entiers (.NET 8, cinq séries, mesuré)</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="16" y="48">List.Insert(Count / 2, x)</text>
+<rect fill="#C62828" height="13" opacity=".8" width="280" x="230" y="38"></rect>
+<text fill="#C62828" font-size="7.4" font-weight="700" text-anchor="start" x="516.0" y="48">35 à 38 ms</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="16" y="74">LinkedList.AddAfter(nœud, x)</text>
+<rect fill="#2E7D32" height="13" opacity=".8" width="7" x="230" y="64"></rect>
+<text fill="#2E7D32" font-size="7.4" font-weight="700" text-anchor="start" x="243.09138381201043" y="74">0,30 à 0,97 ms</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="106">Mais il faut tenir le nœud. Le retrouver par sa valeur, vers la fin :</text>
+<rect fill="#fff" height="22" rx="4" stroke="#C62828" stroke-width="1.2" width="270" x="16" y="116"></rect>
+<text fill="#C62828" font-size="7.4" font-weight="700" text-anchor="middle" x="151.0" y="129.46666666666667">LinkedList.Find : 0,30 à 0,32 ms</text>
+<rect fill="#fff" height="22" rx="4" stroke="#2E7D32" stroke-width="1.2" width="280" x="300" y="116"></rect>
+<text fill="#2E7D32" font-size="7.4" font-weight="700" text-anchor="middle" x="440.0" y="129.46666666666667">List.IndexOf : 0,029 à 0,034 ms</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="160">Chercher dans une chaîne est dix fois plus lent que dans un tableau : mêmes comparaisons, plus de sauts.</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="180">L'insertion n'est gratuite que si l'on arrive au bon nœud sans chercher : par un dictionnaire, par exemple.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, un cache LRU : le dictionnaire trouve, la chaîne ordonne</span>if (index.TryGetValue(cle, out var noeud)) { ordre.Remove(noeud); ordre.AddFirst(noeud); return noeud.Value; }
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, un cache LRU : le dictionnaire trouve, la chaîne ordonne</span>if (index.TryGetValue(cle, out var noeud)) { ordre.Remove(noeud); ordre.AddFirst(noeud); return noeud.Value; }
 if (index.Count == capacite) { index.Remove(ordre.Last.Value.Cle); ordre.RemoveLast(); }
 index[cle] = ordre.AddFirst(Calculer(cle));</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Le cas où la chaîne gagne</h3>
-      <p>Un cache LRU déplace l'élément lu en tête et retire le plus ancien en queue, à chaque accès. Le dictionnaire donne le nœud, la chaîne le déplace sans rien décaler : 167 ns par accès (mesuré).</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Le nœud est un objet</h3>
-      <p>AddAfter rend le nœud créé ; Remove(nœud) le retire en un pas. Remove(valeur), lui, cherche d'abord : c'est un Find caché.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Le cas où la chaîne gagne</h3>
+<p>Un cache LRU déplace l'élément lu en tête et retire le plus ancien en queue, à chaque accès. Le dictionnaire donne le nœud, la chaîne le déplace sans rien décaler : 167 ns par accès (mesuré).</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Le nœud est un objet</h3>
+<p>AddAfter rend le nœud créé ; Remove(nœud) le retire en un pas. Remove(valeur), lui, cherche d'abord : c'est un Find caché.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Choisir LinkedList « parce qu'on insère au milieu », puis chercher le milieu à chaque fois. La recherche coûte plus que le décalage qu'on voulait éviter.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 135 · Les listes chaînées</div>
+<div class="folio">2</div>
+<div class="pied">Cours 135 · Les listes chaînées</div>
 </section>
-
 <!-- ============ PAGE 3 · LES POINTEURS ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 135</b></div>
-  <p class="rubrique">Schéma 2 · Le prix des pointeurs</p>
-  <h2>Six fois la mémoire, et des sauts</h2>
-  <p style="max-width:165mm">Un entier dans une liste coûte 4 octets ; dans une chaîne, un nœud entier. Et parcourir une chaîne, c'est suivre des adresses, que le processeur ne peut pas toujours deviner.</p>
-
-  <svg viewBox="0 0 600 204" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="204" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#5D4037" text-anchor="start" font-weight="700">Un million d'entiers : construire, puis additionner en parcourant (trois séries, mesuré)</text>
-<text x="16" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700"></text>
-<text x="230" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">mémoire allouée</text>
-<text x="350" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">construire</text>
-<text x="470" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">parcourir</text>
-<rect x="10" y="48" width="580" height="20" fill="#fff" opacity=".55"/>
-<text x="16" y="62" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">List&lt;int&gt;</text>
-<text x="230" y="62" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">8,0 Mio</text>
-<text x="350" y="62" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">3,6 à 67 ms</text>
-<text x="470" y="62" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">2,9 à 5,7 ms</text>
-<text x="16" y="82" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">LinkedList&lt;int&gt;, nœuds créés dans l'ordre</text>
-<text x="230" y="82" font-size="7.6" fill="#E65100" text-anchor="start" font-weight="700">45,8 Mio</text>
-<text x="350" y="82" font-size="7.6" fill="#E65100" text-anchor="start" font-weight="700">90 à 700 ms</text>
-<text x="470" y="82" font-size="7.6" fill="#E65100" text-anchor="start" font-weight="700">9,7 à 9,9 ms</text>
-<rect x="10" y="88" width="580" height="20" fill="#fff" opacity=".55"/>
-<text x="16" y="102" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">la même, nœuds reliés dans le désordre</text>
-<text x="230" y="102" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">—</text>
-<text x="350" y="102" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">—</text>
-<text x="470" y="102" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">136 à 162 ms</text>
-<text x="16" y="128" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Nœuds créés à la suite : ils sont voisins en mémoire, et le processeur devine la suite.</text>
-<text x="16" y="144" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Nœuds dans le désordre : chaque lien saute ailleurs en mémoire, et chaque saut attend la RAM.</text>
-<text x="16" y="168" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Le désordre a été créé en retirant puis rajoutant chaque nœud dans un ordre tiré au hasard ; les nœuds</text>
-<text x="16" y="182" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">n'ont pas bougé en mémoire, seul l'ordre des liens a changé. C'est l'état d'une chaîne après des mois d'édition (déduit).</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 135</b></div>
+<p class="rubrique">Schéma 2 · Le prix des pointeurs</p>
+<h2>Six fois la mémoire, et des sauts</h2>
+<p style="max-width:165mm">Un entier dans une liste coûte 4 octets ; dans une chaîne, un nœud entier. Et parcourir une chaîne, c'est suivre des adresses, que le processeur ne peut pas toujours deviner.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 204" width="100%">
+<rect fill="#EFE9E1" height="204" width="600" x="0" y="0"></rect>
+<text fill="#5D4037" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">Un million d'entiers : construire, puis additionner en parcourant (trois séries, mesuré)</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="16" y="40"></text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="230" y="40">mémoire allouée</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="350" y="40">construire</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="470" y="40">parcourir</text>
+<rect fill="#fff" height="20" opacity=".55" width="580" x="10" y="48"></rect>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="16" y="62">List&lt;int&gt;</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="230" y="62">8,0 Mio</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="350" y="62">3,6 à 67 ms</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="470" y="62">2,9 à 5,7 ms</text>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="16" y="82">LinkedList&lt;int&gt;, nœuds créés dans l'ordre</text>
+<text fill="#E65100" font-size="7.6" font-weight="700" text-anchor="start" x="230" y="82">45,8 Mio</text>
+<text fill="#E65100" font-size="7.6" font-weight="700" text-anchor="start" x="350" y="82">90 à 700 ms</text>
+<text fill="#E65100" font-size="7.6" font-weight="700" text-anchor="start" x="470" y="82">9,7 à 9,9 ms</text>
+<rect fill="#fff" height="20" opacity=".55" width="580" x="10" y="88"></rect>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="16" y="102">la même, nœuds reliés dans le désordre</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="230" y="102">—</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="350" y="102">—</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="470" y="102">136 à 162 ms</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="128">Nœuds créés à la suite : ils sont voisins en mémoire, et le processeur devine la suite.</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="144">Nœuds dans le désordre : chaque lien saute ailleurs en mémoire, et chaque saut attend la RAM.</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="168">Le désordre a été créé en retirant puis rajoutant chaque nœud dans un ordre tiré au hasard ; les nœuds</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="182">n'ont pas bougé en mémoire, seul l'ordre des liens a changé. C'est l'état d'une chaîne après des mois d'édition (déduit).</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, ce qu'un nœud transporte</span>public sealed class LinkedListNode&lt;T&gt;          // simplifié
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, ce qu'un nœud transporte</span>public sealed class LinkedListNode&lt;T&gt;          // simplifié
 {
     internal LinkedList&lt;T&gt; list;  internal LinkedListNode&lt;T&gt; next, prev;  internal T item;
 }</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>D'où viennent les 48 octets</h3>
-      <p>L'en-tête de l'objet (16 octets), trois références de 8 octets, et l'entier arrondi à 8. Pour 4 octets utiles, douze fois plus d'emballage (déduit du relevé).</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Les caches du processeur</h3>
-      <p>Un tableau se lit par lignes de cache entières : un accès en amène seize. Une chaîne en désordre paie un aller-retour vers la mémoire à chaque nœud (cours 92).</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>D'où viennent les 48 octets</h3>
+<p>L'en-tête de l'objet (16 octets), trois références de 8 octets, et l'entier arrondi à 8. Pour 4 octets utiles, douze fois plus d'emballage (déduit du relevé).</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Les caches du processeur</h3>
+<p>Un tableau se lit par lignes de cache entières : un accès en amène seize. Une chaîne en désordre paie un aller-retour vers la mémoire à chaque nœud (cours 92).</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Juger une chaîne sur un essai tout neuf. Créés à la suite, les nœuds se parcourent en 10 ms ; reliés dans le désordre, il en faut 136 à 162 pour le même million (mesuré).
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 135 · Les listes chaînées</div>
+<div class="folio">3</div>
+<div class="pied">Cours 135 · Les listes chaînées</div>
 </section>
-
 <!-- ============ PAGE 4 · LES PARENTS ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 135</b></div>
-  <p class="rubrique">Schéma 3 · Une chaîne qui monte</p>
-  <h2>Remonter les parents</h2>
-  <p style="max-width:165mm">Chercher la racine, un ancêtre verrouillé, un ancêtre sélectionné : c'est parcourir une chaîne, de lien en lien. Deux façons de ranger ces liens, et une façon de survivre à une boucle.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#5D4037" text-anchor="start" font-weight="700">Remonter jusqu'à la racine : par un champ Parent ou par un dictionnaire de Guid (mesuré)</text>
-<text x="16" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">profondeur</text>
-<text x="200" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">Dictionary&lt;Guid, Guid&gt;</text>
-<text x="400" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">champ Parent</text>
-<rect x="10" y="48" width="580" height="18" fill="#fff" opacity=".55"/>
-<text x="16" y="61" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">5</text>
-<text x="200" y="61" font-size="7.6" fill="#5D4037" text-anchor="start" font-weight="700">92 ns</text>
-<text x="400" y="61" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">3 ns</text>
-<text x="16" y="79" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">50</text>
-<text x="200" y="79" font-size="7.6" fill="#5D4037" text-anchor="start" font-weight="700">670 ns</text>
-<text x="400" y="79" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">52 ns</text>
-<rect x="10" y="84" width="580" height="18" fill="#fff" opacity=".55"/>
-<text x="16" y="97" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">500</text>
-<text x="200" y="97" font-size="7.6" fill="#5D4037" text-anchor="start" font-weight="700">7 464 ns</text>
-<text x="400" y="97" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">777 ns</text>
-<text x="16" y="118" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Une chaîne qui boucle, trois parents en rond au bout de dix :</text>
-<rect x="16" y="128" width="280" height="22" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
-<text x="156.0" y="141.46666666666667" font-size="7.4" fill="#C62828" text-anchor="middle" font-weight="700">compteur de garde à 100 000 : 8,6 à 16,9 ms</text>
-<rect x="306" y="128" width="278" height="22" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="445.0" y="141.46666666666667" font-size="7.4" fill="#2E7D32" text-anchor="middle" font-weight="700">lièvre et tortue (Floyd) : 12 pas, 5 à 45 µs</text>
-<text x="16" y="172" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Floyd fait avancer deux curseurs, l'un d'un pas, l'autre de deux : s'il y a une boucle, ils s'y rejoignent.</text>
-<text x="16" y="190" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Le dictionnaire coûte 13 à 18 ns par pas : hacher un Guid, chercher son seau. Le champ, 1 à 2 ns.</text>
-<text x="16" y="204" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Le dictionnaire garde l'avantage d'exister à part des objets : l'arbre se copie et se fige sans eux.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 135</b></div>
+<p class="rubrique">Schéma 3 · Une chaîne qui monte</p>
+<h2>Remonter les parents</h2>
+<p style="max-width:165mm">Chercher la racine, un ancêtre verrouillé, un ancêtre sélectionné : c'est parcourir une chaîne, de lien en lien. Deux façons de ranger ces liens, et une façon de survivre à une boucle.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#5D4037" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">Remonter jusqu'à la racine : par un champ Parent ou par un dictionnaire de Guid (mesuré)</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="16" y="40">profondeur</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="200" y="40">Dictionary&lt;Guid, Guid&gt;</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="400" y="40">champ Parent</text>
+<rect fill="#fff" height="18" opacity=".55" width="580" x="10" y="48"></rect>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="16" y="61">5</text>
+<text fill="#5D4037" font-size="7.6" font-weight="700" text-anchor="start" x="200" y="61">92 ns</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="400" y="61">3 ns</text>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="16" y="79">50</text>
+<text fill="#5D4037" font-size="7.6" font-weight="700" text-anchor="start" x="200" y="79">670 ns</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="400" y="79">52 ns</text>
+<rect fill="#fff" height="18" opacity=".55" width="580" x="10" y="84"></rect>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="16" y="97">500</text>
+<text fill="#5D4037" font-size="7.6" font-weight="700" text-anchor="start" x="200" y="97">7 464 ns</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="400" y="97">777 ns</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="118">Une chaîne qui boucle, trois parents en rond au bout de dix :</text>
+<rect fill="#fff" height="22" rx="4" stroke="#C62828" stroke-width="1.2" width="280" x="16" y="128"></rect>
+<text fill="#C62828" font-size="7.4" font-weight="700" text-anchor="middle" x="156.0" y="141.46666666666667">compteur de garde à 100 000 : 8,6 à 16,9 ms</text>
+<rect fill="#fff" height="22" rx="4" stroke="#2E7D32" stroke-width="1.2" width="278" x="306" y="128"></rect>
+<text fill="#2E7D32" font-size="7.4" font-weight="700" text-anchor="middle" x="445.0" y="141.46666666666667">lièvre et tortue (Floyd) : 12 pas, 5 à 45 µs</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="172">Floyd fait avancer deux curseurs, l'un d'un pas, l'autre de deux : s'il y a une boucle, ils s'y rejoignent.</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="190">Le dictionnaire coûte 13 à 18 ns par pas : hacher un Guid, chercher son seau. Le champ, 1 à 2 ns.</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="204">Le dictionnaire garde l'avantage d'exister à part des objets : l'arbre se copie et se fige sans eux.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, détecter une boucle sans compteur arbitraire</span>Guid lent = id, vite = id;
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, détecter une boucle sans compteur arbitraire</span>Guid lent = id, vite = id;
 while (parent.TryGetValue(vite, out vite) &amp;&amp; parent.TryGetValue(vite, out vite))
 {
     parent.TryGetValue(lent, out lent);
     if (lent == vite) throw new InvalidOperationException("Cycle");   // ils se rejoignent dans la boucle
 }</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Pourquoi un dictionnaire</h3>
-      <p>SnapSet range les parents dans un Dictionary&lt;Guid, Guid&gt; à part : l'arbre se recopie, se fige pendant un geste et se compare, sans toucher aux objets du document.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Le compteur de garde</h3>
-      <p>Arrêter après N pas protège d'une boucle infinie, mais N est arbitraire : trop petit, il coupe un arbre légitime ; grand, il fait attendre avant d'échouer.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Pourquoi un dictionnaire</h3>
+<p>SnapSet range les parents dans un Dictionary&lt;Guid, Guid&gt; à part : l'arbre se recopie, se fige pendant un geste et se compare, sans toucher aux objets du document.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Le compteur de garde</h3>
+<p>Arrêter après N pas protège d'une boucle infinie, mais N est arbitraire : trop petit, il coupe un arbre légitime ; grand, il fait attendre avant d'échouer.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Remonter une chaîne de parents sans aucune protection, en comptant sur « impossible par construction ». Un fichier abîmé ou un collage suffit à rendre la boucle possible.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 135 · Les listes chaînées</div>
+<div class="folio">4</div>
+<div class="pied">Cours 135 · Les listes chaînées</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 135</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>Des chaînes de parents dans SnapSet</h2>
-  <p style="max-width:165mm">Un dictionnaire de parents remonté de cinq façons, et deux chaînes tenues par un champ dans les objets de l'exécution.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 135</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>Des chaînes de parents dans SnapSet</h2>
+<p style="max-width:165mm">Un dictionnaire de parents remonté de cinq façons, et deux chaînes tenues par un champ dans les objets de l'exécution.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">SnapSet/…/Appartenance/ArbreAppartenance.cs</span></div>
 <div class="l k1"><span class="n">28</span>private readonly Dictionary&lt;Guid, Guid&gt; _parent = …;<span class="rep r1">1</span></div>
@@ -276,137 +249,55 @@ while (parent.TryGetValue(vite, out vite) &amp;&amp; parent.TryGetValue(vite, ou
 <div class="l k4"><span class="n">75</span>for (ConstituantExecution c = this; …; c = c.Parent)<span class="rep r4">4</span></div>
 <div class="l k5"><span class="n">154</span>for (… a = _proprietaire; a != null; a = a.Parent)<span class="rep r5">5</span></div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>Liens à part</b>Copiables.</li>
-      <li><span class="rep r2">2</span><b>Garde</b>100 000, lève.</li>
-      <li><span class="rep r3">3</span><b>Garde</b>10 000, se tait.</li>
-      <li><span class="rep r4">4</span><b>Champ Parent</b>Actif effectif.</li>
-      <li><span class="rep r5">5</span><b>Anti-cycle</b>Avant d'adopter.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À surveiller · Cinq remontées, quatre règles face à une boucle</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>Liens à part</b>Copiables.</li>
+<li><span class="rep r2">2</span><b>Garde</b>100 000, lève.</li>
+<li><span class="rep r3">3</span><b>Garde</b>10 000, se tait.</li>
+<li><span class="rep r4">4</span><b>Champ Parent</b>Actif effectif.</li>
+<li><span class="rep r5">5</span><b>Anti-cycle</b>Avant d'adopter.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À surveiller · Cinq remontées, quatre règles face à une boucle</span>
     ArbreAppartenance.cs lève après 100 000 pas (ligne 119), s'arrête sans rien dire après 100 000 (ligne 193), ou n'a aucune garde (lignes 130, 177 et 314) ; ConstituantAttributs.cs:81 s'arrête à 10 000. L'arbre exclut les boucles à sa construction (Depuis, ligne 38), donc rien ne se produit aujourd'hui (déduit). Une seule fonction de remontée fixerait une seule règle. Relevé sans rien modifier.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 135 · Les listes chaînées</div>
+<div class="folio">5</div>
+<div class="pied">Cours 135 · Les listes chaînées</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 135</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 135</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">Dans une liste chaînée, atteindre le 1 000e élément…</div><ul>
-      <li><span>A</span>demande un tri</li><li><span>B</span>est immédiat</li><li><span>C</span>demande de suivre 999 liens</li><li><span>D</span>est impossible</li></ul></div>
 
-    <div class="q"><div class="enonce">10 000 insertions au milieu, nœud en main…</div><ul>
-      <li><span>A</span>0,30 à 0,97 ms, contre 35 à 38 avec List.Insert</li><li><span>B</span>impossible</li><li><span>C</span>plus lent</li><li><span>D</span>autant</li></ul></div>
 
-    <div class="q"><div class="enonce">Retrouver une valeur vers la fin : Find contre IndexOf…</div><ul>
-      <li><span>A</span>environ dix fois plus lent</li><li><span>B</span>identique</li><li><span>C</span>plus rapide</li><li><span>D</span>cent fois plus rapide</li></ul></div>
 
-    <div class="q"><div class="enonce">Un nœud de LinkedList&lt;int&gt; occupe…</div><ul>
-      <li><span>A</span>48 octets</li><li><span>B</span>4 octets</li><li><span>C</span>8 octets</li><li><span>D</span>1 Ko</li></ul></div>
-
-    <div class="q"><div class="enonce">Une chaîne dont les nœuds sont reliés dans le désordre… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>se parcourt bien plus lentement</li><li><span>B</span>saute ailleurs en mémoire à chaque lien</li><li><span>C</span>se trie seule</li><li><span>D</span>prend moins de mémoire</li></ul></div>
-
-    <div class="q"><div class="enonce">Un cache LRU combine…</div><ul>
-      <li><span>A</span>un tableau trié</li><li><span>B</span>une pile et une file</li><li><span>C</span>un dictionnaire et une liste chaînée</li><li><span>D</span>deux tableaux</li></ul></div>
-
-    <div class="q"><div class="enonce">Remove(valeur) sur une LinkedList…</div><ul>
-      <li><span>A</span>retire tout</li><li><span>B</span>cherche d'abord le nœud</li><li><span>C</span>est immédiat</li><li><span>D</span>lève toujours</li></ul></div>
-
-    <div class="q"><div class="enonce">Remonter 50 parents par un dictionnaire de Guid…</div><ul>
-      <li><span>A</span>une allocation par pas</li><li><span>B</span>environ 670 ns, contre 52 par un champ</li><li><span>C</span>autant qu'un champ</li><li><span>D</span>1 ms</li></ul></div>
-
-    <div class="q"><div class="enonce">SnapSet range les parents dans un dictionnaire pour…</div><ul>
-      <li><span>A</span>trier les Guid</li><li><span>B</span>aller plus vite</li><li><span>C</span>copier et figer l'arbre sans les objets</li><li><span>D</span>économiser la mémoire</li></ul></div>
-
-    <div class="q"><div class="enonce">L'algorithme de Floyd détecte une boucle…</div><ul>
-      <li><span>A</span>avec un HashSet</li><li><span>B</span>en triant</li><li><span>C</span>avec un compteur</li><li><span>D</span>avec deux curseurs, l'un deux fois plus rapide</li></ul></div>
-
-    <div class="q"><div class="enonce">Sur la chaîne qui boucle, la garde à 100 000 a pris…</div><ul>
-      <li><span>A</span>une seconde</li><li><span>B</span>une éternité</li><li><span>C</span>12 pas</li><li><span>D</span>8,6 à 16,9 ms avant de lever</li></ul></div>
-
-    <div class="q"><div class="enonce">Combien de règles de garde différentes dans les remontées de SnapSet ?</div><ul>
-      <li><span>A</span>aucune</li><li><span>B</span>quatre</li><li><span>C</span>une</li><li><span>D</span>deux</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 135 · Les listes chaînées</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">list.AddAfter(noeud, x)</td><td>insérer sans rien décaler</td><td>page 2</td></tr>
+<tr><td class="c">list.Remove(noeud)</td><td>retirer un nœud tenu, en un pas</td><td>page 2</td></tr>
+<tr><td class="c">list.Find(x)</td><td>chercher de lien en lien</td><td>page 2</td></tr>
+<tr><td class="c">Dictionary&lt;Guid, Guid&gt;</td><td>des liens de parenté rangés à part</td><td>ArbreAppartenance.cs:28</td></tr>
+<tr><td class="c">for (c = x; c != null; c = c.Parent)</td><td>remonter une chaîne par un champ</td><td>ConstituantExecution.cs:75</td></tr>
+<tr><td class="c">lent un pas, vite deux pas</td><td>détecter une boucle (Floyd)</td><td>page 4</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Liste chaînée</dt><dd>Une suite de nœuds où chacun désigne le suivant, et ici aussi le précédent.</dd>
+<dt>Nœud</dt><dd>Le petit objet qui porte une valeur et ses liens.</dd>
+<dt>Cache LRU</dt><dd>Un cache qui jette l'élément utilisé il y a le plus longtemps.</dd>
+<dt>Localité</dt><dd>Le fait que les données lues à la suite soient voisines en mémoire.</dd>
+<dt>Algorithme de Floyd</dt><dd>La détection d'une boucle par deux curseurs de vitesses différentes.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 136</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 135 · Les listes chaînées</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 135</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · C.</b> Pas d'accès direct.</div>
-    <div><b>02 · A.</b> Deux liens changés.</div>
-    <div><b>03 · A.</b> Plus de sauts.</div>
-    <div><b>04 · A.</b> Mesuré sur 1 000.</div>
-    <div><b>05 · A et B.</b> 136 à 162 ms.</div>
-    <div><b>06 · C.</b> Trouver et ordonner.</div>
-    <div><b>07 · B.</b> Un Find caché.</div>
-    <div><b>08 · B.</b> Hacher à chaque pas.</div>
-    <div><b>09 · C.</b> ArbreAppartenance.cs:28.</div>
-    <div><b>10 · D.</b> Lièvre et tortue.</div>
-    <div><b>11 · D.</b> Floyd : 12 pas.</div>
-    <div><b>12 · B.</b> Lève, se tait, rien, 10 000.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 136, « Le tas et la file de priorité ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">list.AddAfter(noeud, x)</td><td>insérer sans rien décaler</td><td>page 2</td></tr>
-      <tr><td class="c">list.Remove(noeud)</td><td>retirer un nœud tenu, en un pas</td><td>page 2</td></tr>
-      <tr><td class="c">list.Find(x)</td><td>chercher de lien en lien</td><td>page 2</td></tr>
-      <tr><td class="c">Dictionary&lt;Guid, Guid&gt;</td><td>des liens de parenté rangés à part</td><td>ArbreAppartenance.cs:28</td></tr>
-      <tr><td class="c">for (c = x; c != null; c = c.Parent)</td><td>remonter une chaîne par un champ</td><td>ConstituantExecution.cs:75</td></tr>
-      <tr><td class="c">lent un pas, vite deux pas</td><td>détecter une boucle (Floyd)</td><td>page 4</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Liste chaînée</dt><dd>Une suite de nœuds où chacun désigne le suivant, et ici aussi le précédent.</dd>
-    <dt>Nœud</dt><dd>Le petit objet qui porte une valeur et ses liens.</dd>
-    <dt>Cache LRU</dt><dd>Un cache qui jette l'élément utilisé il y a le plus longtemps.</dd>
-    <dt>Localité</dt><dd>Le fait que les données lues à la suite soient voisines en mémoire.</dd>
-    <dt>Algorithme de Floyd</dt><dd>La détection d'une boucle par deux curseurs de vitesses différentes.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 136</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 135 · Les listes chaînées</div>
-</section>
-
 </body>
 </html>

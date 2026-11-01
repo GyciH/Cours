@@ -1,297 +1,270 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>131 · L'égalité et le hachage</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-1">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1B</b> · Les objets de près</span><b>Cours 131</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>L'égalité et le hachage</h1>
-  <p class="chapeau">« Ces deux-là sont-ils égaux ? » cache deux questions : est-ce le <b>même objet</b>, ou la <b>même valeur</b> ? C# laisse chaque type choisir sa réponse, et tous les dictionnaires s'y fient. Quand Equals et GetHashCode ne disent pas la même chose, une clé rangée devient introuvable.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>128</b>, <b>129</b></span>
-    <span class="pastille">Exemples · <b>SnapSet</b>, <b>Magpie</b> plugin</span>
-  </div>
-
-  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
-    <svg viewBox="0 0 600 204" width="100%">
-<rect x="10" y="14" width="92" height="26" rx="4" fill="#F1E9F3" stroke="#6B2C7A" stroke-width="1.2"/>
-<text x="56.0" y="29.6" font-size="7.8" fill="#6B2C7A" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.8px">a : Nom = x</text>
-<rect x="10" y="58" width="92" height="26" rx="4" fill="#F1E9F3" stroke="#6B2C7A" stroke-width="1.2"/>
-<text x="56.0" y="73.6" font-size="7.8" fill="#6B2C7A" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.8px">b : Nom = x</text>
-<text x="56" y="100" font-size="7.2" fill="#6B7378" text-anchor="middle" font-style="italic">deux objets, même contenu</text>
-<text x="140" y="18" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">le type de a et b</text>
-<text x="290" y="18" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">a.Equals(b)</text>
-<text x="360" y="18" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">HashSet{a, b}</text>
-<text x="450" y="18" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">ce que la question devient</text>
-<rect x="134" y="28" width="456" height="22" fill="#F1E9F3" opacity=".7"/>
-<text x="140" y="43" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">classe ordinaire</text>
-<text x="290" y="43" font-size="7.8" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">False</text>
-<text x="360" y="43" font-size="7.8" fill="#1565C0" text-anchor="start" font-weight="700">2</text>
-<text x="450" y="43" font-size="7.8" fill="#1565C0" text-anchor="start" font-weight="700">même objet ?</text>
-<text x="140" y="67" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">record</text>
-<text x="290" y="67" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">True</text>
-<text x="360" y="67" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700">1</text>
-<text x="450" y="67" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700">même valeur ?</text>
-<rect x="134" y="76" width="456" height="22" fill="#F1E9F3" opacity=".7"/>
-<text x="140" y="91" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">record, ReferenceEqualityComparer</text>
-<text x="290" y="91" font-size="7.8" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">—</text>
-<text x="360" y="91" font-size="7.8" fill="#E65100" text-anchor="start" font-weight="700">2</text>
-<text x="450" y="91" font-size="7.8" fill="#E65100" text-anchor="start" font-weight="700">même objet, imposé</text>
-<text x="10" y="146" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">Equals pose la question que le type a choisie : une classe compare l'adresse, un record le contenu (mesuré).</text>
-<text x="10" y="164" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Un dictionnaire, un HashSet, Distinct, Contains : tous posent cette question-là, sans te demander ton avis.</text>
-<text x="10" y="180" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Un comparateur passé au constructeur remplace la question du type par la tienne.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1B</b> · Les objets de près</span><b>Cours 131</b></div>
+<p class="rubrique">Le concept</p>
+<h1>L'égalité et le hachage</h1>
+<p class="chapeau">« Ces deux-là sont-ils égaux ? » cache deux questions : est-ce le <b>même objet</b>, ou la <b>même valeur</b> ? C# laisse chaque type choisir sa réponse, et tous les dictionnaires s'y fient. Quand Equals et GetHashCode ne disent pas la même chose, une clé rangée devient introuvable.</p>
+<div class="meta">
+<span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>128</b>, <b>129</b></span>
+<span class="pastille">Exemples · <b>SnapSet</b>, <b>Magpie</b> plugin</span>
+</div>
+<div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+<svg viewbox="0 0 600 204" width="100%">
+<rect fill="#F1E9F3" height="26" rx="4" stroke="#6B2C7A" stroke-width="1.2" width="92" x="10" y="14"></rect>
+<text class="mono" fill="#6B2C7A" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="middle" x="56.0" y="29.6">a : Nom = x</text>
+<rect fill="#F1E9F3" height="26" rx="4" stroke="#6B2C7A" stroke-width="1.2" width="92" x="10" y="58"></rect>
+<text class="mono" fill="#6B2C7A" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="middle" x="56.0" y="73.6">b : Nom = x</text>
+<text fill="#6B7378" font-size="7.2" font-style="italic" text-anchor="middle" x="56" y="100">deux objets, même contenu</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="140" y="18">le type de a et b</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="290" y="18">a.Equals(b)</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="360" y="18">HashSet{a, b}</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="450" y="18">ce que la question devient</text>
+<rect fill="#F1E9F3" height="22" opacity=".7" width="456" x="134" y="28"></rect>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="140" y="43">classe ordinaire</text>
+<text class="mono" fill="#1565C0" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="290" y="43">False</text>
+<text fill="#1565C0" font-size="7.8" font-weight="700" text-anchor="start" x="360" y="43">2</text>
+<text fill="#1565C0" font-size="7.8" font-weight="700" text-anchor="start" x="450" y="43">même objet ?</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="140" y="67">record</text>
+<text class="mono" fill="#2E7D32" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="290" y="67">True</text>
+<text fill="#2E7D32" font-size="7.8" font-weight="700" text-anchor="start" x="360" y="67">1</text>
+<text fill="#2E7D32" font-size="7.8" font-weight="700" text-anchor="start" x="450" y="67">même valeur ?</text>
+<rect fill="#F1E9F3" height="22" opacity=".7" width="456" x="134" y="76"></rect>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="140" y="91">record, ReferenceEqualityComparer</text>
+<text class="mono" fill="#E65100" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="290" y="91">—</text>
+<text fill="#E65100" font-size="7.8" font-weight="700" text-anchor="start" x="360" y="91">2</text>
+<text fill="#E65100" font-size="7.8" font-weight="700" text-anchor="start" x="450" y="91">même objet, imposé</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="10" y="146">Equals pose la question que le type a choisie : une classe compare l'adresse, un record le contenu (mesuré).</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="10" y="164">Un dictionnaire, un HashSet, Distinct, Contains : tous posent cette question-là, sans te demander ton avis.</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="10" y="180">Un comparateur passé au constructeur remplace la question du type par la tienne.</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Equals dit si deux choses sont égales, GetHashCode dit où ranger chacune ; un dictionnaire marche tant que deux choses égales sont rangées au même endroit.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Un vestiaire : le numéro du ticket (le hash) indique le crochet, puis on vérifie le manteau (Equals). Un ticket faux, et on cherche au mauvais crochet.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>dire quelle égalité un type offre ;</li>
-        <li>tenir le contrat Equals / hash ;</li>
-        <li>choisir un comparateur de chaînes ;</li>
-        <li>comparer des nombres à virgule.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Equals dit si deux choses sont égales, GetHashCode dit où ranger chacune ; un dictionnaire marche tant que deux choses égales sont rangées au même endroit.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Un vestiaire : le numéro du ticket (le hash) indique le crochet, puis on vérifie le manteau (Equals). Un ticket faux, et on cherche au mauvais crochet.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>dire quelle égalité un type offre ;</li>
+<li>tenir le contrat Equals / hash ;</li>
+<li>choisir un comparateur de chaînes ;</li>
+<li>comparer des nombres à virgule.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À retenir</span>
     Une classe est égale à elle-même seulement ; un record, un struct ou une chaîne sont égaux par leur contenu. Redéfinir Equals oblige à redéfinir GetHashCode, avec les mêmes champs.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 131 · L'égalité et le hachage</div>
+<div class="folio">1</div>
+<div class="pied">Cours 131 · L'égalité et le hachage</div>
 </section>
-
 <!-- ============ PAGE 2 · LE CONTRAT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1B</b> · Les objets de près</span><b>Cours 131</b></div>
-  <p class="rubrique">Schéma 1 · Le contrat</p>
-  <h2>Le hash range, Equals confirme</h2>
-  <p style="max-width:165mm">Un HashSet ne compare pas la clé cherchée à toutes les autres : il calcule son hash, va au seau correspondant, et n'appelle Equals que là. On a cassé ce contrat de trois façons.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#6B2C7A" text-anchor="start" font-weight="700">Comment un HashSet retrouve une clé : le hash choisit le seau, Equals confirme dans le seau</text>
-<rect x="16" y="40" width="86" height="24" rx="4" fill="#F1E9F3" stroke="#6B2C7A" stroke-width="1.2"/>
-<text x="59.0" y="54.666666666666664" font-size="8" fill="#6B2C7A" text-anchor="middle" font-weight="700">clé</text>
-<rect x="130" y="40" width="116" height="24" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
-<text x="188.0" y="54.6" font-size="7.8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.8px">GetHashCode()</text>
-<line x1="102" y1="52" x2="130" y2="52" stroke="#6B7378" stroke-width="1.1"/><polygon points="130,52 123.6,54.7 123.6,49.3" fill="#6B7378"/>
-<line x1="246" y1="52" x2="274" y2="52" stroke="#6B7378" stroke-width="1.1"/><polygon points="274,52 267.6,54.7 267.6,49.3" fill="#6B7378"/>
-<rect x="278" y="36" width="44" height="32" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2" stroke-dasharray="4 3"/>
-<text x="300.0" y="54.333333333333336" font-size="7" fill="#6B7378" text-anchor="middle">seau 0</text>
-<rect x="328" y="36" width="44" height="32" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2" stroke-dasharray="4 3"/>
-<text x="350.0" y="54.333333333333336" font-size="7" fill="#6B7378" text-anchor="middle">seau 1</text>
-<rect x="378" y="36" width="44" height="32" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2" stroke-dasharray="4 3"/>
-<text x="400.0" y="54.333333333333336" font-size="7" fill="#6B7378" text-anchor="middle">seau 2</text>
-<rect x="428" y="36" width="44" height="32" rx="4" fill="#EAF4EA" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="450.0" y="54.333333333333336" font-size="7" fill="#2E7D32" text-anchor="middle" font-weight="700">seau 3</text>
-<rect x="478" y="36" width="44" height="32" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2" stroke-dasharray="4 3"/>
-<text x="500.0" y="54.333333333333336" font-size="7" fill="#6B7378" text-anchor="middle">seau 4</text>
-<rect x="528" y="36" width="44" height="32" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2" stroke-dasharray="4 3"/>
-<text x="550.0" y="54.333333333333336" font-size="7" fill="#6B7378" text-anchor="middle">seau 5</text>
-<text x="450" y="82" font-size="7.2" fill="#2E7D32" text-anchor="middle" font-weight="700">Equals ici seulement</text>
-<rect x="16" y="94" width="568" height="28" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
-<text x="26" y="106" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">Equals redéfini, GetHashCode oublié</text>
-<text x="26" y="117" font-size="7.1" fill="#6B7378" text-anchor="start" font-style="italic">deux objets égaux tombent dans deux seaux différents</text>
-<text x="574" y="111" font-size="7.8" fill="#C62828" text-anchor="end" font-weight="700">retrouvés 0 sur 1 000</text>
-<rect x="16" y="126" width="568" height="28" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="26" y="138" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">la même chose dans une List</text>
-<text x="26" y="149" font-size="7.1" fill="#6B7378" text-anchor="start" font-style="italic">une liste ne hache pas, elle compare tout le monde</text>
-<text x="574" y="143" font-size="7.8" fill="#2E7D32" text-anchor="end" font-weight="700">Contains : True</text>
-<rect x="16" y="158" width="568" height="28" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
-<text x="26" y="170" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">record mis dans un HashSet, puis Nom modifié</text>
-<text x="26" y="181" font-size="7.1" fill="#6B7378" text-anchor="start" font-style="italic">la clé n'est plus dans le seau de son nouveau hash</text>
-<text x="574" y="175" font-size="7.8" fill="#E65100" text-anchor="end" font-weight="700">Contains False, Add True</text>
-<text x="16" y="204" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Deux objets égaux doivent avoir le même hash. Et une clé ne doit plus changer une fois rangée.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1B</b> · Les objets de près</span><b>Cours 131</b></div>
+<p class="rubrique">Schéma 1 · Le contrat</p>
+<h2>Le hash range, Equals confirme</h2>
+<p style="max-width:165mm">Un HashSet ne compare pas la clé cherchée à toutes les autres : il calcule son hash, va au seau correspondant, et n'appelle Equals que là. On a cassé ce contrat de trois façons.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#6B2C7A" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">Comment un HashSet retrouve une clé : le hash choisit le seau, Equals confirme dans le seau</text>
+<rect fill="#F1E9F3" height="24" rx="4" stroke="#6B2C7A" stroke-width="1.2" width="86" x="16" y="40"></rect>
+<text fill="#6B2C7A" font-size="8" font-weight="700" text-anchor="middle" x="59.0" y="54.666666666666664">clé</text>
+<rect fill="#fff" height="24" rx="4" stroke="#1565C0" stroke-width="1.2" width="116" x="130" y="40"></rect>
+<text class="mono" fill="#1565C0" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="middle" x="188.0" y="54.6">GetHashCode()</text>
+<line stroke="#6B7378" stroke-width="1.1" x1="102" x2="130" y1="52" y2="52"></line><polygon fill="#6B7378" points="130,52 123.6,54.7 123.6,49.3"></polygon>
+<line stroke="#6B7378" stroke-width="1.1" x1="246" x2="274" y1="52" y2="52"></line><polygon fill="#6B7378" points="274,52 267.6,54.7 267.6,49.3"></polygon>
+<rect fill="#fff" height="32" rx="4" stroke="#6B7378" stroke-dasharray="4 3" stroke-width="1.2" width="44" x="278" y="36"></rect>
+<text fill="#6B7378" font-size="7" text-anchor="middle" x="300.0" y="54.333333333333336">seau 0</text>
+<rect fill="#fff" height="32" rx="4" stroke="#6B7378" stroke-dasharray="4 3" stroke-width="1.2" width="44" x="328" y="36"></rect>
+<text fill="#6B7378" font-size="7" text-anchor="middle" x="350.0" y="54.333333333333336">seau 1</text>
+<rect fill="#fff" height="32" rx="4" stroke="#6B7378" stroke-dasharray="4 3" stroke-width="1.2" width="44" x="378" y="36"></rect>
+<text fill="#6B7378" font-size="7" text-anchor="middle" x="400.0" y="54.333333333333336">seau 2</text>
+<rect fill="#EAF4EA" height="32" rx="4" stroke="#2E7D32" stroke-width="1.2" width="44" x="428" y="36"></rect>
+<text fill="#2E7D32" font-size="7" font-weight="700" text-anchor="middle" x="450.0" y="54.333333333333336">seau 3</text>
+<rect fill="#fff" height="32" rx="4" stroke="#6B7378" stroke-dasharray="4 3" stroke-width="1.2" width="44" x="478" y="36"></rect>
+<text fill="#6B7378" font-size="7" text-anchor="middle" x="500.0" y="54.333333333333336">seau 4</text>
+<rect fill="#fff" height="32" rx="4" stroke="#6B7378" stroke-dasharray="4 3" stroke-width="1.2" width="44" x="528" y="36"></rect>
+<text fill="#6B7378" font-size="7" text-anchor="middle" x="550.0" y="54.333333333333336">seau 5</text>
+<text fill="#2E7D32" font-size="7.2" font-weight="700" text-anchor="middle" x="450" y="82">Equals ici seulement</text>
+<rect fill="#fff" height="28" rx="4" stroke="#C62828" stroke-width="1.2" width="568" x="16" y="94"></rect>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="26" y="106">Equals redéfini, GetHashCode oublié</text>
+<text fill="#6B7378" font-size="7.1" font-style="italic" text-anchor="start" x="26" y="117">deux objets égaux tombent dans deux seaux différents</text>
+<text fill="#C62828" font-size="7.8" font-weight="700" text-anchor="end" x="574" y="111">retrouvés 0 sur 1 000</text>
+<rect fill="#fff" height="28" rx="4" stroke="#2E7D32" stroke-width="1.2" width="568" x="16" y="126"></rect>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="26" y="138">la même chose dans une List</text>
+<text fill="#6B7378" font-size="7.1" font-style="italic" text-anchor="start" x="26" y="149">une liste ne hache pas, elle compare tout le monde</text>
+<text fill="#2E7D32" font-size="7.8" font-weight="700" text-anchor="end" x="574" y="143">Contains : True</text>
+<rect fill="#fff" height="28" rx="4" stroke="#E65100" stroke-width="1.2" width="568" x="16" y="158"></rect>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="26" y="170">record mis dans un HashSet, puis Nom modifié</text>
+<text fill="#6B7378" font-size="7.1" font-style="italic" text-anchor="start" x="26" y="181">la clé n'est plus dans le seau de son nouveau hash</text>
+<text fill="#E65100" font-size="7.8" font-weight="700" text-anchor="end" x="574" y="175">Contains False, Add True</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="204">Deux objets égaux doivent avoir le même hash. Et une clé ne doit plus changer une fois rangée.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, une clé qui tient le contrat</span>public sealed record Cle(string Id, int Version);   // Equals et GetHashCode écrits par le compilateur
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, une clé qui tient le contrat</span>public sealed record Cle(string Id, int Version);   // Equals et GetHashCode écrits par le compilateur
 var vus = new HashSet&lt;Cle&gt; { new Cle("exo1", 2) };
 bool deja = vus.Contains(new Cle("exo1", 2));        // True : même valeur, même seau</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Le contrat en deux lignes</h3>
-      <p>Si a.Equals(b), alors leurs hash sont égaux. L'inverse n'est pas exigé : deux valeurs différentes peuvent partager un hash, ce n'est qu'un peu plus lent.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Le compilateur prévient</h3>
-      <p>Redéfinir Equals sans GetHashCode donne l'avertissement CS0659 (relevé à la compilation de l'essai). Un avertissement, pas une erreur : le code tourne, et rate ses recherches.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Le contrat en deux lignes</h3>
+<p>Si a.Equals(b), alors leurs hash sont égaux. L'inverse n'est pas exigé : deux valeurs différentes peuvent partager un hash, ce n'est qu'un peu plus lent.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Le compilateur prévient</h3>
+<p>Redéfinir Equals sans GetHashCode donne l'avertissement CS0659 (relevé à la compilation de l'essai). Un avertissement, pas une erreur : le code tourne, et rate ses recherches.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Modifier une clé déjà rangée. Le record reste dans son ancien seau : Contains le cherche dans le nouveau et rend False, et Add le range une deuxième fois (Count passe à 2, mesuré).
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 131 · L'égalité et le hachage</div>
+<div class="folio">2</div>
+<div class="pied">Cours 131 · L'égalité et le hachage</div>
 </section>
-
 <!-- ============ PAGE 3 · LE MAUVAIS HASH ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1B</b> · Les objets de près</span><b>Cours 131</b></div>
-  <p class="rubrique">Schéma 2 · Le mauvais hash</p>
-  <h2>Quand tout tombe dans le même seau</h2>
-  <p style="max-width:165mm">Un hash qui ne distingue rien ne casse pas le résultat : il casse le temps. On l'a mesuré avec un hash constant, puis avec un struct qui n'a ni Equals ni GetHashCode.</p>
-
-  <svg viewBox="0 0 600 222" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="222" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#6B2C7A" text-anchor="start" font-weight="700">Le prix d'un mauvais hash (.NET 8, deux à trois séries, mesuré)</text>
-<text x="16" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">ce qu'on range</text>
-<text x="250" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">hash médiocre</text>
-<text x="410" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">hash correct</text>
-<rect x="10" y="48" width="580" height="18" fill="#fff" opacity=".55"/>
-<text x="16" y="61" font-size="7.6" fill="#2B2F33" text-anchor="start">1 000 objets, GetHashCode() => 0</text>
-<text x="250" y="61" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">3,8 à 5,0 ms</text>
-<text x="410" y="61" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">0,7 à 1,1 ms</text>
-<text x="16" y="79" font-size="7.6" fill="#2B2F33" text-anchor="start">10 000 objets, GetHashCode() => 0</text>
-<text x="250" y="79" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">352 à 615 ms</text>
-<text x="410" y="79" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">1,5 à 7,4 ms</text>
-<rect x="10" y="84" width="580" height="18" fill="#fff" opacity=".55"/>
-<text x="16" y="97" font-size="7.6" fill="#2B2F33" text-anchor="start">20 000 objets, GetHashCode() => 0</text>
-<text x="250" y="97" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">1 541 à 1 650 ms</text>
-<text x="410" y="97" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">5,0 à 16,9 ms</text>
-<text x="16" y="115" font-size="7.6" fill="#2B2F33" text-anchor="start">2 000 clés struct sans Equals (Dictionary)</text>
-<text x="250" y="115" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">832 à 918 ms</text>
-<text x="410" y="115" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">0,35 à 1,9 ms</text>
-<rect x="10" y="120" width="580" height="18" fill="#fff" opacity=".55"/>
-<text x="16" y="133" font-size="7.6" fill="#2B2F33" text-anchor="start">un Equals sur ce struct</text>
-<text x="250" y="133" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">740 à 888 ns, 312 o</text>
-<text x="410" y="133" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">3,2 à 24 ns, 0 o</text>
-<text x="16" y="160" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Tous les objets dans le même seau : chaque ajout compare avec tous les autres, le temps suit le carré.</text>
-<text x="16" y="176" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Struct à champs float sans Equals : réflexion, boxing, et un hash tiré du premier champ seul (1 hash sur 1 000).</text>
-<text x="16" y="198" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">« hash correct » : HashCode.Combine sur les quatre champs, et IEquatable&lt;T&gt; pour éviter le boxing.</text>
-<text x="16" y="212" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Les durées du bas de tableau sont celles de deux séries de 2 000 clés et de 10 millions d'appels.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1B</b> · Les objets de près</span><b>Cours 131</b></div>
+<p class="rubrique">Schéma 2 · Le mauvais hash</p>
+<h2>Quand tout tombe dans le même seau</h2>
+<p style="max-width:165mm">Un hash qui ne distingue rien ne casse pas le résultat : il casse le temps. On l'a mesuré avec un hash constant, puis avec un struct qui n'a ni Equals ni GetHashCode.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 222" width="100%">
+<rect fill="#EFE9E1" height="222" width="600" x="0" y="0"></rect>
+<text fill="#6B2C7A" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">Le prix d'un mauvais hash (.NET 8, deux à trois séries, mesuré)</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="16" y="40">ce qu'on range</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="250" y="40">hash médiocre</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="410" y="40">hash correct</text>
+<rect fill="#fff" height="18" opacity=".55" width="580" x="10" y="48"></rect>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="16" y="61">1 000 objets, GetHashCode() =&gt; 0</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="250" y="61">3,8 à 5,0 ms</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="410" y="61">0,7 à 1,1 ms</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="16" y="79">10 000 objets, GetHashCode() =&gt; 0</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="250" y="79">352 à 615 ms</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="410" y="79">1,5 à 7,4 ms</text>
+<rect fill="#fff" height="18" opacity=".55" width="580" x="10" y="84"></rect>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="16" y="97">20 000 objets, GetHashCode() =&gt; 0</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="250" y="97">1 541 à 1 650 ms</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="410" y="97">5,0 à 16,9 ms</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="16" y="115">2 000 clés struct sans Equals (Dictionary)</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="250" y="115">832 à 918 ms</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="410" y="115">0,35 à 1,9 ms</text>
+<rect fill="#fff" height="18" opacity=".55" width="580" x="10" y="120"></rect>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="16" y="133">un Equals sur ce struct</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="250" y="133">740 à 888 ns, 312 o</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="410" y="133">3,2 à 24 ns, 0 o</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="160">Tous les objets dans le même seau : chaque ajout compare avec tous les autres, le temps suit le carré.</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="176">Struct à champs float sans Equals : réflexion, boxing, et un hash tiré du premier champ seul (1 hash sur 1 000).</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="198">« hash correct » : HashCode.Combine sur les quatre champs, et IEquatable&lt;T&gt; pour éviter le boxing.</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="212">Les durées du bas de tableau sont celles de deux séries de 2 000 clés et de 10 millions d'appels.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, un struct prêt à servir de clé</span>public readonly struct Bord : IEquatable&lt;Bord&gt;
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, un struct prêt à servir de clé</span>public readonly struct Bord : IEquatable&lt;Bord&gt;
 {
     public float H { get; } public float D { get; } public float B { get; } public float G { get; }
     public bool Equals(Bord o) =&gt; (H, D, B, G).Equals((o.H, o.D, o.B, o.G));
     public override bool Equals(object o) =&gt; o is Bord b &amp;&amp; Equals(b);
     public override int GetHashCode() =&gt; HashCode.Combine(H, D, B, G);
 }</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>L'Equals par défaut d'un struct</h3>
-      <p>Avec des champs float, le runtime compare champ par champ par réflexion, après avoir mis le struct dans une boîte : 312 octets alloués par appel (mesuré).</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Son GetHashCode par défaut</h3>
-      <p>Il n'a lu que le premier champ : mille bords qui ne diffèrent qu'à droite ont tous eu le même hash. Un string en tête fait pareil (mesuré).</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>L'Equals par défaut d'un struct</h3>
+<p>Avec des champs float, le runtime compare champ par champ par réflexion, après avoir mis le struct dans une boîte : 312 octets alloués par appel (mesuré).</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Son GetHashCode par défaut</h3>
+<p>Il n'a lu que le premier champ : mille bords qui ne diffèrent qu'à droite ont tous eu le même hash. Un string en tête fait pareil (mesuré).</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Prendre un struct maison comme clé de dictionnaire sans IEquatable ni GetHashCode. Le code est juste et les tests passent ; c'est à 2 000 clés qu'on attend près d'une seconde (mesuré).
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 131 · L'égalité et le hachage</div>
+<div class="folio">3</div>
+<div class="pied">Cours 131 · L'égalité et le hachage</div>
 </section>
-
 <!-- ============ PAGE 4 · CHAÎNES ET NOMBRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1B</b> · Les objets de près</span><b>Cours 131</b></div>
-  <p class="rubrique">Schéma 3 · Chaînes et nombres</p>
-  <h2>Égaux selon qui compare</h2>
-  <p style="max-width:165mm">Pour une chaîne, « égal » dépend de la casse et de la langue ; pour un double, de l'arrondi. On a posé les mêmes paires à chaque comparateur.</p>
-
-  <svg viewBox="0 0 600 224" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="224" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#6B2C7A" text-anchor="start" font-weight="700">Comparer des chaînes : quatre réponses selon le comparateur (.NET 8, ICU, mesuré)</text>
-<text x="16" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">les deux chaînes</text>
-<text x="140" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">Ordinal</text>
-<text x="240" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">OrdinalIgnoreCase</text>
-<text x="360" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">InvariantCulture IC</text>
-<text x="500" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">tr-TR, IgnoreCase</text>
-<rect x="10" y="48" width="580" height="18" fill="#fff" opacity=".55"/>
-<text x="16" y="61" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">Exo1 / exo1</text>
-<text x="140" y="61" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">False</text>
-<text x="240" y="61" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">True</text>
-<text x="360" y="61" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">True</text>
-<text x="500" y="61" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700">—</text>
-<text x="16" y="79" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">é / É</text>
-<text x="140" y="79" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">False</text>
-<text x="240" y="79" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">True</text>
-<text x="360" y="79" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">True</text>
-<text x="500" y="79" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700">—</text>
-<rect x="10" y="84" width="580" height="18" fill="#fff" opacity=".55"/>
-<text x="16" y="97" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">Straße / STRASSE</text>
-<text x="140" y="97" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">False</text>
-<text x="240" y="97" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">False</text>
-<text x="360" y="97" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">False</text>
-<text x="500" y="97" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700">—</text>
-<text x="16" y="115" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">file / FILE</text>
-<text x="140" y="115" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">False</text>
-<text x="240" y="115" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">True</text>
-<text x="360" y="115" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">True</text>
-<text x="500" y="115" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">False</text>
-<rect x="10" y="120" width="580" height="18" fill="#fff" opacity=".55"/>
-<text x="16" y="133" font-size="7.6" fill="#2B2F33" text-anchor="start">une recherche, 10 000 clés</text>
-<text x="140" y="133" font-size="7.6" fill="#1565C0" text-anchor="start" font-weight="700">32 ns</text>
-<text x="240" y="133" font-size="7.6" fill="#1565C0" text-anchor="start" font-weight="700">41 ns</text>
-<text x="360" y="133" font-size="7.6" fill="#1565C0" text-anchor="start" font-weight="700">545 ns</text>
-<text x="500" y="133" font-size="7.6" fill="#1565C0" text-anchor="start" font-weight="700"></text>
-<text x="16" y="156" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Et les nombres : NaN == NaN rend False, mais NaN.Equals(NaN), List.IndexOf et HashSet le retrouvent.</text>
-<text x="16" y="172" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">0.1 + 0.2 == 0.3 rend False ; 0.0 et -0.0 sont égaux et un HashSet n'en garde qu'un (mesuré).</text>
-<text x="16" y="196" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">En Turquie, « file » mis en majuscules donne « FİLE » : la culture change l'égalité, Ordinal jamais.</text>
-<text x="16" y="210" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Durées : meilleure de cinq séries d'un million de recherches dans un HashSet de 10 000 chaînes.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1B</b> · Les objets de près</span><b>Cours 131</b></div>
+<p class="rubrique">Schéma 3 · Chaînes et nombres</p>
+<h2>Égaux selon qui compare</h2>
+<p style="max-width:165mm">Pour une chaîne, « égal » dépend de la casse et de la langue ; pour un double, de l'arrondi. On a posé les mêmes paires à chaque comparateur.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 224" width="100%">
+<rect fill="#EFE9E1" height="224" width="600" x="0" y="0"></rect>
+<text fill="#6B2C7A" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">Comparer des chaînes : quatre réponses selon le comparateur (.NET 8, ICU, mesuré)</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="16" y="40">les deux chaînes</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="140" y="40">Ordinal</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="240" y="40">OrdinalIgnoreCase</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="360" y="40">InvariantCulture IC</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="500" y="40">tr-TR, IgnoreCase</text>
+<rect fill="#fff" height="18" opacity=".55" width="580" x="10" y="48"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="16" y="61">Exo1 / exo1</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="140" y="61">False</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="240" y="61">True</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="360" y="61">True</text>
+<text fill="#6B7378" font-size="7.6" font-weight="700" text-anchor="start" x="500" y="61">—</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="16" y="79">é / É</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="140" y="79">False</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="240" y="79">True</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="360" y="79">True</text>
+<text fill="#6B7378" font-size="7.6" font-weight="700" text-anchor="start" x="500" y="79">—</text>
+<rect fill="#fff" height="18" opacity=".55" width="580" x="10" y="84"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="16" y="97">Straße / STRASSE</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="140" y="97">False</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="240" y="97">False</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="360" y="97">False</text>
+<text fill="#6B7378" font-size="7.6" font-weight="700" text-anchor="start" x="500" y="97">—</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="16" y="115">file / FILE</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="140" y="115">False</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="240" y="115">True</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="360" y="115">True</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="500" y="115">False</text>
+<rect fill="#fff" height="18" opacity=".55" width="580" x="10" y="120"></rect>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="16" y="133">une recherche, 10 000 clés</text>
+<text fill="#1565C0" font-size="7.6" font-weight="700" text-anchor="start" x="140" y="133">32 ns</text>
+<text fill="#1565C0" font-size="7.6" font-weight="700" text-anchor="start" x="240" y="133">41 ns</text>
+<text fill="#1565C0" font-size="7.6" font-weight="700" text-anchor="start" x="360" y="133">545 ns</text>
+<text fill="#1565C0" font-size="7.6" font-weight="700" text-anchor="start" x="500" y="133"></text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="156">Et les nombres : NaN == NaN rend False, mais NaN.Equals(NaN), List.IndexOf et HashSet le retrouvent.</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="172">0.1 + 0.2 == 0.3 rend False ; 0.0 et -0.0 sont égaux et un HashSet n'en garde qu'un (mesuré).</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="196">En Turquie, « file » mis en majuscules donne « FİLE » : la culture change l'égalité, Ordinal jamais.</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="210">Durées : meilleure de cinq séries d'un million de recherches dans un HashSet de 10 000 chaînes.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, dire la règle au lieu de la subir</span>var ids = new HashSet&lt;string&gt;(StringComparer.OrdinalIgnoreCase);   // Exo1 et exo1 : un seul exercice
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, dire la règle au lieu de la subir</span>var ids = new HashSet&lt;string&gt;(StringComparer.OrdinalIgnoreCase);   // Exo1 et exo1 : un seul exercice
 bool proches = Math.Abs(a - b) &lt;= 1e-9 * Math.Max(Math.Abs(a), Math.Abs(b));  // pas a == b</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Lequel choisir</h3>
-      <p>Ordinal pour un identifiant de code, OrdinalIgnoreCase pour un nom de fichier sous Windows. La culture seulement pour trier du texte montré à quelqu'un : elle coûte plus de dix fois plus.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>NaN est à part</h3>
-      <p>L'opérateur == suit la norme IEEE : NaN n'égale rien. Equals suit le contrat : NaN s'égale lui-même, sinon une collection ne pourrait jamais le retrouver.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Lequel choisir</h3>
+<p>Ordinal pour un identifiant de code, OrdinalIgnoreCase pour un nom de fichier sous Windows. La culture seulement pour trier du texte montré à quelqu'un : elle coûte plus de dix fois plus.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>NaN est à part</h3>
+<p>L'opérateur == suit la norme IEEE : NaN n'égale rien. Equals suit le contrat : NaN s'égale lui-même, sinon une collection ne pourrait jamais le retrouver.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Comparer deux chaînes sans dire comment, ou avec ToUpper(). Le résultat dépend alors de la langue du poste : « file » et « FILE » diffèrent sur un Windows turc (mesuré en tr-TR).
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 131 · L'égalité et le hachage</div>
+<div class="folio">4</div>
+<div class="pied">Cours 131 · L'égalité et le hachage</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1B</b> · Les objets de près</span><b>Cours 131</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>Quatre égalités choisies, une laissée par défaut</h2>
-  <p style="max-width:165mm">Aucune classe des trois projets ne redéfinit Equals : chaque fois qu'il fallait une autre règle, un comparateur l'a dite.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1B</b> · Les objets de près</span><b>Cours 131</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>Quatre égalités choisies, une laissée par défaut</h2>
+<p style="max-width:165mm">Aucune classe des trois projets ne redéfinit Equals : chaque fois qu'il fallait une autre règle, un comparateur l'a dite.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">SnapSet/…/Execution/ArbreExecution.cs</span></div>
 <div class="l k1"><span class="n">286</span>objetDe = new …(ReferenceEqualityComparer.Instance);<span class="rep r1">1</span></div>
@@ -303,137 +276,55 @@ bool proches = Math.Abs(a - b) &lt;= 1e-9 * Math.Max(Math.Abs(a), Math.Abs(b)); 
 <div class="l"><span class="cm">SnapSet/schema/Metrique.cs</span></div>
 <div class="l k5"><span class="n">1172</span>public readonly struct Espacement<span class="rep r5">5</span></div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>Même objet</b>Imposé.</li>
-      <li><span class="rep r2">2</span><b>Mots C#</b>Casse exacte.</li>
-      <li><span class="rep r3">3</span><b>Paramètres</b>Sans casse.</li>
-      <li><span class="rep r4">4</span><b>Premier servi</b>Ids sans casse.</li>
-      <li><span class="rep r5">5</span><b>Par défaut</b>Ni Equals ni hash.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À surveiller · Espacement n'a ni Equals ni GetHashCode</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>Même objet</b>Imposé.</li>
+<li><span class="rep r2">2</span><b>Mots C#</b>Casse exacte.</li>
+<li><span class="rep r3">3</span><b>Paramètres</b>Sans casse.</li>
+<li><span class="rep r4">4</span><b>Premier servi</b>Ids sans casse.</li>
+<li><span class="rep r5">5</span><b>Par défaut</b>Ni Equals ni hash.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À surveiller · Espacement n'a ni Equals ni GetHashCode</span>
     Metrique.cs:1172 déclare un struct de quatre float sans IEquatable. Aujourd'hui aucun code ne le compare ni ne l'utilise comme clé (recherche dans les trois dépôts). Le jour où un cache de mesures le prendrait comme clé, une recopie a mesuré 740 à 888 ns par Equals et un seul hash pour mille valeurs. Relevé sans rien modifier.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 131 · L'égalité et le hachage</div>
+<div class="folio">5</div>
+<div class="pied">Cours 131 · L'égalité et le hachage</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1B</b> · Les objets de près</span><b>Cours 131</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1B</b> · Les objets de près</span><b>Cours 131</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">Deux instances d'une classe ordinaire, même contenu : Equals rend…</div><ul>
-      <li><span>A</span>une exception</li><li><span>B</span>False</li><li><span>C</span>True</li><li><span>D</span>True si les champs sont publics</li></ul></div>
 
-    <div class="q"><div class="enonce">Deux records au même contenu, dans un HashSet…</div><ul>
-      <li><span>A</span>lèvent une exception</li><li><span>B</span>en font deux</li><li><span>C</span>dépendent de l'ordre d'ajout</li><li><span>D</span>n'en font qu'un</li></ul></div>
 
-    <div class="q"><div class="enonce">Equals redéfini, GetHashCode oublié : dans un HashSet…</div><ul>
-      <li><span>A</span>0 recherche sur 1 000 a abouti</li><li><span>B</span>toutes ont abouti</li><li><span>C</span>le code ne compile pas</li><li><span>D</span>la moitié</li></ul></div>
 
-    <div class="q"><div class="enonce">Le contrat exige que…</div><ul>
-      <li><span>A</span>chaque hash soit unique</li><li><span>B</span>deux hash égaux viennent d'objets égaux</li><li><span>C</span>deux objets égaux aient le même hash</li><li><span>D</span>le hash soit positif</li></ul></div>
-
-    <div class="q"><div class="enonce">Une clé modifiée après son rangement… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>lève une exception</li><li><span>B</span>est déplacée toute seule</li><li><span>C</span>peut être ajoutée une deuxième fois</li><li><span>D</span>n'est plus trouvée par Contains</li></ul></div>
-
-    <div class="q"><div class="enonce">20 000 objets à hash constant dans un HashSet…</div><ul>
-      <li><span>A</span>autant qu'un bon hash</li><li><span>B</span>un résultat faux</li><li><span>C</span>environ 1,6 s, contre quelques ms</li><li><span>D</span>une exception</li></ul></div>
-
-    <div class="q"><div class="enonce">Le GetHashCode par défaut d'un struct de quatre float…</div><ul>
-      <li><span>A</span>est aléatoire</li><li><span>B</span>a donné 1 hash pour 1 000 valeurs</li><li><span>C</span>combine les quatre champs</li><li><span>D</span>rend toujours 0</li></ul></div>
-
-    <div class="q"><div class="enonce">IEquatable&lt;T&gt; sur un struct évite surtout…</div><ul>
-      <li><span>A</span>les NaN</li><li><span>B</span>le boxing et la réflexion</li><li><span>C</span>la copie</li><li><span>D</span>les collisions</li></ul></div>
-
-    <div class="q"><div class="enonce">« Exo1 » et « exo1 » avec OrdinalIgnoreCase…</div><ul>
-      <li><span>A</span>dépendent de la culture</li><li><span>B</span>lèvent une exception</li><li><span>C</span>diffèrent</li><li><span>D</span>sont égaux</li></ul></div>
-
-    <div class="q"><div class="enonce">Une recherche avec InvariantCultureIgnoreCase a coûté…</div><ul>
-      <li><span>A</span>autant</li><li><span>B</span>1 ms</li><li><span>C</span>moins</li><li><span>D</span>environ 545 ns, contre 41 en ordinal</li></ul></div>
-
-    <div class="q"><div class="enonce">double.NaN == double.NaN rend…</div><ul>
-      <li><span>A</span>False, mais Equals rend True</li><li><span>B</span>une exception</li><li><span>C</span>True</li><li><span>D</span>False partout</li></ul></div>
-
-    <div class="q"><div class="enonce">Deux sources Magpie servent le même Id, casse différente…</div><ul>
-      <li><span>A</span>une erreur est affichée</li><li><span>B</span>les deux sont gardées</li><li><span>C</span>la première source gagne</li><li><span>D</span>la dernière gagne</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 131 · L'égalité et le hachage</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">ReferenceEqualityComparer.Instance</td><td>comparer les adresses, quoi que dise le type</td><td>ArbreExecution.cs:286</td></tr>
+<tr><td class="c">StringComparer.Ordinal</td><td>caractère par caractère, casse comprise</td><td>ModeleFeuilles.cs:457</td></tr>
+<tr><td class="c">StringComparer.OrdinalIgnoreCase</td><td>sans la casse, sans la langue</td><td>MagpieRepository.cs:177</td></tr>
+<tr><td class="c">record</td><td>Equals et hash par valeur, écrits pour toi</td><td>page 2</td></tr>
+<tr><td class="c">HashCode.Combine(a, b, …)</td><td>un hash qui mêle tous les champs</td><td>page 3</td></tr>
+<tr><td class="c">IEquatable&lt;T&gt;</td><td>Equals sans boxing</td><td>page 3</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Égalité de référence</dt><dd>Deux variables désignent le même objet en mémoire.</dd>
+<dt>Égalité de valeur</dt><dd>Deux objets ont le même contenu, champ par champ.</dd>
+<dt>Hash</dt><dd>Un entier tiré du contenu, qui choisit le seau où ranger la clé.</dd>
+<dt>Collision</dt><dd>Deux clés différentes au même hash : permis, mais à éviter en masse.</dd>
+<dt>Comparateur</dt><dd>Un objet passé à une collection pour lui imposer une autre règle d'égalité.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 132</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 131 · L'égalité et le hachage</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1B</b> · Les objets de près</span><b>Cours 131</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · B.</b> Même objet, pas même valeur.</div>
-    <div><b>02 · D.</b> Égalité de valeur.</div>
-    <div><b>03 · A.</b> Deux seaux différents.</div>
-    <div><b>04 · C.</b> L'inverse n'est pas exigé.</div>
-    <div><b>05 · C et D.</b> Mauvais seau.</div>
-    <div><b>06 · C.</b> 1 541 à 1 650 ms.</div>
-    <div><b>07 · B.</b> Premier champ seul.</div>
-    <div><b>08 · B.</b> 312 octets par appel.</div>
-    <div><b>09 · D.</b> Casse ignorée.</div>
-    <div><b>10 · D.</b> Plus de dix fois plus.</div>
-    <div><b>11 · A.</b> IEEE contre contrat.</div>
-    <div><b>12 · C.</b> MagpieRepository.cs:196.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 132, « Libérer les ressources ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">ReferenceEqualityComparer.Instance</td><td>comparer les adresses, quoi que dise le type</td><td>ArbreExecution.cs:286</td></tr>
-      <tr><td class="c">StringComparer.Ordinal</td><td>caractère par caractère, casse comprise</td><td>ModeleFeuilles.cs:457</td></tr>
-      <tr><td class="c">StringComparer.OrdinalIgnoreCase</td><td>sans la casse, sans la langue</td><td>MagpieRepository.cs:177</td></tr>
-      <tr><td class="c">record</td><td>Equals et hash par valeur, écrits pour toi</td><td>page 2</td></tr>
-      <tr><td class="c">HashCode.Combine(a, b, …)</td><td>un hash qui mêle tous les champs</td><td>page 3</td></tr>
-      <tr><td class="c">IEquatable&lt;T&gt;</td><td>Equals sans boxing</td><td>page 3</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Égalité de référence</dt><dd>Deux variables désignent le même objet en mémoire.</dd>
-    <dt>Égalité de valeur</dt><dd>Deux objets ont le même contenu, champ par champ.</dd>
-    <dt>Hash</dt><dd>Un entier tiré du contenu, qui choisit le seau où ranger la clé.</dd>
-    <dt>Collision</dt><dd>Deux clés différentes au même hash : permis, mais à éviter en masse.</dd>
-    <dt>Comparateur</dt><dd>Un objet passé à une collection pour lui imposer une autre règle d'égalité.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 132</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 131 · L'égalité et le hachage</div>
-</section>
-
 </body>
 </html>

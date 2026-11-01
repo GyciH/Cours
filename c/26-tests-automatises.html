@@ -1,128 +1,117 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>26 · Tests automatisés</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-11">
-
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 26</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Tests automatisés</h1>
-  <p class="chapeau">Ouvrir Rhino, poser un composant, cliquer : c'est lent, et on oublie toujours un cas. Un test automatisé refait la vérification en quelques millisecondes, à chaque modification. Encore faut-il que le code à tester puisse vivre hors de Rhino.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>25</b> génération de code</span>
-    <span class="pastille">Exemples · <b>ResolutionTests</b> (SnapSet), <b>web/test</b> (Magpie)</span>
-  </div>
-
-  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
-    <svg viewBox="0 0 600 214" width="100%">
-<rect x="16" y="14" width="176" height="104" rx="6" fill="#fff" stroke="#2E7D32" stroke-width="1.5"/>
-<rect x="16" y="14" width="176" height="24" rx="6" fill="#2E7D32"/>
-<text x="104" y="30" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">logique pure</text>
-<text x="104" y="58" font-size="9" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:9px">Metrique.cs</text>
-<text x="104" y="73" font-size="9" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:9px">GenerateurDessin.cs</text>
-<text x="104" y="88" font-size="9" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:9px">validation.mjs</text>
-<line x1="104" y1="150" x2="104" y2="122" stroke="#2E7D32" stroke-width="1.6"/><polygon points="104,122 106.7,128.4 101.3,128.4" fill="#2E7D32"/>
-<rect x="34" y="152" width="140" height="22" rx="11" fill="#ECEBFA" stroke="#2E7D32"/>
-<text x="104" y="167" font-size="9.2" fill="#2E7D32" text-anchor="middle" font-weight="700">xUnit / node:test</text>
-<text x="104" y="190" font-size="8.6" fill="#2B2F33" text-anchor="middle" font-style="italic">des millisecondes, sans Rhino</text>
-<rect x="212" y="14" width="176" height="104" rx="6" fill="#fff" stroke="#1565C0" stroke-width="1.5"/>
-<rect x="212" y="14" width="176" height="24" rx="6" fill="#1565C0"/>
-<text x="300" y="30" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">code émis</text>
-<text x="300" y="58" font-size="9" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:9px">Xxx.Dessin.g.cs</text>
-<text x="300" y="73" font-size="9" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:9px">+ Xxx.cs</text>
-<line x1="300" y1="150" x2="300" y2="122" stroke="#1565C0" stroke-width="1.6"/><polygon points="300,122 302.7,128.4 297.3,128.4" fill="#1565C0"/>
-<rect x="230" y="152" width="140" height="22" rx="11" fill="#ECEBFA" stroke="#1565C0"/>
-<text x="300" y="167" font-size="9.2" fill="#1565C0" text-anchor="middle" font-weight="700">Roslyn</text>
-<text x="300" y="190" font-size="8.6" fill="#2B2F33" text-anchor="middle" font-style="italic">compilé, jamais exécuté</text>
-<rect x="408" y="14" width="176" height="104" rx="6" fill="#fff" stroke="#6B7378" stroke-width="1.5"/>
-<rect x="408" y="14" width="176" height="24" rx="6" fill="#6B7378"/>
-<text x="496" y="30" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">coquille Grasshopper</text>
-<text x="496" y="58" font-size="9" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:9px">attributs, peinture</text>
-<text x="496" y="73" font-size="9" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:9px">souris, menus</text>
-<line x1="496" y1="150" x2="496" y2="122" stroke="#6B7378" stroke-width="1.6"/><polygon points="496,122 498.7,128.4 493.3,128.4" fill="#6B7378"/>
-<rect x="426" y="152" width="140" height="22" rx="11" fill="#ECEAE6" stroke="#6B7378"/>
-<text x="496" y="167" font-size="9.2" fill="#6B7378" text-anchor="middle" font-weight="700">toi, dans Rhino</text>
-<text x="496" y="190" font-size="8.6" fill="#2B2F33" text-anchor="middle" font-style="italic">à la main, plus rarement</text>
-<text x="300" y="208" font-size="9.2" fill="#4F46B8" text-anchor="middle" font-weight="700">Plus le code est pur, plus il est testé tôt et souvent.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 26</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Tests automatisés</h1>
+<p class="chapeau">Ouvrir Rhino, poser un composant, cliquer : c'est lent, et on oublie toujours un cas. Un test automatisé refait la vérification en quelques millisecondes, à chaque modification. Encore faut-il que le code à tester puisse vivre hors de Rhino.</p>
+<div class="meta">
+<span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>25</b> génération de code</span>
+<span class="pastille">Exemples · <b>ResolutionTests</b> (SnapSet), <b>web/test</b> (Magpie)</span>
+</div>
+<div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+<svg viewbox="0 0 600 214" width="100%">
+<rect fill="#fff" height="104" rx="6" stroke="#2E7D32" stroke-width="1.5" width="176" x="16" y="14"></rect>
+<rect fill="#2E7D32" height="24" rx="6" width="176" x="16" y="14"></rect>
+<text fill="#fff" font-size="10" font-weight="700" text-anchor="middle" x="104" y="30">logique pure</text>
+<text class="mono" fill="#2B2F33" font-size="9" style="font-size:9px" text-anchor="middle" x="104" y="58">Metrique.cs</text>
+<text class="mono" fill="#2B2F33" font-size="9" style="font-size:9px" text-anchor="middle" x="104" y="73">GenerateurDessin.cs</text>
+<text class="mono" fill="#2B2F33" font-size="9" style="font-size:9px" text-anchor="middle" x="104" y="88">validation.mjs</text>
+<line stroke="#2E7D32" stroke-width="1.6" x1="104" x2="104" y1="150" y2="122"></line><polygon fill="#2E7D32" points="104,122 106.7,128.4 101.3,128.4"></polygon>
+<rect fill="#ECEBFA" height="22" rx="11" stroke="#2E7D32" width="140" x="34" y="152"></rect>
+<text fill="#2E7D32" font-size="9.2" font-weight="700" text-anchor="middle" x="104" y="167">xUnit / node:test</text>
+<text fill="#2B2F33" font-size="8.6" font-style="italic" text-anchor="middle" x="104" y="190">des millisecondes, sans Rhino</text>
+<rect fill="#fff" height="104" rx="6" stroke="#1565C0" stroke-width="1.5" width="176" x="212" y="14"></rect>
+<rect fill="#1565C0" height="24" rx="6" width="176" x="212" y="14"></rect>
+<text fill="#fff" font-size="10" font-weight="700" text-anchor="middle" x="300" y="30">code émis</text>
+<text class="mono" fill="#2B2F33" font-size="9" style="font-size:9px" text-anchor="middle" x="300" y="58">Xxx.Dessin.g.cs</text>
+<text class="mono" fill="#2B2F33" font-size="9" style="font-size:9px" text-anchor="middle" x="300" y="73">+ Xxx.cs</text>
+<line stroke="#1565C0" stroke-width="1.6" x1="300" x2="300" y1="150" y2="122"></line><polygon fill="#1565C0" points="300,122 302.7,128.4 297.3,128.4"></polygon>
+<rect fill="#ECEBFA" height="22" rx="11" stroke="#1565C0" width="140" x="230" y="152"></rect>
+<text fill="#1565C0" font-size="9.2" font-weight="700" text-anchor="middle" x="300" y="167">Roslyn</text>
+<text fill="#2B2F33" font-size="8.6" font-style="italic" text-anchor="middle" x="300" y="190">compilé, jamais exécuté</text>
+<rect fill="#fff" height="104" rx="6" stroke="#6B7378" stroke-width="1.5" width="176" x="408" y="14"></rect>
+<rect fill="#6B7378" height="24" rx="6" width="176" x="408" y="14"></rect>
+<text fill="#fff" font-size="10" font-weight="700" text-anchor="middle" x="496" y="30">coquille Grasshopper</text>
+<text class="mono" fill="#2B2F33" font-size="9" style="font-size:9px" text-anchor="middle" x="496" y="58">attributs, peinture</text>
+<text class="mono" fill="#2B2F33" font-size="9" style="font-size:9px" text-anchor="middle" x="496" y="73">souris, menus</text>
+<line stroke="#6B7378" stroke-width="1.6" x1="496" x2="496" y1="150" y2="122"></line><polygon fill="#6B7378" points="496,122 498.7,128.4 493.3,128.4"></polygon>
+<rect fill="#ECEAE6" height="22" rx="11" stroke="#6B7378" width="140" x="426" y="152"></rect>
+<text fill="#6B7378" font-size="9.2" font-weight="700" text-anchor="middle" x="496" y="167">toi, dans Rhino</text>
+<text fill="#2B2F33" font-size="8.6" font-style="italic" text-anchor="middle" x="496" y="190">à la main, plus rarement</text>
+<text fill="#4F46B8" font-size="9.2" font-weight="700" text-anchor="middle" x="300" y="208">Plus le code est pur, plus il est testé tôt et souvent.</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Un <b>test</b> est une petite méthode qui prépare une situation, appelle le code, puis <b>affirme</b> ce qu'elle doit obtenir. Si l'affirmation est fausse, le test échoue et dit pourquoi.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Le banc d'essai d'un moteur. On ne monte pas le moteur dans la voiture pour savoir s'il tourne : on le pose sur un banc, on branche des capteurs, on lit les valeurs. Pour cela, le moteur doit pouvoir se démonter de la voiture.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>lire et écrire un test xUnit avec [Fact] et [Theory] ;</li>
-        <li>expliquer comment SnapSet teste sa logique sans Grasshopper ;</li>
-        <li>vérifier qu'un code émis compile, avec Roslyn ;</li>
-        <li>lancer les tests du web de Magpie avec <span style="white-space:nowrap">node --test</span>.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:5mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Un <b>test</b> est une petite méthode qui prépare une situation, appelle le code, puis <b>affirme</b> ce qu'elle doit obtenir. Si l'affirmation est fausse, le test échoue et dit pourquoi.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Le banc d'essai d'un moteur. On ne monte pas le moteur dans la voiture pour savoir s'il tourne : on le pose sur un banc, on branche des capteurs, on lit les valeurs. Pour cela, le moteur doit pouvoir se démonter de la voiture.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>lire et écrire un test xUnit avec [Fact] et [Theory] ;</li>
+<li>expliquer comment SnapSet teste sa logique sans Grasshopper ;</li>
+<li>vérifier qu'un code émis compile, avec Roslyn ;</li>
+<li>lancer les tests du web de Magpie avec <span style="white-space:nowrap">node --test</span>.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:5mm">
+<span class="titre">À retenir</span>
     Ce qui se teste facilement, c'est ce qui ne dépend de rien : une fonction qui reçoit des valeurs et rend un résultat. L'architecture de SnapSet (<code>Metrique.cs</code>, les fichiers <code>Pur/</code>, le générateur) est pensée pour ça.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 26 · Tests automatisés</div>
+<div class="folio">1</div>
+<div class="pied">Cours 26 · Tests automatisés</div>
 </section>
-
 <!-- ============ PAGE 2 · XUNIT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 26</b></div>
-  <p class="rubrique">Schéma 1 · L'anatomie d'un test xUnit</p>
-  <h2>Préparer, agir, affirmer</h2>
-  <p style="max-width:165mm"><b>xUnit</b> (paquet <code>xunit</code> 2.9.2 dans <code>ResolutionTests.csproj</code>) trouve les méthodes marquées <code>[Fact]</code> ou <code>[Theory]</code> et les exécute une par une. Chaque test reçoit une <b>instance neuve</b> de sa classe.</p>
-
-  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="12" fill="#4F46B8" text-anchor="start" font-weight="700">Une instance neuve par test : aucun état ne fuit de l'un à l'autre</text>
-<text x="16" y="62" font-size="9.4" fill="#6B7378" text-anchor="start" font-weight="700">test 1</text>
-<rect x="70" y="40" width="160" height="38" rx="5" fill="#fff" stroke="#1565C0" stroke-width="1.3"/>
-<text x="150" y="56" font-size="8.4" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">new EcrivainGenerationTests()</text>
-<text x="150" y="70" font-size="8.4" fill="#2B2F33" text-anchor="middle">constructeur : crée un dossier</text>
-<line x1="231" y1="59" x2="245" y2="59" stroke="#6B7378" stroke-width="1.2"/><polygon points="245,59 238.6,61.7 238.6,56.3" fill="#6B7378"/>
-<rect x="246" y="40" width="160" height="38" rx="5" fill="#fff" stroke="#2E7D32" stroke-width="1.3"/>
-<text x="326" y="56" font-size="8.4" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">[Fact] LaPremiere…()</text>
-<text x="326" y="70" font-size="8.4" fill="#2B2F33" text-anchor="middle">préparer · agir · affirmer</text>
-<line x1="407" y1="59" x2="421" y2="59" stroke="#6B7378" stroke-width="1.2"/><polygon points="421,59 414.6,61.7 414.6,56.3" fill="#6B7378"/>
-<rect x="422" y="40" width="160" height="38" rx="5" fill="#fff" stroke="#E65100" stroke-width="1.3"/>
-<text x="502" y="56" font-size="8.4" fill="#E65100" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">Dispose()</text>
-<text x="502" y="70" font-size="8.4" fill="#2B2F33" text-anchor="middle">supprime le dossier</text>
-<text x="16" y="114" font-size="9.4" fill="#6B7378" text-anchor="start" font-weight="700">test 2</text>
-<rect x="70" y="92" width="160" height="38" rx="5" fill="#fff" stroke="#1565C0" stroke-width="1.3"/>
-<text x="150" y="108" font-size="8.4" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">new EcrivainGenerationTests()</text>
-<text x="150" y="122" font-size="8.4" fill="#2B2F33" text-anchor="middle">constructeur : crée un dossier</text>
-<line x1="231" y1="111" x2="245" y2="111" stroke="#6B7378" stroke-width="1.2"/><polygon points="245,111 238.6,113.7 238.6,108.3" fill="#6B7378"/>
-<rect x="246" y="92" width="160" height="38" rx="5" fill="#fff" stroke="#2E7D32" stroke-width="1.3"/>
-<text x="326" y="108" font-size="8.4" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">[Fact] UnDessinIdentique…()</text>
-<text x="326" y="122" font-size="8.4" fill="#2B2F33" text-anchor="middle">préparer · agir · affirmer</text>
-<line x1="407" y1="111" x2="421" y2="111" stroke="#6B7378" stroke-width="1.2"/><polygon points="421,111 414.6,113.7 414.6,108.3" fill="#6B7378"/>
-<rect x="422" y="92" width="160" height="38" rx="5" fill="#fff" stroke="#E65100" stroke-width="1.3"/>
-<text x="502" y="108" font-size="8.4" fill="#E65100" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">Dispose()</text>
-<text x="502" y="122" font-size="8.4" fill="#2B2F33" text-anchor="middle">supprime le dossier</text>
-<line x1="16" y1="146" x2="584" y2="146" stroke="#CFC6BA"/>
-<text x="16" y="166" font-size="9.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:9.4px">[Theory] + [InlineData("Correction")] + [InlineData("Atelier")] …</text>
-<text x="16" y="184" font-size="9" fill="#2B2F33" text-anchor="start">→ la même méthode, exécutée une fois par ligne : DessinEtSqueletteCompilentEnCSharp73 tourne sur 16 dessins.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 26</b></div>
+<p class="rubrique">Schéma 1 · L'anatomie d'un test xUnit</p>
+<h2>Préparer, agir, affirmer</h2>
+<p style="max-width:165mm"><b>xUnit</b> (paquet <code>xunit</code> 2.9.2 dans <code>ResolutionTests.csproj</code>) trouve les méthodes marquées <code>[Fact]</code> ou <code>[Theory]</code> et les exécute une par une. Chaque test reçoit une <b>instance neuve</b> de sa classe.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 206" width="100%">
+<rect fill="#EFE9E1" height="206" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="12" font-weight="700" text-anchor="start" x="16" y="22">Une instance neuve par test : aucun état ne fuit de l'un à l'autre</text>
+<text fill="#6B7378" font-size="9.4" font-weight="700" text-anchor="start" x="16" y="62">test 1</text>
+<rect fill="#fff" height="38" rx="5" stroke="#1565C0" stroke-width="1.3" width="160" x="70" y="40"></rect>
+<text class="mono" fill="#1565C0" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="middle" x="150" y="56">new EcrivainGenerationTests()</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="middle" x="150" y="70">constructeur : crée un dossier</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="231" x2="245" y1="59" y2="59"></line><polygon fill="#6B7378" points="245,59 238.6,61.7 238.6,56.3"></polygon>
+<rect fill="#fff" height="38" rx="5" stroke="#2E7D32" stroke-width="1.3" width="160" x="246" y="40"></rect>
+<text class="mono" fill="#2E7D32" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="middle" x="326" y="56">[Fact] LaPremiere…()</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="middle" x="326" y="70">préparer · agir · affirmer</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="407" x2="421" y1="59" y2="59"></line><polygon fill="#6B7378" points="421,59 414.6,61.7 414.6,56.3"></polygon>
+<rect fill="#fff" height="38" rx="5" stroke="#E65100" stroke-width="1.3" width="160" x="422" y="40"></rect>
+<text class="mono" fill="#E65100" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="middle" x="502" y="56">Dispose()</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="middle" x="502" y="70">supprime le dossier</text>
+<text fill="#6B7378" font-size="9.4" font-weight="700" text-anchor="start" x="16" y="114">test 2</text>
+<rect fill="#fff" height="38" rx="5" stroke="#1565C0" stroke-width="1.3" width="160" x="70" y="92"></rect>
+<text class="mono" fill="#1565C0" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="middle" x="150" y="108">new EcrivainGenerationTests()</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="middle" x="150" y="122">constructeur : crée un dossier</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="231" x2="245" y1="111" y2="111"></line><polygon fill="#6B7378" points="245,111 238.6,113.7 238.6,108.3"></polygon>
+<rect fill="#fff" height="38" rx="5" stroke="#2E7D32" stroke-width="1.3" width="160" x="246" y="92"></rect>
+<text class="mono" fill="#2E7D32" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="middle" x="326" y="108">[Fact] UnDessinIdentique…()</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="middle" x="326" y="122">préparer · agir · affirmer</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="407" x2="421" y1="111" y2="111"></line><polygon fill="#6B7378" points="421,111 414.6,113.7 414.6,108.3"></polygon>
+<rect fill="#fff" height="38" rx="5" stroke="#E65100" stroke-width="1.3" width="160" x="422" y="92"></rect>
+<text class="mono" fill="#E65100" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="middle" x="502" y="108">Dispose()</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="middle" x="502" y="122">supprime le dossier</text>
+<line stroke="#CFC6BA" x1="16" x2="584" y1="146" y2="146"></line>
+<text class="mono" fill="#2B2F33" font-size="9.4" font-weight="700" style="font-size:9.4px" text-anchor="start" x="16" y="166">[Theory] + [InlineData("Correction")] + [InlineData("Atelier")] …</text>
+<text fill="#2B2F33" font-size="9" text-anchor="start" x="16" y="184">→ la même méthode, exécutée une fois par ligne : DessinEtSqueletteCompilentEnCSharp73 tourne sur 16 dessins.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">EcrivainGenerationTests.cs · 45–60, condensé</span>[Fact]
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">EcrivainGenerationTests.cs · 45–60, condensé</span>[Fact]
 public void LaPremiereGenerationCreeLesDeuxFichiers()
 {
     var d = ExemplesDessin.Correction();                       // préparer
@@ -133,175 +122,163 @@ public void LaPremiereGenerationCreeLesDeuxFichiers()
     Assert.Equal(SortFichier.Cree, compte.Code);
     Assert.Equal(Chemin("Correction.Dessin.g.cs"), compte.CheminDessin);
 }</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Des entrées fixes</h3>
-      <p><code>GuidFixe</code> remplace <code>Guid.NewGuid()</code>, et <code>ExemplesDessin</code> fournit des dessins tout faits. Un test qui tirerait une valeur au hasard ne pourrait pas affirmer le texte exact attendu.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Assert.Equal(attendu, obtenu)</h3>
-      <p>L'ordre compte pour le message : en cas d'échec, xUnit affiche « Expected » puis « Actual ». Inversés, les deux valeurs s'affichent à la mauvaise place et le diagnostic égare.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Des entrées fixes</h3>
+<p><code>GuidFixe</code> remplace <code>Guid.NewGuid()</code>, et <code>ExemplesDessin</code> fournit des dessins tout faits. Un test qui tirerait une valeur au hasard ne pourrait pas affirmer le texte exact attendu.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Assert.Equal(attendu, obtenu)</h3>
+<p>L'ordre compte pour le message : en cas d'échec, xUnit affiche « Expected » puis « Actual ». Inversés, les deux valeurs s'affichent à la mauvaise place et le diagnostic égare.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Un test qui passe pour de mauvaises raisons. <code>MetriqueTests</code> choisit un bandeau <b>non nul</b> : avec un bandeau à 0, le calcul juste et le calcul faux donnent le même nombre (commentaire des lignes 23–26). Une valeur d'essai doit faire diverger le juste du faux.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 26 · Tests automatisés</div>
+<div class="folio">2</div>
+<div class="pied">Cours 26 · Tests automatisés</div>
 </section>
-
 <!-- ============ PAGE 3 · ISOLER LA LOGIQUE PURE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 26</b></div>
-  <p class="rubrique">Schéma 2 · Tester sans Rhino</p>
-  <h2>Compiler la logique pure, fichier par fichier</h2>
-  <p style="max-width:165mm"><code>Grasshopper.dll</code> ne fonctionne qu'à l'intérieur de Rhino. Le projet de test ne référence donc <b>pas</b> les .gha : il recompile lui-même, par lien, les seuls fichiers qui n'utilisent pas Grasshopper.</p>
-
-  <svg viewBox="0 0 600 226" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="226" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="12" fill="#4F46B8" text-anchor="start" font-weight="700">Le projet de test choisit ses fichiers un par un</text>
-<text x="16" y="42" font-size="9" fill="#6B7378" text-anchor="start" font-weight="700">src/ (extraits)</text>
-<rect x="16" y="50" width="170" height="16" rx="3" fill="#fff" stroke="#2E7D32"/>
-<text x="24" y="62" font-size="8.6" fill="#2E7D32" text-anchor="start" class="mono" style="font-size:8.6px">Metrique.cs</text>
-<line x1="188" y1="58" x2="330" y2="104" stroke="#2E7D32" stroke-width="1"/><polygon points="330,104 323.0,104.6 324.7,99.4" fill="#2E7D32"/>
-<rect x="16" y="70" width="170" height="16" rx="3" fill="#fff" stroke="#2E7D32"/>
-<text x="24" y="82" font-size="8.6" fill="#2E7D32" text-anchor="start" class="mono" style="font-size:8.6px">MiseEnPage.cs</text>
-<line x1="188" y1="78" x2="330" y2="104" stroke="#2E7D32" stroke-width="1"/><polygon points="330,104 323.2,105.5 324.1,100.2" fill="#2E7D32"/>
-<rect x="16" y="90" width="170" height="16" rx="3" fill="#fff" stroke="#2E7D32"/>
-<text x="24" y="102" font-size="8.6" fill="#2E7D32" text-anchor="start" class="mono" style="font-size:8.6px">Pur/ModeleFeuilles.cs</text>
-<line x1="188" y1="98" x2="330" y2="104" stroke="#2E7D32" stroke-width="1"/><polygon points="330,104 323.4,106.5 323.7,101.0" fill="#2E7D32"/>
-<rect x="16" y="110" width="170" height="16" rx="3" fill="#fff" stroke="#2E7D32"/>
-<text x="24" y="122" font-size="8.6" fill="#2E7D32" text-anchor="start" class="mono" style="font-size:8.6px">GenerateurDessin.cs</text>
-<line x1="188" y1="118" x2="330" y2="104" stroke="#2E7D32" stroke-width="1"/><polygon points="330,104 323.9,107.3 323.3,101.9" fill="#2E7D32"/>
-<rect x="16" y="130" width="170" height="16" rx="3" fill="#fff" stroke="#6B7378"/>
-<text x="24" y="142" font-size="8.6" fill="#6B7378" text-anchor="start" class="mono" style="font-size:8.6px">Bouton.cs</text>
-<text x="194" y="142" font-size="8.4" fill="#6B7378" text-anchor="start" font-style="italic">✕ exige Grasshopper.dll</text>
-<rect x="16" y="150" width="170" height="16" rx="3" fill="#fff" stroke="#6B7378"/>
-<text x="24" y="162" font-size="8.6" fill="#6B7378" text-anchor="start" class="mono" style="font-size:8.6px">PeintreFeuilles.cs</text>
-<text x="194" y="162" font-size="8.4" fill="#6B7378" text-anchor="start" font-style="italic">✕ exige Grasshopper.dll</text>
-<rect x="16" y="170" width="170" height="16" rx="3" fill="#fff" stroke="#6B7378"/>
-<text x="24" y="182" font-size="8.6" fill="#6B7378" text-anchor="start" class="mono" style="font-size:8.6px">CapsuleExecution.cs</text>
-<text x="194" y="182" font-size="8.4" fill="#6B7378" text-anchor="start" font-style="italic">✕ exige Grasshopper.dll</text>
-<rect x="16" y="190" width="170" height="16" rx="3" fill="#fff" stroke="#6B7378"/>
-<text x="24" y="202" font-size="8.6" fill="#6B7378" text-anchor="start" class="mono" style="font-size:8.6px">MenuGenerer.cs</text>
-<text x="194" y="202" font-size="8.4" fill="#6B7378" text-anchor="start" font-style="italic">✕ exige Grasshopper.dll</text>
-<rect x="332" y="78" width="252" height="54" rx="6" fill="#fff" stroke="#2E7D32" stroke-width="1.6"/>
-<text x="458" y="98" font-size="10" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:10px">ResolutionTests.dll</text>
-<text x="458" y="114" font-size="8.6" fill="#2B2F33" text-anchor="middle">xUnit · net7.0-windows</text>
-<rect x="332" y="150" width="252" height="54" rx="6" fill="#fff" stroke="#1565C0" stroke-dasharray="4 2" stroke-width="1.3"/>
-<text x="458" y="170" font-size="9.6" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:9.6px">SnapSet.Constituants.dll</text>
-<text x="458" y="186" font-size="8.6" fill="#2B2F33" text-anchor="middle">construite, lue par Roslyn seulement</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 26</b></div>
+<p class="rubrique">Schéma 2 · Tester sans Rhino</p>
+<h2>Compiler la logique pure, fichier par fichier</h2>
+<p style="max-width:165mm"><code>Grasshopper.dll</code> ne fonctionne qu'à l'intérieur de Rhino. Le projet de test ne référence donc <b>pas</b> les .gha : il recompile lui-même, par lien, les seuls fichiers qui n'utilisent pas Grasshopper.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 226" width="100%">
+<rect fill="#EFE9E1" height="226" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="12" font-weight="700" text-anchor="start" x="16" y="22">Le projet de test choisit ses fichiers un par un</text>
+<text fill="#6B7378" font-size="9" font-weight="700" text-anchor="start" x="16" y="42">src/ (extraits)</text>
+<rect fill="#fff" height="16" rx="3" stroke="#2E7D32" width="170" x="16" y="50"></rect>
+<text class="mono" fill="#2E7D32" font-size="8.6" style="font-size:8.6px" text-anchor="start" x="24" y="62">Metrique.cs</text>
+<line stroke="#2E7D32" stroke-width="1" x1="188" x2="330" y1="58" y2="104"></line><polygon fill="#2E7D32" points="330,104 323.0,104.6 324.7,99.4"></polygon>
+<rect fill="#fff" height="16" rx="3" stroke="#2E7D32" width="170" x="16" y="70"></rect>
+<text class="mono" fill="#2E7D32" font-size="8.6" style="font-size:8.6px" text-anchor="start" x="24" y="82">MiseEnPage.cs</text>
+<line stroke="#2E7D32" stroke-width="1" x1="188" x2="330" y1="78" y2="104"></line><polygon fill="#2E7D32" points="330,104 323.2,105.5 324.1,100.2"></polygon>
+<rect fill="#fff" height="16" rx="3" stroke="#2E7D32" width="170" x="16" y="90"></rect>
+<text class="mono" fill="#2E7D32" font-size="8.6" style="font-size:8.6px" text-anchor="start" x="24" y="102">Pur/ModeleFeuilles.cs</text>
+<line stroke="#2E7D32" stroke-width="1" x1="188" x2="330" y1="98" y2="104"></line><polygon fill="#2E7D32" points="330,104 323.4,106.5 323.7,101.0"></polygon>
+<rect fill="#fff" height="16" rx="3" stroke="#2E7D32" width="170" x="16" y="110"></rect>
+<text class="mono" fill="#2E7D32" font-size="8.6" style="font-size:8.6px" text-anchor="start" x="24" y="122">GenerateurDessin.cs</text>
+<line stroke="#2E7D32" stroke-width="1" x1="188" x2="330" y1="118" y2="104"></line><polygon fill="#2E7D32" points="330,104 323.9,107.3 323.3,101.9"></polygon>
+<rect fill="#fff" height="16" rx="3" stroke="#6B7378" width="170" x="16" y="130"></rect>
+<text class="mono" fill="#6B7378" font-size="8.6" style="font-size:8.6px" text-anchor="start" x="24" y="142">Bouton.cs</text>
+<text fill="#6B7378" font-size="8.4" font-style="italic" text-anchor="start" x="194" y="142">✕ exige Grasshopper.dll</text>
+<rect fill="#fff" height="16" rx="3" stroke="#6B7378" width="170" x="16" y="150"></rect>
+<text class="mono" fill="#6B7378" font-size="8.6" style="font-size:8.6px" text-anchor="start" x="24" y="162">PeintreFeuilles.cs</text>
+<text fill="#6B7378" font-size="8.4" font-style="italic" text-anchor="start" x="194" y="162">✕ exige Grasshopper.dll</text>
+<rect fill="#fff" height="16" rx="3" stroke="#6B7378" width="170" x="16" y="170"></rect>
+<text class="mono" fill="#6B7378" font-size="8.6" style="font-size:8.6px" text-anchor="start" x="24" y="182">CapsuleExecution.cs</text>
+<text fill="#6B7378" font-size="8.4" font-style="italic" text-anchor="start" x="194" y="182">✕ exige Grasshopper.dll</text>
+<rect fill="#fff" height="16" rx="3" stroke="#6B7378" width="170" x="16" y="190"></rect>
+<text class="mono" fill="#6B7378" font-size="8.6" style="font-size:8.6px" text-anchor="start" x="24" y="202">MenuGenerer.cs</text>
+<text fill="#6B7378" font-size="8.4" font-style="italic" text-anchor="start" x="194" y="202">✕ exige Grasshopper.dll</text>
+<rect fill="#fff" height="54" rx="6" stroke="#2E7D32" stroke-width="1.6" width="252" x="332" y="78"></rect>
+<text class="mono" fill="#2E7D32" font-size="10" font-weight="700" style="font-size:10px" text-anchor="middle" x="458" y="98">ResolutionTests.dll</text>
+<text fill="#2B2F33" font-size="8.6" text-anchor="middle" x="458" y="114">xUnit · net7.0-windows</text>
+<rect fill="#fff" height="54" rx="6" stroke="#1565C0" stroke-dasharray="4 2" stroke-width="1.3" width="252" x="332" y="150"></rect>
+<text class="mono" fill="#1565C0" font-size="9.6" font-weight="700" style="font-size:9.6px" text-anchor="middle" x="458" y="170">SnapSet.Constituants.dll</text>
+<text fill="#2B2F33" font-size="8.6" text-anchor="middle" x="458" y="186">construite, lue par Roslyn seulement</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">ResolutionTests.csproj · 22, 80 et 116</span>&lt;EnableDefaultCompileItems&gt;false&lt;/EnableDefaultCompileItems&gt;
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">ResolutionTests.csproj · 22, 80 et 116</span>&lt;EnableDefaultCompileItems&gt;false&lt;/EnableDefaultCompileItems&gt;
 
 &lt;Compile Include="..\..\src\SnapSet.Constituants\Pur\ModeleFeuilles.cs"
          Link="Constituants\ModeleFeuilles.cs" /&gt;
 &lt;Compile Include="..\..\src\SnapSet.Conception\Generation\GenerateurDessin.cs"
          Link="Conception\GenerateurDessin.cs" /&gt;</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Un lien, pas une copie</h3>
-      <p><code>Link</code> compile le fichier d'origine : une seule source, aucune copie à tenir à jour. <code>EnableDefaultCompileItems=false</code> empêche le projet d'avaler tous les .cs de son dossier : chaque fichier est choisi.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Couper les fichiers en deux</h3>
-      <p>Une classe peut avoir une moitié pure et une moitié Grasshopper, en deux fichiers <code>partial</code> (cours 25). Seule la moitié pure est liée : c'est le cas de <code>ConstituantExecution</code> et de sa palette.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Un lien, pas une copie</h3>
+<p><code>Link</code> compile le fichier d'origine : une seule source, aucune copie à tenir à jour. <code>EnableDefaultCompileItems=false</code> empêche le projet d'avaler tous les .cs de son dossier : chaque fichier est choisi.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Couper les fichiers en deux</h3>
+<p>Une classe peut avoir une moitié pure et une moitié Grasshopper, en deux fichiers <code>partial</code> (cours 25). Seule la moitié pure est liée : c'est le cas de <code>ConstituantExecution</code> et de sa palette.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Lier un fichier ET référencer la DLL qui le contient. Le même type existerait deux fois : erreur CS0433. Le .csproj construit <code>SnapSet.Constituants</code> par une <code>ProjectReference</code> avec <code>ReferenceOutputAssembly="false"</code> : la DLL existe, mais seul Roslyn la lit.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 26 · Tests automatisés</div>
+<div class="folio">3</div>
+<div class="pied">Cours 26 · Tests automatisés</div>
 </section>
-
 <!-- ============ PAGE 4 · NODE:TEST ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 26</b></div>
-  <p class="rubrique">Schéma 3 · Les tests du web de Magpie</p>
-  <h2>node --test, sans aucun paquet</h2>
-  <p style="max-width:165mm">Le volet web de Magpie n'installe pas de bibliothèque de test : Node fournit <code>node:test</code> et <code>node:assert</code>. <code>npm test</code> lance <code>node --test "test/*.test.mjs"</code> (<code>web/package.json</code>, ligne 10).</p>
-
-  <svg viewBox="0 0 600 196" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="196" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="12" fill="#4F46B8" text-anchor="start" font-weight="700">npm test, lancé pour ce cours sur le dépôt tel quel</text>
-<rect x="16" y="36" width="120" height="40" rx="5" fill="#ECEBFA" stroke="#4F46B8" stroke-width="1.3"/>
-<text x="76.0" y="59.0" font-size="10" fill="#4F46B8" text-anchor="middle" font-weight="700" class="mono" style="font-size:10px">npm test</text>
-<line x1="138" y1="56" x2="166" y2="56" stroke="#6B7378" stroke-width="1.4"/><polygon points="166,56 159.6,58.7 159.6,53.3" fill="#6B7378"/>
-<rect x="168" y="36" width="200" height="40" rx="5" fill="#fff" stroke="#1565C0" stroke-width="1.3"/>
-<text x="268.0" y="53.0" font-size="9.6" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:9.6px">node --test …</text>
-<text x="268.0" y="67.0" font-size="8.4" fill="#2B2F33" text-anchor="middle">trouve test/*.test.mjs</text>
-<line x1="370" y1="56" x2="398" y2="56" stroke="#6B7378" stroke-width="1.4"/><polygon points="398,56 391.6,58.7 391.6,53.3" fill="#6B7378"/>
-<rect x="400" y="36" width="184" height="40" rx="5" fill="#fff" stroke="#7B1FA2" stroke-width="1.3"/>
-<text x="492.0" y="53.0" font-size="10" fill="#7B1FA2" text-anchor="middle" font-weight="700" class="mono" style="font-size:10px">6 fichiers</text>
-<text x="492.0" y="67.0" font-size="8.4" fill="#2B2F33" text-anchor="middle">25 tests</text>
-<rect x="16.0" y="96" width="19" height="19" rx="3" fill="#2E7D32"/>
-<text x="25.5" y="109" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">✓</text>
-<rect x="38.6" y="96" width="19" height="19" rx="3" fill="#2E7D32"/>
-<text x="48.1" y="109" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">✓</text>
-<rect x="61.2" y="96" width="19" height="19" rx="3" fill="#2E7D32"/>
-<text x="70.7" y="109" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">✓</text>
-<rect x="83.8" y="96" width="19" height="19" rx="3" fill="#2E7D32"/>
-<text x="93.30000000000001" y="109" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">✓</text>
-<rect x="106.4" y="96" width="19" height="19" rx="3" fill="#2E7D32"/>
-<text x="115.9" y="109" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">✓</text>
-<rect x="129.0" y="96" width="19" height="19" rx="3" fill="#2E7D32"/>
-<text x="138.5" y="109" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">✓</text>
-<rect x="151.6" y="96" width="19" height="19" rx="3" fill="#2E7D32"/>
-<text x="161.10000000000002" y="109" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">✓</text>
-<rect x="174.2" y="96" width="19" height="19" rx="3" fill="#2E7D32"/>
-<text x="183.70000000000002" y="109" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">✓</text>
-<rect x="196.8" y="96" width="19" height="19" rx="3" fill="#2E7D32"/>
-<text x="206.3" y="109" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">✓</text>
-<rect x="219.4" y="96" width="19" height="19" rx="3" fill="#2E7D32"/>
-<text x="228.9" y="109" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">✓</text>
-<rect x="242.0" y="96" width="19" height="19" rx="3" fill="#2E7D32"/>
-<text x="251.5" y="109" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">✓</text>
-<rect x="264.6" y="96" width="19" height="19" rx="3" fill="#2E7D32"/>
-<text x="274.1" y="109" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">✓</text>
-<rect x="287.2" y="96" width="19" height="19" rx="3" fill="#2E7D32"/>
-<text x="296.70000000000005" y="109" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">✓</text>
-<rect x="309.8" y="96" width="19" height="19" rx="3" fill="#2E7D32"/>
-<text x="319.3" y="109" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">✓</text>
-<rect x="332.4" y="96" width="19" height="19" rx="3" fill="#2E7D32"/>
-<text x="341.90000000000003" y="109" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">✓</text>
-<rect x="355.0" y="96" width="19" height="19" rx="3" fill="#2E7D32"/>
-<text x="364.5" y="109" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">✓</text>
-<rect x="377.6" y="96" width="19" height="19" rx="3" fill="#2E7D32"/>
-<text x="387.1" y="109" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">✓</text>
-<rect x="400.2" y="96" width="19" height="19" rx="3" fill="#2E7D32"/>
-<text x="409.70000000000005" y="109" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">✓</text>
-<rect x="422.8" y="96" width="19" height="19" rx="3" fill="#2E7D32"/>
-<text x="432.3" y="109" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">✓</text>
-<rect x="445.4" y="96" width="19" height="19" rx="3" fill="#2E7D32"/>
-<text x="454.90000000000003" y="109" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">✓</text>
-<rect x="468.0" y="96" width="19" height="19" rx="3" fill="#2E7D32"/>
-<text x="477.5" y="109" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">✓</text>
-<rect x="490.6" y="96" width="19" height="19" rx="3" fill="#2E7D32"/>
-<text x="500.1" y="109" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">✓</text>
-<rect x="513.2" y="96" width="19" height="19" rx="3" fill="#E65100"/>
-<text x="522.7" y="109" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">!</text>
-<rect x="535.8" y="96" width="19" height="19" rx="3" fill="#E65100"/>
-<text x="545.3000000000001" y="109" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">!</text>
-<rect x="558.4" y="96" width="19" height="19" rx="3" fill="#E65100"/>
-<text x="567.9000000000001" y="109" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">!</text>
-<text x="16" y="138" font-size="9.6" fill="#2E7D32" text-anchor="start" font-weight="700">22 réussis</text>
-<text x="16" y="154" font-size="8.6" fill="#2B2F33" text-anchor="start">validation, opaque, computeOutputs…</text>
-<text x="584" y="138" font-size="9.6" fill="#E65100" text-anchor="end" font-weight="700">3 en échec : ERR_MODULE_NOT_FOUND</text>
-<text x="584" y="154" font-size="8.6" fill="#2B2F33" text-anchor="end">apercu.mjs importe rhino3dm, non installé ici</text>
-<text x="16" y="182" font-size="8.8" fill="#6B7378" text-anchor="start" font-style="italic">Aucun paquet de test : node:test et node:assert sont livrés avec Node (v22 ici).</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 26</b></div>
+<p class="rubrique">Schéma 3 · Les tests du web de Magpie</p>
+<h2>node --test, sans aucun paquet</h2>
+<p style="max-width:165mm">Le volet web de Magpie n'installe pas de bibliothèque de test : Node fournit <code>node:test</code> et <code>node:assert</code>. <code>npm test</code> lance <code>node --test "test/*.test.mjs"</code> (<code>web/package.json</code>, ligne 10).</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 196" width="100%">
+<rect fill="#EFE9E1" height="196" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="12" font-weight="700" text-anchor="start" x="16" y="22">npm test, lancé pour ce cours sur le dépôt tel quel</text>
+<rect fill="#ECEBFA" height="40" rx="5" stroke="#4F46B8" stroke-width="1.3" width="120" x="16" y="36"></rect>
+<text class="mono" fill="#4F46B8" font-size="10" font-weight="700" style="font-size:10px" text-anchor="middle" x="76.0" y="59.0">npm test</text>
+<line stroke="#6B7378" stroke-width="1.4" x1="138" x2="166" y1="56" y2="56"></line><polygon fill="#6B7378" points="166,56 159.6,58.7 159.6,53.3"></polygon>
+<rect fill="#fff" height="40" rx="5" stroke="#1565C0" stroke-width="1.3" width="200" x="168" y="36"></rect>
+<text class="mono" fill="#1565C0" font-size="9.6" font-weight="700" style="font-size:9.6px" text-anchor="middle" x="268.0" y="53.0">node --test …</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="middle" x="268.0" y="67.0">trouve test/*.test.mjs</text>
+<line stroke="#6B7378" stroke-width="1.4" x1="370" x2="398" y1="56" y2="56"></line><polygon fill="#6B7378" points="398,56 391.6,58.7 391.6,53.3"></polygon>
+<rect fill="#fff" height="40" rx="5" stroke="#7B1FA2" stroke-width="1.3" width="184" x="400" y="36"></rect>
+<text class="mono" fill="#7B1FA2" font-size="10" font-weight="700" style="font-size:10px" text-anchor="middle" x="492.0" y="53.0">6 fichiers</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="middle" x="492.0" y="67.0">25 tests</text>
+<rect fill="#2E7D32" height="19" rx="3" width="19" x="16.0" y="96"></rect>
+<text fill="#fff" font-size="10" font-weight="700" text-anchor="middle" x="25.5" y="109">✓</text>
+<rect fill="#2E7D32" height="19" rx="3" width="19" x="38.6" y="96"></rect>
+<text fill="#fff" font-size="10" font-weight="700" text-anchor="middle" x="48.1" y="109">✓</text>
+<rect fill="#2E7D32" height="19" rx="3" width="19" x="61.2" y="96"></rect>
+<text fill="#fff" font-size="10" font-weight="700" text-anchor="middle" x="70.7" y="109">✓</text>
+<rect fill="#2E7D32" height="19" rx="3" width="19" x="83.8" y="96"></rect>
+<text fill="#fff" font-size="10" font-weight="700" text-anchor="middle" x="93.30000000000001" y="109">✓</text>
+<rect fill="#2E7D32" height="19" rx="3" width="19" x="106.4" y="96"></rect>
+<text fill="#fff" font-size="10" font-weight="700" text-anchor="middle" x="115.9" y="109">✓</text>
+<rect fill="#2E7D32" height="19" rx="3" width="19" x="129.0" y="96"></rect>
+<text fill="#fff" font-size="10" font-weight="700" text-anchor="middle" x="138.5" y="109">✓</text>
+<rect fill="#2E7D32" height="19" rx="3" width="19" x="151.6" y="96"></rect>
+<text fill="#fff" font-size="10" font-weight="700" text-anchor="middle" x="161.10000000000002" y="109">✓</text>
+<rect fill="#2E7D32" height="19" rx="3" width="19" x="174.2" y="96"></rect>
+<text fill="#fff" font-size="10" font-weight="700" text-anchor="middle" x="183.70000000000002" y="109">✓</text>
+<rect fill="#2E7D32" height="19" rx="3" width="19" x="196.8" y="96"></rect>
+<text fill="#fff" font-size="10" font-weight="700" text-anchor="middle" x="206.3" y="109">✓</text>
+<rect fill="#2E7D32" height="19" rx="3" width="19" x="219.4" y="96"></rect>
+<text fill="#fff" font-size="10" font-weight="700" text-anchor="middle" x="228.9" y="109">✓</text>
+<rect fill="#2E7D32" height="19" rx="3" width="19" x="242.0" y="96"></rect>
+<text fill="#fff" font-size="10" font-weight="700" text-anchor="middle" x="251.5" y="109">✓</text>
+<rect fill="#2E7D32" height="19" rx="3" width="19" x="264.6" y="96"></rect>
+<text fill="#fff" font-size="10" font-weight="700" text-anchor="middle" x="274.1" y="109">✓</text>
+<rect fill="#2E7D32" height="19" rx="3" width="19" x="287.2" y="96"></rect>
+<text fill="#fff" font-size="10" font-weight="700" text-anchor="middle" x="296.70000000000005" y="109">✓</text>
+<rect fill="#2E7D32" height="19" rx="3" width="19" x="309.8" y="96"></rect>
+<text fill="#fff" font-size="10" font-weight="700" text-anchor="middle" x="319.3" y="109">✓</text>
+<rect fill="#2E7D32" height="19" rx="3" width="19" x="332.4" y="96"></rect>
+<text fill="#fff" font-size="10" font-weight="700" text-anchor="middle" x="341.90000000000003" y="109">✓</text>
+<rect fill="#2E7D32" height="19" rx="3" width="19" x="355.0" y="96"></rect>
+<text fill="#fff" font-size="10" font-weight="700" text-anchor="middle" x="364.5" y="109">✓</text>
+<rect fill="#2E7D32" height="19" rx="3" width="19" x="377.6" y="96"></rect>
+<text fill="#fff" font-size="10" font-weight="700" text-anchor="middle" x="387.1" y="109">✓</text>
+<rect fill="#2E7D32" height="19" rx="3" width="19" x="400.2" y="96"></rect>
+<text fill="#fff" font-size="10" font-weight="700" text-anchor="middle" x="409.70000000000005" y="109">✓</text>
+<rect fill="#2E7D32" height="19" rx="3" width="19" x="422.8" y="96"></rect>
+<text fill="#fff" font-size="10" font-weight="700" text-anchor="middle" x="432.3" y="109">✓</text>
+<rect fill="#2E7D32" height="19" rx="3" width="19" x="445.4" y="96"></rect>
+<text fill="#fff" font-size="10" font-weight="700" text-anchor="middle" x="454.90000000000003" y="109">✓</text>
+<rect fill="#2E7D32" height="19" rx="3" width="19" x="468.0" y="96"></rect>
+<text fill="#fff" font-size="10" font-weight="700" text-anchor="middle" x="477.5" y="109">✓</text>
+<rect fill="#2E7D32" height="19" rx="3" width="19" x="490.6" y="96"></rect>
+<text fill="#fff" font-size="10" font-weight="700" text-anchor="middle" x="500.1" y="109">✓</text>
+<rect fill="#E65100" height="19" rx="3" width="19" x="513.2" y="96"></rect>
+<text fill="#fff" font-size="10" font-weight="700" text-anchor="middle" x="522.7" y="109">!</text>
+<rect fill="#E65100" height="19" rx="3" width="19" x="535.8" y="96"></rect>
+<text fill="#fff" font-size="10" font-weight="700" text-anchor="middle" x="545.3000000000001" y="109">!</text>
+<rect fill="#E65100" height="19" rx="3" width="19" x="558.4" y="96"></rect>
+<text fill="#fff" font-size="10" font-weight="700" text-anchor="middle" x="567.9000000000001" y="109">!</text>
+<text fill="#2E7D32" font-size="9.6" font-weight="700" text-anchor="start" x="16" y="138">22 réussis</text>
+<text fill="#2B2F33" font-size="8.6" text-anchor="start" x="16" y="154">validation, opaque, computeOutputs…</text>
+<text fill="#E65100" font-size="9.6" font-weight="700" text-anchor="end" x="584" y="138">3 en échec : ERR_MODULE_NOT_FOUND</text>
+<text fill="#2B2F33" font-size="8.6" text-anchor="end" x="584" y="154">apercu.mjs importe rhino3dm, non installé ici</text>
+<text fill="#6B7378" font-size="8.8" font-style="italic" text-anchor="start" x="16" y="182">Aucun paquet de test : node:test et node:assert sont livrés avec Node (v22 ici).</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">web/test/validation.test.mjs · 3–18, condensé</span>import { test } from "node:test";
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">web/test/validation.test.mjs · 3–18, condensé</span>import { test } from "node:test";
 import assert from "node:assert/strict";
 import { validateSubmission } from "../validation.mjs";
 
@@ -312,195 +289,108 @@ test("ExactOrderedList : ordre et tolérance", () =&gt; {
   assert.equal(verdict([1.005, 3, 5], config), true, "dans la tolérance");
   assert.equal(verdict([3, 1, 5], config), false, "ordre faux");
 });</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Le troisième argument</h3>
-      <p>« dans la tolérance », « ordre faux » : le message s'affiche quand l'affirmation échoue. Plusieurs affirmations dans un même test restent ainsi lisibles.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Tester ce qui ne doit pas arriver</h3>
-      <p>Lignes 20–25 : le message renvoyé pour une mauvaise réponse ne doit jamais contenir la valeur attendue. Un test peut garder une règle pédagogique, pas seulement un calcul.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Le troisième argument</h3>
+<p>« dans la tolérance », « ordre faux » : le message s'affiche quand l'affirmation échoue. Plusieurs affirmations dans un même test restent ainsi lisibles.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Tester ce qui ne doit pas arriver</h3>
+<p>Lignes 20–25 : le message renvoyé pour une mauvaise réponse ne doit jamais contenir la valeur attendue. Un test peut garder une règle pédagogique, pas seulement un calcul.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Lire un échec sans lire l'erreur. Ici, trois tests de <code>apercu.test.mjs</code> échouent avec <code>ERR_MODULE_NOT_FOUND</code> : le paquet <code>rhino3dm</code> n'est pas installé. Ce n'est pas un défaut du code ; <code>npm install</code> d'abord, puis <code>npm test</code>.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 26 · Tests automatisés</div>
+<div class="folio">4</div>
+<div class="pied">Cours 26 · Tests automatisés</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 26</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>CoupleCompileTests : compiler le code émis</h2>
-  <p style="max-width:165mm">Comparer le texte émis ne prouve pas qu'il compile. Le paquet <code>Microsoft.CodeAnalysis.CSharp</code> (Roslyn, le compilateur C# lui-même) compile <code>Xxx.Dessin.g.cs</code> et <code>Xxx.cs</code> en mémoire, contre les vraies DLL de Rhino 8.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 26</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>CoupleCompileTests : compiler le code émis</h2>
+<p style="max-width:165mm">Comparer le texte émis ne prouve pas qu'il compile. Le paquet <code>Microsoft.CodeAnalysis.CSharp</code> (Roslyn, le compilateur C# lui-même) compile <code>Xxx.Dessin.g.cs</code> et <code>Xxx.cs</code> en mémoire, contre les vraies DLL de Rhino 8.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="n">726</span><span class="kw">static</span> <span class="ty">Resultat</span> Compiler(<span class="ty">LanguageVersion</span> version,</div>
-<div class="l"><span class="n"> </span>    <span class="kw">params</span> (<span class="kw">string</span> Chemin, <span class="kw">string</span> Texte)[] fichiers)</div>
+<div class="l"><span class="n"> </span> <span class="kw">params</span> (<span class="kw">string</span> Chemin, <span class="kw">string</span> Texte)[] fichiers)</div>
 <div class="l"><span class="n">727</span>{</div>
-<div class="l k1"><span class="n">728</span>  <span class="kw">var</span> options = <span class="kw">new</span> <span class="ty">CSharpParseOptions</span>(version);<span class="rep r1">1</span></div>
-<div class="l k2"><span class="n">729</span>  <span class="kw">var</span> arbres = fichiers.Select(f =&gt;<span class="rep r2">2</span></div>
-<div class="l k2"><span class="n"> </span>    <span class="ty">CSharpSyntaxTree</span>.ParseText(f.Texte, options, f.Chemin))</div>
+<div class="l k1"><span class="n">728</span> <span class="kw">var</span> options = <span class="kw">new</span> <span class="ty">CSharpParseOptions</span>(version);<span class="rep r1">1</span></div>
+<div class="l k2"><span class="n">729</span> <span class="kw">var</span> arbres = fichiers.Select(f =&gt;<span class="rep r2">2</span></div>
+<div class="l k2"><span class="n"> </span> <span class="ty">CSharpSyntaxTree</span>.ParseText(f.Texte, options, f.Chemin))</div>
 <div class="l k2"><span class="n"> </span>    .ToList();</div>
-<div class="l k3"><span class="n">730</span>  <span class="kw">var</span> compilation = <span class="ty">CSharpCompilation</span>.Create(<span class="rep r3">3</span></div>
-<div class="l k3"><span class="n">731</span>    <span class="st">"Couple"</span> + <span class="ty">Guid</span>.NewGuid().ToString(<span class="st">"N"</span>),</div>
+<div class="l k3"><span class="n">730</span> <span class="kw">var</span> compilation = <span class="ty">CSharpCompilation</span>.Create(<span class="rep r3">3</span></div>
+<div class="l k3"><span class="n">731</span> <span class="st">"Couple"</span> + <span class="ty">Guid</span>.NewGuid().ToString(<span class="st">"N"</span>),</div>
 <div class="l k3"><span class="n">732</span>    arbres,</div>
 <div class="l k3"><span class="n">733</span>    _references.Value,</div>
-<div class="l k4"><span class="n">734</span>    <span class="kw">new</span> <span class="ty">CSharpCompilationOptions</span>(<span class="rep r4">4</span></div>
-<div class="l k4"><span class="n"> </span>      <span class="ty">OutputKind</span>.DynamicallyLinkedLibrary, …));</div>
-<div class="l"><span class="n">736</span>  <span class="kw">var</span> r = <span class="kw">new</span> <span class="ty">Resultat</span>();</div>
-<div class="l k5"><span class="n">737</span>  <span class="kw">using</span> (<span class="kw">var</span> flux = <span class="kw">new</span> <span class="ty">MemoryStream</span>())<span class="rep r5">5</span></div>
+<div class="l k4"><span class="n">734</span> <span class="kw">new</span> <span class="ty">CSharpCompilationOptions</span>(<span class="rep r4">4</span></div>
+<div class="l k4"><span class="n"> </span> <span class="ty">OutputKind</span>.DynamicallyLinkedLibrary, …));</div>
+<div class="l"><span class="n">736</span> <span class="kw">var</span> r = <span class="kw">new</span> <span class="ty">Resultat</span>();</div>
+<div class="l k5"><span class="n">737</span> <span class="kw">using</span> (<span class="kw">var</span> flux = <span class="kw">new</span> <span class="ty">MemoryStream</span>())<span class="rep r5">5</span></div>
 <div class="l k5"><span class="n">738</span>  {</div>
-<div class="l k5"><span class="n">739</span>    <span class="kw">var</span> emission = compilation.Emit(flux);</div>
+<div class="l k5"><span class="n">739</span> <span class="kw">var</span> emission = compilation.Emit(flux);</div>
 <div class="l k5"><span class="n">740</span>    r.Emis = emission.Success;</div>
 <div class="l k6"><span class="n">741</span>    r.Tous.AddRange(emission.Diagnostics);<span class="rep r6">6</span></div>
 <div class="l k5"><span class="n">742</span>  }</div>
 <div class="l k7"><span class="n">744</span>  r.Erreurs.AddRange(r.Tous<span class="rep r7">7</span></div>
 <div class="l k7"><span class="n"> </span>    .Where(x =&gt; x.Severity == <span class="ty">DiagnosticSeverity</span>.Error)</div>
 <div class="l k7"><span class="n"> </span>    .Select(x =&gt; x.ToString()));</div>
-<div class="l"><span class="n">746</span>  <span class="kw">return</span> r;</div>
+<div class="l"><span class="n">746</span> <span class="kw">return</span> r;</div>
 <div class="l"><span class="n">747</span>}</div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>La version de C#</b>7.3 pour le fichier généré, Latest pour le code du développeur.</li>
-      <li><span class="rep r2">2</span><b>Un arbre par fichier</b>Le chemin sert à situer chaque diagnostic.</li>
-      <li><span class="rep r3">3</span><b>Une compilation</b>Un nom unique, les arbres, et les références.</li>
-      <li><span class="rep r4">4</span><b>Une DLL</b>Comme un vrai projet de plugin.</li>
-      <li><span class="rep r5">5</span><b>En mémoire</b>Aucun fichier écrit, rien chargé ni exécuté.</li>
-      <li><span class="rep r6">6</span><b>Les diagnostics</b>Erreurs et avertissements, avec leur code (CS…).</li>
-      <li><span class="rep r7">7</span><b>Les erreurs</b>Le test affirme ensuite qu'il n'y en a aucune.</li>
-    </ul>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>La version de C#</b>7.3 pour le fichier généré, Latest pour le code du développeur.</li>
+<li><span class="rep r2">2</span><b>Un arbre par fichier</b>Le chemin sert à situer chaque diagnostic.</li>
+<li><span class="rep r3">3</span><b>Une compilation</b>Un nom unique, les arbres, et les références.</li>
+<li><span class="rep r4">4</span><b>Une DLL</b>Comme un vrai projet de plugin.</li>
+<li><span class="rep r5">5</span><b>En mémoire</b>Aucun fichier écrit, rien chargé ni exécuté.</li>
+<li><span class="rep r6">6</span><b>Les diagnostics</b>Erreurs et avertissements, avec leur code (CS…).</li>
+<li><span class="rep r7">7</span><b>Les erreurs</b>Le test affirme ensuite qu'il n'y en a aucune.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">Un test qui vérifie que le test mord</span>
+<code>LeControleDeVersionMord</code> (159–168) compile, en C# 7.3, un <code>Correction.cs</code> qui utilise <code>is … or …</code> (C# 9). Il affirme que cette fois Roslyn <b>refuse</b>. Sans lui, un contrôle de version cassé laisserait passer tous les autres tests sans rien vérifier.
   </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">Un test qui vérifie que le test mord</span>
-    <code>LeControleDeVersionMord</code> (159–168) compile, en C# 7.3, un <code>Correction.cs</code> qui utilise <code>is … or …</code> (C# 9). Il affirme que cette fois Roslyn <b>refuse</b>. Sans lui, un contrôle de version cassé laisserait passer tous les autres tests sans rien vérifier.
-  </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 26 · Tests automatisés</div>
+<div class="folio">5</div>
+<div class="pied">Cours 26 · Tests automatisés</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 26</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 26</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">Les trois temps d'un test sont…</div><ul>
-      <li><span>A</span>compiler, lancer, fermer</li><li><span>B</span>ouvrir Rhino, cliquer, regarder</li><li><span>C</span>préparer, agir, affirmer</li><li><span>D</span>lire, écrire, effacer</li></ul></div>
 
-    <div class="q"><div class="enonce">[Theory] avec trois [InlineData] donne…</div><ul>
-      <li><span>A</span>trois exécutions de la méthode</li><li><span>B</span>une exécution avec trois arguments</li><li><span>C</span>une erreur</li><li><span>D</span>trois classes</li></ul></div>
 
-    <div class="q"><div class="enonce">Dans xUnit, le constructeur de la classe de test…</div><ul>
-      <li><span>A</span>s'exécute une fois pour toute la classe</li><li><span>B</span>ne s'exécute jamais</li><li><span>C</span>remplace [Fact]</li><li><span>D</span>s'exécute avant chaque test, sur une instance neuve</li></ul></div>
 
-    <div class="q"><div class="enonce">Pourquoi un GuidFixe dans les tests ?</div><ul>
-      <li><span>A</span>pour pouvoir affirmer le texte exact attendu</li><li><span>B</span>Guid.NewGuid est interdit</li><li><span>C</span>pour aller plus vite</li><li><span>D</span>pour Grasshopper</li></ul></div>
-
-    <div class="q"><div class="enonce">Le projet de test ne référence pas les .gha parce que…</div><ul>
-      <li><span>A</span>ils sont trop gros</li><li><span>B</span>Grasshopper.dll ne fonctionne que dans Rhino</li><li><span>C</span>xUnit ne lit pas les .gha</li><li><span>D</span>c'est plus rapide</li></ul></div>
-
-    <div class="q"><div class="enonce">&lt;Compile Include="…" Link="…"&gt; sert à…</div><ul>
-      <li><span>A</span>copier le fichier</li><li><span>B</span>télécharger un paquet</li><li><span>C</span>compiler le fichier d'origine dans ce projet</li><li><span>D</span>créer un raccourci Windows</li></ul></div>
-
-    <div class="q"><div class="enonce">Lier un fichier et référencer la DLL qui le contient provoque…</div><ul>
-      <li><span>A</span>rien</li><li><span>B</span>CS0759</li><li><span>C</span>un test ignoré</li><li><span>D</span>CS0433 : le type existe deux fois</li></ul></div>
-
-    <div class="q"><div class="enonce">Roslyn, dans CoupleCompileTests… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>compile en mémoire</li><li><span>B</span>lit Grasshopper.dll en métadonnées</li><li><span>C</span>exécute le composant</li><li><span>D</span>compile en C# 7.3 ou Latest, selon le test</li></ul></div>
-
-    <div class="q"><div class="enonce">LeControleDeVersionMord vérifie que…</div><ul>
-      <li><span>A</span>du C# 9 est bien refusé en 7.3</li><li><span>B</span>tout compile en Latest</li><li><span>C</span>Rhino est installé</li><li><span>D</span>le .gh se relit</li></ul></div>
-
-    <div class="q"><div class="enonce">Le web de Magpie teste avec…</div><ul>
-      <li><span>A</span>Jest</li><li><span>B</span>xUnit</li><li><span>C</span>node:test, intégré à Node</li><li><span>D</span>Vitest</li></ul></div>
-
-    <div class="q"><div class="enonce">ERR_MODULE_NOT_FOUND sur rhino3dm signifie…</div><ul>
-      <li><span>A</span>un bug dans apercu.mjs</li><li><span>B</span>le paquet n'est pas installé</li><li><span>C</span>Rhino est fermé</li><li><span>D</span>le test est faux</li></ul></div>
-
-    <div class="q"><div class="enonce">Pourquoi un bandeau non nul dans MetriqueTests ?</div><ul>
-      <li><span>A</span>c'est la valeur du schéma</li><li><span>B</span>pour le dessin</li><li><span>C</span>à 0 GDI+ plante</li><li><span>D</span>à 0, le calcul juste et le faux donnent le même nombre</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 26 · Tests automatisés</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">[Fact] / [Theory] [InlineData(…)]</td><td>un test, ou un test par jeu d'entrées</td><td>CoupleCompileTests:111</td></tr>
+<tr><td class="c">Assert.Equal(attendu, obtenu)</td><td>affirmer une égalité</td><td>EcrivainGenerationTests:52</td></tr>
+<tr><td class="c">: IDisposable</td><td>nettoyer après chaque test</td><td>EcrivainGenerationTests:19</td></tr>
+<tr><td class="c">&lt;Compile Include Link&gt;</td><td>lier un fichier source</td><td>ResolutionTests.csproj:80</td></tr>
+<tr><td class="c">CSharpCompilation.Create(…).Emit</td><td>compiler en mémoire</td><td>CoupleCompileTests:730</td></tr>
+<tr><td class="c">node --test "test/*.test.mjs"</td><td>lancer les tests du web</td><td>web/package.json:10</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Assertion</dt><dd>L'affirmation qu'un test vérifie ; fausse, elle fait échouer le test.</dd>
+<dt>Logique pure</dt><dd>Du code qui ne dépend que de ses entrées, sans Rhino ni disque.</dd>
+<dt>Roslyn</dt><dd>Le compilateur C#, utilisable comme une bibliothèque.</dd>
+<dt>Diagnostic</dt><dd>Une erreur ou un avertissement du compilateur, avec son code CS.</dd>
+<dt>Métadonnées</dt><dd>La description des types d'une DLL, lue sans exécuter son code.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 109</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 26 · Tests automatisés</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 26</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · C.</b> Arrange, Act, Assert en anglais.</div>
-    <div><b>02 · A.</b> Une exécution par jeu d'arguments.</div>
-    <div><b>03 · D.</b> Et Dispose après chaque test : aucun état partagé.</div>
-    <div><b>04 · A.</b> Une entrée fixe, une sortie connue.</div>
-    <div><b>05 · B.</b> D'où la logique pure, liée fichier par fichier.</div>
-    <div><b>06 · C.</b> Une seule source, aucune copie.</div>
-    <div><b>07 · D.</b> D'où ReferenceOutputAssembly="false".</div>
-    <div><b>08 · A, B et D.</b> Rien n'est chargé ni exécuté.</div>
-    <div><b>09 · A.</b> Un contrôle qui ne refuse rien ne contrôle rien.</div>
-    <div><b>10 · C.</b> node:test et node:assert, sans paquet.</div>
-    <div><b>11 · B.</b> npm install, puis npm test.</div>
-    <div><b>12 · D.</b> Une valeur d'essai doit séparer juste et faux.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis la page 4 et le code de la page 5. <b>10 à 12</b> : passe au cours 109, « Ce qu'un test prouve ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">[Fact] / [Theory] [InlineData(…)]</td><td>un test, ou un test par jeu d'entrées</td><td>CoupleCompileTests:111</td></tr>
-      <tr><td class="c">Assert.Equal(attendu, obtenu)</td><td>affirmer une égalité</td><td>EcrivainGenerationTests:52</td></tr>
-      <tr><td class="c">: IDisposable</td><td>nettoyer après chaque test</td><td>EcrivainGenerationTests:19</td></tr>
-      <tr><td class="c">&lt;Compile Include Link&gt;</td><td>lier un fichier source</td><td>ResolutionTests.csproj:80</td></tr>
-      <tr><td class="c">CSharpCompilation.Create(…).Emit</td><td>compiler en mémoire</td><td>CoupleCompileTests:730</td></tr>
-      <tr><td class="c">node --test "test/*.test.mjs"</td><td>lancer les tests du web</td><td>web/package.json:10</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Assertion</dt><dd>L'affirmation qu'un test vérifie ; fausse, elle fait échouer le test.</dd>
-    <dt>Logique pure</dt><dd>Du code qui ne dépend que de ses entrées, sans Rhino ni disque.</dd>
-    <dt>Roslyn</dt><dd>Le compilateur C#, utilisable comme une bibliothèque.</dd>
-    <dt>Diagnostic</dt><dd>Une erreur ou un avertissement du compilateur, avec son code CS.</dd>
-    <dt>Métadonnées</dt><dd>La description des types d'une DLL, lue sans exécuter son code.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 109</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 26 · Tests automatisés</div>
-</section>
-
 </body>
 </html>

@@ -1,291 +1,264 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>91 · Mesurer avant d'optimiser</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-11">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 91</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Mesurer avant d'optimiser</h1>
-  <p class="chapeau">Un programme lent l'est presque toujours à un seul endroit, et rarement celui qu'on soupçonne. Optimiser à l'intuition, c'est souvent rendre plus compliqué un code qui ne pesait rien. La méthode tient en une boucle : <b>mesurer</b>, trouver le poste qui domine, changer une seule chose, <b>remesurer</b>.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>55</b> et <b>71</b></span>
-    <span class="pastille">Exemples · <b>eleve.mjs</b>, <b>api.js</b> (Magpie), exemples autonomes en <b>.NET 8</b></span>
-  </div>
-
-  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
-    <svg viewBox="0 0 600 196" width="100%">
-<rect x="14" y="24" width="128" height="74" rx="4" fill="#ECEBFA" stroke="#4F46B8" stroke-width="1.2"/>
-<text x="78" y="46" font-size="9" fill="#4F46B8" text-anchor="middle" font-weight="700">1 · mesurer</text>
-<text x="78" y="66" font-size="7.8" fill="#2B2F33" text-anchor="middle">le temps total,</text>
-<text x="78" y="79" font-size="7.8" fill="#2B2F33" text-anchor="middle">en conditions réelles</text>
-<line x1="144" y1="61" x2="158" y2="61" stroke="#6B7378" stroke-width="1.2"/><polygon points="158,61 151.6,63.7 151.6,58.3" fill="#6B7378"/>
-<rect x="160" y="24" width="128" height="74" rx="4" fill="#fff" stroke="#4F46B8" stroke-width="1.2"/>
-<text x="224" y="46" font-size="9" fill="#4F46B8" text-anchor="middle" font-weight="700">2 · décomposer</text>
-<text x="224" y="66" font-size="7.8" fill="#2B2F33" text-anchor="middle">trouver le poste</text>
-<text x="224" y="79" font-size="7.8" fill="#2B2F33" text-anchor="middle">qui domine</text>
-<line x1="290" y1="61" x2="304" y2="61" stroke="#6B7378" stroke-width="1.2"/><polygon points="304,61 297.6,63.7 297.6,58.3" fill="#6B7378"/>
-<rect x="306" y="24" width="128" height="74" rx="4" fill="#fff" stroke="#4F46B8" stroke-width="1.2"/>
-<text x="370" y="46" font-size="9" fill="#4F46B8" text-anchor="middle" font-weight="700">3 · changer</text>
-<text x="370" y="66" font-size="7.8" fill="#2B2F33" text-anchor="middle">une seule chose,</text>
-<text x="370" y="79" font-size="7.8" fill="#2B2F33" text-anchor="middle">sur ce poste</text>
-<line x1="436" y1="61" x2="450" y2="61" stroke="#6B7378" stroke-width="1.2"/><polygon points="450,61 443.6,63.7 443.6,58.3" fill="#6B7378"/>
-<rect x="452" y="24" width="128" height="74" rx="4" fill="#ECEBFA" stroke="#4F46B8" stroke-width="1.2"/>
-<text x="516" y="46" font-size="9" fill="#4F46B8" text-anchor="middle" font-weight="700">4 · remesurer</text>
-<text x="516" y="66" font-size="7.8" fill="#2B2F33" text-anchor="middle">garder si c'est mieux,</text>
-<text x="516" y="79" font-size="7.8" fill="#2B2F33" text-anchor="middle">sinon revenir</text>
-<path d="M 524 100 C 524 128, 78 128, 78 102" fill="none" stroke="#6B7378" stroke-width="1.2" stroke-dasharray="4 3"/>
-<polygon points="74,104 82,104 78,98" fill="#6B7378"/>
-<text x="300" y="140" font-size="7.8" fill="#6B7378" text-anchor="middle" font-style="italic">on recommence tant que le résultat n'est pas assez rapide</text>
-<text x="300" y="166" font-size="8.4" fill="#2B2F33" text-anchor="middle" font-weight="700">« Deux principes de conception, tous deux dictés par la mesure » (eleve.mjs:7, Magpie)</text>
-<text x="300" y="182" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">Le banc pédagogique de Magpie (pedagogie/banc) a été conçu à partir de temps relevés.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 91</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Mesurer avant d'optimiser</h1>
+<p class="chapeau">Un programme lent l'est presque toujours à un seul endroit, et rarement celui qu'on soupçonne. Optimiser à l'intuition, c'est souvent rendre plus compliqué un code qui ne pesait rien. La méthode tient en une boucle : <b>mesurer</b>, trouver le poste qui domine, changer une seule chose, <b>remesurer</b>.</p>
+<div class="meta">
+<span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>55</b> et <b>71</b></span>
+<span class="pastille">Exemples · <b>eleve.mjs</b>, <b>api.js</b> (Magpie), exemples autonomes en <b>.NET 8</b></span>
+</div>
+<div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+<svg viewbox="0 0 600 196" width="100%">
+<rect fill="#ECEBFA" height="74" rx="4" stroke="#4F46B8" stroke-width="1.2" width="128" x="14" y="24"></rect>
+<text fill="#4F46B8" font-size="9" font-weight="700" text-anchor="middle" x="78" y="46">1 · mesurer</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="middle" x="78" y="66">le temps total,</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="middle" x="78" y="79">en conditions réelles</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="144" x2="158" y1="61" y2="61"></line><polygon fill="#6B7378" points="158,61 151.6,63.7 151.6,58.3"></polygon>
+<rect fill="#fff" height="74" rx="4" stroke="#4F46B8" stroke-width="1.2" width="128" x="160" y="24"></rect>
+<text fill="#4F46B8" font-size="9" font-weight="700" text-anchor="middle" x="224" y="46">2 · décomposer</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="middle" x="224" y="66">trouver le poste</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="middle" x="224" y="79">qui domine</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="290" x2="304" y1="61" y2="61"></line><polygon fill="#6B7378" points="304,61 297.6,63.7 297.6,58.3"></polygon>
+<rect fill="#fff" height="74" rx="4" stroke="#4F46B8" stroke-width="1.2" width="128" x="306" y="24"></rect>
+<text fill="#4F46B8" font-size="9" font-weight="700" text-anchor="middle" x="370" y="46">3 · changer</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="middle" x="370" y="66">une seule chose,</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="middle" x="370" y="79">sur ce poste</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="436" x2="450" y1="61" y2="61"></line><polygon fill="#6B7378" points="450,61 443.6,63.7 443.6,58.3"></polygon>
+<rect fill="#ECEBFA" height="74" rx="4" stroke="#4F46B8" stroke-width="1.2" width="128" x="452" y="24"></rect>
+<text fill="#4F46B8" font-size="9" font-weight="700" text-anchor="middle" x="516" y="46">4 · remesurer</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="middle" x="516" y="66">garder si c'est mieux,</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="middle" x="516" y="79">sinon revenir</text>
+<path d="M 524 100 C 524 128, 78 128, 78 102" fill="none" stroke="#6B7378" stroke-dasharray="4 3" stroke-width="1.2"></path>
+<polygon fill="#6B7378" points="74,104 82,104 78,98"></polygon>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="middle" x="300" y="140">on recommence tant que le résultat n'est pas assez rapide</text>
+<text fill="#2B2F33" font-size="8.4" font-weight="700" text-anchor="middle" x="300" y="166">« Deux principes de conception, tous deux dictés par la mesure » (eleve.mjs:7, Magpie)</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="middle" x="300" y="182">Le banc pédagogique de Magpie (pedagogie/banc) a été conçu à partir de temps relevés.</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>On n'accélère que ce qu'on a mesuré, et on ne garde un changement que si une nouvelle mesure le justifie.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Un trajet en voiture de deux heures dont une heure et demie d'embouteillage. Changer de voiture ne sert à rien ; changer d'heure de départ, si.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>trouver le poste qui domine ;</li>
-        <li>éviter le piège du premier appel ;</li>
-        <li>lire une série de mesures ;</li>
-        <li>poser un budget de temps.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>On n'accélère que ce qu'on a mesuré, et on ne garde un changement que si une nouvelle mesure le justifie.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Un trajet en voiture de deux heures dont une heure et demie d'embouteillage. Changer de voiture ne sert à rien ; changer d'heure de départ, si.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>trouver le poste qui domine ;</li>
+<li>éviter le piège du premier appel ;</li>
+<li>lire une série de mesures ;</li>
+<li>poser un budget de temps.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À retenir</span>
     Les mesures des schémas de ce bloc sont faites dans un conteneur Linux à 4 cœurs, avec .NET 8 et Node 22. Leurs valeurs exactes changent d'une machine à l'autre ; ce qui compte, ce sont les rapports entre elles.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 91 · Mesurer avant d'optimiser</div>
+<div class="folio">1</div>
+<div class="pied">Cours 91 · Mesurer avant d'optimiser</div>
 </section>
-
 <!-- ============ PAGE 2 · LE POSTE DOMINANT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 91</b></div>
-  <p class="rubrique">Schéma 1 · Le poste dominant</p>
-  <h2>Accélérer ce qui pèse</h2>
-  <p style="max-width:165mm">Le gain total est borné par la part du poste qu'on améliore : c'est la <b>loi d'Amdahl</b>. Rendre gratuite une étape qui pèse 20 % du temps ne fait jamais gagner plus de 20 %. Le banc pédagogique de Magpie en donne un exemple chiffré.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#4F46B8" text-anchor="start" font-weight="700">Monter un graphe de 20 appels au pont Cordyceps : trois façons, temps calculés (120 ms par appel, 10 s par tour d'agent)</text>
-<text x="16" y="58" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">un tour d'agent par appel</text>
-<rect x="196" y="46" width="340.0" height="18" fill="#C62828"/>
-<text x="366.0" y="59" font-size="7.6" fill="#fff" text-anchor="middle" font-weight="700">20 × 10 s d'attente</text>
-<rect x="536.0" y="46" width="4.1" height="18" fill="#4F46B8"/>
-<text x="546.08" y="59" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">202,4 s</text>
-<text x="16" y="98" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">un seul script (choix de Magpie)</text>
-<rect x="196" y="86" width="17.0" height="18" fill="#C62828"/>
-<rect x="213.0" y="86" width="4.1" height="18" fill="#4F46B8"/>
-<text x="223.08" y="99" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">12,4 s</text>
-<text x="16" y="138" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">… et un pont infiniment rapide</text>
-<rect x="196" y="126" width="17.0" height="18" fill="#C62828"/>
-<text x="219.0" y="139" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">10 s</text>
-<rect x="196" y="170" width="12" height="10" fill="#C62828"/>
-<text x="212" y="179" font-size="7.6" fill="#2B2F33" text-anchor="start">attente de l'agent</text>
-<rect x="310" y="170" width="12" height="10" fill="#4F46B8"/>
-<text x="326" y="179" font-size="7.6" fill="#2B2F33" text-anchor="start">aller-retour du pont (20 × 0,12 s)</text>
-<text x="16" y="202" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Rendre le pont gratuit ferait gagner 2,4 s sur 12,4 ; regrouper les appels en a fait gagner 190.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 91</b></div>
+<p class="rubrique">Schéma 1 · Le poste dominant</p>
+<h2>Accélérer ce qui pèse</h2>
+<p style="max-width:165mm">Le gain total est borné par la part du poste qu'on améliore : c'est la <b>loi d'Amdahl</b>. Rendre gratuite une étape qui pèse 20 % du temps ne fait jamais gagner plus de 20 %. Le banc pédagogique de Magpie en donne un exemple chiffré.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">Monter un graphe de 20 appels au pont Cordyceps : trois façons, temps calculés (120 ms par appel, 10 s par tour d'agent)</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="58">un tour d'agent par appel</text>
+<rect fill="#C62828" height="18" width="340.0" x="196" y="46"></rect>
+<text fill="#fff" font-size="7.6" font-weight="700" text-anchor="middle" x="366.0" y="59">20 × 10 s d'attente</text>
+<rect fill="#4F46B8" height="18" width="4.1" x="536.0" y="46"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="546.08" y="59">202,4 s</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="98">un seul script (choix de Magpie)</text>
+<rect fill="#C62828" height="18" width="17.0" x="196" y="86"></rect>
+<rect fill="#4F46B8" height="18" width="4.1" x="213.0" y="86"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="223.08" y="99">12,4 s</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="138">… et un pont infiniment rapide</text>
+<rect fill="#C62828" height="18" width="17.0" x="196" y="126"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="219.0" y="139">10 s</text>
+<rect fill="#C62828" height="10" width="12" x="196" y="170"></rect>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="212" y="179">attente de l'agent</text>
+<rect fill="#4F46B8" height="10" width="12" x="310" y="170"></rect>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="326" y="179">aller-retour du pont (20 × 0,12 s)</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="202">Rendre le pont gratuit ferait gagner 2,4 s sur 12,4 ; regrouper les appels en a fait gagner 190.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/pedagogie/banc/eleve.mjs · lignes 9 à 12</span>//   - Un aller-retour du pont Cordyceps coûte ~120 ms, mais un aller-retour de
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/pedagogie/banc/eleve.mjs · lignes 9 à 12</span>//   - Un aller-retour du pont Cordyceps coûte ~120 ms, mais un aller-retour de
 //     l'AGENT (un appel d'outil) coûte une dizaine de secondes. Ce qui compte n'est
 //     donc pas d'économiser des appels HTTP, c'est de faire tenir un montage entier
 //     dans UNE exécution de script. D'où `cabler`, `sansSolveur` et `rendre`.</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>La formule</h3>
-      <p>Si une partie <i>p</i> du temps devient <i>s</i> fois plus rapide, le tout va 1 / ((1 − <i>p</i>) + <i>p</i> / <i>s</i>) fois plus vite. Avec <i>p</i> = 0,19 (le pont, dans un script de 12,4 s) et <i>s</i> infini, le gain plafonne à 1,24.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Décomposer avant de choisir</h3>
-      <p>Le chiffre utile n'est pas « c'est lent », mais « 10 s d'attente, 2,4 s de pont ». Une fois le temps découpé en postes, le bon chantier se voit seul. Chronométrer chaque étape, même grossièrement, suffit souvent.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>La formule</h3>
+<p>Si une partie <i>p</i> du temps devient <i>s</i> fois plus rapide, le tout va 1 / ((1 − <i>p</i>) + <i>p</i> / <i>s</i>) fois plus vite. Avec <i>p</i> = 0,19 (le pont, dans un script de 12,4 s) et <i>s</i> infini, le gain plafonne à 1,24.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Décomposer avant de choisir</h3>
+<p>Le chiffre utile n'est pas « c'est lent », mais « 10 s d'attente, 2,4 s de pont ». Une fois le temps découpé en postes, le bon chantier se voit seul. Chronométrer chaque étape, même grossièrement, suffit souvent.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Optimiser la partie qu'on connaît le mieux plutôt que celle qui pèse. On réécrit une boucle en dix lignes plus obscures pour gagner 2 %, pendant que le vrai coût, un appel réseau ou une attente, reste intact.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 91 · Mesurer avant d'optimiser</div>
+<div class="folio">2</div>
+<div class="pied">Cours 91 · Mesurer avant d'optimiser</div>
 </section>
-
 <!-- ============ PAGE 3 · LE PREMIER APPEL ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 91</b></div>
-  <p class="rubrique">Schéma 2 · Le premier appel ment</p>
-  <h2>Le JIT, le niveau 0 et le mode Debug</h2>
-  <p style="max-width:165mm">En .NET, une méthode est compilée à son premier appel (cours 71). Depuis .NET Core 3, elle l'est d'abord vite et mal, au <b>niveau 0</b>, puis recompilée optimisée si elle sert souvent. Mesurer trop tôt, c'est mesurer le compilateur.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.4" fill="#4F46B8" text-anchor="start" font-weight="700">Une même fonction (somme de 1 000 carrés) appelée en boucle : temps d'un appel, mesuré avec .NET 8</text>
-<text x="16" y="52" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">1er appel</text>
-<text x="16" y="64" font-size="7.2" fill="#6B7378" text-anchor="start" font-style="italic">compilation JIT</text>
-<rect x="150" y="44" width="273.1" height="18" fill="#C62828"/>
-<text x="429.1410301309801" y="57" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">496 µs</text>
-<text x="16" y="86" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">0 à 200 ms</text>
-<text x="16" y="98" font-size="7.2" fill="#6B7378" text-anchor="start" font-style="italic">code de niveau 0, vite compilé</text>
-<rect x="150" y="78" width="162.4" height="18" fill="#E65100"/>
-<text x="318.43334743814484" y="91" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">≈ 13 µs</text>
-<text x="16" y="120" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">après 200 ms</text>
-<text x="16" y="132" font-size="7.2" fill="#6B7378" text-anchor="start" font-style="italic">code optimisé, niveau 1</text>
-<rect x="150" y="112" width="90.0" height="18" fill="#2E7D32"/>
-<text x="246.0" y="125" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">1,2 µs</text>
-<text x="16" y="160" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Échelle logarithmique. Avec DOTNET_TieredCompilation=0 : 233 µs au 1er appel, puis 1,2 µs dès le 2e.</text>
-<line x1="16" y1="170" x2="584" y2="170" stroke="#CFC6B8"/>
-<text x="16" y="188" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">Debug contre Release (somme d'un million de carrés, médiane de 30) :</text>
-<text x="16" y="204" font-size="8.2" fill="#4F46B8" text-anchor="start" font-weight="700">Release 1,30 ms · Debug 4,85 ms, soit 3,7 fois plus lent (2,4 fois dans une autre série).</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 91</b></div>
+<p class="rubrique">Schéma 2 · Le premier appel ment</p>
+<h2>Le JIT, le niveau 0 et le mode Debug</h2>
+<p style="max-width:165mm">En .NET, une méthode est compilée à son premier appel (cours 71). Depuis .NET Core 3, elle l'est d'abord vite et mal, au <b>niveau 0</b>, puis recompilée optimisée si elle sert souvent. Mesurer trop tôt, c'est mesurer le compilateur.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="22">Une même fonction (somme de 1 000 carrés) appelée en boucle : temps d'un appel, mesuré avec .NET 8</text>
+<text fill="#2B2F33" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="52">1er appel</text>
+<text fill="#6B7378" font-size="7.2" font-style="italic" text-anchor="start" x="16" y="64">compilation JIT</text>
+<rect fill="#C62828" height="18" width="273.1" x="150" y="44"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="429.1410301309801" y="57">496 µs</text>
+<text fill="#2B2F33" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="86">0 à 200 ms</text>
+<text fill="#6B7378" font-size="7.2" font-style="italic" text-anchor="start" x="16" y="98">code de niveau 0, vite compilé</text>
+<rect fill="#E65100" height="18" width="162.4" x="150" y="78"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="318.43334743814484" y="91">≈ 13 µs</text>
+<text fill="#2B2F33" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="120">après 200 ms</text>
+<text fill="#6B7378" font-size="7.2" font-style="italic" text-anchor="start" x="16" y="132">code optimisé, niveau 1</text>
+<rect fill="#2E7D32" height="18" width="90.0" x="150" y="112"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="246.0" y="125">1,2 µs</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="16" y="160">Échelle logarithmique. Avec DOTNET_TieredCompilation=0 : 233 µs au 1er appel, puis 1,2 µs dès le 2e.</text>
+<line stroke="#CFC6B8" x1="16" x2="584" y1="170" y2="170"></line>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="188">Debug contre Release (somme d'un million de carrés, médiane de 30) :</text>
+<text fill="#4F46B8" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="204">Release 1,30 ms · Debug 4,85 ms, soit 3,7 fois plus lent (2,4 fois dans une autre série).</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · .NET 8, la boucle de mesure du schéma (extrait)</span>long a = Stopwatch.GetTimestamp();
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · .NET 8, la boucle de mesure du schéma (extrait)</span>long a = Stopwatch.GetTimestamp();
 g += Somme(t);            // le résultat est gardé, pas jeté
 long b = Stopwatch.GetTimestamp();
 mesures.Add(b - a);       // en ticks ; ici 1 tick = 1 ns</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Chauffer avant de mesurer</h3>
-      <p>On exécute la fonction un moment sans rien noter, puis on mesure. Dans la mesure ci-dessus, le code optimisé n'arrive qu'après environ 200 ms d'appels répétés : un test qui ne tourne que 50 ms ne voit que le code de niveau 0, dix fois plus lent.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Toujours en Release</h3>
-      <p>En Debug, le compilateur garde chaque variable en mémoire pour le débogueur et n'optimise rien. Dans les deux séries mesurées, la même somme y était 2,4 et 3,7 fois plus lente. Un chiffre pris en Debug ne dit rien de ce que verra l'utilisateur.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Chauffer avant de mesurer</h3>
+<p>On exécute la fonction un moment sans rien noter, puis on mesure. Dans la mesure ci-dessus, le code optimisé n'arrive qu'après environ 200 ms d'appels répétés : un test qui ne tourne que 50 ms ne voit que le code de niveau 0, dix fois plus lent.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Toujours en Release</h3>
+<p>En Debug, le compilateur garde chaque variable en mémoire pour le débogueur et n'optimise rien. Dans les deux séries mesurées, la même somme y était 2,4 et 3,7 fois plus lente. Un chiffre pris en Debug ne dit rien de ce que verra l'utilisateur.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Comparer deux versions en lançant chacune une seule fois. Le premier appel coûte ici 400 fois plus qu'un appel chaud, et le système ajoute ses propres pauses : un écart de 10 % entre deux mesures isolées ne prouve rien.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 91 · Mesurer avant d'optimiser</div>
+<div class="folio">3</div>
+<div class="pied">Cours 91 · Mesurer avant d'optimiser</div>
 </section>
-
 <!-- ============ PAGE 4 · LA DISTRIBUTION ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 91</b></div>
-  <p class="rubrique">Schéma 3 · Lire une série</p>
-  <h2>Une mesure est une distribution</h2>
-  <p style="max-width:165mm">Le même calcul ne prend jamais deux fois le même temps : caches, fréquence du processeur, autres programmes. On répète, puis on résume la série par sa médiane, en gardant un œil sur le minimum et les points aberrants.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.4" fill="#4F46B8" text-anchor="start" font-weight="700">Les 31 mesures d'une même somme (un million de carrés, Release) : le premier point, puis 30 répétitions</text>
-<line x1="50" y1="96" x2="560" y2="96" stroke="#6B7378"/>
-<line x1="50.0" y1="96" x2="50.0" y2="100" stroke="#6B7378"/>
-<text x="50.0" y="112" font-size="7.6" fill="#6B7378" text-anchor="middle">1,0 ms</text>
-<line x1="191.7" y1="96" x2="191.7" y2="100" stroke="#6B7378"/>
-<text x="191.66666666666669" y="112" font-size="7.6" fill="#6B7378" text-anchor="middle">1,5 ms</text>
-<line x1="333.3" y1="96" x2="333.3" y2="100" stroke="#6B7378"/>
-<text x="333.33333333333337" y="112" font-size="7.6" fill="#6B7378" text-anchor="middle">2,0 ms</text>
-<line x1="475.0" y1="96" x2="475.0" y2="100" stroke="#6B7378"/>
-<text x="475.0" y="112" font-size="7.6" fill="#6B7378" text-anchor="middle">2,5 ms</text>
-<circle cx="498.2" cy="90" r="3" fill="#C62828"/>
-<circle cx="193.6" cy="90" r="3" fill="#4F46B8"/>
-<circle cx="172.7" cy="90" r="3" fill="#4F46B8"/>
-<circle cx="164.2" cy="90" r="3" fill="#4F46B8"/>
-<circle cx="131.9" cy="90" r="3" fill="#4F46B8"/>
-<circle cx="141.2" cy="90" r="3" fill="#4F46B8"/>
-<circle cx="139.0" cy="83" r="3" fill="#4F46B8"/>
-<circle cx="125.1" cy="90" r="3" fill="#4F46B8"/>
-<circle cx="139.0" cy="76" r="3" fill="#4F46B8"/>
-<circle cx="247.8" cy="90" r="3" fill="#4F46B8"/>
-<circle cx="155.7" cy="90" r="3" fill="#4F46B8"/>
-<circle cx="156.2" cy="83" r="3" fill="#4F46B8"/>
-<circle cx="131.0" cy="83" r="3" fill="#4F46B8"/>
-<circle cx="127.3" cy="83" r="3" fill="#4F46B8"/>
-<circle cx="158.2" cy="90" r="3" fill="#4F46B8"/>
-<circle cx="122.8" cy="76" r="3" fill="#4F46B8"/>
-<circle cx="137.8" cy="69" r="3" fill="#4F46B8"/>
-<circle cx="132.7" cy="90" r="3" fill="#4F46B8"/>
-<circle cx="135.0" cy="83" r="3" fill="#4F46B8"/>
-<circle cx="125.1" cy="69" r="3" fill="#4F46B8"/>
-<circle cx="131.9" cy="76" r="3" fill="#4F46B8"/>
-<circle cx="136.1" cy="76" r="3" fill="#4F46B8"/>
-<circle cx="124.8" cy="62" r="3" fill="#4F46B8"/>
-<circle cx="134.1" cy="69" r="3" fill="#4F46B8"/>
-<circle cx="123.1" cy="55" r="3" fill="#4F46B8"/>
-<circle cx="135.8" cy="62" r="3" fill="#4F46B8"/>
-<circle cx="144.1" cy="90" r="3" fill="#4F46B8"/>
-<circle cx="122.8" cy="48" r="3" fill="#4F46B8"/>
-<circle cx="142.7" cy="83" r="3" fill="#4F46B8"/>
-<circle cx="138.7" cy="62" r="3" fill="#4F46B8"/>
-<circle cx="128.8" cy="69" r="3" fill="#4F46B8"/>
-<text x="498.23333333333335" y="72" font-size="7.6" fill="#C62828" text-anchor="middle" font-weight="700">1er : 2,58</text>
-<text x="251.76666666666668" y="72" font-size="7.6" fill="#6B7378" text-anchor="start">1,70</text>
-<text x="30" y="140" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">minimum</text>
-<text x="100" y="140" font-size="8.4" fill="#4F46B8" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">1,26 ms</text>
-<text x="162" y="140" font-size="7.8" fill="#6B7378" text-anchor="start">le moins perturbé</text>
-<text x="320" y="140" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">médiane</text>
-<text x="390" y="140" font-size="8.4" fill="#4F46B8" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">1,30 ms</text>
-<text x="452" y="140" font-size="7.8" fill="#6B7378" text-anchor="start">la valeur typique, à citer</text>
-<text x="30" y="160" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">moyenne</text>
-<text x="100" y="160" font-size="8.4" fill="#4F46B8" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">1,33 ms</text>
-<text x="162" y="160" font-size="7.8" fill="#6B7378" text-anchor="start">tirée par les écarts</text>
-<text x="320" y="160" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">maximum</text>
-<text x="390" y="160" font-size="8.4" fill="#4F46B8" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">1,70 ms</text>
-<text x="452" y="160" font-size="7.8" fill="#6B7378" text-anchor="start">une interruption du système</text>
-<text x="16" y="200" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Stopwatch : 1 ns de résolution ici (Frequency = 10⁹), 28 ns par lecture. Date.now en Node : pas de 1 ms.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 91</b></div>
+<p class="rubrique">Schéma 3 · Lire une série</p>
+<h2>Une mesure est une distribution</h2>
+<p style="max-width:165mm">Le même calcul ne prend jamais deux fois le même temps : caches, fréquence du processeur, autres programmes. On répète, puis on résume la série par sa médiane, en gardant un œil sur le minimum et les points aberrants.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="22">Les 31 mesures d'une même somme (un million de carrés, Release) : le premier point, puis 30 répétitions</text>
+<line stroke="#6B7378" x1="50" x2="560" y1="96" y2="96"></line>
+<line stroke="#6B7378" x1="50.0" x2="50.0" y1="96" y2="100"></line>
+<text fill="#6B7378" font-size="7.6" text-anchor="middle" x="50.0" y="112">1,0 ms</text>
+<line stroke="#6B7378" x1="191.7" x2="191.7" y1="96" y2="100"></line>
+<text fill="#6B7378" font-size="7.6" text-anchor="middle" x="191.66666666666669" y="112">1,5 ms</text>
+<line stroke="#6B7378" x1="333.3" x2="333.3" y1="96" y2="100"></line>
+<text fill="#6B7378" font-size="7.6" text-anchor="middle" x="333.33333333333337" y="112">2,0 ms</text>
+<line stroke="#6B7378" x1="475.0" x2="475.0" y1="96" y2="100"></line>
+<text fill="#6B7378" font-size="7.6" text-anchor="middle" x="475.0" y="112">2,5 ms</text>
+<circle cx="498.2" cy="90" fill="#C62828" r="3"></circle>
+<circle cx="193.6" cy="90" fill="#4F46B8" r="3"></circle>
+<circle cx="172.7" cy="90" fill="#4F46B8" r="3"></circle>
+<circle cx="164.2" cy="90" fill="#4F46B8" r="3"></circle>
+<circle cx="131.9" cy="90" fill="#4F46B8" r="3"></circle>
+<circle cx="141.2" cy="90" fill="#4F46B8" r="3"></circle>
+<circle cx="139.0" cy="83" fill="#4F46B8" r="3"></circle>
+<circle cx="125.1" cy="90" fill="#4F46B8" r="3"></circle>
+<circle cx="139.0" cy="76" fill="#4F46B8" r="3"></circle>
+<circle cx="247.8" cy="90" fill="#4F46B8" r="3"></circle>
+<circle cx="155.7" cy="90" fill="#4F46B8" r="3"></circle>
+<circle cx="156.2" cy="83" fill="#4F46B8" r="3"></circle>
+<circle cx="131.0" cy="83" fill="#4F46B8" r="3"></circle>
+<circle cx="127.3" cy="83" fill="#4F46B8" r="3"></circle>
+<circle cx="158.2" cy="90" fill="#4F46B8" r="3"></circle>
+<circle cx="122.8" cy="76" fill="#4F46B8" r="3"></circle>
+<circle cx="137.8" cy="69" fill="#4F46B8" r="3"></circle>
+<circle cx="132.7" cy="90" fill="#4F46B8" r="3"></circle>
+<circle cx="135.0" cy="83" fill="#4F46B8" r="3"></circle>
+<circle cx="125.1" cy="69" fill="#4F46B8" r="3"></circle>
+<circle cx="131.9" cy="76" fill="#4F46B8" r="3"></circle>
+<circle cx="136.1" cy="76" fill="#4F46B8" r="3"></circle>
+<circle cx="124.8" cy="62" fill="#4F46B8" r="3"></circle>
+<circle cx="134.1" cy="69" fill="#4F46B8" r="3"></circle>
+<circle cx="123.1" cy="55" fill="#4F46B8" r="3"></circle>
+<circle cx="135.8" cy="62" fill="#4F46B8" r="3"></circle>
+<circle cx="144.1" cy="90" fill="#4F46B8" r="3"></circle>
+<circle cx="122.8" cy="48" fill="#4F46B8" r="3"></circle>
+<circle cx="142.7" cy="83" fill="#4F46B8" r="3"></circle>
+<circle cx="138.7" cy="62" fill="#4F46B8" r="3"></circle>
+<circle cx="128.8" cy="69" fill="#4F46B8" r="3"></circle>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="middle" x="498.23333333333335" y="72">1er : 2,58</text>
+<text fill="#6B7378" font-size="7.6" text-anchor="start" x="251.76666666666668" y="72">1,70</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="30" y="140">minimum</text>
+<text class="mono" fill="#4F46B8" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="100" y="140">1,26 ms</text>
+<text fill="#6B7378" font-size="7.8" text-anchor="start" x="162" y="140">le moins perturbé</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="320" y="140">médiane</text>
+<text class="mono" fill="#4F46B8" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="390" y="140">1,30 ms</text>
+<text fill="#6B7378" font-size="7.8" text-anchor="start" x="452" y="140">la valeur typique, à citer</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="30" y="160">moyenne</text>
+<text class="mono" fill="#4F46B8" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="100" y="160">1,33 ms</text>
+<text fill="#6B7378" font-size="7.8" text-anchor="start" x="162" y="160">tirée par les écarts</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="320" y="160">maximum</text>
+<text class="mono" fill="#4F46B8" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="390" y="160">1,70 ms</text>
+<text fill="#6B7378" font-size="7.8" text-anchor="start" x="452" y="160">une interruption du système</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="16" y="200">Stopwatch : 1 ns de résolution ici (Frequency = 10⁹), 28 ns par lecture. Date.now en Node : pas de 1 ms.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · BenchmarkDotNet 0.15.8 (lignes vides retirées)</span>public class Sommes {
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · BenchmarkDotNet 0.15.8 (lignes vides retirées)</span>public class Sommes {
   private double[] t = new double[1_000_000];
   [Benchmark] public double Boucle() { double s = 0;
     for (int i = 0; i &lt; t.Length; i++) s += t[i] * t[i]; return s; }
   [Benchmark] public double Linq() =&gt; t.Sum(x =&gt; x * x);
 }                     // mesuré : Boucle 1,253 ms, Linq 2,887 ms</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Laisser faire un outil</h3>
-      <p>BenchmarkDotNet chauffe le code, choisit le nombre de répétitions, écarte les points aberrants et donne un intervalle de confiance. Il compile en Release et refuse de mesurer en Debug. Ici, 50 secondes de mesure pour deux méthodes.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Choisir la bonne horloge</h3>
-      <p><code>Stopwatch</code> lit un compteur précis à la nanoseconde sur ce système. <code>DateTime.Now</code> et <code>Date.now()</code> en JavaScript donnent l'heure, pas une durée : pas de 1 ms en Node, sauts possibles quand l'heure système se recale. Pour mesurer, <code>performance.now()</code>.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Laisser faire un outil</h3>
+<p>BenchmarkDotNet chauffe le code, choisit le nombre de répétitions, écarte les points aberrants et donne un intervalle de confiance. Il compile en Release et refuse de mesurer en Debug. Ici, 50 secondes de mesure pour deux méthodes.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Choisir la bonne horloge</h3>
+<p><code>Stopwatch</code> lit un compteur précis à la nanoseconde sur ce système. <code>DateTime.Now</code> et <code>Date.now()</code> en JavaScript donnent l'heure, pas une durée : pas de 1 ms en Node, sauts possibles quand l'heure système se recale. Pour mesurer, <code>performance.now()</code>.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Citer la moyenne d'une série qui contient le premier appel. Ici, il pèse 2,58 ms contre 1,30 pour la médiane des suivants : inclus, il déplace la moyenne sans rien dire du cas courant.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 91 · Mesurer avant d'optimiser</div>
+<div class="folio">4</div>
+<div class="pied">Cours 91 · Mesurer avant d'optimiser</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 91</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>Les budgets de temps de Magpie</h2>
-  <p style="max-width:165mm">Avant d'optimiser, on fixe ce qui est « assez rapide ». Magpie écrit ses budgets en constantes : un délai pour le calcul, un plus large pour le navigateur, une attente avant la sauvegarde, des plafonds pour l'aperçu.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 91</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>Les budgets de temps de Magpie</h2>
+<p style="max-width:165mm">Avant d'optimiser, on fixe ce qui est « assez rapide ». Magpie écrit ses budgets en constantes : un délai pour le calcul, un plus large pour le navigateur, une attente avant la sauvegarde, des plafonds pour l'aperçu.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">magpie/web/compute-proxy.mjs</span></div>
 <div class="l k1"><span class="n">35</span>…= Number(process.env.COMPUTE_TIMEOUT_MS) || 20000;<span class="rep r1">1</span></div>
@@ -300,137 +273,55 @@ mesures.Add(b - a);       // en ticks ; ici 1 tick = 1 ns</div>
 <div class="l"><span class="cm">magpie/web/src/nodeEditors.jsx</span></div>
 <div class="l k5"><span class="n">94</span><span class="kw">if</span> (Date.now() - editStartRef.current &lt; 250) <span class="kw">return</span>;<span class="rep r5">5</span></div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>Le calcul</b>20 s, réglable.</li>
-      <li><span class="rep r2">2</span><b>Le navigateur</b>30 s, plus large.</li>
-      <li><span class="rep r3">3</span><b>La sauvegarde</b>500 ms de calme.</li>
-      <li><span class="rep r4">4</span><b>L'aperçu</b>Plafonds de taille.</li>
-      <li><span class="rep r5">5</span><b>250 ms</b>Date.now suffit.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À surveiller · deux délais liés, réglés à deux endroits</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>Le calcul</b>20 s, réglable.</li>
+<li><span class="rep r2">2</span><b>Le navigateur</b>30 s, plus large.</li>
+<li><span class="rep r3">3</span><b>La sauvegarde</b>500 ms de calme.</li>
+<li><span class="rep r4">4</span><b>L'aperçu</b>Plafonds de taille.</li>
+<li><span class="rep r5">5</span><b>250 ms</b>Date.now suffit.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À surveiller · deux délais liés, réglés à deux endroits</span>
     Le délai du navigateur n'a de sens que s'il dépasse celui du calcul ; le commentaire d'api.js le dit, mais écrit « 20 s » en dur. Or le délai du calcul se règle par la variable d'environnement <code>COMPUTE_TIMEOUT_MS</code>. Réglée à 40 000, le navigateur abandonnerait à 30 s avec un message générique, avant que le serveur ne rende son erreur 504 explicite. Déduit du code, non mesuré.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 91 · Mesurer avant d'optimiser</div>
+<div class="folio">5</div>
+<div class="pied">Cours 91 · Mesurer avant d'optimiser</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 91</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 91</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">La première étape pour accélérer un programme est…</div><ul>
-      <li><span>A</span>réécrire la boucle principale</li><li><span>B</span>mesurer le temps total et le découper</li><li><span>C</span>passer en parallèle</li><li><span>D</span>changer de langage</li></ul></div>
 
-    <div class="q"><div class="enonce">Une étape pèse 20 % du temps ; la rendre gratuite fait gagner au plus…</div><ul>
-      <li><span>A</span>20 % du temps</li><li><span>B</span>rien</li><li><span>C</span>la moitié du temps</li><li><span>D</span>80 % du temps</li></ul></div>
 
-    <div class="q"><div class="enonce">Dans le banc de Magpie, le poste dominant est…</div><ul>
-      <li><span>A</span>l'appel HTTP au pont</li><li><span>B</span>le calcul de Grasshopper</li><li><span>C</span>la lecture du fichier</li><li><span>D</span>le tour d'agent, environ 10 s</li></ul></div>
 
-    <div class="q"><div class="enonce">Le premier appel d'une méthode .NET est lent surtout à cause…</div><ul>
-      <li><span>A</span>de la compilation JIT</li><li><span>B</span>du disque</li><li><span>C</span>de Stopwatch</li><li><span>D</span>du ramasse-miettes</li></ul></div>
-
-    <div class="q"><div class="enonce">Le code de niveau 0 est…</div><ul>
-      <li><span>A</span>interprété ligne à ligne</li><li><span>B</span>le code le plus rapide</li><li><span>C</span>réservé au mode Debug</li><li><span>D</span>compilé vite, peu optimisé</li></ul></div>
-
-    <div class="q"><div class="enonce">Pour une mesure fiable… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>mesurer un seul appel</li><li><span>B</span>compiler en Release</li><li><span>C</span>chauffer puis répéter</li><li><span>D</span>inclure le premier appel dans la moyenne</li></ul></div>
-
-    <div class="q"><div class="enonce">Pour résumer une série de durées, on cite d'abord…</div><ul>
-      <li><span>A</span>le maximum</li><li><span>B</span>la somme</li><li><span>C</span>la médiane</li><li><span>D</span>le premier point</li></ul></div>
-
-    <div class="q"><div class="enonce">Mesuré : la somme en LINQ par rapport à la boucle est…</div><ul>
-      <li><span>A</span>deux fois plus rapide</li><li><span>B</span>environ 2,3 fois plus lente</li><li><span>C</span>dix fois plus lente</li><li><span>D</span>aussi rapide</li></ul></div>
-
-    <div class="q"><div class="enonce">L'horloge à utiliser pour une durée en C# est…</div><ul>
-      <li><span>A</span>DateTime.Now</li><li><span>B</span>Environment.MachineName</li><li><span>C</span>DateTime.Today</li><li><span>D</span>Stopwatch</li></ul></div>
-
-    <div class="q"><div class="enonce">Le délai du navigateur dans Magpie vaut…</div><ul>
-      <li><span>A</span>20 s</li><li><span>B</span>30 s</li><li><span>C</span>250 ms</li><li><span>D</span>500 ms</li></ul></div>
-
-    <div class="q"><div class="enonce">Pourquoi ce délai est-il plus large que celui du calcul ?</div><ul>
-      <li><span>A</span>pour économiser la batterie</li><li><span>B</span>par hasard</li><li><span>C</span>pour laisser le serveur rendre son erreur</li><li><span>D</span>pour accélérer Compute</li></ul></div>
-
-    <div class="q"><div class="enonce">Le BenchmarkDotNet de l'exemple a mesuré la boucle à…</div><ul>
-      <li><span>A</span>496 µs</li><li><span>B</span>2,887 ms</li><li><span>C</span>1,253 ms</li><li><span>D</span>12,4 s</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 91 · Mesurer avant d'optimiser</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">Stopwatch.GetTimestamp()</td><td>lire le compteur, sans allocation</td><td>exemple autonome, page 3</td></tr>
+<tr><td class="c">dotnet run -c Release</td><td>mesurer le code optimisé</td><td>schéma 2, page 3</td></tr>
+<tr><td class="c">[Benchmark]</td><td>confier la mesure à BenchmarkDotNet</td><td>exemple autonome, page 4</td></tr>
+<tr><td class="c">performance.now()</td><td>une durée précise en JavaScript</td><td>page 4</td></tr>
+<tr><td class="c">COMPUTE_TIMEOUT_MS</td><td>le budget du calcul, 20 s par défaut</td><td>compute-proxy.mjs:35</td></tr>
+<tr><td class="c">1 / ((1 − p) + p / s)</td><td>le gain maximal (Amdahl)</td><td>page 2</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Loi d'Amdahl</dt><dd>Le gain total est borné par la part du temps qu'on accélère.</dd>
+<dt>Niveau 0 (tier 0)</dt><dd>La première compilation d'une méthode, rapide à produire, peu optimisée.</dd>
+<dt>Chauffe</dt><dd>Les exécutions qu'on fait sans les compter, avant de mesurer.</dd>
+<dt>Médiane</dt><dd>La valeur du milieu d'une série triée.</dd>
+<dt>Budget de temps</dt><dd>La durée fixée à l'avance au-delà de laquelle on abandonne ou on optimise.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 92</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 91 · Mesurer avant d'optimiser</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 91</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · B.</b> On ne voit le poste qu'en découpant.</div>
-    <div><b>02 · A.</b> La loi d'Amdahl.</div>
-    <div><b>03 · D.</b> eleve.mjs:9–10.</div>
-    <div><b>04 · A.</b> 496 µs au 1er appel, mesuré.</div>
-    <div><b>05 · D.</b> Optimisé ensuite, s'il sert souvent.</div>
-    <div><b>06 · B et C.</b> Un appel isolé ne prouve rien.</div>
-    <div><b>07 · C.</b> Elle résiste aux points aberrants.</div>
-    <div><b>08 · B.</b> 2,887 / 1,253 ≈ 2,3.</div>
-    <div><b>09 · D.</b> Un compteur, pas une heure.</div>
-    <div><b>10 · B.</b> api.js:7.</div>
-    <div><b>11 · C.</b> Le commentaire d'api.js:5–6.</div>
-    <div><b>12 · C.</b> Moyenne, Release, .NET 8.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 92, « Les caches ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">Stopwatch.GetTimestamp()</td><td>lire le compteur, sans allocation</td><td>exemple autonome, page 3</td></tr>
-      <tr><td class="c">dotnet run -c Release</td><td>mesurer le code optimisé</td><td>schéma 2, page 3</td></tr>
-      <tr><td class="c">[Benchmark]</td><td>confier la mesure à BenchmarkDotNet</td><td>exemple autonome, page 4</td></tr>
-      <tr><td class="c">performance.now()</td><td>une durée précise en JavaScript</td><td>page 4</td></tr>
-      <tr><td class="c">COMPUTE_TIMEOUT_MS</td><td>le budget du calcul, 20 s par défaut</td><td>compute-proxy.mjs:35</td></tr>
-      <tr><td class="c">1 / ((1 − p) + p / s)</td><td>le gain maximal (Amdahl)</td><td>page 2</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Loi d'Amdahl</dt><dd>Le gain total est borné par la part du temps qu'on accélère.</dd>
-    <dt>Niveau 0 (tier 0)</dt><dd>La première compilation d'une méthode, rapide à produire, peu optimisée.</dd>
-    <dt>Chauffe</dt><dd>Les exécutions qu'on fait sans les compter, avant de mesurer.</dd>
-    <dt>Médiane</dt><dd>La valeur du milieu d'une série triée.</dd>
-    <dt>Budget de temps</dt><dd>La durée fixée à l'avance au-delà de laquelle on abandonne ou on optimise.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 92</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 91 · Mesurer avant d'optimiser</div>
-</section>
-
 </body>
 </html>

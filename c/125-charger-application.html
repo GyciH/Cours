@@ -1,274 +1,247 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>125 · Charger une application</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-8">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 125</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Charger une application</h1>
-  <p class="chapeau">Avant le premier clic, le navigateur doit recevoir le HTML, puis le JavaScript qu'il nomme, l'analyser et l'exécuter. Trois leviers règlent cette attente : <b>découper</b> ce qu'on envoie, le <b>compresser</b>, et le <b>garder en cache</b> pour la visite suivante.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>118</b>, <b>121</b></span>
-    <span class="pastille">Exemples · <b>Magpie</b> web, Vite, compute-proxy</span>
-  </div>
-
-  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
-    <svg viewBox="0 0 600 214" width="100%">
-<text x="10" y="14" font-size="8" fill="#7A5A12" text-anchor="start" font-weight="700">Première visite de Magpie web, écran large, réseau limité à 10 Mbit/s et 40 ms (Chromium, mesuré)</text>
-<line x1="170.0" y1="22" x2="170.0" y2="150" stroke="#D8D8DE" stroke-width=".8"/>
-<text x="170.0" y="160" font-size="7" fill="#6B7378" text-anchor="middle">0 ms</text>
-<line x1="236.7" y1="22" x2="236.7" y2="150" stroke="#D8D8DE" stroke-width=".8"/>
-<text x="236.66666666666666" y="160" font-size="7" fill="#6B7378" text-anchor="middle">200 ms</text>
-<line x1="303.3" y1="22" x2="303.3" y2="150" stroke="#D8D8DE" stroke-width=".8"/>
-<text x="303.3333333333333" y="160" font-size="7" fill="#6B7378" text-anchor="middle">400 ms</text>
-<line x1="370.0" y1="22" x2="370.0" y2="150" stroke="#D8D8DE" stroke-width=".8"/>
-<text x="370.0" y="160" font-size="7" fill="#6B7378" text-anchor="middle">600 ms</text>
-<line x1="436.7" y1="22" x2="436.7" y2="150" stroke="#D8D8DE" stroke-width=".8"/>
-<text x="436.66666666666663" y="160" font-size="7" fill="#6B7378" text-anchor="middle">800 ms</text>
-<line x1="503.3" y1="22" x2="503.3" y2="150" stroke="#D8D8DE" stroke-width=".8"/>
-<text x="503.3333333333333" y="160" font-size="7" fill="#6B7378" text-anchor="middle">1000 ms</text>
-<line x1="570.0" y1="22" x2="570.0" y2="150" stroke="#D8D8DE" stroke-width=".8"/>
-<text x="570.0" y="160" font-size="7" fill="#6B7378" text-anchor="middle">1200 ms</text>
-<text x="10" y="37" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">index.html</text>
-<rect x="170.0" y="26" width="15.7" height="14" rx="2" fill="#7B1FA2"/>
-<text x="191.66666666666666" y="37" font-size="7.6" fill="#7B1FA2" text-anchor="start" font-weight="700">1,3 Ko</text>
-<text x="10" y="61" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">index.css</text>
-<rect x="186.7" y="50" width="40.0" height="14" rx="2" fill="#7B1FA2"/>
-<text x="232.66666666666666" y="61" font-size="7.6" fill="#7B1FA2" text-anchor="start" font-weight="700">48 Ko</text>
-<text x="10" y="85" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">index.js</text>
-<rect x="186.3" y="74" width="169.3" height="14" rx="2" fill="#7A5A12"/>
-<text x="361.66666666666663" y="85" font-size="7.6" fill="#7A5A12" text-anchor="start" font-weight="700">521 Ko</text>
-<text x="10" y="109" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">/api/catalog, /api/parcours</text>
-<rect x="382.0" y="98" width="16.0" height="14" rx="2" fill="#1565C0"/>
-<text x="10" y="133" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">Viewer3D.js</text>
-<rect x="368.0" y="122" width="180.0" height="14" rx="2" fill="#C62828"/>
-<text x="554.0" y="133" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">551 Ko</text>
-<line x1="392.0" y1="22" x2="392.0" y2="150" stroke="#2E7D32" stroke-width="1.6" stroke-dasharray="3 2"/>
-<text x="396.0" y="148" font-size="7.4" fill="#2E7D32" text-anchor="start" font-weight="700">canvas affiché ≈ 666 ms</text>
-<text x="10" y="184" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">Le HTML est minuscule ; il nomme le JavaScript, qui fait tout le reste : afficher, appeler l'API, charger la 3D.</text>
-<text x="10" y="202" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Copie du dépôt construite par vite build et servie par compute-proxy.mjs, catalogue vide : seule la coquille est mesurée.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 125</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Charger une application</h1>
+<p class="chapeau">Avant le premier clic, le navigateur doit recevoir le HTML, puis le JavaScript qu'il nomme, l'analyser et l'exécuter. Trois leviers règlent cette attente : <b>découper</b> ce qu'on envoie, le <b>compresser</b>, et le <b>garder en cache</b> pour la visite suivante.</p>
+<div class="meta">
+<span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>118</b>, <b>121</b></span>
+<span class="pastille">Exemples · <b>Magpie</b> web, Vite, compute-proxy</span>
+</div>
+<div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+<svg viewbox="0 0 600 214" width="100%">
+<text fill="#7A5A12" font-size="8" font-weight="700" text-anchor="start" x="10" y="14">Première visite de Magpie web, écran large, réseau limité à 10 Mbit/s et 40 ms (Chromium, mesuré)</text>
+<line stroke="#D8D8DE" stroke-width=".8" x1="170.0" x2="170.0" y1="22" y2="150"></line>
+<text fill="#6B7378" font-size="7" text-anchor="middle" x="170.0" y="160">0 ms</text>
+<line stroke="#D8D8DE" stroke-width=".8" x1="236.7" x2="236.7" y1="22" y2="150"></line>
+<text fill="#6B7378" font-size="7" text-anchor="middle" x="236.66666666666666" y="160">200 ms</text>
+<line stroke="#D8D8DE" stroke-width=".8" x1="303.3" x2="303.3" y1="22" y2="150"></line>
+<text fill="#6B7378" font-size="7" text-anchor="middle" x="303.3333333333333" y="160">400 ms</text>
+<line stroke="#D8D8DE" stroke-width=".8" x1="370.0" x2="370.0" y1="22" y2="150"></line>
+<text fill="#6B7378" font-size="7" text-anchor="middle" x="370.0" y="160">600 ms</text>
+<line stroke="#D8D8DE" stroke-width=".8" x1="436.7" x2="436.7" y1="22" y2="150"></line>
+<text fill="#6B7378" font-size="7" text-anchor="middle" x="436.66666666666663" y="160">800 ms</text>
+<line stroke="#D8D8DE" stroke-width=".8" x1="503.3" x2="503.3" y1="22" y2="150"></line>
+<text fill="#6B7378" font-size="7" text-anchor="middle" x="503.3333333333333" y="160">1000 ms</text>
+<line stroke="#D8D8DE" stroke-width=".8" x1="570.0" x2="570.0" y1="22" y2="150"></line>
+<text fill="#6B7378" font-size="7" text-anchor="middle" x="570.0" y="160">1200 ms</text>
+<text class="mono" fill="#2B2F33" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="10" y="37">index.html</text>
+<rect fill="#7B1FA2" height="14" rx="2" width="15.7" x="170.0" y="26"></rect>
+<text fill="#7B1FA2" font-size="7.6" font-weight="700" text-anchor="start" x="191.66666666666666" y="37">1,3 Ko</text>
+<text class="mono" fill="#2B2F33" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="10" y="61">index.css</text>
+<rect fill="#7B1FA2" height="14" rx="2" width="40.0" x="186.7" y="50"></rect>
+<text fill="#7B1FA2" font-size="7.6" font-weight="700" text-anchor="start" x="232.66666666666666" y="61">48 Ko</text>
+<text class="mono" fill="#2B2F33" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="10" y="85">index.js</text>
+<rect fill="#7A5A12" height="14" rx="2" width="169.3" x="186.3" y="74"></rect>
+<text fill="#7A5A12" font-size="7.6" font-weight="700" text-anchor="start" x="361.66666666666663" y="85">521 Ko</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="10" y="109">/api/catalog, /api/parcours</text>
+<rect fill="#1565C0" height="14" rx="2" width="16.0" x="382.0" y="98"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="10" y="133">Viewer3D.js</text>
+<rect fill="#C62828" height="14" rx="2" width="180.0" x="368.0" y="122"></rect>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="554.0" y="133">551 Ko</text>
+<line stroke="#2E7D32" stroke-dasharray="3 2" stroke-width="1.6" x1="392.0" x2="392.0" y1="22" y2="150"></line>
+<text fill="#2E7D32" font-size="7.4" font-weight="700" text-anchor="start" x="396.0" y="148">canvas affiché ≈ 666 ms</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="10" y="184">Le HTML est minuscule ; il nomme le JavaScript, qui fait tout le reste : afficher, appeler l'API, charger la 3D.</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="10" y="202">Copie du dépôt construite par vite build et servie par compute-proxy.mjs, catalogue vide : seule la coquille est mesurée.</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>N'envoyer d'abord que ce qui sert à l'écran d'ouverture, l'envoyer compressé, et ne plus jamais renvoyer un fichier qui n'a pas changé.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Livrer un chantier. On apporte d'abord ce qui sert au premier jour, en palettes serrées ; les outils déjà sur place ne repartent pas au dépôt chaque soir.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>lire une cascade de chargement ;</li>
-        <li>découper avec import() ;</li>
-        <li>régler Cache-Control ;</li>
-        <li>vérifier ce qui part vraiment.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>N'envoyer d'abord que ce qui sert à l'écran d'ouverture, l'envoyer compressé, et ne plus jamais renvoyer un fichier qui n'a pas changé.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Livrer un chantier. On apporte d'abord ce qui sert au premier jour, en palettes serrées ; les outils déjà sur place ne repartent pas au dépôt chaque soir.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>lire une cascade de chargement ;</li>
+<li>découper avec import() ;</li>
+<li>régler Cache-Control ;</li>
+<li>vérifier ce qui part vraiment.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À retenir</span>
     Le premier chargement se paie en octets et en temps d'exécution ; les suivants ne devraient presque rien coûter. Mesurer les deux, sur un réseau limité, et jamais sur son seul poste de développement.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 125 · Charger une application</div>
+<div class="folio">1</div>
+<div class="pied">Cours 125 · Charger une application</div>
 </section>
-
 <!-- ============ PAGE 2 · LE POIDS ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 125</b></div>
-  <p class="rubrique">Schéma 1 · Le poids</p>
-  <h2>Découper et compresser</h2>
-  <p style="max-width:165mm">Vite rassemble le code en paquets. Un <code>import()</code> dynamique en crée un à part, téléchargé quand on l'appelle. On a construit Magpie web et pesé ce qui en sort.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#7A5A12" text-anchor="start" font-weight="700">Ce que produit vite build pour Magpie web, en Ko (mesuré sur une copie du dépôt)</text>
-<text x="250" y="40" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700">brut</text>
-<text x="470" y="40" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700">gzip, calculé par Vite</text>
-<text x="16" y="59" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">index.js : React, React Flow, l'app</text>
-<rect x="250" y="48" width="186.0" height="13" rx="2" fill="#7A5A12"/>
-<text x="441.9892857142857" y="58" font-size="7.4" fill="#7A5A12" text-anchor="start" font-weight="700">520,77</text>
-<rect x="470" y="48" width="56.5" height="13" rx="2" fill="#7A5A12" opacity=".55"/>
-<text x="532.5178571428571" y="58" font-size="7.4" fill="#7A5A12" text-anchor="start" font-weight="700">158,25</text>
-<text x="16" y="81" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">dont capsules.json, importé</text>
-<rect x="250" y="70" width="46.6" height="13" rx="2" fill="#E65100"/>
-<text x="302.60357142857146" y="80" font-size="7.4" fill="#E65100" text-anchor="start" font-weight="700">130,49</text>
-<rect x="470" y="70" width="11.4" height="13" rx="2" fill="#E65100" opacity=".55"/>
-<text x="487.4142857142857" y="80" font-size="7.4" fill="#E65100" text-anchor="start" font-weight="700">31,96</text>
-<text x="16" y="103" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Viewer3D.js : Three.js, chargé à part</text>
-<rect x="250" y="92" width="196.8" height="13" rx="2" fill="#C62828"/>
-<text x="452.76428571428573" y="102" font-size="7.4" fill="#C62828" text-anchor="start" font-weight="700">550,94</text>
-<rect x="470" y="92" width="49.2" height="13" rx="2" fill="#C62828" opacity=".55"/>
-<text x="525.2178571428572" y="102" font-size="7.4" fill="#C62828" text-anchor="start" font-weight="700">137,81</text>
-<text x="16" y="125" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">index.css</text>
-<rect x="250" y="114" width="17.0" height="13" rx="2" fill="#7B1FA2"/>
-<text x="272.98571428571427" y="124" font-size="7.4" fill="#7B1FA2" text-anchor="start" font-weight="700">47,56</text>
-<rect x="470" y="114" width="3.3" height="13" rx="2" fill="#7B1FA2" opacity=".55"/>
-<text x="479.26785714285717" y="124" font-size="7.4" fill="#7B1FA2" text-anchor="start" font-weight="700">9,15</text>
-<text x="16" y="160" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Le serveur local envoie index.js tel quel : 521 004 octets reçus, même en annonçant Accept-Encoding: gzip.</text>
-<text x="16" y="176" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Compressé, il pèserait trois fois moins ; à 10 Mbit/s, environ 0,3 s de gagnées à la première visite (déduit).</text>
-<text x="16" y="198" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">En ligne, un serveur frontal placé devant Node peut compresser à sa place : à vérifier sur le site réel.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 125</b></div>
+<p class="rubrique">Schéma 1 · Le poids</p>
+<h2>Découper et compresser</h2>
+<p style="max-width:165mm">Vite rassemble le code en paquets. Un <code>import()</code> dynamique en crée un à part, téléchargé quand on l'appelle. On a construit Magpie web et pesé ce qui en sort.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#7A5A12" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">Ce que produit vite build pour Magpie web, en Ko (mesuré sur une copie du dépôt)</text>
+<text fill="#6B7378" font-size="7.6" font-weight="700" text-anchor="start" x="250" y="40">brut</text>
+<text fill="#6B7378" font-size="7.6" font-weight="700" text-anchor="start" x="470" y="40">gzip, calculé par Vite</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="59">index.js : React, React Flow, l'app</text>
+<rect fill="#7A5A12" height="13" rx="2" width="186.0" x="250" y="48"></rect>
+<text fill="#7A5A12" font-size="7.4" font-weight="700" text-anchor="start" x="441.9892857142857" y="58">520,77</text>
+<rect fill="#7A5A12" height="13" opacity=".55" rx="2" width="56.5" x="470" y="48"></rect>
+<text fill="#7A5A12" font-size="7.4" font-weight="700" text-anchor="start" x="532.5178571428571" y="58">158,25</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="81">dont capsules.json, importé</text>
+<rect fill="#E65100" height="13" rx="2" width="46.6" x="250" y="70"></rect>
+<text fill="#E65100" font-size="7.4" font-weight="700" text-anchor="start" x="302.60357142857146" y="80">130,49</text>
+<rect fill="#E65100" height="13" opacity=".55" rx="2" width="11.4" x="470" y="70"></rect>
+<text fill="#E65100" font-size="7.4" font-weight="700" text-anchor="start" x="487.4142857142857" y="80">31,96</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="103">Viewer3D.js : Three.js, chargé à part</text>
+<rect fill="#C62828" height="13" rx="2" width="196.8" x="250" y="92"></rect>
+<text fill="#C62828" font-size="7.4" font-weight="700" text-anchor="start" x="452.76428571428573" y="102">550,94</text>
+<rect fill="#C62828" height="13" opacity=".55" rx="2" width="49.2" x="470" y="92"></rect>
+<text fill="#C62828" font-size="7.4" font-weight="700" text-anchor="start" x="525.2178571428572" y="102">137,81</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="125">index.css</text>
+<rect fill="#7B1FA2" height="13" rx="2" width="17.0" x="250" y="114"></rect>
+<text fill="#7B1FA2" font-size="7.4" font-weight="700" text-anchor="start" x="272.98571428571427" y="124">47,56</text>
+<rect fill="#7B1FA2" height="13" opacity=".55" rx="2" width="3.3" x="470" y="114"></rect>
+<text fill="#7B1FA2" font-size="7.4" font-weight="700" text-anchor="start" x="479.26785714285717" y="124">9,15</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="160">Le serveur local envoie index.js tel quel : 521 004 octets reçus, même en annonçant Accept-Encoding: gzip.</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="176">Compressé, il pèserait trois fois moins ; à 10 Mbit/s, environ 0,3 s de gagnées à la première visite (déduit).</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="198">En ligne, un serveur frontal placé devant Node peut compresser à sa place : à vérifier sur le site réel.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript, charger un module à la demande</span>bouton.addEventListener("click", async () =&gt; {
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript, charger un module à la demande</span>bouton.addEventListener("click", async () =&gt; {
   const { ouvrirExport } = await import("./export.js");   // paquet à part
   ouvrirExport();
 });</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Avec React</h3>
-      <p><code>lazy(() =&gt; import("./Viewer3D.jsx"))</code> et un <code>Suspense</code> autour : React affiche le repli le temps que le paquet arrive. C'est ce que fait App.jsx:18.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Compresser</h3>
-      <p>C'est le serveur qui compresse, en gzip ou en brotli, si le navigateur l'annonce. Le JavaScript, très répétitif, s'y prête bien : trois fois moins ici, selon Vite.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Avec React</h3>
+<p><code>lazy(() =&gt; import("./Viewer3D.jsx"))</code> et un <code>Suspense</code> autour : React affiche le repli le temps que le paquet arrive. C'est ce que fait App.jsx:18.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Compresser</h3>
+<p>C'est le serveur qui compresse, en gzip ou en brotli, si le navigateur l'annonce. Le JavaScript, très répétitif, s'y prête bien : trois fois moins ici, selon Vite.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Importer un gros fichier de données en tête d'un module. Il entre dans le paquet principal et se télécharge avant tout affichage : capsules.json pèse 130 Ko du paquet de Magpie (GenericNode.jsx:8).
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 125 · Charger une application</div>
+<div class="folio">2</div>
+<div class="pied">Cours 125 · Charger une application</div>
 </section>
-
 <!-- ============ PAGE 3 · LE CACHE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 125</b></div>
-  <p class="rubrique">Schéma 2 · Le cache HTTP</p>
-  <h2>Ne rien renvoyer deux fois</h2>
-  <p style="max-width:165mm">L'en-tête Cache-Control dit au navigateur combien de temps garder un fichier. Vite met une empreinte du contenu dans le nom de chaque paquet : un nom ne désigne donc qu'un seul contenu, pour toujours.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#7A5A12" text-anchor="start" font-weight="700">Octets reçus par fichier, à la première et à la seconde visite (même navigateur, mesuré)</text>
-<text x="170" y="42" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700">Cache-Control</text>
-<text x="330" y="42" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700">1re visite</text>
-<text x="440" y="42" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700">2e visite</text>
-<rect x="10" y="52" width="580" height="18" fill="#fff" opacity=".55"/>
-<text x="16" y="65" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">index.html</text>
-<text x="170" y="65" font-size="7.6" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">no-cache</text>
-<text x="330" y="65" font-size="7.6" fill="#2B2F33" text-anchor="start">1 346</text>
-<text x="440" y="65" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">1 346</text>
-<text x="16" y="83" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">index-BuQhiUT6.js</text>
-<text x="170" y="83" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">immutable</text>
-<text x="330" y="83" font-size="7.6" fill="#2B2F33" text-anchor="start">521 304</text>
-<text x="440" y="83" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">0</text>
-<rect x="10" y="88" width="580" height="18" fill="#fff" opacity=".55"/>
-<text x="16" y="101" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">index-CO4vyXZX.css</text>
-<text x="170" y="101" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">immutable</text>
-<text x="330" y="101" font-size="7.6" fill="#2B2F33" text-anchor="start">47 858</text>
-<text x="440" y="101" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">0</text>
-<text x="16" y="119" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">Viewer3D-BzlQt_aR.js</text>
-<text x="170" y="119" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">immutable</text>
-<text x="330" y="119" font-size="7.6" fill="#2B2F33" text-anchor="start">551 253</text>
-<text x="440" y="119" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">0</text>
-<rect x="10" y="124" width="580" height="18" fill="#fff" opacity=".55"/>
-<text x="16" y="137" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">icon-192.png</text>
-<text x="170" y="137" font-size="7.6" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">no-cache</text>
-<text x="330" y="137" font-size="7.6" fill="#2B2F33" text-anchor="start">44 906</text>
-<text x="440" y="137" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">44 906</text>
-<text x="16" y="160" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Canvas affiché : 666 ms la première fois, 291 ms la seconde. Les fichiers à empreinte ne sont même plus demandés.</text>
-<text x="16" y="176" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">no-cache veut dire « redemander » ; sans ETag ni Last-Modified, le serveur ne peut pas répondre 304 : il renvoie tout.</text>
-<text x="16" y="198" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">L'icône vient du manifeste, que Chromium lit à chaque visite. 45 Ko : peu, mais renvoyés à chaque fois.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 125</b></div>
+<p class="rubrique">Schéma 2 · Le cache HTTP</p>
+<h2>Ne rien renvoyer deux fois</h2>
+<p style="max-width:165mm">L'en-tête Cache-Control dit au navigateur combien de temps garder un fichier. Vite met une empreinte du contenu dans le nom de chaque paquet : un nom ne désigne donc qu'un seul contenu, pour toujours.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#7A5A12" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">Octets reçus par fichier, à la première et à la seconde visite (même navigateur, mesuré)</text>
+<text fill="#6B7378" font-size="7.6" font-weight="700" text-anchor="start" x="170" y="42">Cache-Control</text>
+<text fill="#6B7378" font-size="7.6" font-weight="700" text-anchor="start" x="330" y="42">1re visite</text>
+<text fill="#6B7378" font-size="7.6" font-weight="700" text-anchor="start" x="440" y="42">2e visite</text>
+<rect fill="#fff" height="18" opacity=".55" width="580" x="10" y="52"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="16" y="65">index.html</text>
+<text class="mono" fill="#E65100" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="170" y="65">no-cache</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="330" y="65">1 346</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="440" y="65">1 346</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="16" y="83">index-BuQhiUT6.js</text>
+<text class="mono" fill="#2E7D32" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="170" y="83">immutable</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="330" y="83">521 304</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="440" y="83">0</text>
+<rect fill="#fff" height="18" opacity=".55" width="580" x="10" y="88"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="16" y="101">index-CO4vyXZX.css</text>
+<text class="mono" fill="#2E7D32" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="170" y="101">immutable</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="330" y="101">47 858</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="440" y="101">0</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="16" y="119">Viewer3D-BzlQt_aR.js</text>
+<text class="mono" fill="#2E7D32" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="170" y="119">immutable</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="330" y="119">551 253</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="440" y="119">0</text>
+<rect fill="#fff" height="18" opacity=".55" width="580" x="10" y="124"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="16" y="137">icon-192.png</text>
+<text class="mono" fill="#E65100" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="170" y="137">no-cache</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="330" y="137">44 906</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="440" y="137">44 906</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="160">Canvas affiché : 666 ms la première fois, 291 ms la seconde. Les fichiers à empreinte ne sont même plus demandés.</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="176">no-cache veut dire « redemander » ; sans ETag ni Last-Modified, le serveur ne peut pas répondre 304 : il renvoie tout.</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="198">L'icône vient du manifeste, que Chromium lit à chaque visite. 45 Ko : peu, mais renvoyés à chaque fois.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Node, permettre la réponse 304</span>const etag = `"${stat.size}-${stat.mtimeMs}"`;
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Node, permettre la réponse 304</span>const etag = `"${stat.size}-${stat.mtimeMs}"`;
 if (req.headers["if-none-match"] === etag) {
   res.writeHead(304); return res.end();   // rien à renvoyer
 }
 res.writeHead(200, { ETag: etag, "Cache-Control": "no-cache" });</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Deux régimes</h3>
-      <p>Les fichiers à empreinte : <code>max-age=31536000, immutable</code>, gardés un an sans question. Le reste : <code>no-cache</code>, gardé mais vérifié auprès du serveur avant usage.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Pourquoi pas tout</h3>
-      <p>index.html nomme les paquets du jour. Gardé sans vérifier, il réclamerait après une mise en ligne des fichiers qui n'existent plus. C'est la seule porte d'entrée à revérifier.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Deux régimes</h3>
+<p>Les fichiers à empreinte : <code>max-age=31536000, immutable</code>, gardés un an sans question. Le reste : <code>no-cache</code>, gardé mais vérifié auprès du serveur avant usage.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Pourquoi pas tout</h3>
+<p>index.html nomme les paquets du jour. Gardé sans vérifier, il réclamerait après une mise en ligne des fichiers qui n'existent plus. C'est la seule porte d'entrée à revérifier.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Mettre une longue durée de cache sur un fichier sans empreinte, comme app.js ou logo.png. Après une correction, une partie des visiteurs garde l'ancienne version, et rien ne permet de la leur retirer.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 125 · Charger une application</div>
+<div class="folio">3</div>
+<div class="pied">Cours 125 · Charger une application</div>
 </section>
-
 <!-- ============ PAGE 4 · CE QUI PART VRAIMENT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 125</b></div>
-  <p class="rubrique">Schéma 3 · Ce qui part vraiment</p>
-  <h2>Un paquet à part n'est pas un paquet évité</h2>
-  <p style="max-width:165mm">Le paquet de la 3D est séparé. Mais il se télécharge dès que le composant s'affiche, et Magpie ouvre l'aperçu d'office sur un écran large. On a comparé deux largeurs de fenêtre.</p>
-
-  <svg viewBox="0 0 600 196" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="196" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#7A5A12" text-anchor="start" font-weight="700">Première visite selon la largeur de la fenêtre : total des octets reçus (Chromium, mesuré)</text>
-<text x="16" y="47" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">1 280 px de large : aperçu 3D ouvert d'office</text>
-<rect x="16" y="52" width="291.8" height="13" rx="2" fill="#C62828"/>
-<text x="313.81775" y="62" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">1 167 271 octets · Viewer3D.js chargé dès l'ouverture</text>
-<text x="16" y="81" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">800 px de large : aperçu 3D replié</text>
-<rect x="16" y="86" width="154.0" height="13" rx="2" fill="#2E7D32"/>
-<text x="176.00449999999998" y="96" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">616 018 octets · Viewer3D.js jamais demandé</text>
-<text x="16" y="124" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">React.lazy n'évite un téléchargement que si le composant n'est pas affiché. Ouvert par défaut, il part tout de suite,</text>
-<text x="16" y="140" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">en parallèle de l'interface : le canvas apparaît à la même heure dans les deux cas (666 et 664 ms).</text>
-<text x="16" y="164" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Totaux : HTML, CSS, JavaScript, icône et deux appels d'API, en-têtes compris (transferSize).</text>
-<text x="16" y="180" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">La 3D finit d'arriver à 1 134 ms : un visiteur qui ne s'en sert pas paie 551 Ko pour rien (déduit).</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 125</b></div>
+<p class="rubrique">Schéma 3 · Ce qui part vraiment</p>
+<h2>Un paquet à part n'est pas un paquet évité</h2>
+<p style="max-width:165mm">Le paquet de la 3D est séparé. Mais il se télécharge dès que le composant s'affiche, et Magpie ouvre l'aperçu d'office sur un écran large. On a comparé deux largeurs de fenêtre.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 196" width="100%">
+<rect fill="#EFE9E1" height="196" width="600" x="0" y="0"></rect>
+<text fill="#7A5A12" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">Première visite selon la largeur de la fenêtre : total des octets reçus (Chromium, mesuré)</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="47">1 280 px de large : aperçu 3D ouvert d'office</text>
+<rect fill="#C62828" height="13" rx="2" width="291.8" x="16" y="52"></rect>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="313.81775" y="62">1 167 271 octets · Viewer3D.js chargé dès l'ouverture</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="81">800 px de large : aperçu 3D replié</text>
+<rect fill="#2E7D32" height="13" rx="2" width="154.0" x="16" y="86"></rect>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="176.00449999999998" y="96">616 018 octets · Viewer3D.js jamais demandé</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="124">React.lazy n'évite un téléchargement que si le composant n'est pas affiché. Ouvert par défaut, il part tout de suite,</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="140">en parallèle de l'interface : le canvas apparaît à la même heure dans les deux cas (666 et 664 ms).</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="164">Totaux : HTML, CSS, JavaScript, icône et deux appels d'API, en-têtes compris (transferSize).</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="180">La 3D finit d'arriver à 1 134 ms : un visiteur qui ne s'en sert pas paie 551 Ko pour rien (déduit).</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JSX, anticiper sans imposer</span>// le module, une fois reçu, est gardé : le second import() ne coûte rien
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JSX, anticiper sans imposer</span>// le module, une fois reçu, est gardé : le second import() ne coûte rien
 const charger = () =&gt; import("./Viewer3D.jsx");
 &lt;button onPointerEnter={charger} onClick={ouvrir}&gt;Aperçu 3D&lt;/button&gt;</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Le service worker</h3>
-      <p>Il intercepte les requêtes de la page et peut répondre depuis la Cache API, même hors ligne. Magpie a un manifeste pour s'installer, mais aucun service worker (recherche dans src/).</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Mesurer soi-même</h3>
-      <p>L'onglet Network des DevTools, cache désactivé et débit limité, donne la même cascade que page 1. C'est l'objet du cours 126.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Le service worker</h3>
+<p>Il intercepte les requêtes de la page et peut répondre depuis la Cache API, même hors ligne. Magpie a un manifeste pour s'installer, mais aucun service worker (recherche dans src/).</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Mesurer soi-même</h3>
+<p>L'onglet Network des DevTools, cache désactivé et débit limité, donne la même cascade que page 1. C'est l'objet du cours 126.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Juger le chargement sur localhost. Le réseau y est instantané et le cache déjà plein : la seconde visite a affiché le canvas en 291 ms, la première en 666 ms, à seulement 10 Mbit/s.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 125 · Charger une application</div>
+<div class="folio">4</div>
+<div class="pied">Cours 125 · Charger une application</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 125</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>Servir Magpie web</h2>
-  <p style="max-width:165mm">Un paquet découpé, un aperçu ouvert d'office, deux régimes de cache côté serveur.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 125</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>Servir Magpie web</h2>
+<p style="max-width:165mm">Un paquet découpé, un aperçu ouvert d'office, deux régimes de cache côté serveur.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">magpie/web/src/App.jsx · hooks/useLayoutPrefs.js</span></div>
 <div class="l k1"><span class="n">18</span>const Viewer3D = lazy(() =&gt; import("./Viewer3D.jsx"));<span class="rep r1">1</span></div>
@@ -278,137 +251,55 @@ const charger = () =&gt; import("./Viewer3D.jsx");
 <div class="l k4"><span class="n">508</span>  const immutable = target.startsWith(… "assets" …);<span class="rep r4">4</span></div>
 <div class="l k5"><span class="n">511</span>    "Cache-Control": immutable ? "…" : "no-cache",<span class="rep r5">5</span></div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>Découpé</b>Paquet à part.</li>
-      <li><span class="rep r2">2</span><b>Ouvert</b>Sur grand écran.</li>
-      <li><span class="rep r3">3</span><b>Embarqué</b>GenericNode.jsx.</li>
-      <li><span class="rep r4">4</span><b>Empreinte</b>Le dossier assets.</li>
-      <li><span class="rep r5">5</span><b>Deux régimes</b>Un an ou vérifier.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À surveiller · la 3D se charge même sans être demandée</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>Découpé</b>Paquet à part.</li>
+<li><span class="rep r2">2</span><b>Ouvert</b>Sur grand écran.</li>
+<li><span class="rep r3">3</span><b>Embarqué</b>GenericNode.jsx.</li>
+<li><span class="rep r4">4</span><b>Empreinte</b>Le dossier assets.</li>
+<li><span class="rep r5">5</span><b>Deux régimes</b>Un an ou vérifier.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À surveiller · la 3D se charge même sans être demandée</span>
     Viewer3D.jsx:9 dit que Three.js ne pèse que pour qui ouvre la vue ; or useLayoutPrefs.js:33 l'ouvre d'office au-delà de 900 px. Mesuré sur une copie construite : à 1 280 px, 551 Ko de plus dès la première visite, absents à 800 px. Mesuré aussi en local : ni compression ni ETag. Déduit : l'écart compte surtout sur une connexion lente. Relevé sans rien modifier.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 125 · Charger une application</div>
+<div class="folio">5</div>
+<div class="pied">Cours 125 · Charger une application</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 125</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 125</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">Un import() dynamique…</div><ul>
-      <li><span>A</span>interdit le cache</li><li><span>B</span>crée un paquet téléchargé à l'appel</li><li><span>C</span>ne marche qu'en Node</li><li><span>D</span>accélère le paquet principal en le compressant</li></ul></div>
 
-    <div class="q"><div class="enonce">Le paquet principal de Magpie web pèse, brut…</div><ul>
-      <li><span>A</span>5 Ko</li><li><span>B</span>48 Ko</li><li><span>C</span>environ 521 Ko</li><li><span>D</span>5 Mo</li></ul></div>
 
-    <div class="q"><div class="enonce">Dans ce paquet, capsules.json compte pour…</div><ul>
-      <li><span>A</span>la moitié</li><li><span>B</span>environ 130 Ko</li><li><span>C</span>rien</li><li><span>D</span>2 Ko</li></ul></div>
 
-    <div class="q"><div class="enonce">Qui compresse les fichiers envoyés ?</div><ul>
-      <li><span>A</span>le navigateur</li><li><span>B</span>personne, c'est automatique</li><li><span>C</span>React</li><li><span>D</span>le serveur, si le navigateur l'annonce</li></ul></div>
-
-    <div class="q"><div class="enonce">Un fichier à empreinte peut recevoir… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>immutable</li><li><span>B</span>une date d'expiration d'une minute</li><li><span>C</span>no-store obligatoire</li><li><span>D</span>max-age=31536000</li></ul></div>
-
-    <div class="q"><div class="enonce">no-cache signifie…</div><ul>
-      <li><span>A</span>garder, mais vérifier avant usage</li><li><span>B</span>ne jamais garder</li><li><span>C</span>compresser</li><li><span>D</span>garder un an</li></ul></div>
-
-    <div class="q"><div class="enonce">Sans ETag ni Last-Modified, une revérification…</div><ul>
-      <li><span>A</span>échoue</li><li><span>B</span>répond 304</li><li><span>C</span>renvoie le fichier entier</li><li><span>D</span>vide le cache</li></ul></div>
-
-    <div class="q"><div class="enonce">À la seconde visite, index.js a coûté…</div><ul>
-      <li><span>A</span>0 octet reçu</li><li><span>B</span>1 346 octets</li><li><span>C</span>521 Ko</li><li><span>D</span>la moitié</li></ul></div>
-
-    <div class="q"><div class="enonce">Pourquoi index.html n'est-il pas gardé un an ?</div><ul>
-      <li><span>A</span>il est trop gros</li><li><span>B</span>il n'a pas d'extension</li><li><span>C</span>c'est interdit</li><li><span>D</span>il nomme les paquets du jour</li></ul></div>
-
-    <div class="q"><div class="enonce">À 1 280 px de large, la première visite a reçu…</div><ul>
-      <li><span>A</span>1,17 Mo, dont la 3D</li><li><span>B</span>48 Ko</li><li><span>C</span>616 Ko</li><li><span>D</span>5 Mo</li></ul></div>
-
-    <div class="q"><div class="enonce">React.lazy évite un téléchargement…</div><ul>
-      <li><span>A</span>toujours</li><li><span>B</span>jamais</li><li><span>C</span>seulement en production</li><li><span>D</span>tant que le composant n'est pas affiché</li></ul></div>
-
-    <div class="q"><div class="enonce">Le canvas s'est affiché, première puis seconde visite, en…</div><ul>
-      <li><span>A</span>291 puis 666 ms</li><li><span>B</span>666 puis 291 ms</li><li><span>C</span>le même temps</li><li><span>D</span>5 s puis 1 s</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 125 · Charger une application</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">await import("./m.js")</td><td>charger un paquet à la demande</td><td>page 2</td></tr>
+<tr><td class="c">lazy(() =&gt; import(…))</td><td>la même chose pour un composant</td><td>App.jsx:18</td></tr>
+<tr><td class="c">max-age=31536000, immutable</td><td>garder un an sans vérifier</td><td>compute-proxy.mjs:511</td></tr>
+<tr><td class="c">no-cache</td><td>garder, vérifier avant usage</td><td>compute-proxy.mjs:511</td></tr>
+<tr><td class="c">ETag / If-None-Match</td><td>permettre la réponse 304</td><td>page 3</td></tr>
+<tr><td class="c">Accept-Encoding: gzip, br</td><td>annoncer la compression acceptée</td><td>page 2</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Paquet (bundle)</dt><dd>Un fichier JavaScript qui rassemble plusieurs modules.</dd>
+<dt>Découpage</dt><dd>La séparation du code en paquets chargés à la demande.</dd>
+<dt>Empreinte</dt><dd>Un code tiré du contenu, mis dans le nom du fichier.</dd>
+<dt>Revalidation</dt><dd>La question au serveur : ce fichier a-t-il changé ?</dd>
+<dt>Cascade</dt><dd>Le diagramme des requêtes d'une page dans le temps.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 126</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 125 · Charger une application</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 125</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · B.</b> Viewer3D en est un.</div>
-    <div><b>02 · C.</b> 520,77 Ko selon Vite.</div>
-    <div><b>03 · B.</b> 130,49 Ko, mesuré.</div>
-    <div><b>04 · D.</b> Accept-Encoding.</div>
-    <div><b>05 · A et D.</b> Le nom change avec le contenu.</div>
-    <div><b>06 · A.</b> Pas « jamais ».</div>
-    <div><b>07 · C.</b> L'icône, à chaque visite.</div>
-    <div><b>08 · A.</b> Pas même demandé.</div>
-    <div><b>09 · D.</b> Sinon, fichiers disparus.</div>
-    <div><b>10 · A.</b> 1 167 271 octets.</div>
-    <div><b>11 · D.</b> Ouvert d'office, il part.</div>
-    <div><b>12 · B.</b> 10 Mbit/s, mesuré.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 126, « Les outils de développement ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">await import("./m.js")</td><td>charger un paquet à la demande</td><td>page 2</td></tr>
-      <tr><td class="c">lazy(() =&gt; import(…))</td><td>la même chose pour un composant</td><td>App.jsx:18</td></tr>
-      <tr><td class="c">max-age=31536000, immutable</td><td>garder un an sans vérifier</td><td>compute-proxy.mjs:511</td></tr>
-      <tr><td class="c">no-cache</td><td>garder, vérifier avant usage</td><td>compute-proxy.mjs:511</td></tr>
-      <tr><td class="c">ETag / If-None-Match</td><td>permettre la réponse 304</td><td>page 3</td></tr>
-      <tr><td class="c">Accept-Encoding: gzip, br</td><td>annoncer la compression acceptée</td><td>page 2</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Paquet (bundle)</dt><dd>Un fichier JavaScript qui rassemble plusieurs modules.</dd>
-    <dt>Découpage</dt><dd>La séparation du code en paquets chargés à la demande.</dd>
-    <dt>Empreinte</dt><dd>Un code tiré du contenu, mis dans le nom du fichier.</dd>
-    <dt>Revalidation</dt><dd>La question au serveur : ce fichier a-t-il changé ?</dd>
-    <dt>Cascade</dt><dd>Le diagramme des requêtes d'une page dans le temps.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 126</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 125 · Charger une application</div>
-</section>
-
 </body>
 </html>

@@ -1,124 +1,113 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>30 · L'asynchrone, les modules et Node</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-8">
-
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 30</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>L'asynchrone, les<br>modules et Node</h1>
-  <p class="chapeau">Quand un apprenant clique sur « Vérifier », le backend de Magpie envoie son graphe à Rhino Compute et attend la réponse, parfois plusieurs secondes. Pendant ce temps, il doit continuer à servir les autres. JavaScript n'a qu'un fil d'exécution : tout repose sur l'attente <b>sans blocage</b>.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>55 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>29</b> JavaScript pour un développeur C#</span>
-    <span class="pastille">Exemples · <b>compute-proxy.mjs</b>, <b>app.cjs</b>, <b>src/api.js</b> (Magpie)</span>
-  </div>
-
-  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
-    <svg viewBox="0 0 600 214" width="100%">
-<text x="16" y="16" font-size="11" fill="#7A5A12" text-anchor="start" font-weight="700">Un seul fil d'exécution, et pourtant deux requêtes servies en même temps</text>
-<line x1="110" y1="196" x2="588" y2="196" stroke="#6B7378" stroke-width="1"/><polygon points="588,196 581.6,198.7 581.6,193.3" fill="#6B7378"/>
-<text x="588" y="209" font-size="8.4" fill="#6B7378" text-anchor="end" font-style="italic">temps</text>
-<text x="16" y="56" font-size="9.4" fill="#7A5A12" text-anchor="start" font-weight="700">le fil Node</text>
-<text x="16" y="68" font-size="8.4" fill="#6B7378" text-anchor="start">(un seul)</text>
-<text x="16" y="128" font-size="9.4" fill="#1565C0" text-anchor="start" font-weight="700">Rhino Compute</text>
-<text x="16" y="140" font-size="8.4" fill="#6B7378" text-anchor="start">(autre machine)</text>
-<line x1="110" y1="60" x2="588" y2="60" stroke="#D8D0C4" stroke-dasharray="3 3"/>
-<line x1="110" y1="132" x2="588" y2="132" stroke="#D8D0C4" stroke-dasharray="3 3"/>
-<rect x="112" y="49" width="96" height="22" rx="4" fill="#2E7D32"/><text x="160.0" y="64" font-size="8.6" fill="#fff" text-anchor="middle" font-weight="700">A : callCompute</text>
-<rect x="214" y="49" width="110" height="22" rx="4" fill="#E65100"/><text x="269.0" y="64" font-size="8.6" fill="#fff" text-anchor="middle" font-weight="700">B : autre requête</text>
-<rect x="476" y="49" width="108" height="22" rx="4" fill="#2E7D32"/><text x="530.0" y="64" font-size="8.6" fill="#fff" text-anchor="middle" font-weight="700">A : suite après await</text>
-<rect x="214" y="121" width="256" height="22" rx="4" fill="#1565C0"/><text x="342.0" y="136" font-size="8.6" fill="#fff" text-anchor="middle" font-weight="700">calcule la définition de A</text>
-<line x1="204" y1="72" x2="214" y2="120" stroke="#2E7D32" stroke-width="1.4"/><polygon points="214,120 210.0,114.2 215.4,113.1" fill="#2E7D32"/>
-<text x="150" y="98" font-size="8.6" fill="#2E7D32" text-anchor="start" class="mono" style="font-size:8.6px">fetch()</text>
-<line x1="470" y1="120" x2="480" y2="72" stroke="#1565C0" stroke-width="1.4"/><polygon points="480,72 481.4,78.9 476.0,77.8" fill="#1565C0"/>
-<text x="486" y="98" font-size="8.6" fill="#1565C0" text-anchor="start">réponse</text>
-<text x="392" y="56" font-size="8.8" fill="#6B7378" text-anchor="middle" font-style="italic">libre</text>
-<line x1="330" y1="60" x2="470" y2="60" stroke="#6B7378" stroke-width="1"/>
-<text x="300" y="172" font-size="9" fill="#2B2F33" text-anchor="middle">Pendant que A attend Compute, le fil ne bloque pas : il sert B, puis reste libre.</text>
-<text x="300" y="186" font-size="9" fill="#2B2F33" text-anchor="middle">await rend la main ; la réponse remet la suite de A dans la file d'attente.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 30</b></div>
+<p class="rubrique">Le concept</p>
+<h1>L'asynchrone, les<br/>modules et Node</h1>
+<p class="chapeau">Quand un apprenant clique sur « Vérifier », le backend de Magpie envoie son graphe à Rhino Compute et attend la réponse, parfois plusieurs secondes. Pendant ce temps, il doit continuer à servir les autres. JavaScript n'a qu'un fil d'exécution : tout repose sur l'attente <b>sans blocage</b>.</p>
+<div class="meta">
+<span class="pastille"><b>55 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>29</b> JavaScript pour un développeur C#</span>
+<span class="pastille">Exemples · <b>compute-proxy.mjs</b>, <b>app.cjs</b>, <b>src/api.js</b> (Magpie)</span>
+</div>
+<div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+<svg viewbox="0 0 600 214" width="100%">
+<text fill="#7A5A12" font-size="11" font-weight="700" text-anchor="start" x="16" y="16">Un seul fil d'exécution, et pourtant deux requêtes servies en même temps</text>
+<line stroke="#6B7378" stroke-width="1" x1="110" x2="588" y1="196" y2="196"></line><polygon fill="#6B7378" points="588,196 581.6,198.7 581.6,193.3"></polygon>
+<text fill="#6B7378" font-size="8.4" font-style="italic" text-anchor="end" x="588" y="209">temps</text>
+<text fill="#7A5A12" font-size="9.4" font-weight="700" text-anchor="start" x="16" y="56">le fil Node</text>
+<text fill="#6B7378" font-size="8.4" text-anchor="start" x="16" y="68">(un seul)</text>
+<text fill="#1565C0" font-size="9.4" font-weight="700" text-anchor="start" x="16" y="128">Rhino Compute</text>
+<text fill="#6B7378" font-size="8.4" text-anchor="start" x="16" y="140">(autre machine)</text>
+<line stroke="#D8D0C4" stroke-dasharray="3 3" x1="110" x2="588" y1="60" y2="60"></line>
+<line stroke="#D8D0C4" stroke-dasharray="3 3" x1="110" x2="588" y1="132" y2="132"></line>
+<rect fill="#2E7D32" height="22" rx="4" width="96" x="112" y="49"></rect><text fill="#fff" font-size="8.6" font-weight="700" text-anchor="middle" x="160.0" y="64">A : callCompute</text>
+<rect fill="#E65100" height="22" rx="4" width="110" x="214" y="49"></rect><text fill="#fff" font-size="8.6" font-weight="700" text-anchor="middle" x="269.0" y="64">B : autre requête</text>
+<rect fill="#2E7D32" height="22" rx="4" width="108" x="476" y="49"></rect><text fill="#fff" font-size="8.6" font-weight="700" text-anchor="middle" x="530.0" y="64">A : suite après await</text>
+<rect fill="#1565C0" height="22" rx="4" width="256" x="214" y="121"></rect><text fill="#fff" font-size="8.6" font-weight="700" text-anchor="middle" x="342.0" y="136">calcule la définition de A</text>
+<line stroke="#2E7D32" stroke-width="1.4" x1="204" x2="214" y1="72" y2="120"></line><polygon fill="#2E7D32" points="214,120 210.0,114.2 215.4,113.1"></polygon>
+<text class="mono" fill="#2E7D32" font-size="8.6" style="font-size:8.6px" text-anchor="start" x="150" y="98">fetch()</text>
+<line stroke="#1565C0" stroke-width="1.4" x1="470" x2="480" y1="120" y2="72"></line><polygon fill="#1565C0" points="480,72 481.4,78.9 476.0,77.8"></polygon>
+<text fill="#1565C0" font-size="8.6" text-anchor="start" x="486" y="98">réponse</text>
+<text fill="#6B7378" font-size="8.8" font-style="italic" text-anchor="middle" x="392" y="56">libre</text>
+<line stroke="#6B7378" stroke-width="1" x1="330" x2="470" y1="60" y2="60"></line>
+<text fill="#2B2F33" font-size="9" text-anchor="middle" x="300" y="172">Pendant que A attend Compute, le fil ne bloque pas : il sert B, puis reste libre.</text>
+<text fill="#2B2F33" font-size="9" text-anchor="middle" x="300" y="186">await rend la main ; la réponse remet la suite de A dans la file d'attente.</text>
 </svg>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Une <b>promesse</b> (<code>Promise</code>) représente une valeur qui arrivera plus tard. <code>await</code> suspend la fonction jusqu'à son arrivée et rend la main entre-temps. C'est le <code>Task&lt;T&gt;</code> et le <code>await</code> que tu connais en C#.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Un serveur de restaurant. Il prend une commande, la transmet en cuisine et s'occupe des autres tables. Quand le plat est prêt, on l'appelle et il reprend <b>cette</b> commande là où il l'avait laissée. Un seul serveur, aucune table abandonnée.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>lire async, await et une promesse, à partir de C# ;</li>
+<li>borner une attente dans le temps avec AbortController ;</li>
+<li>distinguer module ES (import) et CommonJS (require) ;</li>
+<li>suivre une requête dans un serveur Node.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:5mm">
+<span class="titre">À retenir</span>
+<b>Node.js</b> exécute du JavaScript hors du navigateur, avec ses propres modules : <code>node:http</code> pour servir, <code>node:fs</code> pour les fichiers, <code>node:sqlite</code> pour la base de Magpie. Le langage est le même des deux côtés ; seuls les outils disponibles changent.
   </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Une <b>promesse</b> (<code>Promise</code>) représente une valeur qui arrivera plus tard. <code>await</code> suspend la fonction jusqu'à son arrivée et rend la main entre-temps. C'est le <code>Task&lt;T&gt;</code> et le <code>await</code> que tu connais en C#.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Un serveur de restaurant. Il prend une commande, la transmet en cuisine et s'occupe des autres tables. Quand le plat est prêt, on l'appelle et il reprend <b>cette</b> commande là où il l'avait laissée. Un seul serveur, aucune table abandonnée.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>lire async, await et une promesse, à partir de C# ;</li>
-        <li>borner une attente dans le temps avec AbortController ;</li>
-        <li>distinguer module ES (import) et CommonJS (require) ;</li>
-        <li>suivre une requête dans un serveur Node.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:5mm">
-    <span class="titre">À retenir</span>
-    <b>Node.js</b> exécute du JavaScript hors du navigateur, avec ses propres modules : <code>node:http</code> pour servir, <code>node:fs</code> pour les fichiers, <code>node:sqlite</code> pour la base de Magpie. Le langage est le même des deux côtés ; seuls les outils disponibles changent.
-  </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 30 · L'asynchrone, les modules et Node</div>
+<div class="folio">1</div>
+<div class="pied">Cours 30 · L'asynchrone, les modules et Node</div>
 </section>
-
 <!-- ============ PAGE 2 · PROMESSES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 30</b></div>
-  <p class="rubrique">Schéma 1 · Promesses et async/await</p>
-  <h2>Ce que tu sais déjà, sous d'autres noms</h2>
-  <p style="max-width:165mm">Les mots-clés sont les mêmes qu'en C#, et ils jouent le même rôle. Une fonction <code>async</code> rend toujours une promesse, même quand elle écrit <code>return</code> d'une simple valeur.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="12" fill="#7A5A12" text-anchor="start" font-weight="700">C# · JavaScript : l'asynchrone sous deux noms</text>
-<text x="26" y="44" font-size="9" fill="#7B1FA2" text-anchor="start" font-weight="700">C#</text>
-<text x="220" y="44" font-size="9" fill="#7A5A12" text-anchor="start" font-weight="700">JavaScript</text>
-<text x="410" y="44" font-size="9" fill="#6B7378" text-anchor="start" font-weight="700">rôle</text>
-<rect x="16" y="50" width="568" height="19" rx="3" fill="#fff" stroke="#E2DCD2"/>
-<text x="26" y="63.5" font-size="9.2" fill="#7B1FA2" text-anchor="start" class="mono" style="font-size:9.2px;white-space:pre">Task&lt;T&gt;</text>
-<text x="220" y="63.5" font-size="9.2" fill="#7A5A12" text-anchor="start" font-weight="700" class="mono" style="font-size:9.2px;white-space:pre">Promise</text>
-<text x="410" y="63.5" font-size="8.8" fill="#2B2F33" text-anchor="start">une valeur qui arrivera plus tard</text>
-<rect x="16" y="72" width="568" height="19" rx="3" fill="#fff" stroke="#E2DCD2"/>
-<text x="26" y="85.5" font-size="9.2" fill="#7B1FA2" text-anchor="start" class="mono" style="font-size:9.2px;white-space:pre">async Task&lt;T&gt; F()</text>
-<text x="220" y="85.5" font-size="9.2" fill="#7A5A12" text-anchor="start" font-weight="700" class="mono" style="font-size:9.2px;white-space:pre">async function f()</text>
-<text x="410" y="85.5" font-size="8.8" fill="#2B2F33" text-anchor="start">rend toujours une promesse</text>
-<rect x="16" y="94" width="568" height="19" rx="3" fill="#fff" stroke="#E2DCD2"/>
-<text x="26" y="107.5" font-size="9.2" fill="#7B1FA2" text-anchor="start" class="mono" style="font-size:9.2px;white-space:pre">await t</text>
-<text x="220" y="107.5" font-size="9.2" fill="#7A5A12" text-anchor="start" font-weight="700" class="mono" style="font-size:9.2px;white-space:pre">await p</text>
-<text x="410" y="107.5" font-size="8.8" fill="#2B2F33" text-anchor="start">suspend la fonction, pas le fil</text>
-<rect x="16" y="116" width="568" height="19" rx="3" fill="#fff" stroke="#E2DCD2"/>
-<text x="26" y="129.5" font-size="9.2" fill="#7B1FA2" text-anchor="start" class="mono" style="font-size:9.2px;white-space:pre">Task.WhenAll(a, b)</text>
-<text x="220" y="129.5" font-size="9.2" fill="#7A5A12" text-anchor="start" font-weight="700" class="mono" style="font-size:9.2px;white-space:pre">Promise.all([a, b])</text>
-<text x="410" y="129.5" font-size="8.8" fill="#2B2F33" text-anchor="start">attendre plusieurs à la fois</text>
-<rect x="16" y="138" width="568" height="19" rx="3" fill="#fff" stroke="#E2DCD2"/>
-<text x="26" y="151.5" font-size="9.2" fill="#7B1FA2" text-anchor="start" class="mono" style="font-size:9.2px;white-space:pre">CancellationTokenSource</text>
-<text x="220" y="151.5" font-size="9.2" fill="#7A5A12" text-anchor="start" font-weight="700" class="mono" style="font-size:9.2px;white-space:pre">AbortController</text>
-<text x="410" y="151.5" font-size="8.8" fill="#2B2F33" text-anchor="start">annuler : .signal passé à fetch</text>
-<rect x="16" y="160" width="568" height="19" rx="3" fill="#fff" stroke="#E2DCD2"/>
-<text x="26" y="173.5" font-size="9.2" fill="#7B1FA2" text-anchor="start" class="mono" style="font-size:9.2px;white-space:pre">Task.Delay(ms)</text>
-<text x="220" y="173.5" font-size="9.2" fill="#7A5A12" text-anchor="start" font-weight="700" class="mono" style="font-size:9.2px;white-space:pre">setTimeout(fn, ms)</text>
-<text x="410" y="173.5" font-size="8.8" fill="#2B2F33" text-anchor="start">un rappel, plus tard</text>
-<rect x="16" y="182" width="568" height="19" rx="3" fill="#fff" stroke="#E2DCD2"/>
-<text x="26" y="195.5" font-size="9.2" fill="#7B1FA2" text-anchor="start" class="mono" style="font-size:9.2px;white-space:pre">try / catch / finally</text>
-<text x="220" y="195.5" font-size="9.2" fill="#7A5A12" text-anchor="start" font-weight="700" class="mono" style="font-size:9.2px;white-space:pre">try / catch / finally</text>
-<text x="410" y="195.5" font-size="8.8" fill="#2B2F33" text-anchor="start">identique</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 30</b></div>
+<p class="rubrique">Schéma 1 · Promesses et async/await</p>
+<h2>Ce que tu sais déjà, sous d'autres noms</h2>
+<p style="max-width:165mm">Les mots-clés sont les mêmes qu'en C#, et ils jouent le même rôle. Une fonction <code>async</code> rend toujours une promesse, même quand elle écrit <code>return</code> d'une simple valeur.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#7A5A12" font-size="12" font-weight="700" text-anchor="start" x="16" y="22">C# · JavaScript : l'asynchrone sous deux noms</text>
+<text fill="#7B1FA2" font-size="9" font-weight="700" text-anchor="start" x="26" y="44">C#</text>
+<text fill="#7A5A12" font-size="9" font-weight="700" text-anchor="start" x="220" y="44">JavaScript</text>
+<text fill="#6B7378" font-size="9" font-weight="700" text-anchor="start" x="410" y="44">rôle</text>
+<rect fill="#fff" height="19" rx="3" stroke="#E2DCD2" width="568" x="16" y="50"></rect>
+<text class="mono" fill="#7B1FA2" font-size="9.2" style="font-size:9.2px;white-space:pre" text-anchor="start" x="26" y="63.5">Task&lt;T&gt;</text>
+<text class="mono" fill="#7A5A12" font-size="9.2" font-weight="700" style="font-size:9.2px;white-space:pre" text-anchor="start" x="220" y="63.5">Promise</text>
+<text fill="#2B2F33" font-size="8.8" text-anchor="start" x="410" y="63.5">une valeur qui arrivera plus tard</text>
+<rect fill="#fff" height="19" rx="3" stroke="#E2DCD2" width="568" x="16" y="72"></rect>
+<text class="mono" fill="#7B1FA2" font-size="9.2" style="font-size:9.2px;white-space:pre" text-anchor="start" x="26" y="85.5">async Task&lt;T&gt; F()</text>
+<text class="mono" fill="#7A5A12" font-size="9.2" font-weight="700" style="font-size:9.2px;white-space:pre" text-anchor="start" x="220" y="85.5">async function f()</text>
+<text fill="#2B2F33" font-size="8.8" text-anchor="start" x="410" y="85.5">rend toujours une promesse</text>
+<rect fill="#fff" height="19" rx="3" stroke="#E2DCD2" width="568" x="16" y="94"></rect>
+<text class="mono" fill="#7B1FA2" font-size="9.2" style="font-size:9.2px;white-space:pre" text-anchor="start" x="26" y="107.5">await t</text>
+<text class="mono" fill="#7A5A12" font-size="9.2" font-weight="700" style="font-size:9.2px;white-space:pre" text-anchor="start" x="220" y="107.5">await p</text>
+<text fill="#2B2F33" font-size="8.8" text-anchor="start" x="410" y="107.5">suspend la fonction, pas le fil</text>
+<rect fill="#fff" height="19" rx="3" stroke="#E2DCD2" width="568" x="16" y="116"></rect>
+<text class="mono" fill="#7B1FA2" font-size="9.2" style="font-size:9.2px;white-space:pre" text-anchor="start" x="26" y="129.5">Task.WhenAll(a, b)</text>
+<text class="mono" fill="#7A5A12" font-size="9.2" font-weight="700" style="font-size:9.2px;white-space:pre" text-anchor="start" x="220" y="129.5">Promise.all([a, b])</text>
+<text fill="#2B2F33" font-size="8.8" text-anchor="start" x="410" y="129.5">attendre plusieurs à la fois</text>
+<rect fill="#fff" height="19" rx="3" stroke="#E2DCD2" width="568" x="16" y="138"></rect>
+<text class="mono" fill="#7B1FA2" font-size="9.2" style="font-size:9.2px;white-space:pre" text-anchor="start" x="26" y="151.5">CancellationTokenSource</text>
+<text class="mono" fill="#7A5A12" font-size="9.2" font-weight="700" style="font-size:9.2px;white-space:pre" text-anchor="start" x="220" y="151.5">AbortController</text>
+<text fill="#2B2F33" font-size="8.8" text-anchor="start" x="410" y="151.5">annuler : .signal passé à fetch</text>
+<rect fill="#fff" height="19" rx="3" stroke="#E2DCD2" width="568" x="16" y="160"></rect>
+<text class="mono" fill="#7B1FA2" font-size="9.2" style="font-size:9.2px;white-space:pre" text-anchor="start" x="26" y="173.5">Task.Delay(ms)</text>
+<text class="mono" fill="#7A5A12" font-size="9.2" font-weight="700" style="font-size:9.2px;white-space:pre" text-anchor="start" x="220" y="173.5">setTimeout(fn, ms)</text>
+<text fill="#2B2F33" font-size="8.8" text-anchor="start" x="410" y="173.5">un rappel, plus tard</text>
+<rect fill="#fff" height="19" rx="3" stroke="#E2DCD2" width="568" x="16" y="182"></rect>
+<text class="mono" fill="#7B1FA2" font-size="9.2" style="font-size:9.2px;white-space:pre" text-anchor="start" x="26" y="195.5">try / catch / finally</text>
+<text class="mono" fill="#7A5A12" font-size="9.2" font-weight="700" style="font-size:9.2px;white-space:pre" text-anchor="start" x="220" y="195.5">try / catch / finally</text>
+<text fill="#2B2F33" font-size="8.8" text-anchor="start" x="410" y="195.5">identique</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">compute-proxy.mjs · 195–205, condensé</span>async function callCompute(xml) {
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">compute-proxy.mjs · 195–205, condensé</span>async function callCompute(xml) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() =&gt; controller.abort(), COMPUTE_TIMEOUT_MS);
   try {
@@ -127,76 +116,70 @@
     });
     const text = await response.text();
     …</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Deux attentes, pas une</h3>
-      <p><code>fetch</code> se résout dès que les <b>en-têtes</b> de la réponse arrivent. Le corps, lui, arrive ensuite : <code>response.text()</code> est une seconde promesse, d'où le second <code>await</code>.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>setTimeout, un rappel</h3>
-      <p><code>setTimeout(fonction, délai)</code> range la fonction pour plus tard et rend la main aussitôt. Ici, dans 20 s (<code>COMPUTE_TIMEOUT_MS</code>), elle annulera l'appel, sauf si on l'a désarmée avant.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Deux attentes, pas une</h3>
+<p><code>fetch</code> se résout dès que les <b>en-têtes</b> de la réponse arrivent. Le corps, lui, arrive ensuite : <code>response.text()</code> est une seconde promesse, d'où le second <code>await</code>.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>setTimeout, un rappel</h3>
+<p><code>setTimeout(fonction, délai)</code> range la fonction pour plus tard et rend la main aussitôt. Ici, dans 20 s (<code>COMPUTE_TIMEOUT_MS</code>), elle annulera l'appel, sauf si on l'a désarmée avant.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Oublier <code>await</code>. <code>const text = response.text();</code> ne contient pas le texte mais la promesse du texte. <code>JSON.parse(text)</code> échoue alors sur « [object Promise] ». Aucune erreur à l'écriture : c'est l'exécution qui le révèle.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 30 · L'asynchrone, les modules et Node</div>
+<div class="folio">2</div>
+<div class="pied">Cours 30 · L'asynchrone, les modules et Node</div>
 </section>
-
 <!-- ============ PAGE 3 · MODULES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 30</b></div>
-  <p class="rubrique">Schéma 2 · Les modules</p>
-  <h2>Un fichier, un module</h2>
-  <p style="max-width:165mm">Chaque fichier JavaScript est un module : ce qu'il ne marque pas <code>export</code> reste privé. Un autre fichier l'utilise par <code>import</code>. C'est l'équivalent, par fichier, de <code>public</code> et de <code>using</code>.</p>
-
-  <svg viewBox="0 0 600 236" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="236" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="12" fill="#7A5A12" text-anchor="start" font-weight="700">Qui importe qui, au démarrage du serveur</text>
-<rect x="16" y="40" width="130" height="40" rx="5" fill="#fff" stroke="#7B1FA2" stroke-width="1.3"/>
-<text x="81.0" y="57.0" font-size="9.6" fill="#7B1FA2" text-anchor="middle" font-weight="700" class="mono" style="font-size:9.6px">app.cjs</text>
-<text x="81.0" y="71.0" font-size="8.4" fill="#2B2F33" text-anchor="middle">CommonJS · require</text>
-<rect x="220" y="40" width="160" height="40" rx="5" fill="#F4EEDF" stroke="#7A5A12" stroke-width="1.3"/>
-<text x="300.0" y="57.0" font-size="9.6" fill="#7A5A12" text-anchor="middle" font-weight="700" class="mono" style="font-size:9.6px">compute-proxy.mjs</text>
-<text x="300.0" y="71.0" font-size="8.4" fill="#2B2F33" text-anchor="middle">module ES · import</text>
-<line x1="146" y1="60" x2="218" y2="60" stroke="#7B1FA2" stroke-width="1.4"/><polygon points="218,60 211.6,62.7 211.6,57.3" fill="#7B1FA2"/>
-<text x="182" y="52" font-size="8.4" fill="#7B1FA2" text-anchor="middle" class="mono" style="font-size:8.4px">import()</text>
-<rect x="16" y="112" width="180" height="22" rx="4" fill="#fff" stroke="#7A5A12"/>
-<text x="106" y="127" font-size="8.8" fill="#7A5A12" text-anchor="middle" class="mono" style="font-size:8.8px">validation.mjs</text>
-<rect x="206" y="112" width="180" height="22" rx="4" fill="#fff" stroke="#7A5A12"/>
-<text x="296" y="127" font-size="8.8" fill="#7A5A12" text-anchor="middle" class="mono" style="font-size:8.8px">db.mjs</text>
-<rect x="396" y="112" width="180" height="22" rx="4" fill="#fff" stroke="#7A5A12"/>
-<text x="486" y="127" font-size="8.8" fill="#7A5A12" text-anchor="middle" class="mono" style="font-size:8.8px">exercises.mjs</text>
-<rect x="16" y="142" width="180" height="22" rx="4" fill="#fff" stroke="#7A5A12"/>
-<text x="106" y="157" font-size="8.8" fill="#7A5A12" text-anchor="middle" class="mono" style="font-size:8.8px">correction-geometrique.mjs</text>
-<rect x="206" y="142" width="180" height="22" rx="4" fill="#fff" stroke="#7A5A12"/>
-<text x="296" y="157" font-size="8.8" fill="#7A5A12" text-anchor="middle" class="mono" style="font-size:8.8px">apercu.mjs</text>
-<rect x="396" y="142" width="180" height="22" rx="4" fill="#fff" stroke="#7A5A12"/>
-<text x="486" y="157" font-size="8.8" fill="#7A5A12" text-anchor="middle" class="mono" style="font-size:8.8px">src/serializer/*.mjs</text>
-<line x1="300" y1="80" x2="300" y2="108" stroke="#7A5A12" stroke-width="1.4"/><polygon points="300,108 297.3,101.6 302.7,101.6" fill="#7A5A12"/>
-<text x="306" y="98" font-size="8.4" fill="#7A5A12" text-anchor="start" class="mono" style="font-size:8.4px">import { … } from "./…"</text>
-<text x="16" y="190" font-size="9" fill="#1565C0" text-anchor="start" font-weight="700">Modules intégrés à Node :</text>
-<rect x="16" y="198" width="104" height="22" rx="4" fill="#fff" stroke="#1565C0"/>
-<text x="68" y="213" font-size="8.8" fill="#1565C0" text-anchor="middle" class="mono" style="font-size:8.8px">node:http</text>
-<rect x="130" y="198" width="104" height="22" rx="4" fill="#fff" stroke="#1565C0"/>
-<text x="182" y="213" font-size="8.8" fill="#1565C0" text-anchor="middle" class="mono" style="font-size:8.8px">node:crypto</text>
-<rect x="244" y="198" width="104" height="22" rx="4" fill="#fff" stroke="#1565C0"/>
-<text x="296" y="213" font-size="8.8" fill="#1565C0" text-anchor="middle" class="mono" style="font-size:8.8px">node:fs</text>
-<rect x="358" y="198" width="104" height="22" rx="4" fill="#fff" stroke="#1565C0"/>
-<text x="410" y="213" font-size="8.8" fill="#1565C0" text-anchor="middle" class="mono" style="font-size:8.8px">node:path</text>
-<rect x="472" y="198" width="104" height="22" rx="4" fill="#fff" stroke="#1565C0"/>
-<text x="524" y="213" font-size="8.8" fill="#1565C0" text-anchor="middle" class="mono" style="font-size:8.8px">node:url</text>
-<text x="420" y="52" font-size="8.4" fill="#6B7378" text-anchor="start">module ES : .mjs, ou .js</text>
-<text x="420" y="64" font-size="8.4" fill="#6B7378" text-anchor="start">sous "type": "module"</text>
-<text x="420" y="76" font-size="8.4" fill="#6B7378" text-anchor="start">CommonJS : .cjs, require()</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 30</b></div>
+<p class="rubrique">Schéma 2 · Les modules</p>
+<h2>Un fichier, un module</h2>
+<p style="max-width:165mm">Chaque fichier JavaScript est un module : ce qu'il ne marque pas <code>export</code> reste privé. Un autre fichier l'utilise par <code>import</code>. C'est l'équivalent, par fichier, de <code>public</code> et de <code>using</code>.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 236" width="100%">
+<rect fill="#EFE9E1" height="236" width="600" x="0" y="0"></rect>
+<text fill="#7A5A12" font-size="12" font-weight="700" text-anchor="start" x="16" y="22">Qui importe qui, au démarrage du serveur</text>
+<rect fill="#fff" height="40" rx="5" stroke="#7B1FA2" stroke-width="1.3" width="130" x="16" y="40"></rect>
+<text class="mono" fill="#7B1FA2" font-size="9.6" font-weight="700" style="font-size:9.6px" text-anchor="middle" x="81.0" y="57.0">app.cjs</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="middle" x="81.0" y="71.0">CommonJS · require</text>
+<rect fill="#F4EEDF" height="40" rx="5" stroke="#7A5A12" stroke-width="1.3" width="160" x="220" y="40"></rect>
+<text class="mono" fill="#7A5A12" font-size="9.6" font-weight="700" style="font-size:9.6px" text-anchor="middle" x="300.0" y="57.0">compute-proxy.mjs</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="middle" x="300.0" y="71.0">module ES · import</text>
+<line stroke="#7B1FA2" stroke-width="1.4" x1="146" x2="218" y1="60" y2="60"></line><polygon fill="#7B1FA2" points="218,60 211.6,62.7 211.6,57.3"></polygon>
+<text class="mono" fill="#7B1FA2" font-size="8.4" style="font-size:8.4px" text-anchor="middle" x="182" y="52">import()</text>
+<rect fill="#fff" height="22" rx="4" stroke="#7A5A12" width="180" x="16" y="112"></rect>
+<text class="mono" fill="#7A5A12" font-size="8.8" style="font-size:8.8px" text-anchor="middle" x="106" y="127">validation.mjs</text>
+<rect fill="#fff" height="22" rx="4" stroke="#7A5A12" width="180" x="206" y="112"></rect>
+<text class="mono" fill="#7A5A12" font-size="8.8" style="font-size:8.8px" text-anchor="middle" x="296" y="127">db.mjs</text>
+<rect fill="#fff" height="22" rx="4" stroke="#7A5A12" width="180" x="396" y="112"></rect>
+<text class="mono" fill="#7A5A12" font-size="8.8" style="font-size:8.8px" text-anchor="middle" x="486" y="127">exercises.mjs</text>
+<rect fill="#fff" height="22" rx="4" stroke="#7A5A12" width="180" x="16" y="142"></rect>
+<text class="mono" fill="#7A5A12" font-size="8.8" style="font-size:8.8px" text-anchor="middle" x="106" y="157">correction-geometrique.mjs</text>
+<rect fill="#fff" height="22" rx="4" stroke="#7A5A12" width="180" x="206" y="142"></rect>
+<text class="mono" fill="#7A5A12" font-size="8.8" style="font-size:8.8px" text-anchor="middle" x="296" y="157">apercu.mjs</text>
+<rect fill="#fff" height="22" rx="4" stroke="#7A5A12" width="180" x="396" y="142"></rect>
+<text class="mono" fill="#7A5A12" font-size="8.8" style="font-size:8.8px" text-anchor="middle" x="486" y="157">src/serializer/*.mjs</text>
+<line stroke="#7A5A12" stroke-width="1.4" x1="300" x2="300" y1="80" y2="108"></line><polygon fill="#7A5A12" points="300,108 297.3,101.6 302.7,101.6"></polygon>
+<text class="mono" fill="#7A5A12" font-size="8.4" style="font-size:8.4px" text-anchor="start" x="306" y="98">import { … } from "./…"</text>
+<text fill="#1565C0" font-size="9" font-weight="700" text-anchor="start" x="16" y="190">Modules intégrés à Node :</text>
+<rect fill="#fff" height="22" rx="4" stroke="#1565C0" width="104" x="16" y="198"></rect>
+<text class="mono" fill="#1565C0" font-size="8.8" style="font-size:8.8px" text-anchor="middle" x="68" y="213">node:http</text>
+<rect fill="#fff" height="22" rx="4" stroke="#1565C0" width="104" x="130" y="198"></rect>
+<text class="mono" fill="#1565C0" font-size="8.8" style="font-size:8.8px" text-anchor="middle" x="182" y="213">node:crypto</text>
+<rect fill="#fff" height="22" rx="4" stroke="#1565C0" width="104" x="244" y="198"></rect>
+<text class="mono" fill="#1565C0" font-size="8.8" style="font-size:8.8px" text-anchor="middle" x="296" y="213">node:fs</text>
+<rect fill="#fff" height="22" rx="4" stroke="#1565C0" width="104" x="358" y="198"></rect>
+<text class="mono" fill="#1565C0" font-size="8.8" style="font-size:8.8px" text-anchor="middle" x="410" y="213">node:path</text>
+<rect fill="#fff" height="22" rx="4" stroke="#1565C0" width="104" x="472" y="198"></rect>
+<text class="mono" fill="#1565C0" font-size="8.8" style="font-size:8.8px" text-anchor="middle" x="524" y="213">node:url</text>
+<text fill="#6B7378" font-size="8.4" text-anchor="start" x="420" y="52">module ES : .mjs, ou .js</text>
+<text fill="#6B7378" font-size="8.4" text-anchor="start" x="420" y="64">sous "type": "module"</text>
+<text fill="#6B7378" font-size="8.4" text-anchor="start" x="420" y="76">CommonJS : .cjs, require()</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">app.cjs · 7–16</span>const { existsSync } = require("node:fs");
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">app.cjs · 7–16</span>const { existsSync } = require("node:fs");
 const { join } = require("node:path");
 
 const envFile = join(__dirname, ".env");
@@ -206,60 +189,54 @@ import("./compute-proxy.mjs").catch((err) =&gt; {
   console.error("Démarrage du backend Magpie impossible :", err);
   process.exit(1);
 });</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Deux systèmes, deux extensions</h3>
-      <p><b>Module ES</b> (<code>.mjs</code>, ou <code>.js</code> avec <code>"type": "module"</code> dans <code>package.json</code>) : <code>import</code>, <code>export</code>. <b>CommonJS</b> (<code>.cjs</code>), l'ancien système de Node : <code>require()</code>, <code>module.exports</code>.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Pourquoi un app.cjs</h3>
-      <p>L'hébergeur (Passenger, chez o2switch) démarre l'application avec <code>require()</code>, qui ne lit pas un module ES (en-tête du fichier). <code>app.cjs</code> sert de passerelle : <code>import()</code>, la forme <b>dynamique</b>, charge le vrai serveur et rend une promesse.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Deux systèmes, deux extensions</h3>
+<p><b>Module ES</b> (<code>.mjs</code>, ou <code>.js</code> avec <code>"type": "module"</code> dans <code>package.json</code>) : <code>import</code>, <code>export</code>. <b>CommonJS</b> (<code>.cjs</code>), l'ancien système de Node : <code>require()</code>, <code>module.exports</code>.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Pourquoi un app.cjs</h3>
+<p>L'hébergeur (Passenger, chez o2switch) démarre l'application avec <code>require()</code>, qui ne lit pas un module ES (en-tête du fichier). <code>app.cjs</code> sert de passerelle : <code>import()</code>, la forme <b>dynamique</b>, charge le vrai serveur et rend une promesse.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Un secret dans le code. L'adresse de Compute, sa clé, le mot de passe d'administration sont lus dans <code>process.env</code> (les variables d'environnement), remplies depuis un <code>.env</code> jamais versionné. Sans mot de passe, l'administration reste <b>fermée</b>.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 30 · L'asynchrone, les modules et Node</div>
+<div class="folio">3</div>
+<div class="pied">Cours 30 · L'asynchrone, les modules et Node</div>
 </section>
-
 <!-- ============ PAGE 4 · SERVEUR NODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 30</b></div>
-  <p class="rubrique">Schéma 3 · Un serveur Node</p>
-  <h2>Une requête, des événements</h2>
-  <p style="max-width:165mm"><code>http.createServer</code> reçoit une fonction appelée à chaque requête. Le corps de la requête n'arrive pas d'un bloc : Node émet un événement <code>data</code> par morceau, puis <code>end</code>.</p>
-
-  <svg viewBox="0 0 600 232" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="232" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="12" fill="#7A5A12" text-anchor="start" font-weight="700">Le trajet d'une requête POST dans compute-proxy.mjs</text>
-<rect x="16" y="36" width="568" height="32" rx="4" fill="#fff" stroke="#2E7D32"/>
-<circle cx="32" cy="52" r="9" fill="#2E7D32"/><text x="32" y="56" font-size="9" fill="#fff" text-anchor="middle" font-weight="700">1</text>
-<text x="50" y="49" font-size="9.2" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:9.2px;white-space:pre">createServer((req, res) =&gt; …)</text>
-<text x="50" y="62" font-size="8.6" fill="#2B2F33" text-anchor="start">appelée à chaque requête</text>
-<rect x="16" y="74" width="568" height="32" rx="4" fill="#fff" stroke="#1565C0"/>
-<circle cx="32" cy="90" r="9" fill="#1565C0"/><text x="32" y="94" font-size="9" fill="#fff" text-anchor="middle" font-weight="700">2</text>
-<text x="50" y="87" font-size="9.2" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:9.2px;white-space:pre">req.on("data", c =&gt; …)</text>
-<text x="50" y="100" font-size="8.6" fill="#2B2F33" text-anchor="start">un morceau à la fois, dans parts[] ; au-delà de 1 Mo (16 Mo admin) : on jette</text>
-<rect x="16" y="112" width="568" height="32" rx="4" fill="#fff" stroke="#7B1FA2"/>
-<circle cx="32" cy="128" r="9" fill="#7B1FA2"/><text x="32" y="132" font-size="9" fill="#fff" text-anchor="middle" font-weight="700">3</text>
-<text x="50" y="125" font-size="9.2" fill="#7B1FA2" text-anchor="start" font-weight="700" class="mono" style="font-size:9.2px;white-space:pre">req.on("end", async () =&gt; …)</text>
-<text x="50" y="138" font-size="8.6" fill="#2B2F33" text-anchor="start">Buffer.concat(parts) puis l'aiguillage : /api/solve, /api/submit…</text>
-<rect x="16" y="150" width="568" height="32" rx="4" fill="#fff" stroke="#2E7D32"/>
-<circle cx="32" cy="166" r="9" fill="#2E7D32"/><text x="32" y="170" font-size="9" fill="#fff" text-anchor="middle" font-weight="700">4</text>
-<text x="50" y="163" font-size="9.2" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:9.2px;white-space:pre">res.writeHead(200) ; res.end(json)</text>
-<text x="50" y="176" font-size="8.6" fill="#2B2F33" text-anchor="start">la réponse part, la connexion est rendue</text>
-<rect x="16" y="188" width="568" height="32" rx="4" fill="#fff" stroke="#C62828"/>
-<circle cx="32" cy="204" r="9" fill="#C62828"/><text x="32" y="208" font-size="9" fill="#fff" text-anchor="middle" font-weight="700">5</text>
-<text x="50" y="201" font-size="9.2" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:9.2px;white-space:pre">catch (err)</text>
-<text x="50" y="214" font-size="8.6" fill="#2B2F33" text-anchor="start">413, 404 ou 500 : réponse JSON { error, code, status }</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 30</b></div>
+<p class="rubrique">Schéma 3 · Un serveur Node</p>
+<h2>Une requête, des événements</h2>
+<p style="max-width:165mm"><code>http.createServer</code> reçoit une fonction appelée à chaque requête. Le corps de la requête n'arrive pas d'un bloc : Node émet un événement <code>data</code> par morceau, puis <code>end</code>.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 232" width="100%">
+<rect fill="#EFE9E1" height="232" width="600" x="0" y="0"></rect>
+<text fill="#7A5A12" font-size="12" font-weight="700" text-anchor="start" x="16" y="22">Le trajet d'une requête POST dans compute-proxy.mjs</text>
+<rect fill="#fff" height="32" rx="4" stroke="#2E7D32" width="568" x="16" y="36"></rect>
+<circle cx="32" cy="52" fill="#2E7D32" r="9"></circle><text fill="#fff" font-size="9" font-weight="700" text-anchor="middle" x="32" y="56">1</text>
+<text class="mono" fill="#2E7D32" font-size="9.2" font-weight="700" style="font-size:9.2px;white-space:pre" text-anchor="start" x="50" y="49">createServer((req, res) =&gt; …)</text>
+<text fill="#2B2F33" font-size="8.6" text-anchor="start" x="50" y="62">appelée à chaque requête</text>
+<rect fill="#fff" height="32" rx="4" stroke="#1565C0" width="568" x="16" y="74"></rect>
+<circle cx="32" cy="90" fill="#1565C0" r="9"></circle><text fill="#fff" font-size="9" font-weight="700" text-anchor="middle" x="32" y="94">2</text>
+<text class="mono" fill="#1565C0" font-size="9.2" font-weight="700" style="font-size:9.2px;white-space:pre" text-anchor="start" x="50" y="87">req.on("data", c =&gt; …)</text>
+<text fill="#2B2F33" font-size="8.6" text-anchor="start" x="50" y="100">un morceau à la fois, dans parts[] ; au-delà de 1 Mo (16 Mo admin) : on jette</text>
+<rect fill="#fff" height="32" rx="4" stroke="#7B1FA2" width="568" x="16" y="112"></rect>
+<circle cx="32" cy="128" fill="#7B1FA2" r="9"></circle><text fill="#fff" font-size="9" font-weight="700" text-anchor="middle" x="32" y="132">3</text>
+<text class="mono" fill="#7B1FA2" font-size="9.2" font-weight="700" style="font-size:9.2px;white-space:pre" text-anchor="start" x="50" y="125">req.on("end", async () =&gt; …)</text>
+<text fill="#2B2F33" font-size="8.6" text-anchor="start" x="50" y="138">Buffer.concat(parts) puis l'aiguillage : /api/solve, /api/submit…</text>
+<rect fill="#fff" height="32" rx="4" stroke="#2E7D32" width="568" x="16" y="150"></rect>
+<circle cx="32" cy="166" fill="#2E7D32" r="9"></circle><text fill="#fff" font-size="9" font-weight="700" text-anchor="middle" x="32" y="170">4</text>
+<text class="mono" fill="#2E7D32" font-size="9.2" font-weight="700" style="font-size:9.2px;white-space:pre" text-anchor="start" x="50" y="163">res.writeHead(200) ; res.end(json)</text>
+<text fill="#2B2F33" font-size="8.6" text-anchor="start" x="50" y="176">la réponse part, la connexion est rendue</text>
+<rect fill="#fff" height="32" rx="4" stroke="#C62828" width="568" x="16" y="188"></rect>
+<circle cx="32" cy="204" fill="#C62828" r="9"></circle><text fill="#fff" font-size="9" font-weight="700" text-anchor="middle" x="32" y="208">5</text>
+<text class="mono" fill="#C62828" font-size="9.2" font-weight="700" style="font-size:9.2px;white-space:pre" text-anchor="start" x="50" y="201">catch (err)</text>
+<text fill="#2B2F33" font-size="8.6" text-anchor="start" x="50" y="214">413, 404 ou 500 : réponse JSON { error, code, status }</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">compute-proxy.mjs · 683–702, condensé</span>const parts = [];
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">compute-proxy.mjs · 683–702, condensé</span>const parts = [];
 let received = 0;
 req.on("data", (c) =&gt; {
   received += c.length;
@@ -271,193 +248,106 @@ req.on("end", async () =&gt; {
   if (tooLarge) throw new HttpError(413, `Requête trop volumineuse …`);
   if (req.url === "/api/solve" &amp;&amp; req.method === "POST") await handleSolve(body, res);
   …</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>On s'abonne, Node appelle</h3>
-      <p><code>req.on("data", f)</code> est le <code>+=</code> d'un événement C#. Node appelle <code>f</code> à chaque morceau reçu. Entre deux morceaux, le fil est libre pour les autres requêtes.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Borner aussi la taille</h3>
-      <p>Un corps de plus de 1 Mo (16 Mo pour l'administration, qui envoie des graphes de départ) est refusé par un 413. Sans cette limite, un envoi énorme occuperait la mémoire du serveur.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>On s'abonne, Node appelle</h3>
+<p><code>req.on("data", f)</code> est le <code>+=</code> d'un événement C#. Node appelle <code>f</code> à chaque morceau reçu. Entre deux morceaux, le fil est libre pour les autres requêtes.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Borner aussi la taille</h3>
+<p>Un corps de plus de 1 Mo (16 Mo pour l'administration, qui envoie des graphes de départ) est refusé par un 413. Sans cette limite, un envoi énorme occuperait la mémoire du serveur.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Une exception dans un rappel asynchrone n'est rattrapée par personne si on ne l'attend pas. D'où le <code>try … catch</code> <b>à l'intérieur</b> du rappel <code>end</code> : toute erreur y devient une réponse JSON avec son statut, et le serveur continue de tourner.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 30 · L'asynchrone, les modules et Node</div>
+<div class="folio">4</div>
+<div class="pied">Cours 30 · L'asynchrone, les modules et Node</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 30</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>callCompute : une attente toujours bornée</h2>
-  <p style="max-width:165mm">Le seul point d'appel du backend vers Rhino Compute. Le commentaire qui le précède en donne la règle : « un Compute figé ne doit pas bloquer la soumission de l'apprenant indéfiniment ».</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 30</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>callCompute : une attente toujours bornée</h2>
+<p style="max-width:165mm">Le seul point d'appel du backend vers Rhino Compute. Le commentaire qui le précède en donne la règle : « un Compute figé ne doit pas bloquer la soumission de l'apprenant indéfiniment ».</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l k1"><span class="n">195</span><span class="kw">async function</span> callCompute(xml) {<span class="rep r1">1</span></div>
-<div class="l k2"><span class="n">196</span>  <span class="kw">const</span> controller = <span class="kw">new</span> <span class="ty">AbortController</span>();<span class="rep r2">2</span></div>
-<div class="l k2"><span class="n">197</span>  <span class="kw">const</span> timeoutId = setTimeout(</div>
+<div class="l k2"><span class="n">196</span> <span class="kw">const</span> controller = <span class="kw">new</span> <span class="ty">AbortController</span>();<span class="rep r2">2</span></div>
+<div class="l k2"><span class="n">197</span> <span class="kw">const</span> timeoutId = setTimeout(</div>
 <div class="l k2"><span class="n"> </span>    () =&gt; controller.abort(), COMPUTE_TIMEOUT_MS);</div>
-<div class="l"><span class="n">198</span>  <span class="kw">try</span> {</div>
-<div class="l k3"><span class="n">199</span>    <span class="kw">const</span> response = <span class="kw">await</span> fetch(<span class="rep r3">3</span></div>
-<div class="l k3"><span class="n"> </span>      <span class="st">`${COMPUTE_TARGET}/grasshopper`</span>, {</div>
+<div class="l"><span class="n">198</span> <span class="kw">try</span> {</div>
+<div class="l k3"><span class="n">199</span> <span class="kw">const</span> response = <span class="kw">await</span> fetch(<span class="rep r3">3</span></div>
+<div class="l k3"><span class="n"> </span> <span class="st">`${COMPUTE_TARGET}/grasshopper`</span>, {</div>
 <div class="l k3"><span class="n">200</span>      method: <span class="st">"POST"</span>, …</div>
 <div class="l k3"><span class="n">203</span>      signal: controller.signal,</div>
 <div class="l k3"><span class="n">204</span>    });</div>
-<div class="l k4"><span class="n">205</span>    <span class="kw">const</span> text = <span class="kw">await</span> response.text();<span class="rep r4">4</span></div>
-<div class="l k5"><span class="n">206</span>    <span class="kw">let</span> json;<span class="rep r5">5</span></div>
-<div class="l k5"><span class="n">207</span>    <span class="kw">try</span> { json = JSON.parse(text); }</div>
-<div class="l k5"><span class="n">209</span>    <span class="kw">catch</span> { json = { message: text }; }</div>
-<div class="l"><span class="n">212</span>    <span class="kw">return</span> { ok: response.ok, status: response.status, json };</div>
+<div class="l k4"><span class="n">205</span> <span class="kw">const</span> text = <span class="kw">await</span> response.text();<span class="rep r4">4</span></div>
+<div class="l k5"><span class="n">206</span> <span class="kw">let</span> json;<span class="rep r5">5</span></div>
+<div class="l k5"><span class="n">207</span> <span class="kw">try</span> { json = JSON.parse(text); }</div>
+<div class="l k5"><span class="n">209</span> <span class="kw">catch</span> { json = { message: text }; }</div>
+<div class="l"><span class="n">212</span> <span class="kw">return</span> { ok: response.ok, status: response.status, json };</div>
 <div class="l k6"><span class="n">213</span>  } <span class="kw">catch</span> (err) {<span class="rep r6">6</span></div>
-<div class="l k6"><span class="n">214</span>    <span class="kw">if</span> (err.name === <span class="st">"AbortError"</span>)</div>
-<div class="l k6"><span class="n">215</span>      <span class="kw">throw new</span> <span class="ty">HttpError</span>(<span class="st">504</span>, <span class="st">`… pas répondu en …`</span>);</div>
-<div class="l k6"><span class="n">217</span>    <span class="kw">throw new</span> <span class="ty">HttpError</span>(<span class="st">502</span>, <span class="st">`… injoignable …`</span>);</div>
+<div class="l k6"><span class="n">214</span> <span class="kw">if</span> (err.name === <span class="st">"AbortError"</span>)</div>
+<div class="l k6"><span class="n">215</span> <span class="kw">throw new</span> <span class="ty">HttpError</span>(<span class="st">504</span>, <span class="st">`… pas répondu en …`</span>);</div>
+<div class="l k6"><span class="n">217</span> <span class="kw">throw new</span> <span class="ty">HttpError</span>(<span class="st">502</span>, <span class="st">`… injoignable …`</span>);</div>
 <div class="l k7"><span class="n">218</span>  } <span class="kw">finally</span> {<span class="rep r7">7</span></div>
 <div class="l k7"><span class="n">219</span>    clearTimeout(timeoutId);</div>
 <div class="l k7"><span class="n">220</span>  }</div>
 <div class="l"><span class="n">221</span>}</div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>async</b>La fonction rend une promesse.</li>
-      <li><span class="rep r2">2</span><b>Une minuterie d'annulation</b>Le CancellationToken de JavaScript, armé pour 20 s.</li>
-      <li><span class="rep r3">3</span><b>L'appel</b>await libère le fil pendant que Compute calcule.</li>
-      <li><span class="rep r4">4</span><b>Le corps</b>Une seconde attente.</li>
-      <li><span class="rep r5">5</span><b>Une réponse illisible</b>Gardée telle quelle comme message, sans planter.</li>
-      <li><span class="rep r6">6</span><b>Deux pannes distinctes</b>504 : trop lent. 502 : injoignable.</li>
-      <li><span class="rep r7">7</span><b>Toujours désarmer</b>Réussite ou échec, la minuterie est retirée.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">Deux délais emboîtés</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>async</b>La fonction rend une promesse.</li>
+<li><span class="rep r2">2</span><b>Une minuterie d'annulation</b>Le CancellationToken de JavaScript, armé pour 20 s.</li>
+<li><span class="rep r3">3</span><b>L'appel</b>await libère le fil pendant que Compute calcule.</li>
+<li><span class="rep r4">4</span><b>Le corps</b>Une seconde attente.</li>
+<li><span class="rep r5">5</span><b>Une réponse illisible</b>Gardée telle quelle comme message, sans planter.</li>
+<li><span class="rep r6">6</span><b>Deux pannes distinctes</b>504 : trop lent. 502 : injoignable.</li>
+<li><span class="rep r7">7</span><b>Toujours désarmer</b>Réussite ou échec, la minuterie est retirée.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">Deux délais emboîtés</span>
     Le navigateur appelle le backend par <code>src/api.js</code>, avec le même motif et un délai de <b>30 s</b> (ligne 7). Le backend borne Compute à <b>20 s</b>. Le plus court est à l'intérieur : quand Compute traîne, l'apprenant reçoit le message précis du backend, pas un délai dépassé générique.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 30 · L'asynchrone, les modules et Node</div>
+<div class="folio">5</div>
+<div class="pied">Cours 30 · L'asynchrone, les modules et Node</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 30</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 30</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">L'équivalent JavaScript de Task&lt;T&gt; est…</div><ul>
-      <li><span>A</span>Promise</li><li><span>B</span>Thread</li><li><span>C</span>setTimeout</li><li><span>D</span>Array</li></ul></div>
 
-    <div class="q"><div class="enonce">Pendant un await, le fil d'exécution…</div><ul>
-      <li><span>A</span>est bloqué</li><li><span>B</span>est détruit</li><li><span>C</span>est libre pour d'autres tâches</li><li><span>D</span>se duplique</li></ul></div>
 
-    <div class="q"><div class="enonce">const t = response.text(); sans await, t contient…</div><ul>
-      <li><span>A</span>le texte</li><li><span>B</span>null</li><li><span>C</span>une erreur</li><li><span>D</span>une promesse</li></ul></div>
 
-    <div class="q"><div class="enonce">Pourquoi deux await dans callCompute ?</div><ul>
-      <li><span>A</span>les en-têtes arrivent, puis le corps</li><li><span>B</span>par prudence</li><li><span>C</span>Compute répond deux fois</li><li><span>D</span>pour le délai</li></ul></div>
-
-    <div class="q"><div class="enonce">AbortController joue le rôle de…</div><ul>
-      <li><span>A</span>Task.Delay</li><li><span>B</span>CancellationTokenSource</li><li><span>C</span>lock</li><li><span>D</span>Dispose</li></ul></div>
-
-    <div class="q"><div class="enonce">Compute ne répond pas en 20 s : le backend renvoie…</div><ul>
-      <li><span>A</span>200</li><li><span>B</span>413</li><li><span>C</span>504</li><li><span>D</span>404</li></ul></div>
-
-    <div class="q"><div class="enonce">Le bloc finally de callCompute…</div><ul>
-      <li><span>A</span>ne s'exécute qu'en cas d'erreur</li><li><span>B</span>relance l'appel</li><li><span>C</span>écrit la réponse</li><li><span>D</span>désarme la minuterie dans tous les cas</li></ul></div>
-
-    <div class="q"><div class="enonce">Un module ES utilise… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>import</li><li><span>B</span>export</li><li><span>C</span>require</li><li><span>D</span>module.exports</li></ul></div>
-
-    <div class="q"><div class="enonce">app.cjs existe parce que…</div><ul>
-      <li><span>A</span>c'est plus rapide</li><li><span>B</span>l'hébergeur démarre l'application avec require()</li><li><span>C</span>Vite l'exige</li><li><span>D</span>Node ne lit pas .mjs</li></ul></div>
-
-    <div class="q"><div class="enonce">import("./compute-proxy.mjs") rend…</div><ul>
-      <li><span>A</span>une promesse du module</li><li><span>B</span>le module, aussitôt</li><li><span>C</span>rien</li><li><span>D</span>une chaîne</li></ul></div>
-
-    <div class="q"><div class="enonce">req.on("data", f) appelle f…</div><ul>
-      <li><span>A</span>une fois, avec tout le corps</li><li><span>B</span>jamais</li><li><span>C</span>à chaque morceau reçu</li><li><span>D</span>à la fin seulement</li></ul></div>
-
-    <div class="q"><div class="enonce">Le mot de passe d'administration est lu…</div><ul>
-      <li><span>A</span>dans le code source</li><li><span>B</span>dans package.json</li><li><span>C</span>dans la base SQLite</li><li><span>D</span>dans process.env</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 30 · L'asynchrone, les modules et Node</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">async function f() { await p; }</td><td>attendre sans bloquer</td><td>compute-proxy:195</td></tr>
+<tr><td class="c">setTimeout(() =&gt; c.abort(), ms)</td><td>armer une annulation</td><td>compute-proxy:197</td></tr>
+<tr><td class="c">try { … } finally { clearTimeout(id); }</td><td>toujours désarmer</td><td>compute-proxy:218</td></tr>
+<tr><td class="c">import { f } from "./x.mjs";</td><td>utiliser un module ES</td><td>compute-proxy:28</td></tr>
+<tr><td class="c">import("./x.mjs")</td><td>charger un module plus tard</td><td>app.cjs:13</td></tr>
+<tr><td class="c">req.on("end", async () =&gt; { … })</td><td>réagir à la fin de la requête</td><td>compute-proxy:698</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Promesse</dt><dd>Un objet qui représente une valeur à venir, ou une erreur.</dd>
+<dt>Asynchrone</dt><dd>Qui attend sans bloquer le fil d'exécution.</dd>
+<dt>Module ES</dt><dd>Le système de modules standard de JavaScript : import et export.</dd>
+<dt>CommonJS</dt><dd>L'ancien système de modules de Node : require et module.exports.</dd>
+<dt>Variable d'environnement</dt><dd>Un réglage passé au processus de l'extérieur, lu par process.env.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 59</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 30 · L'asynchrone, les modules et Node</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 30</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · A.</b> Une valeur à venir, qu'on attend avec await.</div>
-    <div><b>02 · C.</b> C'est tout l'intérêt de l'asynchrone.</div>
-    <div><b>03 · D.</b> La promesse du texte, pas le texte.</div>
-    <div><b>04 · A.</b> fetch se résout aux en-têtes.</div>
-    <div><b>05 · B.</b> abort() annule ce qui écoute son signal.</div>
-    <div><b>06 · C.</b> AbortError devient HttpError(504).</div>
-    <div><b>07 · D.</b> Réussite ou échec, comme en C#.</div>
-    <div><b>08 · A et B.</b> require et module.exports sont CommonJS.</div>
-    <div><b>09 · B.</b> require ne lit pas un module ES (en-tête d'app.cjs).</div>
-    <div><b>10 · A.</b> D'où le .catch qui arrête le processus.</div>
-    <div><b>11 · C.</b> Un événement par morceau, puis end.</div>
-    <div><b>12 · D.</b> Rempli depuis un .env non versionné.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis la page 4 et le code de la page 5. <b>10 à 12</b> : passe au cours 59, « Asynchrone : async, await, Task et Promise ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">async function f() { await p; }</td><td>attendre sans bloquer</td><td>compute-proxy:195</td></tr>
-      <tr><td class="c">setTimeout(() =&gt; c.abort(), ms)</td><td>armer une annulation</td><td>compute-proxy:197</td></tr>
-      <tr><td class="c">try { … } finally { clearTimeout(id); }</td><td>toujours désarmer</td><td>compute-proxy:218</td></tr>
-      <tr><td class="c">import { f } from "./x.mjs";</td><td>utiliser un module ES</td><td>compute-proxy:28</td></tr>
-      <tr><td class="c">import("./x.mjs")</td><td>charger un module plus tard</td><td>app.cjs:13</td></tr>
-      <tr><td class="c">req.on("end", async () =&gt; { … })</td><td>réagir à la fin de la requête</td><td>compute-proxy:698</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Promesse</dt><dd>Un objet qui représente une valeur à venir, ou une erreur.</dd>
-    <dt>Asynchrone</dt><dd>Qui attend sans bloquer le fil d'exécution.</dd>
-    <dt>Module ES</dt><dd>Le système de modules standard de JavaScript : import et export.</dd>
-    <dt>CommonJS</dt><dd>L'ancien système de modules de Node : require et module.exports.</dd>
-    <dt>Variable d'environnement</dt><dd>Un réglage passé au processus de l'extérieur, lu par process.env.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 59</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 30 · L'asynchrone, les modules et Node</div>
-</section>
-
 </body>
 </html>

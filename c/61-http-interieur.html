@@ -1,268 +1,246 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>61 · HTTP de l'intérieur</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-9">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 61</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>HTTP de l'intérieur</h1>
-  <p class="chapeau">Chaque clic sur « Valider » dans Magpie web envoie une <b>requête</b> HTTP au serveur, qui renvoie une <b>réponse</b>. Les deux sont de simples messages texte : une ligne de départ, des en-têtes, une ligne vide, un corps. Savoir les lire, c'est savoir déboguer le web.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>30</b> et <b>33</b></span>
-    <span class="pastille">Exemples · <b>compute-proxy.mjs</b>, <b>api.js</b> (Magpie web)</span>
-  </div>
-
-  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
-    <svg viewBox="0 0 600 196" width="100%">
-<text x="130" y="14" font-size="8.6" fill="#A03A2C" text-anchor="middle" font-weight="700">Requête (navigateur → serveur)</text>
-<rect x="4" y="22" width="252" height="92" rx="5" fill="#fff" stroke="#A03A2C" stroke-width="1.3"/>
-<text x="14" y="42" font-size="8.4" fill="#A03A2C" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px;white-space:pre">POST /api/submit HTTP/1.1</text>
-<text x="14" y="58" font-size="8.4" fill="#1565C0" text-anchor="start" class="mono" style="font-size:8.4px;white-space:pre">Host: magpie.example</text>
-<text x="14" y="74" font-size="8.4" fill="#1565C0" text-anchor="start" class="mono" style="font-size:8.4px;white-space:pre">Content-Type: application/json</text>
-<line x1="14" y1="86" x2="246" y2="86" stroke="#6B7378" stroke-dasharray="2 2"/>
-<text x="14" y="106" font-size="8.4" fill="#2E7D32" text-anchor="start" class="mono" style="font-size:8.4px;white-space:pre">{"exerciseId":"e12", …}</text>
-<text x="458" y="14" font-size="8.6" fill="#A03A2C" text-anchor="middle" font-weight="700">Réponse (serveur → navigateur)</text>
-<rect x="334" y="22" width="252" height="92" rx="5" fill="#fff" stroke="#A03A2C" stroke-width="1.3"/>
-<text x="344" y="42" font-size="8.4" fill="#A03A2C" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px;white-space:pre">HTTP/1.1 200 OK</text>
-<text x="344" y="58" font-size="8.4" fill="#1565C0" text-anchor="start" class="mono" style="font-size:8.4px;white-space:pre">Content-Type: application/json</text>
-<text x="344" y="74" font-size="8.4" fill="#1565C0" text-anchor="start" class="mono" style="font-size:8.4px;white-space:pre">Vary: Origin</text>
-<line x1="344" y1="86" x2="576" y2="86" stroke="#6B7378" stroke-dasharray="2 2"/>
-<text x="344" y="106" font-size="8.4" fill="#2E7D32" text-anchor="start" class="mono" style="font-size:8.4px;white-space:pre">{"status":"pass", …}</text>
-<line x1="260" y1="50" x2="330" y2="50" stroke="#A03A2C" stroke-width="1.4"/><polygon points="330,50 323.6,52.7 323.6,47.3" fill="#A03A2C"/>
-<line x1="330" y1="80" x2="260" y2="80" stroke="#A03A2C" stroke-width="1.4"/><polygon points="260,80 266.4,77.3 266.4,82.7" fill="#A03A2C"/>
-<rect x="70" y="132" width="10" height="10" rx="2" fill="#A03A2C"/>
-<text x="86" y="141" font-size="8" fill="#2B2F33" text-anchor="start">ligne de départ</text>
-<rect x="190" y="132" width="10" height="10" rx="2" fill="#1565C0"/>
-<text x="206" y="141" font-size="8" fill="#2B2F33" text-anchor="start">en-têtes</text>
-<rect x="310" y="132" width="10" height="10" rx="2" fill="#6B7378"/>
-<text x="326" y="141" font-size="8" fill="#2B2F33" text-anchor="start">ligne vide</text>
-<rect x="430" y="132" width="10" height="10" rx="2" fill="#2E7D32"/>
-<text x="446" y="141" font-size="8" fill="#2B2F33" text-anchor="start">corps</text>
-<text x="295" y="172" font-size="8" fill="#6B7378" text-anchor="middle" font-style="italic">Du texte, ligne par ligne : c'est tout HTTP/1.1. HTTPS chiffre ce même texte (cours 66).</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 61</b></div>
+<p class="rubrique">Le concept</p>
+<h1>HTTP de l'intérieur</h1>
+<p class="chapeau">Chaque clic sur « Valider » dans Magpie web envoie une <b>requête</b> HTTP au serveur, qui renvoie une <b>réponse</b>. Les deux sont de simples messages texte : une ligne de départ, des en-têtes, une ligne vide, un corps. Savoir les lire, c'est savoir déboguer le web.</p>
+<div class="meta">
+<span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>30</b> et <b>33</b></span>
+<span class="pastille">Exemples · <b>compute-proxy.mjs</b>, <b>api.js</b> (Magpie web)</span>
+</div>
+<div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+<svg viewbox="0 0 600 196" width="100%">
+<text fill="#A03A2C" font-size="8.6" font-weight="700" text-anchor="middle" x="130" y="14">Requête (navigateur → serveur)</text>
+<rect fill="#fff" height="92" rx="5" stroke="#A03A2C" stroke-width="1.3" width="252" x="4" y="22"></rect>
+<text class="mono" fill="#A03A2C" font-size="8.4" font-weight="700" style="font-size:8.4px;white-space:pre" text-anchor="start" x="14" y="42">POST /api/submit HTTP/1.1</text>
+<text class="mono" fill="#1565C0" font-size="8.4" style="font-size:8.4px;white-space:pre" text-anchor="start" x="14" y="58">Host: magpie.example</text>
+<text class="mono" fill="#1565C0" font-size="8.4" style="font-size:8.4px;white-space:pre" text-anchor="start" x="14" y="74">Content-Type: application/json</text>
+<line stroke="#6B7378" stroke-dasharray="2 2" x1="14" x2="246" y1="86" y2="86"></line>
+<text class="mono" fill="#2E7D32" font-size="8.4" style="font-size:8.4px;white-space:pre" text-anchor="start" x="14" y="106">{"exerciseId":"e12", …}</text>
+<text fill="#A03A2C" font-size="8.6" font-weight="700" text-anchor="middle" x="458" y="14">Réponse (serveur → navigateur)</text>
+<rect fill="#fff" height="92" rx="5" stroke="#A03A2C" stroke-width="1.3" width="252" x="334" y="22"></rect>
+<text class="mono" fill="#A03A2C" font-size="8.4" font-weight="700" style="font-size:8.4px;white-space:pre" text-anchor="start" x="344" y="42">HTTP/1.1 200 OK</text>
+<text class="mono" fill="#1565C0" font-size="8.4" style="font-size:8.4px;white-space:pre" text-anchor="start" x="344" y="58">Content-Type: application/json</text>
+<text class="mono" fill="#1565C0" font-size="8.4" style="font-size:8.4px;white-space:pre" text-anchor="start" x="344" y="74">Vary: Origin</text>
+<line stroke="#6B7378" stroke-dasharray="2 2" x1="344" x2="576" y1="86" y2="86"></line>
+<text class="mono" fill="#2E7D32" font-size="8.4" style="font-size:8.4px;white-space:pre" text-anchor="start" x="344" y="106">{"status":"pass", …}</text>
+<line stroke="#A03A2C" stroke-width="1.4" x1="260" x2="330" y1="50" y2="50"></line><polygon fill="#A03A2C" points="330,50 323.6,52.7 323.6,47.3"></polygon>
+<line stroke="#A03A2C" stroke-width="1.4" x1="330" x2="260" y1="80" y2="80"></line><polygon fill="#A03A2C" points="260,80 266.4,77.3 266.4,82.7"></polygon>
+<rect fill="#A03A2C" height="10" rx="2" width="10" x="70" y="132"></rect>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="86" y="141">ligne de départ</text>
+<rect fill="#1565C0" height="10" rx="2" width="10" x="190" y="132"></rect>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="206" y="141">en-têtes</text>
+<rect fill="#6B7378" height="10" rx="2" width="10" x="310" y="132"></rect>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="326" y="141">ligne vide</text>
+<rect fill="#2E7D32" height="10" rx="2" width="10" x="430" y="132"></rect>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="446" y="141">corps</text>
+<text fill="#6B7378" font-size="8" font-style="italic" text-anchor="middle" x="295" y="172">Du texte, ligne par ligne : c'est tout HTTP/1.1. HTTPS chiffre ce même texte (cours 66).</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Le client dit <b>quoi</b> (la méthode : GET, POST…), <b>sur quoi</b> (le chemin) et <b>comment</b> (les en-têtes) ; le serveur répond par un <b>statut</b> à trois chiffres, ses propres en-têtes et, le plus souvent, un corps.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Un courrier administratif. L'objet de la lettre (la ligne de départ), les mentions en marge (les en-têtes : urgent, pièces jointes, à l'attention de), puis le texte. La réponse commence par un tampon : accepté, refusé, adressez-vous ailleurs.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>lire une requête et une réponse brutes ;</li>
-        <li>choisir la méthode et le statut justes ;</li>
-        <li>expliquer Content-Type et Cache-Control ;</li>
-        <li>suivre une requête dans compute-proxy.mjs.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:5mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Le client dit <b>quoi</b> (la méthode : GET, POST…), <b>sur quoi</b> (le chemin) et <b>comment</b> (les en-têtes) ; le serveur répond par un <b>statut</b> à trois chiffres, ses propres en-têtes et, le plus souvent, un corps.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Un courrier administratif. L'objet de la lettre (la ligne de départ), les mentions en marge (les en-têtes : urgent, pièces jointes, à l'attention de), puis le texte. La réponse commence par un tampon : accepté, refusé, adressez-vous ailleurs.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>lire une requête et une réponse brutes ;</li>
+<li>choisir la méthode et le statut justes ;</li>
+<li>expliquer Content-Type et Cache-Control ;</li>
+<li>suivre une requête dans compute-proxy.mjs.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:5mm">
+<span class="titre">À retenir</span>
     HTTP est <b>sans état</b> : chaque requête arrive seule, sans souvenir de la précédente. Tout ce dont le serveur a besoin (qui tu es, ce que tu envoies, dans quel format) doit voyager dans la requête elle-même.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 61 · HTTP de l'intérieur</div>
+<div class="folio">1</div>
+<div class="pied">Cours 61 · HTTP de l'intérieur</div>
 </section>
-
 <!-- ============ PAGE 2 · MÉTHODES ET STATUTS ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 61</b></div>
-  <p class="rubrique">Schéma 1 · Méthodes et statuts</p>
-  <h2>Ce qu'on demande, ce qu'on obtient</h2>
-  <p style="max-width:165mm">Le premier chiffre du statut donne la famille ; c'est souvent tout ce qu'un client doit regarder. Les codes ci-dessous sont tous émis quelque part par le serveur Magpie.</p>
-
-  <svg viewBox="0 0 600 226" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="226" fill="#EFE9E1"/>
-<rect x="16" y="10" width="136" height="206" rx="5" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="28" y="34" font-size="14" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:14px">2xx</text>
-<text x="28" y="52" font-size="7.6" fill="#2B2F33" text-anchor="start" font-style="italic">ça a marché</text>
-<rect x="26" y="64" width="34" height="20" rx="3" fill="#2E7D32"/>
-<text x="43" y="78" font-size="8.6" fill="#fff" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">200</text>
-<text x="68" y="78" font-size="8" fill="#2B2F33" text-anchor="start">OK</text>
-<rect x="26" y="98" width="34" height="20" rx="3" fill="#2E7D32"/>
-<text x="43" y="112" font-size="8.6" fill="#fff" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">204</text>
-<text x="68" y="112" font-size="8" fill="#2B2F33" text-anchor="start">OK, sans corps</text>
-<rect x="160" y="10" width="136" height="206" rx="5" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
-<text x="172" y="34" font-size="14" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:14px">3xx</text>
-<text x="172" y="52" font-size="7.6" fill="#2B2F33" text-anchor="start" font-style="italic">va voir ailleurs</text>
-<rect x="170" y="64" width="34" height="20" rx="3" fill="#1565C0"/>
-<text x="187" y="78" font-size="8.6" fill="#fff" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">302</text>
-<text x="212" y="78" font-size="8" fill="#2B2F33" text-anchor="start">redirection</text>
-<rect x="170" y="98" width="34" height="20" rx="3" fill="#1565C0"/>
-<text x="187" y="112" font-size="8.6" fill="#fff" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">304</text>
-<text x="212" y="112" font-size="8" fill="#2B2F33" text-anchor="start">pas changé</text>
-<rect x="304" y="10" width="136" height="206" rx="5" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
-<text x="316" y="34" font-size="14" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:14px">4xx</text>
-<text x="316" y="52" font-size="7.6" fill="#2B2F33" text-anchor="start" font-style="italic">ta demande pose problème</text>
-<rect x="314" y="64" width="34" height="20" rx="3" fill="#E65100"/>
-<text x="331" y="78" font-size="8.6" fill="#fff" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">400</text>
-<text x="356" y="78" font-size="8" fill="#2B2F33" text-anchor="start">mal formée</text>
-<rect x="314" y="98" width="34" height="20" rx="3" fill="#E65100"/>
-<text x="331" y="112" font-size="8.6" fill="#fff" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">401</text>
-<text x="356" y="112" font-size="8" fill="#2B2F33" text-anchor="start">qui es-tu ?</text>
-<rect x="314" y="132" width="34" height="20" rx="3" fill="#E65100"/>
-<text x="331" y="146" font-size="8.6" fill="#fff" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">404</text>
-<text x="356" y="146" font-size="8" fill="#2B2F33" text-anchor="start">introuvable</text>
-<rect x="314" y="166" width="34" height="20" rx="3" fill="#E65100"/>
-<text x="331" y="180" font-size="8.6" fill="#fff" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">413</text>
-<text x="356" y="180" font-size="8" fill="#2B2F33" text-anchor="start">trop gros</text>
-<rect x="448" y="10" width="136" height="206" rx="5" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
-<text x="460" y="34" font-size="14" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:14px">5xx</text>
-<text x="460" y="52" font-size="7.6" fill="#2B2F33" text-anchor="start" font-style="italic">j'ai un problème</text>
-<rect x="458" y="64" width="34" height="20" rx="3" fill="#C62828"/>
-<text x="475" y="78" font-size="8.6" fill="#fff" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">500</text>
-<text x="500" y="78" font-size="8" fill="#2B2F33" text-anchor="start">erreur interne</text>
-<rect x="458" y="98" width="34" height="20" rx="3" fill="#C62828"/>
-<text x="475" y="112" font-size="8.6" fill="#fff" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">502</text>
-<text x="500" y="112" font-size="8" fill="#2B2F33" text-anchor="start">relais en panne</text>
-<rect x="458" y="132" width="34" height="20" rx="3" fill="#C62828"/>
-<text x="475" y="146" font-size="8.6" fill="#fff" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">503</text>
-<text x="500" y="146" font-size="8" fill="#2B2F33" text-anchor="start">indisponible</text>
-<rect x="458" y="166" width="34" height="20" rx="3" fill="#C62828"/>
-<text x="475" y="180" font-size="8.6" fill="#fff" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">504</text>
-<text x="500" y="180" font-size="8" fill="#2B2F33" text-anchor="start">relais trop lent</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 61</b></div>
+<p class="rubrique">Schéma 1 · Méthodes et statuts</p>
+<h2>Ce qu'on demande, ce qu'on obtient</h2>
+<p style="max-width:165mm">Le premier chiffre du statut donne la famille ; c'est souvent tout ce qu'un client doit regarder. Les codes ci-dessous sont tous émis quelque part par le serveur Magpie.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 226" width="100%">
+<rect fill="#EFE9E1" height="226" width="600" x="0" y="0"></rect>
+<rect fill="#fff" height="206" rx="5" stroke="#2E7D32" stroke-width="1.2" width="136" x="16" y="10"></rect>
+<text class="mono" fill="#2E7D32" font-size="14" font-weight="700" style="font-size:14px" text-anchor="start" x="28" y="34">2xx</text>
+<text fill="#2B2F33" font-size="7.6" font-style="italic" text-anchor="start" x="28" y="52">ça a marché</text>
+<rect fill="#2E7D32" height="20" rx="3" width="34" x="26" y="64"></rect>
+<text class="mono" fill="#fff" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="43" y="78">200</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="68" y="78">OK</text>
+<rect fill="#2E7D32" height="20" rx="3" width="34" x="26" y="98"></rect>
+<text class="mono" fill="#fff" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="43" y="112">204</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="68" y="112">OK, sans corps</text>
+<rect fill="#fff" height="206" rx="5" stroke="#1565C0" stroke-width="1.2" width="136" x="160" y="10"></rect>
+<text class="mono" fill="#1565C0" font-size="14" font-weight="700" style="font-size:14px" text-anchor="start" x="172" y="34">3xx</text>
+<text fill="#2B2F33" font-size="7.6" font-style="italic" text-anchor="start" x="172" y="52">va voir ailleurs</text>
+<rect fill="#1565C0" height="20" rx="3" width="34" x="170" y="64"></rect>
+<text class="mono" fill="#fff" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="187" y="78">302</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="212" y="78">redirection</text>
+<rect fill="#1565C0" height="20" rx="3" width="34" x="170" y="98"></rect>
+<text class="mono" fill="#fff" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="187" y="112">304</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="212" y="112">pas changé</text>
+<rect fill="#fff" height="206" rx="5" stroke="#E65100" stroke-width="1.2" width="136" x="304" y="10"></rect>
+<text class="mono" fill="#E65100" font-size="14" font-weight="700" style="font-size:14px" text-anchor="start" x="316" y="34">4xx</text>
+<text fill="#2B2F33" font-size="7.6" font-style="italic" text-anchor="start" x="316" y="52">ta demande pose problème</text>
+<rect fill="#E65100" height="20" rx="3" width="34" x="314" y="64"></rect>
+<text class="mono" fill="#fff" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="331" y="78">400</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="356" y="78">mal formée</text>
+<rect fill="#E65100" height="20" rx="3" width="34" x="314" y="98"></rect>
+<text class="mono" fill="#fff" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="331" y="112">401</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="356" y="112">qui es-tu ?</text>
+<rect fill="#E65100" height="20" rx="3" width="34" x="314" y="132"></rect>
+<text class="mono" fill="#fff" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="331" y="146">404</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="356" y="146">introuvable</text>
+<rect fill="#E65100" height="20" rx="3" width="34" x="314" y="166"></rect>
+<text class="mono" fill="#fff" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="331" y="180">413</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="356" y="180">trop gros</text>
+<rect fill="#fff" height="206" rx="5" stroke="#C62828" stroke-width="1.2" width="136" x="448" y="10"></rect>
+<text class="mono" fill="#C62828" font-size="14" font-weight="700" style="font-size:14px" text-anchor="start" x="460" y="34">5xx</text>
+<text fill="#2B2F33" font-size="7.6" font-style="italic" text-anchor="start" x="460" y="52">j'ai un problème</text>
+<rect fill="#C62828" height="20" rx="3" width="34" x="458" y="64"></rect>
+<text class="mono" fill="#fff" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="475" y="78">500</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="500" y="78">erreur interne</text>
+<rect fill="#C62828" height="20" rx="3" width="34" x="458" y="98"></rect>
+<text class="mono" fill="#fff" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="475" y="112">502</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="500" y="112">relais en panne</text>
+<rect fill="#C62828" height="20" rx="3" width="34" x="458" y="132"></rect>
+<text class="mono" fill="#fff" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="475" y="146">503</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="500" y="146">indisponible</text>
+<rect fill="#C62828" height="20" rx="3" width="34" x="458" y="166"></rect>
+<text class="mono" fill="#fff" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="475" y="180">504</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="500" y="180">relais trop lent</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · les méthodes</span>GET     /api/catalog      lire ; sans corps ; peut être mis en cache ; rejouable sans risque
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · les méthodes</span>GET     /api/catalog      lire ; sans corps ; peut être mis en cache ; rejouable sans risque
 HEAD    /index.html       comme GET, mais seulement les en-têtes
 POST    /api/submit       envoyer des données pour un traitement ; pas rejouable aveuglément
 PUT     /api/item/12      remplacer une ressource entière ; rejouable (même résultat)
 DELETE  /api/item/12      supprimer
 OPTIONS /api/submit       « qu'ai-je le droit de faire ? » : la question préalable de CORS (cours 62)</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Idempotent</h3>
-      <p>Une méthode est idempotente si la répéter laisse le même état qu'une seule fois : GET, PUT, DELETE. Un navigateur peut réessayer un GET de lui-même ; il demande confirmation avant de renvoyer un formulaire en POST.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>4xx ou 5xx ?</h3>
-      <p>La question est : à qui la faute ? Un JSON mal formé, c'est 400 : le client doit corriger. Rhino Compute qui ne répond pas, c'est 504 : le client peut seulement réessayer plus tard.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Idempotent</h3>
+<p>Une méthode est idempotente si la répéter laisse le même état qu'une seule fois : GET, PUT, DELETE. Un navigateur peut réessayer un GET de lui-même ; il demande confirmation avant de renvoyer un formulaire en POST.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>4xx ou 5xx ?</h3>
+<p>La question est : à qui la faute ? Un JSON mal formé, c'est 400 : le client doit corriger. Rhino Compute qui ne répond pas, c'est 504 : le client peut seulement réessayer plus tard.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Répondre 200 avec <code>{"error": …}</code> dans le corps. Le client, les outils de surveillance et le cache croient alors à un succès. Le statut est le premier signal : il doit dire la vérité, le corps donne les détails.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 61 · HTTP de l'intérieur</div>
+<div class="folio">2</div>
+<div class="pied">Cours 61 · HTTP de l'intérieur</div>
 </section>
-
 <!-- ============ PAGE 3 · LES EN-TÊTES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 61</b></div>
-  <p class="rubrique">Schéma 2 · Les en-têtes</p>
-  <h2>Ce qui accompagne le corps</h2>
-  <p style="max-width:165mm">Un en-tête est une ligne <code>Nom: valeur</code>. <code>Content-Type</code> dit comment lire le corps ; <code>Cache-Control</code> dit combien de temps le garder. Magpie règle ce dernier selon le nom du fichier, pour que les mises à jour arrivent sans que les visites se ralentissent.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="24" font-size="9" fill="#A03A2C" text-anchor="start" font-weight="700">1re visite</text>
-<text x="16" y="120" font-size="9" fill="#A03A2C" text-anchor="start" font-weight="700">Visite suivante</text>
-<rect x="120" y="36" width="170" height="26" rx="4" fill="#fff" stroke="#2B2F33" stroke-width="1.2"/>
-<text x="205.0" y="51.8" font-size="8.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.4px">index.html</text>
-<line x1="294" y1="49" x2="340" y2="49" stroke="#6B7378" stroke-width="1.1"/><polygon points="340,49 333.6,51.7 333.6,46.3" fill="#6B7378"/>
-<text x="346" y="53" font-size="7.8" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">200 + Cache-Control: no-cache</text>
-<rect x="120" y="70" width="170" height="26" rx="4" fill="#fff" stroke="#2B2F33" stroke-width="1.2"/>
-<text x="205.0" y="85.8" font-size="8.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.4px">assets/index-3f9a.js</text>
-<line x1="294" y1="83" x2="340" y2="83" stroke="#6B7378" stroke-width="1.1"/><polygon points="340,83 333.6,85.7 333.6,80.3" fill="#6B7378"/>
-<text x="346" y="87" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">200 + Cache-Control: max-age=31536000, immutable</text>
-<rect x="120" y="132" width="170" height="26" rx="4" fill="#fff" stroke="#2B2F33" stroke-width="1.2"/>
-<text x="205.0" y="147.8" font-size="8.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.4px">index.html</text>
-<line x1="294" y1="145" x2="340" y2="145" stroke="#6B7378" stroke-width="1.1"/><polygon points="340,145 333.6,147.7 333.6,142.3" fill="#6B7378"/>
-<text x="346" y="149" font-size="7.8" fill="#E65100" text-anchor="start" font-weight="700">le serveur redonne la version du jour</text>
-<rect x="120" y="166" width="170" height="26" rx="4" fill="#fff" stroke="#2B2F33" stroke-width="1.2"/>
-<text x="205.0" y="181.8" font-size="8.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.4px">assets/index-3f9a.js</text>
-<text x="346" y="183" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700">pris dans le cache, aucune requête</text>
-<text x="16" y="206" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">Un nouveau build change l'empreinte du nom (3f9a) : index.html, revalidé, pointe vers le nouveau fichier.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 61</b></div>
+<p class="rubrique">Schéma 2 · Les en-têtes</p>
+<h2>Ce qui accompagne le corps</h2>
+<p style="max-width:165mm">Un en-tête est une ligne <code>Nom: valeur</code>. <code>Content-Type</code> dit comment lire le corps ; <code>Cache-Control</code> dit combien de temps le garder. Magpie règle ce dernier selon le nom du fichier, pour que les mises à jour arrivent sans que les visites se ralentissent.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#A03A2C" font-size="9" font-weight="700" text-anchor="start" x="16" y="24">1re visite</text>
+<text fill="#A03A2C" font-size="9" font-weight="700" text-anchor="start" x="16" y="120">Visite suivante</text>
+<rect fill="#fff" height="26" rx="4" stroke="#2B2F33" stroke-width="1.2" width="170" x="120" y="36"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.4" style="font-size:8.4px" text-anchor="middle" x="205.0" y="51.8">index.html</text>
+<line stroke="#6B7378" stroke-width="1.1" x1="294" x2="340" y1="49" y2="49"></line><polygon fill="#6B7378" points="340,49 333.6,51.7 333.6,46.3"></polygon>
+<text class="mono" fill="#E65100" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="346" y="53">200 + Cache-Control: no-cache</text>
+<rect fill="#fff" height="26" rx="4" stroke="#2B2F33" stroke-width="1.2" width="170" x="120" y="70"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.4" style="font-size:8.4px" text-anchor="middle" x="205.0" y="85.8">assets/index-3f9a.js</text>
+<line stroke="#6B7378" stroke-width="1.1" x1="294" x2="340" y1="83" y2="83"></line><polygon fill="#6B7378" points="340,83 333.6,85.7 333.6,80.3"></polygon>
+<text class="mono" fill="#2E7D32" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="346" y="87">200 + Cache-Control: max-age=31536000, immutable</text>
+<rect fill="#fff" height="26" rx="4" stroke="#2B2F33" stroke-width="1.2" width="170" x="120" y="132"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.4" style="font-size:8.4px" text-anchor="middle" x="205.0" y="147.8">index.html</text>
+<line stroke="#6B7378" stroke-width="1.1" x1="294" x2="340" y1="145" y2="145"></line><polygon fill="#6B7378" points="340,145 333.6,147.7 333.6,142.3"></polygon>
+<text fill="#E65100" font-size="7.8" font-weight="700" text-anchor="start" x="346" y="149">le serveur redonne la version du jour</text>
+<rect fill="#fff" height="26" rx="4" stroke="#2B2F33" stroke-width="1.2" width="170" x="120" y="166"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.4" style="font-size:8.4px" text-anchor="middle" x="205.0" y="181.8">assets/index-3f9a.js</text>
+<text fill="#2E7D32" font-size="7.8" font-weight="700" text-anchor="start" x="346" y="183">pris dans le cache, aucune requête</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="start" x="16" y="206">Un nouveau build change l'empreinte du nom (3f9a) : index.html, revalidé, pointe vers le nouveau fichier.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · en-têtes courants</span>Content-Type: application/json; charset=utf-8     le format du corps, et son encodage (cours 56)
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · en-têtes courants</span>Content-Type: application/json; charset=utf-8     le format du corps, et son encodage (cours 56)
 Content-Length: 1834                              la taille du corps en octets
 Cache-Control: no-cache                           « redemande-moi avant de réutiliser »
 Location: /admin                                  où aller, avec un statut 3xx
 WWW-Authenticate: Basic realm="Magpie admin"      comment s'identifier, avec un 401 (cours 63)</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Le type MIME</h3>
-      <p>Le navigateur ne regarde pas l'extension mais le <code>Content-Type</code>. Un fichier .js servi en <code>text/plain</code> ne s'exécute pas ; un .webmanifest mal typé n'installe pas l'application. D'où la table <code>MIME_TYPES</code> du serveur.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Ouvrir l'onglet Réseau</h3>
-      <p>Dans le navigateur, F12 puis l'onglet Réseau : chaque requête y apparaît avec sa méthode, son statut, ses en-têtes et son corps. C'est le premier réflexe quand une page « ne fait rien ».</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Le type MIME</h3>
+<p>Le navigateur ne regarde pas l'extension mais le <code>Content-Type</code>. Un fichier .js servi en <code>text/plain</code> ne s'exécute pas ; un .webmanifest mal typé n'installe pas l'application. D'où la table <code>MIME_TYPES</code> du serveur.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Ouvrir l'onglet Réseau</h3>
+<p>Dans le navigateur, F12 puis l'onglet Réseau : chaque requête y apparaît avec sa méthode, son statut, ses en-têtes et son corps. C'est le premier réflexe quand une page « ne fait rien ».</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Mettre en cache longue durée un fichier dont le nom ne change pas. Après une mise en ligne, les visiteurs gardent l'ancien pendant des jours. La règle : cache « pour toujours » seulement pour les noms qui portent une empreinte du contenu.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 61 · HTTP de l'intérieur</div>
+<div class="folio">3</div>
+<div class="pied">Cours 61 · HTTP de l'intérieur</div>
 </section>
-
 <!-- ============ PAGE 4 · UN SERVEUR SANS FRAMEWORK ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 61</b></div>
-  <p class="rubrique">Schéma 3 · Un serveur sans framework</p>
-  <h2>Le chemin d'une requête dans Magpie</h2>
-  <p style="max-width:165mm">Le serveur Magpie n'utilise pas Express : il lit <code>req.method</code> et <code>req.url</code> et décide lui-même. Le corps arrive en morceaux ; on les assemble, on vérifie la taille, puis on traite. Toute erreur finit en réponse JSON avec le bon statut.</p>
-
-  <svg viewBox="0 0 600 222" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="222" fill="#EFE9E1"/>
-<rect x="16" y="20" width="126" height="34" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
-<text x="79.0" y="39.86666666666667" font-size="8.6" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">setCors</text>
-<text x="79" y="70" font-size="7.8" fill="#2B2F33" text-anchor="middle">en-têtes CORS</text>
-<line x1="144" y1="37" x2="160" y2="37" stroke="#6B7378" stroke-width="1.1"/><polygon points="160,37 153.6,39.7 153.6,34.3" fill="#6B7378"/>
-<rect x="162" y="20" width="126" height="34" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
-<text x="225.0" y="39.86666666666667" font-size="8.6" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">OPTIONS ?</text>
-<text x="225" y="70" font-size="7.8" fill="#2B2F33" text-anchor="middle">204, fini</text>
-<line x1="290" y1="37" x2="306" y2="37" stroke="#6B7378" stroke-width="1.1"/><polygon points="306,37 299.6,39.7 299.6,34.3" fill="#6B7378"/>
-<rect x="308" y="20" width="126" height="34" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
-<text x="371.0" y="39.86666666666667" font-size="8.6" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">garde admin</text>
-<text x="371" y="70" font-size="7.8" fill="#2B2F33" text-anchor="middle">401 ou 503</text>
-<line x1="436" y1="37" x2="452" y2="37" stroke="#6B7378" stroke-width="1.1"/><polygon points="452,37 445.6,39.7 445.6,34.3" fill="#6B7378"/>
-<rect x="454" y="20" width="126" height="34" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="517.0" y="39.86666666666667" font-size="8.6" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">GET /api/…</text>
-<text x="517" y="70" font-size="7.8" fill="#2B2F33" text-anchor="middle">réponse JSON</text>
-<rect x="16" y="120" width="126" height="34" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="79.0" y="139.86666666666667" font-size="8.6" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">GET hors /api</text>
-<text x="79" y="170" font-size="7.8" fill="#2B2F33" text-anchor="middle">fichier du front</text>
-<line x1="144" y1="137" x2="160" y2="137" stroke="#6B7378" stroke-width="1.1"/><polygon points="160,137 153.6,139.7 153.6,134.3" fill="#6B7378"/>
-<rect x="162" y="120" width="126" height="34" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
-<text x="225.0" y="139.86666666666667" font-size="8.6" fill="#E65100" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">corps lu</text>
-<text x="225" y="170" font-size="7.8" fill="#2B2F33" text-anchor="middle">par morceaux, ≤ 1 Mo</text>
-<line x1="290" y1="137" x2="306" y2="137" stroke="#6B7378" stroke-width="1.1"/><polygon points="306,137 299.6,139.7 299.6,134.3" fill="#6B7378"/>
-<rect x="308" y="120" width="126" height="34" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="371.0" y="139.86666666666667" font-size="8.6" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">POST /api/…</text>
-<text x="371" y="170" font-size="7.8" fill="#2B2F33" text-anchor="middle">route, puis JSON</text>
-<line x1="436" y1="137" x2="452" y2="137" stroke="#6B7378" stroke-width="1.1"/><polygon points="452,137 445.6,139.7 445.6,134.3" fill="#6B7378"/>
-<rect x="454" y="120" width="126" height="34" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
-<text x="517.0" y="139.86666666666667" font-size="8.6" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">catch</text>
-<text x="517" y="170" font-size="7.8" fill="#2B2F33" text-anchor="middle">statut + JSON d'erreur</text>
-<path d="M550 54 C 580 70, 580 96, 79 96 L 79 116" fill="none" stroke="#6B7378" stroke-width="1.1" stroke-dasharray="3 3"/>
-<text x="16" y="214" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">Chaque étape peut répondre et s'arrêter (return) : l'ordre fait partie de la sécurité.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 61</b></div>
+<p class="rubrique">Schéma 3 · Un serveur sans framework</p>
+<h2>Le chemin d'une requête dans Magpie</h2>
+<p style="max-width:165mm">Le serveur Magpie n'utilise pas Express : il lit <code>req.method</code> et <code>req.url</code> et décide lui-même. Le corps arrive en morceaux ; on les assemble, on vérifie la taille, puis on traite. Toute erreur finit en réponse JSON avec le bon statut.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 222" width="100%">
+<rect fill="#EFE9E1" height="222" width="600" x="0" y="0"></rect>
+<rect fill="#fff" height="34" rx="4" stroke="#1565C0" stroke-width="1.2" width="126" x="16" y="20"></rect>
+<text class="mono" fill="#1565C0" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="79.0" y="39.86666666666667">setCors</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="middle" x="79" y="70">en-têtes CORS</text>
+<line stroke="#6B7378" stroke-width="1.1" x1="144" x2="160" y1="37" y2="37"></line><polygon fill="#6B7378" points="160,37 153.6,39.7 153.6,34.3"></polygon>
+<rect fill="#fff" height="34" rx="4" stroke="#1565C0" stroke-width="1.2" width="126" x="162" y="20"></rect>
+<text class="mono" fill="#1565C0" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="225.0" y="39.86666666666667">OPTIONS ?</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="middle" x="225" y="70">204, fini</text>
+<line stroke="#6B7378" stroke-width="1.1" x1="290" x2="306" y1="37" y2="37"></line><polygon fill="#6B7378" points="306,37 299.6,39.7 299.6,34.3"></polygon>
+<rect fill="#fff" height="34" rx="4" stroke="#C62828" stroke-width="1.2" width="126" x="308" y="20"></rect>
+<text class="mono" fill="#C62828" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="371.0" y="39.86666666666667">garde admin</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="middle" x="371" y="70">401 ou 503</text>
+<line stroke="#6B7378" stroke-width="1.1" x1="436" x2="452" y1="37" y2="37"></line><polygon fill="#6B7378" points="452,37 445.6,39.7 445.6,34.3"></polygon>
+<rect fill="#fff" height="34" rx="4" stroke="#2E7D32" stroke-width="1.2" width="126" x="454" y="20"></rect>
+<text class="mono" fill="#2E7D32" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="517.0" y="39.86666666666667">GET /api/…</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="middle" x="517" y="70">réponse JSON</text>
+<rect fill="#fff" height="34" rx="4" stroke="#2E7D32" stroke-width="1.2" width="126" x="16" y="120"></rect>
+<text class="mono" fill="#2E7D32" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="79.0" y="139.86666666666667">GET hors /api</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="middle" x="79" y="170">fichier du front</text>
+<line stroke="#6B7378" stroke-width="1.1" x1="144" x2="160" y1="137" y2="137"></line><polygon fill="#6B7378" points="160,137 153.6,139.7 153.6,134.3"></polygon>
+<rect fill="#fff" height="34" rx="4" stroke="#E65100" stroke-width="1.2" width="126" x="162" y="120"></rect>
+<text class="mono" fill="#E65100" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="225.0" y="139.86666666666667">corps lu</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="middle" x="225" y="170">par morceaux, ≤ 1 Mo</text>
+<line stroke="#6B7378" stroke-width="1.1" x1="290" x2="306" y1="137" y2="137"></line><polygon fill="#6B7378" points="306,137 299.6,139.7 299.6,134.3"></polygon>
+<rect fill="#fff" height="34" rx="4" stroke="#2E7D32" stroke-width="1.2" width="126" x="308" y="120"></rect>
+<text class="mono" fill="#2E7D32" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="371.0" y="139.86666666666667">POST /api/…</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="middle" x="371" y="170">route, puis JSON</text>
+<line stroke="#6B7378" stroke-width="1.1" x1="436" x2="452" y1="137" y2="137"></line><polygon fill="#6B7378" points="452,137 445.6,139.7 445.6,134.3"></polygon>
+<rect fill="#fff" height="34" rx="4" stroke="#C62828" stroke-width="1.2" width="126" x="454" y="120"></rect>
+<text class="mono" fill="#C62828" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="517.0" y="139.86666666666667">catch</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="middle" x="517" y="170">statut + JSON d'erreur</text>
+<path d="M550 54 C 580 70, 580 96, 79 96 L 79 116" fill="none" stroke="#6B7378" stroke-dasharray="3 3" stroke-width="1.1"></path>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="start" x="16" y="214">Chaque étape peut répondre et s'arrêter (return) : l'ordre fait partie de la sécurité.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Node</span>import http from "node:http";
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Node</span>import http from "node:http";
 http.createServer((req, res) =&gt; {
   if (req.method === "GET" &amp;&amp; req.url === "/ping") {
     res.writeHead(200, { "Content-Type": "text/plain; charset=utf-8" });
@@ -270,35 +248,30 @@ http.createServer((req, res) =&gt; {
   }
   res.writeHead(404); res.end();
 }).listen(5175);</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Pourquoi limiter la taille</h3>
-      <p>Sans limite, un client peut envoyer des centaines de mégaoctets et remplir la mémoire du serveur. Magpie coupe à 1 Mo pour l'apprenant et à 16 Mo pour l'admin authentifié, et répond 413.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Assembler avant de décoder</h3>
-      <p>Un morceau peut couper un caractère UTF-8 en deux (cours 56). On concatène les octets avec <code>Buffer.concat</code>, puis on décode le tout en une fois.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Pourquoi limiter la taille</h3>
+<p>Sans limite, un client peut envoyer des centaines de mégaoctets et remplir la mémoire du serveur. Magpie coupe à 1 Mo pour l'apprenant et à 16 Mo pour l'admin authentifié, et répond 413.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Assembler avant de décoder</h3>
+<p>Un morceau peut couper un caractère UTF-8 en deux (cours 56). On concatène les octets avec <code>Buffer.concat</code>, puis on décode le tout en une fois.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Oublier <code>res.end()</code> sur un chemin du code. La connexion reste ouverte, le navigateur attend, et la page tourne jusqu'au délai maximal. Chaque branche du routage doit répondre une fois, et une seule.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 61 · HTTP de l'intérieur</div>
+<div class="folio">4</div>
+<div class="pied">Cours 61 · HTTP de l'intérieur</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 61</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>compute-proxy.mjs, un serveur lisible</h2>
-  <p style="max-width:165mm">Tout le serveur de Magpie web tient dans un fichier. Les extraits ci-dessous suivent l'ordre du schéma&nbsp;3.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 61</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>compute-proxy.mjs, un serveur lisible</h2>
+<p style="max-width:165mm">Tout le serveur de Magpie web tient dans un fichier. Les extraits ci-dessous suivent l'ordre du schéma 3.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">magpie/web/compute-proxy.mjs</span></div>
 <div class="l k1"><span class="n">608</span><span class="kw">if</span> (req.method === <span class="st">"OPTIONS"</span>) {<span class="rep r1">1</span></div>
@@ -313,137 +286,55 @@ http.createServer((req, res) =&gt; {
 <div class="l k5"><span class="n">724</span><span class="kw">const</span> status = err <span class="kw">instanceof</span> <span class="ty">HttpError</span><span class="rep r5">5</span></div>
 <div class="l k5"><span class="n"> </span>  ? err.status : <span class="nb">500</span>;</div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>La question préalable</b>Répondue tout de suite, sans corps.</li>
-      <li><span class="rep r2">2</span><b>Type et cache</b>Le type vient de l'extension ; le cache, du dossier assets/.</li>
-      <li><span class="rep r3">3</span><b>Rediriger</b>Après la connexion, le navigateur suit Location.</li>
-      <li><span class="rep r4">4</span><b>Corps borné</b>Compté en octets, assemblé puis décodé.</li>
-      <li><span class="rep r5">5</span><b>Un statut honnête</b>Erreur prévue : son statut. Imprévue : 500.</li>
-    </ul>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>La question préalable</b>Répondue tout de suite, sans corps.</li>
+<li><span class="rep r2">2</span><b>Type et cache</b>Le type vient de l'extension ; le cache, du dossier assets/.</li>
+<li><span class="rep r3">3</span><b>Rediriger</b>Après la connexion, le navigateur suit Location.</li>
+<li><span class="rep r4">4</span><b>Corps borné</b>Compté en octets, assemblé puis décodé.</li>
+<li><span class="rep r5">5</span><b>Un statut honnête</b>Erreur prévue : son statut. Imprévue : 500.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">Côté client · api.js</span>
+<code>apiRequest</code> distingue trois échecs, chacun avec son message : pas de réponse dans le délai (TIMEOUT), serveur injoignable (NETWORK), réponse sans JSON (BAD_RESPONSE). Un statut hors 2xx devient une <code>ApiError</code> qui garde le code. Le statut 401 y reçoit un message à part (lignes 53–55).
   </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">Côté client · api.js</span>
-    <code>apiRequest</code> distingue trois échecs, chacun avec son message : pas de réponse dans le délai (TIMEOUT), serveur injoignable (NETWORK), réponse sans JSON (BAD_RESPONSE). Un statut hors 2xx devient une <code>ApiError</code> qui garde le code. Le statut 401 y reçoit un message à part (lignes 53–55).
-  </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 61 · HTTP de l'intérieur</div>
+<div class="folio">5</div>
+<div class="pied">Cours 61 · HTTP de l'intérieur</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 61</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 61</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">Ce qui sépare les en-têtes du corps…</div><ul>
-      <li><span>A</span>le mot BODY</li><li><span>B</span>un point-virgule</li><li><span>C</span>rien</li><li><span>D</span>une ligne vide</li></ul></div>
 
-    <div class="q"><div class="enonce">HTTP est sans état : cela veut dire…</div><ul>
-      <li><span>A</span>pas de statut</li><li><span>B</span>chaque requête porte ce qu'il faut</li><li><span>C</span>le serveur n'a pas de base</li><li><span>D</span>pas d'en-têtes</li></ul></div>
 
-    <div class="q"><div class="enonce">Sont idempotentes : <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>GET</li><li><span>B</span>POST</li><li><span>C</span>DELETE</li><li><span>D</span>PUT</li></ul></div>
 
-    <div class="q"><div class="enonce">Un JSON mal formé envoyé par le client…</div><ul>
-      <li><span>A</span>302</li><li><span>B</span>500</li><li><span>C</span>200</li><li><span>D</span>400</li></ul></div>
-
-    <div class="q"><div class="enonce">Rhino Compute ne répond pas dans le délai…</div><ul>
-      <li><span>A</span>413</li><li><span>B</span>401</li><li><span>C</span>504</li><li><span>D</span>404</li></ul></div>
-
-    <div class="q"><div class="enonce">Le navigateur décide comment lire un fichier selon…</div><ul>
-      <li><span>A</span>son extension</li><li><span>B</span>Cache-Control</li><li><span>C</span>sa taille</li><li><span>D</span>Content-Type</li></ul></div>
-
-    <div class="q"><div class="enonce"><code>immutable</code> est réservé chez Magpie…</div><ul>
-      <li><span>A</span>à index.html</li><li><span>B</span>à tout</li><li><span>C</span>aux fichiers de assets/</li><li><span>D</span>aux réponses JSON</li></ul></div>
-
-    <div class="q"><div class="enonce">Pourquoi c'est sans risque pour assets/ ?</div><ul>
-      <li><span>A</span>leur nom porte une empreinte</li><li><span>B</span>le CDN les vide</li><li><span>C</span>ils sont petits</li><li><span>D</span>ils ne changent jamais</li></ul></div>
-
-    <div class="q"><div class="enonce">Un corps de 2 Mo sur une route apprenant…</div><ul>
-      <li><span>A</span>413</li><li><span>B</span>il est tronqué en silence</li><li><span>C</span>500</li><li><span>D</span>200</li></ul></div>
-
-    <div class="q"><div class="enonce">Pourquoi Buffer.concat avant toString ?</div><ul>
-      <li><span>A</span>un morceau peut couper un caractère</li><li><span>B</span>pour la vitesse</li><li><span>C</span>sans raison</li><li><span>D</span>pour le cache</li></ul></div>
-
-    <div class="q"><div class="enonce">Une erreur imprévue dans une route devient…</div><ul>
-      <li><span>A</span>un 200</li><li><span>B</span>un 500 en JSON</li><li><span>C</span>un plantage du serveur</li><li><span>D</span>un 404</li></ul></div>
-
-    <div class="q"><div class="enonce">Une branche qui oublie <code>res.end()</code>…</div><ul>
-      <li><span>A</span>renvoie 204</li><li><span>B</span>laisse le client attendre</li><li><span>C</span>est sans effet</li><li><span>D</span>ferme le serveur</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 61 · HTTP de l'intérieur</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">res.writeHead(204)</td><td>réponse sans corps</td><td>compute-proxy.mjs:609</td></tr>
+<tr><td class="c">Content-Type</td><td>le format du corps</td><td>compute-proxy.mjs:510</td></tr>
+<tr><td class="c">Cache-Control</td><td>combien de temps garder</td><td>compute-proxy.mjs:511</td></tr>
+<tr><td class="c">302 + Location</td><td>rediriger</td><td>compute-proxy.mjs:630</td></tr>
+<tr><td class="c">413</td><td>corps trop volumineux</td><td>compute-proxy.mjs:701</td></tr>
+<tr><td class="c">ApiError(status, code)</td><td>garder le statut côté client</td><td>api.js:11</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Requête</dt><dd>Le message du client : méthode, chemin, en-têtes, corps éventuel.</dd>
+<dt>Statut</dt><dd>Le code à trois chiffres qui ouvre la réponse ; le premier chiffre donne la famille.</dd>
+<dt>En-tête</dt><dd>Une ligne Nom: valeur qui accompagne une requête ou une réponse.</dd>
+<dt>Idempotent</dt><dd>Qu'on peut répéter sans changer le résultat d'une seule exécution.</dd>
+<dt>Type MIME</dt><dd>Le nom du format d'un contenu, comme application/json ou image/png.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 62</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 61 · HTTP de l'intérieur</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 61</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · D.</b> Puis le corps.</div>
-    <div><b>02 · B.</b> Aucun souvenir entre requêtes.</div>
-    <div><b>03 · A, C et D.</b> POST ne l'est pas.</div>
-    <div><b>04 · D.</b> La faute du client.</div>
-    <div><b>05 · C.</b> compute-proxy.mjs:215.</div>
-    <div><b>06 · D.</b> D'où MIME_TYPES.</div>
-    <div><b>07 · C.</b> compute-proxy.mjs:508.</div>
-    <div><b>08 · A.</b> Nouveau contenu, nouveau nom.</div>
-    <div><b>09 · A.</b> Limite de 1 Mo, ligne 39.</div>
-    <div><b>10 · A.</b> UTF-8 sur plusieurs octets.</div>
-    <div><b>11 · B.</b> compute-proxy.mjs:724.</div>
-    <div><b>12 · B.</b> Jusqu'au délai maximal.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 et 2. <b>7 à 9</b> : relis les pages 3 et 4. <b>10 à 12</b> : passe au cours 62, « Origines : CORS et CSRF ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">res.writeHead(204)</td><td>réponse sans corps</td><td>compute-proxy.mjs:609</td></tr>
-      <tr><td class="c">Content-Type</td><td>le format du corps</td><td>compute-proxy.mjs:510</td></tr>
-      <tr><td class="c">Cache-Control</td><td>combien de temps garder</td><td>compute-proxy.mjs:511</td></tr>
-      <tr><td class="c">302 + Location</td><td>rediriger</td><td>compute-proxy.mjs:630</td></tr>
-      <tr><td class="c">413</td><td>corps trop volumineux</td><td>compute-proxy.mjs:701</td></tr>
-      <tr><td class="c">ApiError(status, code)</td><td>garder le statut côté client</td><td>api.js:11</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Requête</dt><dd>Le message du client : méthode, chemin, en-têtes, corps éventuel.</dd>
-    <dt>Statut</dt><dd>Le code à trois chiffres qui ouvre la réponse ; le premier chiffre donne la famille.</dd>
-    <dt>En-tête</dt><dd>Une ligne Nom: valeur qui accompagne une requête ou une réponse.</dd>
-    <dt>Idempotent</dt><dd>Qu'on peut répéter sans changer le résultat d'une seule exécution.</dd>
-    <dt>Type MIME</dt><dd>Le nom du format d'un contenu, comme application/json ou image/png.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 62</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 61 · HTTP de l'intérieur</div>
-</section>
-
 </body>
 </html>

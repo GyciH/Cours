@@ -1,305 +1,278 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>115 · Texte ou binaire</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-10">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 115</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Texte ou binaire</h1>
-  <p class="chapeau">Un fichier n'est qu'une suite d'octets. Ce qui le rend lisible, c'est une règle partagée entre celui qui écrit et celui qui lit. Un fichier <b>texte</b> embarque une grande partie de sa règle avec lui ; un fichier <b>binaire</b> la laisse au programme. Grasshopper sait faire les deux : le .ghx et le .gh portent le même arbre.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>24</b></span>
-    <span class="pastille">Exemples · <b>Magpie</b> web et pédagogie</span>
-  </div>
-
-  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
-    <svg viewBox="0 0 600 206" width="100%">
-<rect x="10" y="10" width="280" height="120" rx="4" fill="#ECECF2" stroke="#4A4A68" stroke-width="1.2"/>
-<text x="150" y="28" font-size="9" fill="#4A4A68" text-anchor="middle" font-weight="700">en texte · .ghx</text>
-<text x="22" y="52" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">&lt;item name="Company"</text>
-<text x="22" y="64" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">      type_name="gh_string"</text>
-<text x="22" y="76" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">      type_code="10"&gt;</text>
-<text x="22" y="88" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">  CJ-Développement&lt;/item&gt;</text>
-<text x="150" y="116" font-size="7.4" fill="#6B7378" text-anchor="middle" font-style="italic">81 caractères, lisibles par un humain</text>
-<rect x="310" y="10" width="280" height="120" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
-<text x="450" y="28" font-size="9" fill="#6B7378" text-anchor="middle" font-weight="700">en binaire · .gh décompressé</text>
-<text x="322" y="46" font-size="7.4" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">07</text>
-<text x="500" y="46" font-size="7.2" fill="#1565C0" text-anchor="start">longueur 7</text>
-<text x="322" y="58" font-size="7.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">43 6f 6d 70 61 6e 79</text>
-<text x="500" y="58" font-size="7.2" fill="#2B2F33" text-anchor="start">« Company »</text>
-<text x="322" y="70" font-size="7.4" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">ff ff ff ff</text>
-<text x="500" y="70" font-size="7.2" fill="#E65100" text-anchor="start">index -1</text>
-<text x="322" y="82" font-size="7.4" fill="#7B1FA2" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">0a 00 00 00</text>
-<text x="500" y="82" font-size="7.2" fill="#7B1FA2" text-anchor="start">type 10</text>
-<text x="322" y="94" font-size="7.4" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">11</text>
-<text x="500" y="94" font-size="7.2" fill="#1565C0" text-anchor="start">longueur 17</text>
-<text x="322" y="106" font-size="7.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">43 4a 2d 44 c3 a9 …</text>
-<text x="500" y="106" font-size="7.2" fill="#2B2F33" text-anchor="start">« CJ-Dé… »</text>
-<text x="450" y="124" font-size="7.4" fill="#6B7378" text-anchor="middle" font-style="italic">34 octets, illisibles sans la règle</text>
-<text x="10" y="154" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">Les deux disent la même chose : l'item Company, de type chaîne, vaut CJ-Développement. Le texte porte sa règle</text>
-<text x="10" y="170" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">avec lui (des balises, des noms) ; le binaire la laisse au programme qui le lit, et ne garde que les valeurs.</text>
-<text x="10" y="192" font-size="7.6" fill="#4A4A68" text-anchor="start" font-weight="700">Relevé dans pedagogie/Parcours G2V/Exercices/A_01.gh, décompressé (mesuré) ; la forme texte suit xml-builder.mjs:64.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 115</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Texte ou binaire</h1>
+<p class="chapeau">Un fichier n'est qu'une suite d'octets. Ce qui le rend lisible, c'est une règle partagée entre celui qui écrit et celui qui lit. Un fichier <b>texte</b> embarque une grande partie de sa règle avec lui ; un fichier <b>binaire</b> la laisse au programme. Grasshopper sait faire les deux : le .ghx et le .gh portent le même arbre.</p>
+<div class="meta">
+<span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>24</b></span>
+<span class="pastille">Exemples · <b>Magpie</b> web et pédagogie</span>
+</div>
+<div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+<svg viewbox="0 0 600 206" width="100%">
+<rect fill="#ECECF2" height="120" rx="4" stroke="#4A4A68" stroke-width="1.2" width="280" x="10" y="10"></rect>
+<text fill="#4A4A68" font-size="9" font-weight="700" text-anchor="middle" x="150" y="28">en texte · .ghx</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="22" y="52">&lt;item name="Company"</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="22" y="64">      type_name="gh_string"</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="22" y="76">      type_code="10"&gt;</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="22" y="88">  CJ-Développement&lt;/item&gt;</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="middle" x="150" y="116">81 caractères, lisibles par un humain</text>
+<rect fill="#fff" height="120" rx="4" stroke="#6B7378" stroke-width="1.2" width="280" x="310" y="10"></rect>
+<text fill="#6B7378" font-size="9" font-weight="700" text-anchor="middle" x="450" y="28">en binaire · .gh décompressé</text>
+<text class="mono" fill="#1565C0" font-size="7.4" font-weight="700" style="font-size:7.4px" text-anchor="start" x="322" y="46">07</text>
+<text fill="#1565C0" font-size="7.2" text-anchor="start" x="500" y="46">longueur 7</text>
+<text class="mono" fill="#2B2F33" font-size="7.4" font-weight="700" style="font-size:7.4px" text-anchor="start" x="322" y="58">43 6f 6d 70 61 6e 79</text>
+<text fill="#2B2F33" font-size="7.2" text-anchor="start" x="500" y="58">« Company »</text>
+<text class="mono" fill="#E65100" font-size="7.4" font-weight="700" style="font-size:7.4px" text-anchor="start" x="322" y="70">ff ff ff ff</text>
+<text fill="#E65100" font-size="7.2" text-anchor="start" x="500" y="70">index -1</text>
+<text class="mono" fill="#7B1FA2" font-size="7.4" font-weight="700" style="font-size:7.4px" text-anchor="start" x="322" y="82">0a 00 00 00</text>
+<text fill="#7B1FA2" font-size="7.2" text-anchor="start" x="500" y="82">type 10</text>
+<text class="mono" fill="#1565C0" font-size="7.4" font-weight="700" style="font-size:7.4px" text-anchor="start" x="322" y="94">11</text>
+<text fill="#1565C0" font-size="7.2" text-anchor="start" x="500" y="94">longueur 17</text>
+<text class="mono" fill="#2B2F33" font-size="7.4" font-weight="700" style="font-size:7.4px" text-anchor="start" x="322" y="106">43 4a 2d 44 c3 a9 …</text>
+<text fill="#2B2F33" font-size="7.2" text-anchor="start" x="500" y="106">« CJ-Dé… »</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="middle" x="450" y="124">34 octets, illisibles sans la règle</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="10" y="154">Les deux disent la même chose : l'item Company, de type chaîne, vaut CJ-Développement. Le texte porte sa règle</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="10" y="170">avec lui (des balises, des noms) ; le binaire la laisse au programme qui le lit, et ne garde que les valeurs.</text>
+<text fill="#4A4A68" font-size="7.6" font-weight="700" text-anchor="start" x="10" y="192">Relevé dans pedagogie/Parcours G2V/Exercices/A_01.gh, décompressé (mesuré) ; la forme texte suit xml-builder.mjs:64.</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Le texte se paie en octets et se lit à l'œil ; le binaire est compact et rapide, mais il faut connaître sa règle octet par octet pour en tirer quoi que ce soit.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>La nomenclature d'un plan contre le code-barres de la pièce. La nomenclature se lit sans outil ; le code-barres tient en deux centimètres, mais il faut un lecteur qui connaît la norme.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>reconnaître un fichier par ses premiers octets ;</li>
-        <li>lire un binaire à longueurs et types annoncés ;</li>
-        <li>dire ce que coûte le texte, et ce que la compression rend ;</li>
-        <li>situer le .gh et le .ghx de Magpie.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Le texte se paie en octets et se lit à l'œil ; le binaire est compact et rapide, mais il faut connaître sa règle octet par octet pour en tirer quoi que ce soit.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>La nomenclature d'un plan contre le code-barres de la pièce. La nomenclature se lit sans outil ; le code-barres tient en deux centimètres, mais il faut un lecteur qui connaît la norme.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>reconnaître un fichier par ses premiers octets ;</li>
+<li>lire un binaire à longueurs et types annoncés ;</li>
+<li>dire ce que coûte le texte, et ce que la compression rend ;</li>
+<li>situer le .gh et le .ghx de Magpie.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À retenir</span>
     Texte ou binaire n'est pas une question de contenu mais d'écriture. Le même arbre GH_IO (chunks, items typés) s'écrit en XML dans un .ghx et en octets compressés dans un .gh ; Magpie web n'écrit que la forme texte.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 115 · Texte ou binaire</div>
+<div class="folio">1</div>
+<div class="pied">Cours 115 · Texte ou binaire</div>
 </section>
-
 <!-- ============ PAGE 2 · LES SIGNATURES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 115</b></div>
-  <p class="rubrique">Schéma 1 · Reconnaître un fichier</p>
-  <h2>La signature, pas l'extension</h2>
-  <p style="max-width:165mm">La plupart des formats binaires commencent par quelques octets fixes, la <b>signature</b> (magic number). Un programme sérieux la lit avant de se fier au nom. On l'a relevée sur tous les fichiers de Magpie.</p>
-
-  <svg viewBox="0 0 600 240" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="240" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.4" fill="#4A4A68" text-anchor="start" font-weight="700">Les premiers octets des 2 528 fichiers suivis par Git dans Magpie (lus un à un, mesuré)</text>
-<rect x="16" y="34" width="568" height="19" rx="3" fill="#fff"/>
-<text x="26" y="47" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">89 50 4e 47</text>
-<text x="128" y="47" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">‰PNG</text>
-<text x="262" y="47" font-size="8" fill="#2E7D32" text-anchor="end" font-weight="700">1 593</text>
-<text x="276" y="47" font-size="7.6" fill="#2B2F33" text-anchor="start">png</text>
-<rect x="16" y="56" width="568" height="19" rx="3" fill="#ECECF2"/>
-<text x="26" y="69" font-size="7.6" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">—</text>
-<text x="128" y="69" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">texte UTF-8</text>
-<text x="262" y="69" font-size="8" fill="#1565C0" text-anchor="end" font-weight="700">525</text>
-<text x="276" y="69" font-size="7.6" fill="#2B2F33" text-anchor="start">md, json, py, mjs, cs… (23 avec BOM)</text>
-<rect x="16" y="78" width="568" height="19" rx="3" fill="#fff"/>
-<text x="26" y="91" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">(aucune)</text>
-<text x="128" y="91" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px"></text>
-<text x="262" y="91" font-size="8" fill="#C62828" text-anchor="end" font-weight="700">137</text>
-<text x="276" y="91" font-size="7.6" fill="#2B2F33" text-anchor="start">gh : flux déflaté brut, dès l'octet 0</text>
-<rect x="16" y="100" width="568" height="19" rx="3" fill="#ECECF2"/>
-<text x="26" y="113" font-size="7.6" fill="#7B1FA2" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">50 4b 03 04</text>
-<text x="128" y="113" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">PK</text>
-<text x="262" y="113" font-size="8" fill="#7B1FA2" text-anchor="end" font-weight="700">127</text>
-<text x="276" y="113" font-size="7.6" fill="#2B2F33" text-anchor="start">docx 126, xlsx 1 : des archives zip</text>
-<rect x="16" y="122" width="568" height="19" rx="3" fill="#fff"/>
-<text x="26" y="135" font-size="7.6" fill="#00838F" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">ff d8 ff</text>
-<text x="128" y="135" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px"></text>
-<text x="262" y="135" font-size="8" fill="#00838F" text-anchor="end" font-weight="700">124</text>
-<text x="276" y="135" font-size="7.6" fill="#2B2F33" text-anchor="start">jpg</text>
-<rect x="16" y="144" width="568" height="19" rx="3" fill="#ECECF2"/>
-<text x="26" y="157" font-size="7.6" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">4d 5a</text>
-<text x="128" y="157" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">MZ</text>
-<text x="262" y="157" font-size="8" fill="#E65100" text-anchor="end" font-weight="700">12</text>
-<text x="276" y="157" font-size="7.6" fill="#2B2F33" text-anchor="start">gha 8, dll 4 : exécutables Windows</text>
-<rect x="16" y="166" width="568" height="19" rx="3" fill="#fff"/>
-<text x="26" y="179" font-size="7.6" fill="#6D4C41" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">42 53 4a 42</text>
-<text x="128" y="179" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">BSJB</text>
-<text x="262" y="179" font-size="8" fill="#6D4C41" text-anchor="end" font-weight="700">8</text>
-<text x="276" y="179" font-size="7.6" fill="#2B2F33" text-anchor="start">pdb : symboles de débogage .NET</text>
-<rect x="16" y="188" width="568" height="19" rx="3" fill="#ECECF2"/>
-<text x="26" y="201" font-size="7.6" fill="#4A4A68" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">33 44 20 47 …</text>
-<text x="128" y="201" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">3D Geometry File Format</text>
-<text x="262" y="201" font-size="8" fill="#4A4A68" text-anchor="end" font-weight="700">2</text>
-<text x="276" y="201" font-size="7.6" fill="#2B2F33" text-anchor="start">3dm (Rhinoceros 8)</text>
-<text x="16" y="226" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">L'extension est un nom ; la signature est le contenu. Un .docx est un zip, un .gha une DLL renommée.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 115</b></div>
+<p class="rubrique">Schéma 1 · Reconnaître un fichier</p>
+<h2>La signature, pas l'extension</h2>
+<p style="max-width:165mm">La plupart des formats binaires commencent par quelques octets fixes, la <b>signature</b> (magic number). Un programme sérieux la lit avant de se fier au nom. On l'a relevée sur tous les fichiers de Magpie.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 240" width="100%">
+<rect fill="#EFE9E1" height="240" width="600" x="0" y="0"></rect>
+<text fill="#4A4A68" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="22">Les premiers octets des 2 528 fichiers suivis par Git dans Magpie (lus un à un, mesuré)</text>
+<rect fill="#fff" height="19" rx="3" width="568" x="16" y="34"></rect>
+<text class="mono" fill="#2E7D32" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="26" y="47">89 50 4e 47</text>
+<text class="mono" fill="#2B2F33" font-size="7.4" style="font-size:7.4px" text-anchor="start" x="128" y="47">‰PNG</text>
+<text fill="#2E7D32" font-size="8" font-weight="700" text-anchor="end" x="262" y="47">1 593</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="276" y="47">png</text>
+<rect fill="#ECECF2" height="19" rx="3" width="568" x="16" y="56"></rect>
+<text class="mono" fill="#1565C0" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="26" y="69">—</text>
+<text class="mono" fill="#2B2F33" font-size="7.4" style="font-size:7.4px" text-anchor="start" x="128" y="69">texte UTF-8</text>
+<text fill="#1565C0" font-size="8" font-weight="700" text-anchor="end" x="262" y="69">525</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="276" y="69">md, json, py, mjs, cs… (23 avec BOM)</text>
+<rect fill="#fff" height="19" rx="3" width="568" x="16" y="78"></rect>
+<text class="mono" fill="#C62828" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="26" y="91">(aucune)</text>
+<text class="mono" fill="#2B2F33" font-size="7.4" style="font-size:7.4px" text-anchor="start" x="128" y="91"></text>
+<text fill="#C62828" font-size="8" font-weight="700" text-anchor="end" x="262" y="91">137</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="276" y="91">gh : flux déflaté brut, dès l'octet 0</text>
+<rect fill="#ECECF2" height="19" rx="3" width="568" x="16" y="100"></rect>
+<text class="mono" fill="#7B1FA2" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="26" y="113">50 4b 03 04</text>
+<text class="mono" fill="#2B2F33" font-size="7.4" style="font-size:7.4px" text-anchor="start" x="128" y="113">PK</text>
+<text fill="#7B1FA2" font-size="8" font-weight="700" text-anchor="end" x="262" y="113">127</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="276" y="113">docx 126, xlsx 1 : des archives zip</text>
+<rect fill="#fff" height="19" rx="3" width="568" x="16" y="122"></rect>
+<text class="mono" fill="#00838F" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="26" y="135">ff d8 ff</text>
+<text class="mono" fill="#2B2F33" font-size="7.4" style="font-size:7.4px" text-anchor="start" x="128" y="135"></text>
+<text fill="#00838F" font-size="8" font-weight="700" text-anchor="end" x="262" y="135">124</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="276" y="135">jpg</text>
+<rect fill="#ECECF2" height="19" rx="3" width="568" x="16" y="144"></rect>
+<text class="mono" fill="#E65100" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="26" y="157">4d 5a</text>
+<text class="mono" fill="#2B2F33" font-size="7.4" style="font-size:7.4px" text-anchor="start" x="128" y="157">MZ</text>
+<text fill="#E65100" font-size="8" font-weight="700" text-anchor="end" x="262" y="157">12</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="276" y="157">gha 8, dll 4 : exécutables Windows</text>
+<rect fill="#fff" height="19" rx="3" width="568" x="16" y="166"></rect>
+<text class="mono" fill="#6D4C41" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="26" y="179">42 53 4a 42</text>
+<text class="mono" fill="#2B2F33" font-size="7.4" style="font-size:7.4px" text-anchor="start" x="128" y="179">BSJB</text>
+<text fill="#6D4C41" font-size="8" font-weight="700" text-anchor="end" x="262" y="179">8</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="276" y="179">pdb : symboles de débogage .NET</text>
+<rect fill="#ECECF2" height="19" rx="3" width="568" x="16" y="188"></rect>
+<text class="mono" fill="#4A4A68" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="26" y="201">33 44 20 47 …</text>
+<text class="mono" fill="#2B2F33" font-size="7.4" style="font-size:7.4px" text-anchor="start" x="128" y="201">3D Geometry File Format</text>
+<text fill="#4A4A68" font-size="8" font-weight="700" text-anchor="end" x="262" y="201">2</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="276" y="201">3dm (Rhinoceros 8)</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="226">L'extension est un nom ; la signature est le contenu. Un .docx est un zip, un .gha une DLL renommée.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Python, reconnaître un fichier à ses premiers octets</span>SIGNATURES = {b"\x89PNG": "png", b"PK\x03\x04": "zip", b"MZ": "exécutable", b"BSJB": "pdb"}
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Python, reconnaître un fichier à ses premiers octets</span>SIGNATURES = {b"\x89PNG": "png", b"PK\x03\x04": "zip", b"MZ": "exécutable", b"BSJB": "pdb"}
 def nature(chemin):
     debut = open(chemin, "rb").read(16)
     return next((n for s, n in SIGNATURES.items() if debut.startswith(s)), "inconnu")</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Le .gh n'en a pas</h3>
-      <p>Ses premiers octets (<code>cc ba 63 78</code> pour A_01.gh) n'annoncent rien : c'est un flux déflaté brut, sans en-tête zlib ni gzip. Seule la décompression, puis le mot « Root », confirment qu'on tient une archive Grasshopper.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Et le texte ?</h3>
-      <p>Il n'a pas de signature, sauf le BOM UTF-8 (<code>ef bb bf</code>) que Visual Studio ajoute : 22 des 51 fichiers .cs de Magpie en ont un. On reconnaît le texte à ce qu'il se décode sans erreur et ne contient pas d'octet nul.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Le .gh n'en a pas</h3>
+<p>Ses premiers octets (<code>cc ba 63 78</code> pour A_01.gh) n'annoncent rien : c'est un flux déflaté brut, sans en-tête zlib ni gzip. Seule la décompression, puis le mot « Root », confirment qu'on tient une archive Grasshopper.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Et le texte ?</h3>
+<p>Il n'a pas de signature, sauf le BOM UTF-8 (<code>ef bb bf</code>) que Visual Studio ajoute : 22 des 51 fichiers .cs de Magpie en ont un. On reconnaît le texte à ce qu'il se décode sans erreur et ne contient pas d'octet nul.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Juger un fichier à son extension. Un .docx renommé en .zip s'ouvre très bien, un .gha est une DLL. À l'inverse, un fichier qui porte la bonne extension peut être tronqué ou d'un autre format : la signature se vérifie avant de lire la suite.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 115 · Texte ou binaire</div>
+<div class="folio">2</div>
+<div class="pied">Cours 115 · Texte ou binaire</div>
 </section>
-
 <!-- ============ PAGE 3 · LIRE UN BINAIRE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 115</b></div>
-  <p class="rubrique">Schéma 2 · Lire un binaire</p>
-  <h2>Des longueurs, des types, un ordre d'octets</h2>
-  <p style="max-width:165mm">Sans balises, un format binaire doit dire à chaque pas combien d'octets suivent et comment les lire. L'archive GH_IO le fait avec trois règles, qu'on retrouve dans la plupart des formats binaires.</p>
-
-  <svg viewBox="0 0 600 222" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="222" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.4" fill="#4A4A68" text-anchor="start" font-weight="700">Les 52 premiers octets de A_01.gh une fois décompressé, et ce qu'ils veulent dire (mesuré)</text>
-<rect x="16" y="40" width="18.2" height="20" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
-<text x="25.1" y="52.4" font-size="7.2" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.2px">04</text>
-<text x="25.1" y="72" font-size="7" fill="#1565C0" text-anchor="middle" font-weight="700">long. 4</text>
-<text x="330" y="53" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">l'en-tête du chunk Root</text>
-<rect x="38.2" y="40" width="59.599999999999994" height="20" rx="4" fill="#fff" stroke="#2B2F33" stroke-width="1.2"/>
-<text x="68.0" y="52.4" font-size="7.2" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.2px">52 6f 6f 74</text>
-<text x="68.0" y="72" font-size="7" fill="#2B2F33" text-anchor="middle" font-weight="700">Root</text>
-<rect x="101.8" y="40" width="59.599999999999994" height="20" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
-<text x="131.6" y="52.4" font-size="7.2" fill="#E65100" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.2px">ff ff ff ff</text>
-<text x="131.6" y="72" font-size="7" fill="#E65100" text-anchor="middle" font-weight="700">index -1</text>
-<rect x="165.39999999999998" y="40" width="59.599999999999994" height="20" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="195.2" y="52.4" font-size="7.2" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.2px">01 00 00 00</text>
-<text x="195.2" y="72" font-size="7" fill="#2E7D32" text-anchor="middle" font-weight="700">1 item</text>
-<rect x="228.99999999999997" y="40" width="59.599999999999994" height="20" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="258.79999999999995" y="52.4" font-size="7.2" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.2px">02 00 00 00</text>
-<text x="258.79999999999995" y="72" font-size="7" fill="#2E7D32" text-anchor="middle" font-weight="700">2 chunks</text>
-<rect x="16" y="90" width="18.2" height="20" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
-<text x="25.1" y="102.4" font-size="7.2" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.2px">0e</text>
-<text x="25.1" y="122" font-size="7" fill="#1565C0" text-anchor="middle" font-weight="700">long. 14</text>
-<rect x="38.2" y="90" width="68.8" height="20" rx="4" fill="#fff" stroke="#2B2F33" stroke-width="1.2"/>
-<text x="72.6" y="102.4" font-size="7.2" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.2px">41 72 63 … 6e</text>
-<text x="72.6" y="122" font-size="7" fill="#2B2F33" text-anchor="middle" font-weight="700">ArchiveVersion</text>
-<rect x="111.0" y="90" width="59.599999999999994" height="20" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
-<text x="140.8" y="102.4" font-size="7.2" fill="#E65100" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.2px">ff ff ff ff</text>
-<text x="140.8" y="122" font-size="7" fill="#E65100" text-anchor="middle" font-weight="700">index -1</text>
-<rect x="174.6" y="90" width="59.599999999999994" height="20" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
-<text x="204.39999999999998" y="102.4" font-size="7.2" fill="#7B1FA2" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.2px">50 00 00 00</text>
-<text x="204.39999999999998" y="122" font-size="7" fill="#7B1FA2" text-anchor="middle" font-weight="700">type 80</text>
-<rect x="238.2" y="90" width="59.599999999999994" height="20" rx="4" fill="#fff" stroke="#00838F" stroke-width="1.2"/>
-<text x="268.0" y="102.4" font-size="7.2" fill="#00838F" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.2px">00 00 00 00</text>
-<text x="268.0" y="122" font-size="7" fill="#00838F" text-anchor="middle" font-weight="700">0</text>
-<rect x="301.79999999999995" y="90" width="59.599999999999994" height="20" rx="4" fill="#fff" stroke="#00838F" stroke-width="1.2"/>
-<text x="331.59999999999997" y="102.4" font-size="7.2" fill="#00838F" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.2px">02 00 00 00</text>
-<text x="331.59999999999997" y="122" font-size="7" fill="#00838F" text-anchor="middle" font-weight="700">2</text>
-<rect x="365.4" y="90" width="59.599999999999994" height="20" rx="4" fill="#fff" stroke="#00838F" stroke-width="1.2"/>
-<text x="395.2" y="102.4" font-size="7.2" fill="#00838F" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.2px">02 00 00 00</text>
-<text x="395.2" y="122" font-size="7" fill="#00838F" text-anchor="middle" font-weight="700">2</text>
-<text x="437.0" y="103" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">son premier item</text>
-<text x="16" y="152" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">Trois règles suffisent : une chaîne est précédée de sa longueur en octets ; un entier tient sur 4 octets,</text>
-<text x="16" y="166" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">l'octet de poids faible d'abord (petit-boutiste : 50 00 00 00 vaut 80) ; chaque item annonce son type avant sa valeur.</text>
-<text x="16" y="188" font-size="7.8" fill="#2B2F33" text-anchor="start">Le type 80 (une version) annonce trois entiers : ArchiveVersion vaut 0.2.2, la valeur que skeleton.mjs:63 écrit en texte.</text>
-<text x="16" y="206" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Avec ces règles, un lecteur de 50 lignes en Python parcourt les 65 306 octets : 191 chunks, 736 items, pas un octet de reste.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 115</b></div>
+<p class="rubrique">Schéma 2 · Lire un binaire</p>
+<h2>Des longueurs, des types, un ordre d'octets</h2>
+<p style="max-width:165mm">Sans balises, un format binaire doit dire à chaque pas combien d'octets suivent et comment les lire. L'archive GH_IO le fait avec trois règles, qu'on retrouve dans la plupart des formats binaires.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 222" width="100%">
+<rect fill="#EFE9E1" height="222" width="600" x="0" y="0"></rect>
+<text fill="#4A4A68" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="22">Les 52 premiers octets de A_01.gh une fois décompressé, et ce qu'ils veulent dire (mesuré)</text>
+<rect fill="#fff" height="20" rx="4" stroke="#1565C0" stroke-width="1.2" width="18.2" x="16" y="40"></rect>
+<text class="mono" fill="#1565C0" font-size="7.2" font-weight="700" style="font-size:7.2px" text-anchor="middle" x="25.1" y="52.4">04</text>
+<text fill="#1565C0" font-size="7" font-weight="700" text-anchor="middle" x="25.1" y="72">long. 4</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="330" y="53">l'en-tête du chunk Root</text>
+<rect fill="#fff" height="20" rx="4" stroke="#2B2F33" stroke-width="1.2" width="59.599999999999994" x="38.2" y="40"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.2" font-weight="700" style="font-size:7.2px" text-anchor="middle" x="68.0" y="52.4">52 6f 6f 74</text>
+<text fill="#2B2F33" font-size="7" font-weight="700" text-anchor="middle" x="68.0" y="72">Root</text>
+<rect fill="#fff" height="20" rx="4" stroke="#E65100" stroke-width="1.2" width="59.599999999999994" x="101.8" y="40"></rect>
+<text class="mono" fill="#E65100" font-size="7.2" font-weight="700" style="font-size:7.2px" text-anchor="middle" x="131.6" y="52.4">ff ff ff ff</text>
+<text fill="#E65100" font-size="7" font-weight="700" text-anchor="middle" x="131.6" y="72">index -1</text>
+<rect fill="#fff" height="20" rx="4" stroke="#2E7D32" stroke-width="1.2" width="59.599999999999994" x="165.39999999999998" y="40"></rect>
+<text class="mono" fill="#2E7D32" font-size="7.2" font-weight="700" style="font-size:7.2px" text-anchor="middle" x="195.2" y="52.4">01 00 00 00</text>
+<text fill="#2E7D32" font-size="7" font-weight="700" text-anchor="middle" x="195.2" y="72">1 item</text>
+<rect fill="#fff" height="20" rx="4" stroke="#2E7D32" stroke-width="1.2" width="59.599999999999994" x="228.99999999999997" y="40"></rect>
+<text class="mono" fill="#2E7D32" font-size="7.2" font-weight="700" style="font-size:7.2px" text-anchor="middle" x="258.79999999999995" y="52.4">02 00 00 00</text>
+<text fill="#2E7D32" font-size="7" font-weight="700" text-anchor="middle" x="258.79999999999995" y="72">2 chunks</text>
+<rect fill="#fff" height="20" rx="4" stroke="#1565C0" stroke-width="1.2" width="18.2" x="16" y="90"></rect>
+<text class="mono" fill="#1565C0" font-size="7.2" font-weight="700" style="font-size:7.2px" text-anchor="middle" x="25.1" y="102.4">0e</text>
+<text fill="#1565C0" font-size="7" font-weight="700" text-anchor="middle" x="25.1" y="122">long. 14</text>
+<rect fill="#fff" height="20" rx="4" stroke="#2B2F33" stroke-width="1.2" width="68.8" x="38.2" y="90"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.2" font-weight="700" style="font-size:7.2px" text-anchor="middle" x="72.6" y="102.4">41 72 63 … 6e</text>
+<text fill="#2B2F33" font-size="7" font-weight="700" text-anchor="middle" x="72.6" y="122">ArchiveVersion</text>
+<rect fill="#fff" height="20" rx="4" stroke="#E65100" stroke-width="1.2" width="59.599999999999994" x="111.0" y="90"></rect>
+<text class="mono" fill="#E65100" font-size="7.2" font-weight="700" style="font-size:7.2px" text-anchor="middle" x="140.8" y="102.4">ff ff ff ff</text>
+<text fill="#E65100" font-size="7" font-weight="700" text-anchor="middle" x="140.8" y="122">index -1</text>
+<rect fill="#fff" height="20" rx="4" stroke="#7B1FA2" stroke-width="1.2" width="59.599999999999994" x="174.6" y="90"></rect>
+<text class="mono" fill="#7B1FA2" font-size="7.2" font-weight="700" style="font-size:7.2px" text-anchor="middle" x="204.39999999999998" y="102.4">50 00 00 00</text>
+<text fill="#7B1FA2" font-size="7" font-weight="700" text-anchor="middle" x="204.39999999999998" y="122">type 80</text>
+<rect fill="#fff" height="20" rx="4" stroke="#00838F" stroke-width="1.2" width="59.599999999999994" x="238.2" y="90"></rect>
+<text class="mono" fill="#00838F" font-size="7.2" font-weight="700" style="font-size:7.2px" text-anchor="middle" x="268.0" y="102.4">00 00 00 00</text>
+<text fill="#00838F" font-size="7" font-weight="700" text-anchor="middle" x="268.0" y="122">0</text>
+<rect fill="#fff" height="20" rx="4" stroke="#00838F" stroke-width="1.2" width="59.599999999999994" x="301.79999999999995" y="90"></rect>
+<text class="mono" fill="#00838F" font-size="7.2" font-weight="700" style="font-size:7.2px" text-anchor="middle" x="331.59999999999997" y="102.4">02 00 00 00</text>
+<text fill="#00838F" font-size="7" font-weight="700" text-anchor="middle" x="331.59999999999997" y="122">2</text>
+<rect fill="#fff" height="20" rx="4" stroke="#00838F" stroke-width="1.2" width="59.599999999999994" x="365.4" y="90"></rect>
+<text class="mono" fill="#00838F" font-size="7.2" font-weight="700" style="font-size:7.2px" text-anchor="middle" x="395.2" y="102.4">02 00 00 00</text>
+<text fill="#00838F" font-size="7" font-weight="700" text-anchor="middle" x="395.2" y="122">2</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="437.0" y="103">son premier item</text>
+<text fill="#2B2F33" font-size="8" font-weight="700" text-anchor="start" x="16" y="152">Trois règles suffisent : une chaîne est précédée de sa longueur en octets ; un entier tient sur 4 octets,</text>
+<text fill="#2B2F33" font-size="8" font-weight="700" text-anchor="start" x="16" y="166">l'octet de poids faible d'abord (petit-boutiste : 50 00 00 00 vaut 80) ; chaque item annonce son type avant sa valeur.</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="16" y="188">Le type 80 (une version) annonce trois entiers : ArchiveVersion vaut 0.2.2, la valeur que skeleton.mjs:63 écrit en texte.</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="16" y="206">Avec ces règles, un lecteur de 50 lignes en Python parcourt les 65 306 octets : 191 chunks, 736 items, pas un octet de reste.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Python, lire une chaîne et un entier GH_IO</span>def chaine(b, p):                    # longueur sur 7 bits par octet, puis l'UTF-8
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Python, lire une chaîne et un entier GH_IO</span>def chaine(b, p):                    # longueur sur 7 bits par octet, puis l'UTF-8
     n, dec = 0, 0
     while True:
         c = b[p]; p += 1; n |= (c &amp; 0x7F) &lt;&lt; dec; dec += 7
         if c &lt; 0x80: return b[p:p + n].decode("utf-8"), p + n
 entier = struct.unpack_from("&lt;i", b, p)[0]   # "&lt;" : petit-boutiste, "i" : 4 octets signés</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Octets, pas caractères</h3>
-      <p>« CJ-Développement » compte 16 caractères, mais 17 octets : le « é » en prend deux en UTF-8 (<code>c3 a9</code>). La longueur annoncée, <code>11</code> en hexadécimal, compte les octets.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Le type d'abord</h3>
-      <p>Chaque item porte un code : 10 pour une chaîne, 3 pour un entier, 9 pour un GUID (16 octets), 37 pour une image. Le lecteur choisit sa façon de lire d'après ce code ; un code inconnu, et la lecture ne peut plus avancer.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Octets, pas caractères</h3>
+<p>« CJ-Développement » compte 16 caractères, mais 17 octets : le « é » en prend deux en UTF-8 (<code>c3 a9</code>). La longueur annoncée, <code>11</code> en hexadécimal, compte les octets.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Le type d'abord</h3>
+<p>Chaque item porte un code : 10 pour une chaîne, 3 pour un entier, 9 pour un GUID (16 octets), 37 pour une image. Le lecteur choisit sa façon de lire d'après ce code ; un code inconnu, et la lecture ne peut plus avancer.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Lire un entier dans le mauvais ordre. 50 00 00 00 vaut 80 en petit-boutiste, mais 1 342 177 280 en gros-boutiste. Windows, .NET et les processeurs x86 sont petit-boutistes ; le réseau et certains formats anciens ne le sont pas. Le format doit le dire.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 115 · Texte ou binaire</div>
+<div class="folio">3</div>
+<div class="pied">Cours 115 · Texte ou binaire</div>
 </section>
-
 <!-- ============ PAGE 4 · LE PRIX DU TEXTE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 115</b></div>
-  <p class="rubrique">Schéma 3 · Ce que coûte chaque forme</p>
-  <h2>Le texte est gros, puis la compression l'efface</h2>
-  <p style="max-width:165mm">On a converti l'arbre de A_01.gh en XML, avec les conventions de xml-builder.mjs, puis mesuré chaque forme. Le surcoût du texte est réel, mais il fond presque entièrement à la compression.</p>
-
-  <svg viewBox="0 0 600 226" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="226" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.4" fill="#4A4A68" text-anchor="start" font-weight="700">A_01.gh sous cinq formes, en octets (mesuré ; la forme XML est reconstituée à partir du binaire)</text>
-<text x="16" y="49" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">.gh, tel que sur le disque</text>
-<rect x="170" y="38" width="62.1" height="15" rx="2" fill="#4A4A68"/>
-<text x="238.06034399458883" y="49" font-size="7.6" fill="#4A4A68" text-anchor="start" font-weight="700">46 710</text>
-<text x="16" y="73" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">binaire décompressé</text>
-<rect x="170" y="62" width="86.8" height="15" rx="2" fill="#6B7378"/>
-<text x="262.76756208329306" y="73" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700">65 306</text>
-<text x="16" y="97" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">XML reconstitué</text>
-<rect x="170" y="86" width="247.5" height="15" rx="2" fill="#1565C0"/>
-<text x="423.5" y="97" font-size="7.6" fill="#1565C0" text-anchor="start" font-weight="700">186 282</text>
-<text x="16" y="121" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">XML déflaté</text>
-<rect x="170" y="110" width="66.7" height="15" rx="2" fill="#2E7D32"/>
-<text x="242.74111025219827" y="121" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">50 233</text>
-<text x="16" y="145" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">XML en base64</text>
-<rect x="170" y="134" width="330.0" height="15" rx="2" fill="#C62828"/>
-<text x="506.0" y="145" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">248 376</text>
-<text x="16" y="172" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Le texte coûte 2,9 fois le binaire ; compressés, ils ne diffèrent plus que de 7,5 % : les balises répétées se compressent très bien.</text>
-<text x="16" y="188" font-size="7.8" fill="#2B2F33" text-anchor="start">Le base64 ajoute un tiers : c'est la forme que compute-proxy.mjs:202 envoie à Rhino Compute, dans du JSON.</text>
-<text x="16" y="210" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Dans le binaire, 7 931 octets sont une vignette PNG de 150 × 100, déjà compressée : le type 37, une image.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 115</b></div>
+<p class="rubrique">Schéma 3 · Ce que coûte chaque forme</p>
+<h2>Le texte est gros, puis la compression l'efface</h2>
+<p style="max-width:165mm">On a converti l'arbre de A_01.gh en XML, avec les conventions de xml-builder.mjs, puis mesuré chaque forme. Le surcoût du texte est réel, mais il fond presque entièrement à la compression.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 226" width="100%">
+<rect fill="#EFE9E1" height="226" width="600" x="0" y="0"></rect>
+<text fill="#4A4A68" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="22">A_01.gh sous cinq formes, en octets (mesuré ; la forme XML est reconstituée à partir du binaire)</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="49">.gh, tel que sur le disque</text>
+<rect fill="#4A4A68" height="15" rx="2" width="62.1" x="170" y="38"></rect>
+<text fill="#4A4A68" font-size="7.6" font-weight="700" text-anchor="start" x="238.06034399458883" y="49">46 710</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="73">binaire décompressé</text>
+<rect fill="#6B7378" height="15" rx="2" width="86.8" x="170" y="62"></rect>
+<text fill="#6B7378" font-size="7.6" font-weight="700" text-anchor="start" x="262.76756208329306" y="73">65 306</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="97">XML reconstitué</text>
+<rect fill="#1565C0" height="15" rx="2" width="247.5" x="170" y="86"></rect>
+<text fill="#1565C0" font-size="7.6" font-weight="700" text-anchor="start" x="423.5" y="97">186 282</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="121">XML déflaté</text>
+<rect fill="#2E7D32" height="15" rx="2" width="66.7" x="170" y="110"></rect>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="242.74111025219827" y="121">50 233</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="145">XML en base64</text>
+<rect fill="#C62828" height="15" rx="2" width="330.0" x="170" y="134"></rect>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="506.0" y="145">248 376</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="172">Le texte coûte 2,9 fois le binaire ; compressés, ils ne diffèrent plus que de 7,5 % : les balises répétées se compressent très bien.</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="16" y="188">Le base64 ajoute un tiers : c'est la forme que compute-proxy.mjs:202 envoie à Rhino Compute, dans du JSON.</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="210">Dans le binaire, 7 931 octets sont une vignette PNG de 150 × 100, déjà compressée : le type 37, une image.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Python, décompresser un .gh</span>import zlib
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Python, décompresser un .gh</span>import zlib
 brut = open("A_01.gh", "rb").read()             # 46 710 octets
 arbre = zlib.decompress(brut, -15)              # -15 : déflate brut, sans en-tête
 print(len(arbre), arbre[1:5])                   # 65306 b'Root'</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Ce que Git en voit</h3>
-      <p>Le .gh contient des octets nuls (25 dans ses 8 000 premiers), donc Git le traite en binaire : les 275 modifications de .gh de l'historique s'affichent « - - » au numstat, sans aucune ligne de diff. Un .ghx se relirait ligne à ligne.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Pourquoi le base64</h3>
-      <p>JSON ne transporte que du texte. Pour y glisser un fichier, on code 3 octets en 4 caractères sûrs : 186 282 octets deviennent 248 376, exactement un tiers de plus.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Ce que Git en voit</h3>
+<p>Le .gh contient des octets nuls (25 dans ses 8 000 premiers), donc Git le traite en binaire : les 275 modifications de .gh de l'historique s'affichent « - - » au numstat, sans aucune ligne de diff. Un .ghx se relirait ligne à ligne.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Pourquoi le base64</h3>
+<p>JSON ne transporte que du texte. Pour y glisser un fichier, on code 3 octets en 4 caractères sûrs : 186 282 octets deviennent 248 376, exactement un tiers de plus.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Choisir le binaire « pour gagner de la place ». Une fois compressé, le texte n'est plus que 7,5 % plus gros ici, et il se relit, se compare et se répare à la main. Le binaire se justifie par la vitesse de lecture ou par des données déjà binaires (images, maillages).
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 115 · Texte ou binaire</div>
+<div class="folio">4</div>
+<div class="pied">Cours 115 · Texte ou binaire</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 115</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>Les codes de type de Magpie web</h2>
-  <p style="max-width:165mm">Le sérialiseur écrit du XML, mais il recopie les codes de type du format binaire dans un attribut : Grasshopper s'en sert pour relire chaque valeur.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 115</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>Les codes de type de Magpie web</h2>
+<p style="max-width:165mm">Le sérialiseur écrit du XML, mais il recopie les codes de type du format binaire dans un attribut : Grasshopper s'en sert pour relire chaque valeur.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">magpie/web/src/serializer/xml-builder.mjs</span></div>
 <div class="l k1"><span class="n">7</span>  gh_bool: 1,<span class="rep r1">1</span></div>
@@ -310,137 +283,55 @@ print(len(arbre), arbre[1:5])                   # 65306 b'Root'</div>
 <div class="l"><span class="cm">magpie/web/compute-proxy.mjs</span></div>
 <div class="l k5"><span class="n">202</span>body: JSON.stringify({ algo: toBase64Utf8(xml), … }),<span class="rep r5">5</span></div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>Booléen</b>Un octet en binaire.</li>
-      <li><span class="rep r2">2</span><b>Chaîne</b>Longueur puis UTF-8.</li>
-      <li><span class="rep r3">3</span><b>Version</b>Trois entiers.</li>
-      <li><span class="rep r4">4</span><b>Le code recopié</b>En attribut.</li>
-      <li><span class="rep r5">5</span><b>Vers Compute</b>XML en base64.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À surveiller · un type absent de la table</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>Booléen</b>Un octet en binaire.</li>
+<li><span class="rep r2">2</span><b>Chaîne</b>Longueur puis UTF-8.</li>
+<li><span class="rep r3">3</span><b>Version</b>Trois entiers.</li>
+<li><span class="rep r4">4</span><b>Le code recopié</b>En attribut.</li>
+<li><span class="rep r5">5</span><b>Vers Compute</b>XML en base64.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À surveiller · un type absent de la table</span>
     TYPE_CODES liste 16 types. A_01.gh en utilise 14 (mesuré), dont deux absents de la table : 20 (tableau d'octets) et 37 (image, la vignette). Rejoué sur une copie de xml-builder.mjs : un item « gh_drawing_bitmap » sort avec type_code="undefined", sans erreur (mesuré). Aujourd'hui ces items n'arrivent que par rawChunk, recopiés tels quels ; déduit : ajouter un type sans l'inscrire aux lignes 6–23 produirait un .ghx que Grasshopper refuserait. Relevé sans rien modifier.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 115 · Texte ou binaire</div>
+<div class="folio">5</div>
+<div class="pied">Cours 115 · Texte ou binaire</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 115</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 115</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">Un .gh et un .ghx diffèrent par…</div><ul>
-      <li><span>A</span>la version de Rhino</li><li><span>B</span>rien</li><li><span>C</span>leur écriture, pas leur contenu</li><li><span>D</span>leur contenu</li></ul></div>
 
-    <div class="q"><div class="enonce">Pour reconnaître un format, on se fie d'abord…</div><ul>
-      <li><span>A</span>à sa signature</li><li><span>B</span>à sa date</li><li><span>C</span>à sa taille</li><li><span>D</span>à son extension</li></ul></div>
 
-    <div class="q"><div class="enonce">Un .docx commence par…</div><ul>
-      <li><span>A</span>MZ</li><li><span>B</span>PK, comme un zip</li><li><span>C</span>&lt;?xml</li><li><span>D</span>%PDF</li></ul></div>
 
-    <div class="q"><div class="enonce">Les premiers octets d'un .gh…</div><ul>
-      <li><span>A</span>sont un en-tête zlib</li><li><span>B</span>disent « GH »</li><li><span>C</span>n'annoncent rien : déflate brut</li><li><span>D</span>sont du XML</li></ul></div>
-
-    <div class="q"><div class="enonce">50 00 00 00, lu en petit-boutiste, vaut…</div><ul>
-      <li><span>A</span>5</li><li><span>B</span>50</li><li><span>C</span>1 342 177 280</li><li><span>D</span>80</li></ul></div>
-
-    <div class="q"><div class="enonce">La longueur avant « CJ-Développement » vaut…</div><ul>
-      <li><span>A</span>elle est absente</li><li><span>B</span>15</li><li><span>C</span>16, en caractères</li><li><span>D</span>17, en octets</li></ul></div>
-
-    <div class="q"><div class="enonce">Dans GH_IO, chaque item annonce…</div><ul>
-      <li><span>A</span>sa date</li><li><span>B</span>sa valeur seule</li><li><span>C</span>son nom, son index, son type, puis sa valeur</li><li><span>D</span>sa taille en bits</li></ul></div>
-
-    <div class="q"><div class="enonce">Compressés, le XML et le binaire de A_01…</div><ul>
-      <li><span>A</span>ne diffèrent que de 7,5 %</li><li><span>B</span>diffèrent d'un facteur 3</li><li><span>C</span>ne se compressent pas</li><li><span>D</span>sont identiques</li></ul></div>
-
-    <div class="q"><div class="enonce">Le base64 augmente la taille…</div><ul>
-      <li><span>A</span>pas du tout</li><li><span>B</span>d'un tiers</li><li><span>C</span>de moitié</li><li><span>D</span>de 10 %</li></ul></div>
-
-    <div class="q"><div class="enonce">Git traite un .gh en binaire parce qu'il…</div><ul>
-      <li><span>A</span>contient des octets nuls</li><li><span>B</span>a l'extension .gh</li><li><span>C</span>est gros</li><li><span>D</span>est déclaré dans .gitattributes</li></ul></div>
-
-    <div class="q"><div class="enonce">Raisons valables de choisir le binaire… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>le diff dans Git</li><li><span>B</span>la relecture à l'œil</li><li><span>C</span>la vitesse de lecture</li><li><span>D</span>des données déjà binaires</li></ul></div>
-
-    <div class="q"><div class="enonce">Un type absent de TYPE_CODES sort avec…</div><ul>
-      <li><span>A</span>le code 10</li><li><span>B</span>type_code="undefined"</li><li><span>C</span>une erreur</li><li><span>D</span>type_code="0"</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 115 · Texte ou binaire</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">open(f, "rb").read(16)</td><td>lire la signature</td><td>page 2</td></tr>
+<tr><td class="c">struct.unpack_from("&lt;i", b, p)</td><td>un entier petit-boutiste</td><td>page 3</td></tr>
+<tr><td class="c">zlib.decompress(brut, -15)</td><td>ouvrir un .gh</td><td>page 4</td></tr>
+<tr><td class="c">Buffer.from(s).toString("base64")</td><td>du binaire dans du JSON</td><td>compute-proxy.mjs:441</td></tr>
+<tr><td class="c">TYPE_CODES[node.typeName]</td><td>le code de type GH_IO</td><td>xml-builder.mjs:63</td></tr>
+<tr><td class="c">git log --numstat</td><td>« - - » : Git voit du binaire</td><td>page 4</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Signature</dt><dd>Les octets fixes qui ouvrent un format (magic number).</dd>
+<dt>Petit-boutiste</dt><dd>L'octet de poids faible écrit en premier (little-endian).</dd>
+<dt>Préfixe de longueur</dt><dd>Le nombre d'octets qui suivent, écrit avant eux.</dd>
+<dt>BOM</dt><dd>Les octets ef bb bf qui marquent un texte UTF-8.</dd>
+<dt>Base64</dt><dd>Un codage du binaire en caractères sûrs, 4 pour 3 octets.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 116</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 115 · Texte ou binaire</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 115</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · C.</b> Le même arbre GH_IO.</div>
-    <div><b>02 · A.</b> Le nom peut mentir.</div>
-    <div><b>03 · B.</b> 126 docx sur 126.</div>
-    <div><b>04 · C.</b> Rien avant la décompression.</div>
-    <div><b>05 · D.</b> Poids faible d'abord.</div>
-    <div><b>06 · D.</b> Le « é » vaut 2 octets.</div>
-    <div><b>07 · C.</b> Le type guide la lecture.</div>
-    <div><b>08 · A.</b> 50 233 contre 46 710.</div>
-    <div><b>09 · B.</b> 4 caractères pour 3 octets.</div>
-    <div><b>10 · A.</b> 25 dans les 8 000 premiers.</div>
-    <div><b>11 · C et D.</b> Pas pour l'œil.</div>
-    <div><b>12 · B.</b> Sans erreur, mesuré.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 116, « XML et le .ghx ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">open(f, "rb").read(16)</td><td>lire la signature</td><td>page 2</td></tr>
-      <tr><td class="c">struct.unpack_from("&lt;i", b, p)</td><td>un entier petit-boutiste</td><td>page 3</td></tr>
-      <tr><td class="c">zlib.decompress(brut, -15)</td><td>ouvrir un .gh</td><td>page 4</td></tr>
-      <tr><td class="c">Buffer.from(s).toString("base64")</td><td>du binaire dans du JSON</td><td>compute-proxy.mjs:441</td></tr>
-      <tr><td class="c">TYPE_CODES[node.typeName]</td><td>le code de type GH_IO</td><td>xml-builder.mjs:63</td></tr>
-      <tr><td class="c">git log --numstat</td><td>« - - » : Git voit du binaire</td><td>page 4</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Signature</dt><dd>Les octets fixes qui ouvrent un format (magic number).</dd>
-    <dt>Petit-boutiste</dt><dd>L'octet de poids faible écrit en premier (little-endian).</dd>
-    <dt>Préfixe de longueur</dt><dd>Le nombre d'octets qui suivent, écrit avant eux.</dd>
-    <dt>BOM</dt><dd>Les octets ef bb bf qui marquent un texte UTF-8.</dd>
-    <dt>Base64</dt><dd>Un codage du binaire en caractères sûrs, 4 pour 3 octets.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 116</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 115 · Texte ou binaire</div>
-</section>
-
 </body>
 </html>

@@ -1,282 +1,255 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>70 · IP, ports, DNS et TCP</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-9">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 70</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>IP, ports, DNS et TCP</h1>
-  <p class="chapeau">Sous chaque requête HTTP (cours 61) se cachent trois étages plus anciens. Le <b>DNS</b> traduit un nom en <b>adresse IP</b> ; l'adresse désigne une machine, le <b>port</b> un programme sur cette machine ; <b>TCP</b> ouvre entre les deux une connexion fiable, dans laquelle HTTP circule. Quand « ça ne se connecte pas », c'est presque toujours à l'un de ces étages.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>61</b> et <b>66</b></span>
-    <span class="pastille">Exemples · <b>compute-proxy.mjs</b>, <b>vite.config.js</b> (Magpie)</span>
-  </div>
-
-  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
-    <svg viewBox="0 0 600 190" width="100%">
-<rect x="70" y="14" width="70" height="34" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
-<text x="105.0" y="34.333333333333336" font-size="10" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:10px">http://</text>
-<text x="105.0" y="66" font-size="7.8" fill="#1565C0" text-anchor="middle" font-weight="700">le protocole</text>
-<rect x="146" y="14" width="104" height="34" rx="4" fill="#fff" stroke="#A03A2C" stroke-width="1.2"/>
-<text x="198.0" y="34.333333333333336" font-size="10" fill="#A03A2C" text-anchor="middle" font-weight="700" class="mono" style="font-size:10px">localhost</text>
-<text x="198.0" y="66" font-size="7.8" fill="#A03A2C" text-anchor="middle" font-weight="700">l'hôte : un nom</text>
-<rect x="256" y="14" width="62" height="34" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
-<text x="287.0" y="34.333333333333336" font-size="10" fill="#7B1FA2" text-anchor="middle" font-weight="700" class="mono" style="font-size:10px">:5175</text>
-<text x="287.0" y="66" font-size="7.8" fill="#7B1FA2" text-anchor="middle" font-weight="700">le port</text>
-<rect x="324" y="14" width="120" height="34" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="384.0" y="34.333333333333336" font-size="10" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:10px">/api/catalog</text>
-<text x="384.0" y="66" font-size="7.8" fill="#2E7D32" text-anchor="middle" font-weight="700">le chemin</text>
-<rect x="16" y="92" width="176" height="62" rx="4" fill="#fff" stroke="#A03A2C" stroke-width="1.2"/>
-<text x="104" y="110" font-size="9.4" fill="#A03A2C" text-anchor="middle" font-weight="700">1. DNS</text>
-<text x="104" y="126" font-size="7.6" fill="#2B2F33" text-anchor="middle">le nom devient une adresse IP</text>
-<text x="104" y="143" font-size="7.8" fill="#A03A2C" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.8px">localhost → 127.0.0.1</text>
-<line x1="194" y1="123" x2="210" y2="123" stroke="#6B7378" stroke-width="1.3"/><polygon points="210,123 203.6,125.7 203.6,120.3" fill="#6B7378"/>
-<rect x="212" y="92" width="176" height="62" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
-<text x="300" y="110" font-size="9.4" fill="#7B1FA2" text-anchor="middle" font-weight="700">2. TCP</text>
-<text x="300" y="126" font-size="7.6" fill="#2B2F33" text-anchor="middle">une connexion vers ce port</text>
-<text x="300" y="143" font-size="7.8" fill="#7B1FA2" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.8px">127.0.0.1:5175</text>
-<line x1="390" y1="123" x2="406" y2="123" stroke="#6B7378" stroke-width="1.3"/><polygon points="406,123 399.6,125.7 399.6,120.3" fill="#6B7378"/>
-<rect x="408" y="92" width="176" height="62" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="496" y="110" font-size="9.4" fill="#2E7D32" text-anchor="middle" font-weight="700">3. HTTP</text>
-<text x="496" y="126" font-size="7.6" fill="#2B2F33" text-anchor="middle">la requête circule dedans</text>
-<text x="496" y="143" font-size="7.8" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.8px">GET /api/catalog</text>
-<text x="300" y="180" font-size="7.8" fill="#6B7378" text-anchor="middle" font-style="italic">Trois étapes, trois façons d'échouer : nom inconnu, personne à ce port, serveur muet.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 70</b></div>
+<p class="rubrique">Le concept</p>
+<h1>IP, ports, DNS et TCP</h1>
+<p class="chapeau">Sous chaque requête HTTP (cours 61) se cachent trois étages plus anciens. Le <b>DNS</b> traduit un nom en <b>adresse IP</b> ; l'adresse désigne une machine, le <b>port</b> un programme sur cette machine ; <b>TCP</b> ouvre entre les deux une connexion fiable, dans laquelle HTTP circule. Quand « ça ne se connecte pas », c'est presque toujours à l'un de ces étages.</p>
+<div class="meta">
+<span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>61</b> et <b>66</b></span>
+<span class="pastille">Exemples · <b>compute-proxy.mjs</b>, <b>vite.config.js</b> (Magpie)</span>
+</div>
+<div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+<svg viewbox="0 0 600 190" width="100%">
+<rect fill="#fff" height="34" rx="4" stroke="#1565C0" stroke-width="1.2" width="70" x="70" y="14"></rect>
+<text class="mono" fill="#1565C0" font-size="10" font-weight="700" style="font-size:10px" text-anchor="middle" x="105.0" y="34.333333333333336">http://</text>
+<text fill="#1565C0" font-size="7.8" font-weight="700" text-anchor="middle" x="105.0" y="66">le protocole</text>
+<rect fill="#fff" height="34" rx="4" stroke="#A03A2C" stroke-width="1.2" width="104" x="146" y="14"></rect>
+<text class="mono" fill="#A03A2C" font-size="10" font-weight="700" style="font-size:10px" text-anchor="middle" x="198.0" y="34.333333333333336">localhost</text>
+<text fill="#A03A2C" font-size="7.8" font-weight="700" text-anchor="middle" x="198.0" y="66">l'hôte : un nom</text>
+<rect fill="#fff" height="34" rx="4" stroke="#7B1FA2" stroke-width="1.2" width="62" x="256" y="14"></rect>
+<text class="mono" fill="#7B1FA2" font-size="10" font-weight="700" style="font-size:10px" text-anchor="middle" x="287.0" y="34.333333333333336">:5175</text>
+<text fill="#7B1FA2" font-size="7.8" font-weight="700" text-anchor="middle" x="287.0" y="66">le port</text>
+<rect fill="#fff" height="34" rx="4" stroke="#2E7D32" stroke-width="1.2" width="120" x="324" y="14"></rect>
+<text class="mono" fill="#2E7D32" font-size="10" font-weight="700" style="font-size:10px" text-anchor="middle" x="384.0" y="34.333333333333336">/api/catalog</text>
+<text fill="#2E7D32" font-size="7.8" font-weight="700" text-anchor="middle" x="384.0" y="66">le chemin</text>
+<rect fill="#fff" height="62" rx="4" stroke="#A03A2C" stroke-width="1.2" width="176" x="16" y="92"></rect>
+<text fill="#A03A2C" font-size="9.4" font-weight="700" text-anchor="middle" x="104" y="110">1. DNS</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="middle" x="104" y="126">le nom devient une adresse IP</text>
+<text class="mono" fill="#A03A2C" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="middle" x="104" y="143">localhost → 127.0.0.1</text>
+<line stroke="#6B7378" stroke-width="1.3" x1="194" x2="210" y1="123" y2="123"></line><polygon fill="#6B7378" points="210,123 203.6,125.7 203.6,120.3"></polygon>
+<rect fill="#fff" height="62" rx="4" stroke="#7B1FA2" stroke-width="1.2" width="176" x="212" y="92"></rect>
+<text fill="#7B1FA2" font-size="9.4" font-weight="700" text-anchor="middle" x="300" y="110">2. TCP</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="middle" x="300" y="126">une connexion vers ce port</text>
+<text class="mono" fill="#7B1FA2" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="middle" x="300" y="143">127.0.0.1:5175</text>
+<line stroke="#6B7378" stroke-width="1.3" x1="390" x2="406" y1="123" y2="123"></line><polygon fill="#6B7378" points="406,123 399.6,125.7 399.6,120.3"></polygon>
+<rect fill="#fff" height="62" rx="4" stroke="#2E7D32" stroke-width="1.2" width="176" x="408" y="92"></rect>
+<text fill="#2E7D32" font-size="9.4" font-weight="700" text-anchor="middle" x="496" y="110">3. HTTP</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="middle" x="496" y="126">la requête circule dedans</text>
+<text class="mono" fill="#2E7D32" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="middle" x="496" y="143">GET /api/catalog</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="middle" x="300" y="180">Trois étapes, trois façons d'échouer : nom inconnu, personne à ce port, serveur muet.</text>
 </svg>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Pour joindre un programme sur le réseau, il faut son adresse (trouvée par DNS) et son port, puis une connexion TCP ; chaque étape a son message d'erreur, qui dit où chercher.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Appeler un service dans une entreprise : l'annuaire donne le numéro du standard (DNS → IP), le poste désigne la personne (port), et la communication s'établit quand elle décroche (TCP).</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>lire une adresse et son port ;</li>
+<li>dire ce que fait le DNS ;</li>
+<li>suivre l'ouverture d'une connexion TCP ;</li>
+<li>diagnostiquer un échec de connexion.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:5mm">
+<span class="titre">À retenir</span>
+<code>localhost</code> n'est pas une adresse mais un <b>nom</b>, qui désigne la machine elle-même. Un serveur lancé sur ton PC et joint par <code>localhost</code> ne quitte jamais le PC : c'est pourquoi le développement local marche sans Internet.
   </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Pour joindre un programme sur le réseau, il faut son adresse (trouvée par DNS) et son port, puis une connexion TCP ; chaque étape a son message d'erreur, qui dit où chercher.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Appeler un service dans une entreprise : l'annuaire donne le numéro du standard (DNS → IP), le poste désigne la personne (port), et la communication s'établit quand elle décroche (TCP).</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>lire une adresse et son port ;</li>
-        <li>dire ce que fait le DNS ;</li>
-        <li>suivre l'ouverture d'une connexion TCP ;</li>
-        <li>diagnostiquer un échec de connexion.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:5mm">
-    <span class="titre">À retenir</span>
-    <code>localhost</code> n'est pas une adresse mais un <b>nom</b>, qui désigne la machine elle-même. Un serveur lancé sur ton PC et joint par <code>localhost</code> ne quitte jamais le PC : c'est pourquoi le développement local marche sans Internet.
-  </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 70 · IP, ports, DNS et TCP</div>
+<div class="folio">1</div>
+<div class="pied">Cours 70 · IP, ports, DNS et TCP</div>
 </section>
-
 <!-- ============ PAGE 2 · IP ET PORTS ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 70</b></div>
-  <p class="rubrique">Schéma 1 · Adresses et ports</p>
-  <h2>Une machine, des dizaines de programmes</h2>
-  <p style="max-width:165mm">Une adresse IPv4 s'écrit en quatre nombres de 0 à 255 ; IPv6, plus longue, s'écrit en hexadécimal (<code>::1</code> est l'équivalent de <code>127.0.0.1</code>). Sur une même machine, chaque programme qui attend des connexions <b>écoute</b> sur un port, de 1 à 65 535. En local, Magpie en occupe trois.</p>
-
-  <svg viewBox="0 0 600 222" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="222" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#A03A2C" text-anchor="start" font-weight="700">L'adresse IP désigne une machine (l'immeuble), le port un programme (l'appartement)</text>
-<text x="16" y="48" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">127.0.0.1  ::1</text>
-<text x="200" y="48" font-size="8" fill="#2B2F33" text-anchor="start">la machine elle-même (boucle locale)</text>
-<text x="16" y="74" font-size="8.4" fill="#7B1FA2" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">192.168.x.x  10.x.x.x</text>
-<text x="200" y="74" font-size="8" fill="#2B2F33" text-anchor="start">réseau privé : maison, école, bureau</text>
-<text x="16" y="100" font-size="8.4" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">autre</text>
-<text x="200" y="100" font-size="8" fill="#2B2F33" text-anchor="start">adresse publique, joignable d'Internet</text>
-<line x1="16" y1="116" x2="584" y2="116" stroke="#CFC6B8" stroke-dasharray="3 3"/>
-<rect x="16" y="130" width="104" height="40" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
-<text x="68" y="148" font-size="10" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:10px">80</text>
-<text x="68" y="163" font-size="7.6" fill="#2B2F33" text-anchor="middle">HTTP</text>
-<rect x="130" y="130" width="104" height="40" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
-<text x="182" y="148" font-size="10" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:10px">443</text>
-<text x="182" y="163" font-size="7.6" fill="#2B2F33" text-anchor="middle">HTTPS</text>
-<rect x="244" y="130" width="104" height="40" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
-<text x="296" y="148" font-size="10" fill="#7B1FA2" text-anchor="middle" font-weight="700" class="mono" style="font-size:10px">5173</text>
-<text x="296" y="163" font-size="7.6" fill="#2B2F33" text-anchor="middle">Vite (front)</text>
-<rect x="358" y="130" width="104" height="40" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
-<text x="410" y="148" font-size="10" fill="#7B1FA2" text-anchor="middle" font-weight="700" class="mono" style="font-size:10px">5175</text>
-<text x="410" y="163" font-size="7.6" fill="#2B2F33" text-anchor="middle">backend Magpie</text>
-<rect x="472" y="130" width="104" height="40" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
-<text x="524" y="148" font-size="10" fill="#7B1FA2" text-anchor="middle" font-weight="700" class="mono" style="font-size:10px">6500</text>
-<text x="524" y="163" font-size="7.6" fill="#2B2F33" text-anchor="middle">Rhino Compute</text>
-<text x="300" y="196" font-size="7.8" fill="#6B7378" text-anchor="middle" font-style="italic">Un port ne sert qu'à un programme à la fois : un second lancement échoue avec EADDRINUSE.</text>
-<text x="300" y="212" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">Les ports en dessous de 1024 sont réservés aux services connus ; un outil de développement en prend un au-dessus.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 70</b></div>
+<p class="rubrique">Schéma 1 · Adresses et ports</p>
+<h2>Une machine, des dizaines de programmes</h2>
+<p style="max-width:165mm">Une adresse IPv4 s'écrit en quatre nombres de 0 à 255 ; IPv6, plus longue, s'écrit en hexadécimal (<code>::1</code> est l'équivalent de <code>127.0.0.1</code>). Sur une même machine, chaque programme qui attend des connexions <b>écoute</b> sur un port, de 1 à 65 535. En local, Magpie en occupe trois.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 222" width="100%">
+<rect fill="#EFE9E1" height="222" width="600" x="0" y="0"></rect>
+<text fill="#A03A2C" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">L'adresse IP désigne une machine (l'immeuble), le port un programme (l'appartement)</text>
+<text class="mono" fill="#2E7D32" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="16" y="48">127.0.0.1  ::1</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="200" y="48">la machine elle-même (boucle locale)</text>
+<text class="mono" fill="#7B1FA2" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="16" y="74">192.168.x.x  10.x.x.x</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="200" y="74">réseau privé : maison, école, bureau</text>
+<text class="mono" fill="#E65100" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="16" y="100">autre</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="200" y="100">adresse publique, joignable d'Internet</text>
+<line stroke="#CFC6B8" stroke-dasharray="3 3" x1="16" x2="584" y1="116" y2="116"></line>
+<rect fill="#fff" height="40" rx="4" stroke="#6B7378" stroke-width="1.2" width="104" x="16" y="130"></rect>
+<text class="mono" fill="#6B7378" font-size="10" font-weight="700" style="font-size:10px" text-anchor="middle" x="68" y="148">80</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="middle" x="68" y="163">HTTP</text>
+<rect fill="#fff" height="40" rx="4" stroke="#6B7378" stroke-width="1.2" width="104" x="130" y="130"></rect>
+<text class="mono" fill="#6B7378" font-size="10" font-weight="700" style="font-size:10px" text-anchor="middle" x="182" y="148">443</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="middle" x="182" y="163">HTTPS</text>
+<rect fill="#fff" height="40" rx="4" stroke="#7B1FA2" stroke-width="1.2" width="104" x="244" y="130"></rect>
+<text class="mono" fill="#7B1FA2" font-size="10" font-weight="700" style="font-size:10px" text-anchor="middle" x="296" y="148">5173</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="middle" x="296" y="163">Vite (front)</text>
+<rect fill="#fff" height="40" rx="4" stroke="#7B1FA2" stroke-width="1.2" width="104" x="358" y="130"></rect>
+<text class="mono" fill="#7B1FA2" font-size="10" font-weight="700" style="font-size:10px" text-anchor="middle" x="410" y="148">5175</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="middle" x="410" y="163">backend Magpie</text>
+<rect fill="#fff" height="40" rx="4" stroke="#7B1FA2" stroke-width="1.2" width="104" x="472" y="130"></rect>
+<text class="mono" fill="#7B1FA2" font-size="10" font-weight="700" style="font-size:10px" text-anchor="middle" x="524" y="148">6500</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="middle" x="524" y="163">Rhino Compute</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="middle" x="300" y="196">Un port ne sert qu'à un programme à la fois : un second lancement échoue avec EADDRINUSE.</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="middle" x="300" y="212">Les ports en dessous de 1024 sont réservés aux services connus ; un outil de développement en prend un au-dessus.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Windows</span>netstat -ano | findstr :5175       # qui écoute sur 5175 ? (dernier nombre : le PID)
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Windows</span>netstat -ano | findstr :5175       # qui écoute sur 5175 ? (dernier nombre : le PID)
 tasklist /fi "PID eq 12345"         # quel programme porte ce PID
 ipconfig                            # les adresses IP de ce PC
 Test-NetConnection localhost -Port 6500   # PowerShell : le port répond-il ?</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Écouter où ?</h3>
-      <p>Un serveur choisit aussi sur quelle adresse écouter. <code>127.0.0.1</code> : seulement la machine elle-même. <code>0.0.0.0</code> (ou <code>::</code>) : toutes ses adresses, donc aussi les autres machines du réseau, si le pare-feu les laisse passer.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Le pare-feu</h3>
-      <p>Windows demande, la première fois qu'un programme écoute, s'il doit être joignable du réseau. Refuser bloque les autres machines, jamais <code>localhost</code>. C'est souvent la cause d'un « ça marche chez moi, pas depuis la tablette ».</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Écouter où ?</h3>
+<p>Un serveur choisit aussi sur quelle adresse écouter. <code>127.0.0.1</code> : seulement la machine elle-même. <code>0.0.0.0</code> (ou <code>::</code>) : toutes ses adresses, donc aussi les autres machines du réseau, si le pare-feu les laisse passer.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Le pare-feu</h3>
+<p>Windows demande, la première fois qu'un programme écoute, s'il doit être joignable du réseau. Refuser bloque les autres machines, jamais <code>localhost</code>. C'est souvent la cause d'un « ça marche chez moi, pas depuis la tablette ».</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Lancer deux fois le même serveur. Le second échoue avec <code>EADDRINUSE</code> : le port est déjà pris, souvent par une fenêtre oubliée de la veille. <code>netstat</code> trouve le coupable ; le fermer libère le port.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 70 · IP, ports, DNS et TCP</div>
+<div class="folio">2</div>
+<div class="pied">Cours 70 · IP, ports, DNS et TCP</div>
 </section>
-
 <!-- ============ PAGE 3 · DNS ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 70</b></div>
-  <p class="rubrique">Schéma 2 · Le DNS</p>
-  <h2>L'annuaire d'Internet</h2>
-  <p style="max-width:165mm">Le DNS est une base répartie : aucun serveur ne connaît tous les noms. Ton PC interroge un <b>résolveur</b>, qui remonte la hiérarchie (racine, puis <code>.fr</code>, puis le serveur du domaine) et garde la réponse en cache le temps indiqué (TTL). La plupart des requêtes s'arrêtent à un cache.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<rect x="16" y="30" width="118" height="44" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
-<text x="75" y="48" font-size="8.6" fill="#1565C0" text-anchor="middle" font-weight="700">ton PC</text>
-<text x="75" y="64" font-size="7.4" fill="#2B2F33" text-anchor="middle">cache local</text>
-<rect x="166" y="30" width="118" height="44" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
-<text x="225" y="48" font-size="8.6" fill="#7B1FA2" text-anchor="middle" font-weight="700">résolveur</text>
-<text x="225" y="64" font-size="7.4" fill="#2B2F33" text-anchor="middle">de la box, du FAI</text>
-<rect x="316" y="30" width="118" height="44" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
-<text x="375" y="48" font-size="8.6" fill="#6B7378" text-anchor="middle" font-weight="700">serveurs DNS</text>
-<text x="375" y="64" font-size="7.4" fill="#2B2F33" text-anchor="middle">racine, puis .fr</text>
-<rect x="466" y="30" width="118" height="44" rx="4" fill="#fff" stroke="#A03A2C" stroke-width="1.2"/>
-<text x="525" y="48" font-size="8.6" fill="#A03A2C" text-anchor="middle" font-weight="700">serveur du domaine</text>
-<text x="525" y="64" font-size="7.4" fill="#2B2F33" text-anchor="middle">cj-developpement.fr</text>
-<line x1="136" y1="46" x2="164" y2="46" stroke="#6B7378" stroke-width="1.2"/><polygon points="164,46 157.6,48.7 157.6,43.3" fill="#6B7378"/>
-<line x1="164" y1="60" x2="136" y2="60" stroke="#6B7378" stroke-width="1.2"/><polygon points="136,60 142.4,57.3 142.4,62.7" fill="#6B7378"/>
-<line x1="286" y1="46" x2="314" y2="46" stroke="#6B7378" stroke-width="1.2"/><polygon points="314,46 307.6,48.7 307.6,43.3" fill="#6B7378"/>
-<line x1="314" y1="60" x2="286" y2="60" stroke="#6B7378" stroke-width="1.2"/><polygon points="286,60 292.4,57.3 292.4,62.7" fill="#6B7378"/>
-<line x1="436" y1="46" x2="464" y2="46" stroke="#6B7378" stroke-width="1.2"/><polygon points="464,46 457.6,48.7 457.6,43.3" fill="#6B7378"/>
-<line x1="464" y1="60" x2="436" y2="60" stroke="#6B7378" stroke-width="1.2"/><polygon points="436,60 442.4,57.3 442.4,62.7" fill="#6B7378"/>
-<text x="300" y="98" font-size="8" fill="#2B2F33" text-anchor="middle">« Quelle est l'adresse de www.cj-developpement.fr ? »  →  une adresse IP, et une durée de validité (TTL)</text>
-<line x1="16" y1="112" x2="584" y2="112" stroke="#CFC6B8" stroke-dasharray="3 3"/>
-<text x="16" y="132" font-size="8.6" fill="#A03A2C" text-anchor="start" font-weight="700">Les enregistrements courants</text>
-<text x="16" y="152" font-size="8.6" fill="#7B1FA2" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">A</text>
-<text x="66" y="152" font-size="8" fill="#2B2F33" text-anchor="start">nom → adresse IPv4</text>
-<text x="212" y="152" font-size="8.6" fill="#7B1FA2" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">AAAA</text>
-<text x="262" y="152" font-size="8" fill="#2B2F33" text-anchor="start">nom → adresse IPv6</text>
-<text x="408" y="152" font-size="8.6" fill="#7B1FA2" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">CNAME</text>
-<text x="458" y="152" font-size="8" fill="#2B2F33" text-anchor="start">nom → autre nom</text>
-<text x="16" y="174" font-size="8.6" fill="#7B1FA2" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">MX</text>
-<text x="66" y="174" font-size="8" fill="#2B2F33" text-anchor="start">où livrer le courrier</text>
-<text x="212" y="174" font-size="8.6" fill="#7B1FA2" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">TXT</text>
-<text x="262" y="174" font-size="8" fill="#2B2F33" text-anchor="start">preuves, réglages</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 70</b></div>
+<p class="rubrique">Schéma 2 · Le DNS</p>
+<h2>L'annuaire d'Internet</h2>
+<p style="max-width:165mm">Le DNS est une base répartie : aucun serveur ne connaît tous les noms. Ton PC interroge un <b>résolveur</b>, qui remonte la hiérarchie (racine, puis <code>.fr</code>, puis le serveur du domaine) et garde la réponse en cache le temps indiqué (TTL). La plupart des requêtes s'arrêtent à un cache.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<rect fill="#fff" height="44" rx="4" stroke="#1565C0" stroke-width="1.2" width="118" x="16" y="30"></rect>
+<text fill="#1565C0" font-size="8.6" font-weight="700" text-anchor="middle" x="75" y="48">ton PC</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="middle" x="75" y="64">cache local</text>
+<rect fill="#fff" height="44" rx="4" stroke="#7B1FA2" stroke-width="1.2" width="118" x="166" y="30"></rect>
+<text fill="#7B1FA2" font-size="8.6" font-weight="700" text-anchor="middle" x="225" y="48">résolveur</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="middle" x="225" y="64">de la box, du FAI</text>
+<rect fill="#fff" height="44" rx="4" stroke="#6B7378" stroke-width="1.2" width="118" x="316" y="30"></rect>
+<text fill="#6B7378" font-size="8.6" font-weight="700" text-anchor="middle" x="375" y="48">serveurs DNS</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="middle" x="375" y="64">racine, puis .fr</text>
+<rect fill="#fff" height="44" rx="4" stroke="#A03A2C" stroke-width="1.2" width="118" x="466" y="30"></rect>
+<text fill="#A03A2C" font-size="8.6" font-weight="700" text-anchor="middle" x="525" y="48">serveur du domaine</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="middle" x="525" y="64">cj-developpement.fr</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="136" x2="164" y1="46" y2="46"></line><polygon fill="#6B7378" points="164,46 157.6,48.7 157.6,43.3"></polygon>
+<line stroke="#6B7378" stroke-width="1.2" x1="164" x2="136" y1="60" y2="60"></line><polygon fill="#6B7378" points="136,60 142.4,57.3 142.4,62.7"></polygon>
+<line stroke="#6B7378" stroke-width="1.2" x1="286" x2="314" y1="46" y2="46"></line><polygon fill="#6B7378" points="314,46 307.6,48.7 307.6,43.3"></polygon>
+<line stroke="#6B7378" stroke-width="1.2" x1="314" x2="286" y1="60" y2="60"></line><polygon fill="#6B7378" points="286,60 292.4,57.3 292.4,62.7"></polygon>
+<line stroke="#6B7378" stroke-width="1.2" x1="436" x2="464" y1="46" y2="46"></line><polygon fill="#6B7378" points="464,46 457.6,48.7 457.6,43.3"></polygon>
+<line stroke="#6B7378" stroke-width="1.2" x1="464" x2="436" y1="60" y2="60"></line><polygon fill="#6B7378" points="436,60 442.4,57.3 442.4,62.7"></polygon>
+<text fill="#2B2F33" font-size="8" text-anchor="middle" x="300" y="98">« Quelle est l'adresse de www.cj-developpement.fr ? »  →  une adresse IP, et une durée de validité (TTL)</text>
+<line stroke="#CFC6B8" stroke-dasharray="3 3" x1="16" x2="584" y1="112" y2="112"></line>
+<text fill="#A03A2C" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="132">Les enregistrements courants</text>
+<text class="mono" fill="#7B1FA2" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="16" y="152">A</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="66" y="152">nom → adresse IPv4</text>
+<text class="mono" fill="#7B1FA2" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="212" y="152">AAAA</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="262" y="152">nom → adresse IPv6</text>
+<text class="mono" fill="#7B1FA2" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="408" y="152">CNAME</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="458" y="152">nom → autre nom</text>
+<text class="mono" fill="#7B1FA2" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="16" y="174">MX</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="66" y="174">où livrer le courrier</text>
+<text class="mono" fill="#7B1FA2" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="212" y="174">TXT</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="262" y="174">preuves, réglages</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · terminal et Node</span>nslookup www.cj-developpement.fr     # Windows, Linux, macOS
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · terminal et Node</span>nslookup www.cj-developpement.fr     # Windows, Linux, macOS
 ipconfig /flushdns                    # Windows : vider le cache local
 dns.lookup("localhost", { all: true }, (e, a) =&gt; console.log(a));
 //  sur la machine de rédaction : [ { address: '127.0.0.1', family: 4 } ]</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Le fichier hosts</h3>
-      <p>Avant le DNS, le système lit <code>C:\Windows\System32\drivers\etc\hosts</code> : une liste « adresse nom » écrite à la main. C'est là que <code>localhost</code> est défini, et l'endroit où l'on simule un nom pendant un test.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Changer d'hébergeur</h3>
-      <p>Modifier l'enregistrement A d'un domaine ne prend effet partout qu'une fois les caches expirés. On baisse le TTL quelques jours avant une migration, pour que le basculement soit rapide.</p>
-    </div>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Le fichier hosts</h3>
+<p>Avant le DNS, le système lit <code>C:\Windows\System32\drivers\etc\hosts</code> : une liste « adresse nom » écrite à la main. C'est là que <code>localhost</code> est défini, et l'endroit où l'on simule un nom pendant un test.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Changer d'hébergeur</h3>
+<p>Modifier l'enregistrement A d'un domaine ne prend effet partout qu'une fois les caches expirés. On baisse le TTL quelques jours avant une migration, pour que le basculement soit rapide.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
+<code>localhost</code> peut désigner <code>::1</code> (IPv6) avant <code>127.0.0.1</code>. Un serveur qui n'écoute que sur <code>127.0.0.1</code> devient alors injoignable par son nom. En cas de doute, on essaie l'adresse numérique : si elle marche et le nom non, c'est la résolution.
   </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
-    <code>localhost</code> peut désigner <code>::1</code> (IPv6) avant <code>127.0.0.1</code>. Un serveur qui n'écoute que sur <code>127.0.0.1</code> devient alors injoignable par son nom. En cas de doute, on essaie l'adresse numérique : si elle marche et le nom non, c'est la résolution.
-  </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 70 · IP, ports, DNS et TCP</div>
+<div class="folio">3</div>
+<div class="pied">Cours 70 · IP, ports, DNS et TCP</div>
 </section>
-
 <!-- ============ PAGE 4 · TCP ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 70</b></div>
-  <p class="rubrique">Schéma 3 · TCP et ses échecs</p>
-  <h2>Ouvrir une connexion, comprendre un refus</h2>
-  <p style="max-width:165mm">TCP ouvre une connexion par un échange de trois messages, puis garantit que les octets arrivent tous, dans l'ordre, en renvoyant ceux qui se perdent. Les deux premières erreurs ci-dessous ont été provoquées pour ce cours ; leur code dit à quel étage chercher.</p>
-
-  <svg viewBox="0 0 600 226" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="226" fill="#EFE9E1"/>
-<line x1="90" y1="18" x2="90" y2="128" stroke="#A03A2C" stroke-width="1.2"/>
-<line x1="300" y1="18" x2="300" y2="128" stroke="#7B1FA2" stroke-width="1.2"/>
-<text x="90" y="14" font-size="8.4" fill="#A03A2C" text-anchor="middle" font-weight="700">client</text>
-<text x="300" y="14" font-size="8.4" fill="#7B1FA2" text-anchor="middle" font-weight="700">serveur</text>
-<line x1="92" y1="36" x2="296" y2="36" stroke="#1565C0" stroke-width="1.2"/><polygon points="296,36 289.6,38.7 289.6,33.3" fill="#1565C0"/>
-<text x="195" y="32" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">SYN</text>
-<line x1="298" y1="62" x2="94" y2="62" stroke="#1565C0" stroke-width="1.2"/><polygon points="94,62 100.4,59.3 100.4,64.7" fill="#1565C0"/>
-<text x="195" y="58" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">SYN-ACK</text>
-<line x1="92" y1="88" x2="296" y2="88" stroke="#1565C0" stroke-width="1.2"/><polygon points="296,88 289.6,90.7 289.6,85.3" fill="#1565C0"/>
-<text x="195" y="84" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">ACK</text>
-<text x="195" y="116" font-size="7.6" fill="#2E7D32" text-anchor="middle" font-style="italic">connexion ouverte : octets dans l'ordre, sans perte</text>
-<text x="340" y="30" font-size="8.6" fill="#A03A2C" text-anchor="start" font-weight="700">Ce qui peut échouer (les deux premiers mesurés)</text>
-<rect x="340" y="42" width="244" height="24" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
-<text x="350" y="58" font-size="8.4" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">ENOTFOUND</text>
-<text x="574" y="58" font-size="7.6" fill="#2B2F33" text-anchor="end">le nom n'existe pas (DNS)</text>
-<rect x="340" y="72" width="244" height="24" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
-<text x="350" y="88" font-size="8.4" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">ECONNREFUSED</text>
-<text x="574" y="88" font-size="7.6" fill="#2B2F33" text-anchor="end">personne n'écoute à ce port</text>
-<rect x="340" y="102" width="244" height="24" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
-<text x="350" y="118" font-size="8.4" fill="#7B1FA2" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">délai dépassé</text>
-<text x="574" y="118" font-size="7.6" fill="#2B2F33" text-anchor="end">la machine ne répond pas</text>
-<line x1="16" y1="144" x2="584" y2="144" stroke="#CFC6B8" stroke-dasharray="3 3"/>
-<text x="16" y="164" font-size="8.4" fill="#2B2F33" text-anchor="start">Au-dessus, HTTP ajoute ses propres échecs : la connexion marche, mais la réponse dit non.</text>
-<text x="16" y="184" font-size="8.4" fill="#2B2F33" text-anchor="start">Un relais comme le backend de Magpie traduit les échecs réseau de l'étage du dessous :</text>
-<text x="16" y="204" font-size="8.6" fill="#C62828" text-anchor="start" font-weight="700">502 : Compute injoignable.   504 : Compute n'a pas répondu à temps.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 70</b></div>
+<p class="rubrique">Schéma 3 · TCP et ses échecs</p>
+<h2>Ouvrir une connexion, comprendre un refus</h2>
+<p style="max-width:165mm">TCP ouvre une connexion par un échange de trois messages, puis garantit que les octets arrivent tous, dans l'ordre, en renvoyant ceux qui se perdent. Les deux premières erreurs ci-dessous ont été provoquées pour ce cours ; leur code dit à quel étage chercher.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 226" width="100%">
+<rect fill="#EFE9E1" height="226" width="600" x="0" y="0"></rect>
+<line stroke="#A03A2C" stroke-width="1.2" x1="90" x2="90" y1="18" y2="128"></line>
+<line stroke="#7B1FA2" stroke-width="1.2" x1="300" x2="300" y1="18" y2="128"></line>
+<text fill="#A03A2C" font-size="8.4" font-weight="700" text-anchor="middle" x="90" y="14">client</text>
+<text fill="#7B1FA2" font-size="8.4" font-weight="700" text-anchor="middle" x="300" y="14">serveur</text>
+<line stroke="#1565C0" stroke-width="1.2" x1="92" x2="296" y1="36" y2="36"></line><polygon fill="#1565C0" points="296,36 289.6,38.7 289.6,33.3"></polygon>
+<text class="mono" fill="#1565C0" font-size="8" font-weight="700" style="font-size:8px" text-anchor="middle" x="195" y="32">SYN</text>
+<line stroke="#1565C0" stroke-width="1.2" x1="298" x2="94" y1="62" y2="62"></line><polygon fill="#1565C0" points="94,62 100.4,59.3 100.4,64.7"></polygon>
+<text class="mono" fill="#1565C0" font-size="8" font-weight="700" style="font-size:8px" text-anchor="middle" x="195" y="58">SYN-ACK</text>
+<line stroke="#1565C0" stroke-width="1.2" x1="92" x2="296" y1="88" y2="88"></line><polygon fill="#1565C0" points="296,88 289.6,90.7 289.6,85.3"></polygon>
+<text class="mono" fill="#1565C0" font-size="8" font-weight="700" style="font-size:8px" text-anchor="middle" x="195" y="84">ACK</text>
+<text fill="#2E7D32" font-size="7.6" font-style="italic" text-anchor="middle" x="195" y="116">connexion ouverte : octets dans l'ordre, sans perte</text>
+<text fill="#A03A2C" font-size="8.6" font-weight="700" text-anchor="start" x="340" y="30">Ce qui peut échouer (les deux premiers mesurés)</text>
+<rect fill="#fff" height="24" rx="4" stroke="#E65100" stroke-width="1.2" width="244" x="340" y="42"></rect>
+<text class="mono" fill="#E65100" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="350" y="58">ENOTFOUND</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="end" x="574" y="58">le nom n'existe pas (DNS)</text>
+<rect fill="#fff" height="24" rx="4" stroke="#C62828" stroke-width="1.2" width="244" x="340" y="72"></rect>
+<text class="mono" fill="#C62828" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="350" y="88">ECONNREFUSED</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="end" x="574" y="88">personne n'écoute à ce port</text>
+<rect fill="#fff" height="24" rx="4" stroke="#7B1FA2" stroke-width="1.2" width="244" x="340" y="102"></rect>
+<text class="mono" fill="#7B1FA2" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="350" y="118">délai dépassé</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="end" x="574" y="118">la machine ne répond pas</text>
+<line stroke="#CFC6B8" stroke-dasharray="3 3" x1="16" x2="584" y1="144" y2="144"></line>
+<text fill="#2B2F33" font-size="8.4" text-anchor="start" x="16" y="164">Au-dessus, HTTP ajoute ses propres échecs : la connexion marche, mais la réponse dit non.</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="start" x="16" y="184">Un relais comme le backend de Magpie traduit les échecs réseau de l'étage du dessous :</text>
+<text fill="#C62828" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="204">502 : Compute injoignable.   504 : Compute n'a pas répondu à temps.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Node (mesuré)</span>try { await fetch("http://localhost:6500/grasshopper"); }
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Node (mesuré)</span>try { await fetch("http://localhost:6500/grasshopper"); }
 catch (e) { console.log(e.message, e.cause?.code); }
 //  fetch failed ECONNREFUSED        (rien sur le port 6500)
 //  fetch failed ENOTFOUND           (avec un nom inexistant)</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Refus ou silence</h3>
-      <p>Un refus arrive vite : la machine est là, mais rien n'écoute. Le silence, lui, dure : la machine est éteinte, ou un pare-feu jette les paquets. D'où l'utilité d'un délai maximal, sans lequel on attendrait longtemps.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Et UDP ?</h3>
-      <p>L'autre transport d'Internet n'ouvre pas de connexion et ne garantit rien : plus rapide, il sert au DNS, à la vidéo, aux jeux. HTTP/3 s'appuie sur lui (QUIC), en recréant la fiabilité par-dessus.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Refus ou silence</h3>
+<p>Un refus arrive vite : la machine est là, mais rien n'écoute. Le silence, lui, dure : la machine est éteinte, ou un pare-feu jette les paquets. D'où l'utilité d'un délai maximal, sans lequel on attendrait longtemps.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Et UDP ?</h3>
+<p>L'autre transport d'Internet n'ouvre pas de connexion et ne garantit rien : plus rapide, il sert au DNS, à la vidéo, aux jeux. HTTP/3 s'appuie sur lui (QUIC), en recréant la fiabilité par-dessus.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Ne lire que <code>e.message</code>. Avec <code>fetch</code> en Node, il vaut « fetch failed » dans tous les cas ; la vraie raison est dans <code>e.cause.code</code>. Un message d'erreur qui omet la cause renvoie le développeur chercher au mauvais étage.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 70 · IP, ports, DNS et TCP</div>
+<div class="folio">4</div>
+<div class="pied">Cours 70 · IP, ports, DNS et TCP</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 70</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>Trois ports, un délai, deux codes d'erreur</h2>
-  <p style="max-width:165mm">En développement, Vite (5173) relaie <code>/api</code> vers le backend (5175), qui appelle Compute (6500). Le backend borne chaque appel dans le temps et traduit les échecs réseau en réponses HTTP claires.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 70</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>Trois ports, un délai, deux codes d'erreur</h2>
+<p style="max-width:165mm">En développement, Vite (5173) relaie <code>/api</code> vers le backend (5175), qui appelle Compute (6500). Le backend borne chaque appel dans le temps et traduit les échecs réseau en réponses HTTP claires.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">magpie/web/vite.config.js · compute-proxy.mjs</span></div>
 <div class="l k1"><span class="n">10</span><span class="st">"/api"</span>: <span class="st">"http://localhost:5175"</span>,<span class="rep r1">1</span></div>
@@ -285,143 +258,61 @@ catch (e) { console.log(e.message, e.cause?.code); }
 <div class="l k2"><span class="n">733</span>server.listen(PROXY_PORT, () =&gt; {<span class="rep r2">2</span></div>
 <div class="l k3"><span class="n">197</span>setTimeout(() =&gt; controller.abort(), COMPUTE_TIMEOUT_MS);<span class="rep r3">3</span></div>
 <div class="l k3"><span class="n">214</span><span class="kw">if</span> (err.name === <span class="st">"AbortError"</span>) {</div>
-<div class="l k3"><span class="n">215</span>  <span class="kw">throw new</span> HttpError(504, …, <span class="st">"COMPUTE_TIMEOUT"</span>);</div>
+<div class="l k3"><span class="n">215</span> <span class="kw">throw new</span> HttpError(504, …, <span class="st">"COMPUTE_TIMEOUT"</span>);</div>
 <div class="l k4"><span class="n">217</span><span class="kw">throw new</span> HttpError(502, <span class="st">`… (${err.message})`</span>…<span class="rep r4">4</span></div>
 <div class="l"><span class="cm">magpie/web/README.md</span></div>
 <div class="l k5"><span class="n">74</span>| MAGPIE_ALLOWED_ORIGINS | … | http://localhost:5173,<span class="rep r5">5</span></div>
 <div class="l k5"><span class="n"></span>                               http://127.0.0.1:5173 |</div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>Trois ports</b>Front, backend, Compute : un programme chacun.</li>
-      <li><span class="rep r2">2</span><b>Sans adresse</b>Écoute sur toutes les interfaces ; en ligne, Passenger décide.</li>
-      <li><span class="rep r3">3</span><b>Le silence borné</b>Au-delà du délai : 504.</li>
-      <li><span class="rep r4">4</span><b>Le refus</b>Connexion impossible : 502.</li>
-      <li><span class="rep r5">5</span><b>Deux origines</b>Même machine, mais deux noms : deux origines (cours 62).</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À surveiller · la cause d'un 502, et l'écoute en local</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>Trois ports</b>Front, backend, Compute : un programme chacun.</li>
+<li><span class="rep r2">2</span><b>Sans adresse</b>Écoute sur toutes les interfaces ; en ligne, Passenger décide.</li>
+<li><span class="rep r3">3</span><b>Le silence borné</b>Au-delà du délai : 504.</li>
+<li><span class="rep r4">4</span><b>Le refus</b>Connexion impossible : 502.</li>
+<li><span class="rep r5">5</span><b>Deux origines</b>Même machine, mais deux noms : deux origines (cours 62).</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À surveiller · la cause d'un 502, et l'écoute en local</span>
     Le message du 502 reprend <code>err.message</code> (ligne 217), qui vaut « fetch failed » : on ne sait pas si Compute est éteint (ECONNREFUSED) ou si le nom du tunnel est faux (ENOTFOUND). Ajouter <code>err.cause?.code</code> le dirait. Par ailleurs, <code>listen</code> sans adresse (ligne 733) rend le backend de développement joignable depuis le réseau local, si le pare-feu l'autorise ; l'admin reste protégée par son mot de passe.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 70 · IP, ports, DNS et TCP</div>
+<div class="folio">5</div>
+<div class="pied">Cours 70 · IP, ports, DNS et TCP</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 70</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 70</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">Dans <code>http://localhost:5175/api</code>, 5175 est…</div><ul>
-      <li><span>A</span>la version</li><li><span>B</span>le chemin</li><li><span>C</span>le port</li><li><span>D</span>l'adresse IP</li></ul></div>
 
-    <div class="q"><div class="enonce"><code>localhost</code> désigne…</div><ul>
-      <li><span>A</span>le DNS</li><li><span>B</span>la machine elle-même</li><li><span>C</span>le serveur o2switch</li><li><span>D</span>le routeur</li></ul></div>
 
-    <div class="q"><div class="enonce">Le DNS sert à…</div><ul>
-      <li><span>A</span>traduire un nom en adresse IP</li><li><span>B</span>choisir le port</li><li><span>C</span>chiffrer</li><li><span>D</span>compresser</li></ul></div>
 
-    <div class="q"><div class="enonce">Un enregistrement A associe…</div><ul>
-      <li><span>A</span>un port à un programme</li><li><span>B</span>un nom à un autre nom</li><li><span>C</span>un domaine au courrier</li><li><span>D</span>un nom à une adresse IPv4</li></ul></div>
-
-    <div class="q"><div class="enonce"><code>EADDRINUSE</code> au démarrage signifie…</div><ul>
-      <li><span>A</span>le nom est inconnu</li><li><span>B</span>la mémoire manque</li><li><span>C</span>le disque est plein</li><li><span>D</span>le port est déjà pris</li></ul></div>
-
-    <div class="q"><div class="enonce"><code>ECONNREFUSED</code> signifie…</div><ul>
-      <li><span>A</span>mot de passe faux</li><li><span>B</span>délai dépassé</li><li><span>C</span>le nom n'existe pas</li><li><span>D</span>personne n'écoute à ce port</li></ul></div>
-
-    <div class="q"><div class="enonce">Un serveur qui écoute sur <code>0.0.0.0</code>…</div><ul>
-      <li><span>A</span>accepte toutes ses adresses, réseau compris</li><li><span>B</span>est en IPv6</li><li><span>C</span>n'accepte que lui-même</li><li><span>D</span>n'accepte personne</li></ul></div>
-
-    <div class="q"><div class="enonce">TCP garantit : <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>en moins d'une seconde</li><li><span>B</span>chiffrés</li><li><span>C</span>dans l'ordre</li><li><span>D</span>que les octets arrivent tous</li></ul></div>
-
-    <div class="q"><div class="enonce">Le TTL d'une réponse DNS indique…</div><ul>
-      <li><span>A</span>combien de temps la garder en cache</li><li><span>B</span>la taille</li><li><span>C</span>la vitesse</li><li><span>D</span>le nombre de serveurs</li></ul></div>
-
-    <div class="q"><div class="enonce">Le backend de Magpie répond 504 quand…</div><ul>
-      <li><span>A</span>Compute refuse la connexion</li><li><span>B</span>Compute ne répond pas à temps</li><li><span>C</span>l'admin est fermée</li><li><span>D</span>la requête est mal formée</li></ul></div>
-
-    <div class="q"><div class="enonce">Avec fetch en Node, la vraie cause d'un échec réseau est dans…</div><ul>
-      <li><span>A</span>e.name</li><li><span>B</span>e.status</li><li><span>C</span>e.cause.code</li><li><span>D</span>e.message</li></ul></div>
-
-    <div class="q"><div class="enonce"><code>localhost:5173</code> et <code>127.0.0.1:5173</code> sont…</div><ul>
-      <li><span>A</span>deux ports</li><li><span>B</span>deux machines</li><li><span>C</span>la même machine mais deux origines</li><li><span>D</span>la même origine</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 70 · IP, ports, DNS et TCP</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">"/api": "http://localhost:5175"</td><td>relayer vers un autre port</td><td>vite.config.js:10</td></tr>
+<tr><td class="c">Number(process.env.PORT) || 5175</td><td>port imposé, ou par défaut</td><td>compute-proxy.mjs:44</td></tr>
+<tr><td class="c">server.listen(port, …)</td><td>écouter sur un port</td><td>compute-proxy.mjs:733</td></tr>
+<tr><td class="c">setTimeout(() =&gt; controller.abort(), …)</td><td>borner un appel réseau</td><td>compute-proxy.mjs:197</td></tr>
+<tr><td class="c">e.cause?.code</td><td>la cause d'un échec de fetch</td><td>exemple autonome, page 4</td></tr>
+<tr><td class="c">netstat -ano | findstr :port</td><td>qui occupe un port</td><td>exemple autonome, page 2</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Adresse IP</dt><dd>Le numéro qui désigne une machine sur un réseau.</dd>
+<dt>Port</dt><dd>Le numéro qui désigne un programme à l'écoute sur une machine.</dd>
+<dt>DNS</dt><dd>L'annuaire réparti qui traduit les noms en adresses IP.</dd>
+<dt>TCP</dt><dd>Le transport qui ouvre une connexion fiable et ordonnée entre deux programmes.</dd>
+<dt>Boucle locale</dt><dd>L'adresse 127.0.0.1 (ou ::1), qui désigne la machine elle-même.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 61</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 70 · IP, ports, DNS et TCP</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 9B</b> · Le réseau et la sécurité</span><b>Cours 70</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · C.</b> Après les deux-points.</div>
-    <div><b>02 · B.</b> Boucle locale, 127.0.0.1 ou ::1.</div>
-    <div><b>03 · A.</b> L'annuaire.</div>
-    <div><b>04 · D.</b> AAAA pour IPv6.</div>
-    <div><b>05 · D.</b> Un programme par port.</div>
-    <div><b>06 · D.</b> La machine répond, pas le programme.</div>
-    <div><b>07 · A.</b> Toutes les interfaces.</div>
-    <div><b>08 · C et D.</b> Le chiffrement, c'est TLS.</div>
-    <div><b>09 · A.</b> D'où le délai d'une migration.</div>
-    <div><b>10 · B.</b> compute-proxy.mjs:214–215.</div>
-    <div><b>11 · C.</b> message vaut « fetch failed ».</div>
-    <div><b>12 · C.</b> README.md:74.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 61, « HTTP de l'intérieur ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">"/api": "http://localhost:5175"</td><td>relayer vers un autre port</td><td>vite.config.js:10</td></tr>
-      <tr><td class="c">Number(process.env.PORT) || 5175</td><td>port imposé, ou par défaut</td><td>compute-proxy.mjs:44</td></tr>
-      <tr><td class="c">server.listen(port, …)</td><td>écouter sur un port</td><td>compute-proxy.mjs:733</td></tr>
-      <tr><td class="c">setTimeout(() =&gt; controller.abort(), …)</td><td>borner un appel réseau</td><td>compute-proxy.mjs:197</td></tr>
-      <tr><td class="c">e.cause?.code</td><td>la cause d'un échec de fetch</td><td>exemple autonome, page 4</td></tr>
-      <tr><td class="c">netstat -ano | findstr :port</td><td>qui occupe un port</td><td>exemple autonome, page 2</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Adresse IP</dt><dd>Le numéro qui désigne une machine sur un réseau.</dd>
-    <dt>Port</dt><dd>Le numéro qui désigne un programme à l'écoute sur une machine.</dd>
-    <dt>DNS</dt><dd>L'annuaire réparti qui traduit les noms en adresses IP.</dd>
-    <dt>TCP</dt><dd>Le transport qui ouvre une connexion fiable et ordonnée entre deux programmes.</dd>
-    <dt>Boucle locale</dt><dd>L'adresse 127.0.0.1 (ou ::1), qui désigne la machine elle-même.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 61</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 70 · IP, ports, DNS et TCP</div>
-</section>
-
 </body>
 </html>

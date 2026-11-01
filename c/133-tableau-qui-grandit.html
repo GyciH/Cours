@@ -1,306 +1,279 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>133 · Le tableau qui grandit</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-2">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 133</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Le tableau qui grandit</h1>
-  <p class="chapeau">Une <code>List&lt;T&gt;</code> n'est qu'un tableau ordinaire, caché, plus un compteur. Quand le tableau est plein, elle en alloue un deux fois plus grand et recopie tout. Ce mécanisme simple explique presque tout : pourquoi Add est rapide, pourquoi Insert(0) ne l'est pas, et où part la mémoire.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>03</b>, <b>55</b>, <b>94</b></span>
-    <span class="pastille">Exemples · <b>Magpie</b> plugin, <b>SnapSet</b></span>
-  </div>
-
-  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
-    <svg viewBox="0 0 600 204" width="100%">
-<rect x="10" y="10" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<rect x="19" y="10" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<rect x="28" y="10" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<rect x="37" y="10" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<text x="56" y="21" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700">capacité 4, pleine</text>
-<rect x="10" y="38" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<rect x="19" y="38" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<rect x="28" y="38" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<rect x="37" y="38" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<rect x="46" y="38" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<rect x="55" y="38" width="8" height="14" fill="#fff" stroke="#5D4037" stroke-width=".8" opacity="0.9"/>
-<rect x="64" y="38" width="8" height="14" fill="#fff" stroke="#5D4037" stroke-width=".8" opacity="0.9"/>
-<rect x="73" y="38" width="8" height="14" fill="#fff" stroke="#5D4037" stroke-width=".8" opacity="0.9"/>
-<text x="92" y="49" font-size="7.6" fill="#2B2F33" text-anchor="start">le 5e Add : nouveau tableau de 8, 4 éléments recopiés</text>
-<line x1="14" y1="25" x2="14" y2="37" stroke="#6B7378" stroke-width="0.9"/><polygon points="14,37 11.3,30.6 16.7,30.6" fill="#6B7378"/>
-<rect x="10" y="66" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<rect x="19" y="66" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<rect x="28" y="66" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<rect x="37" y="66" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<rect x="46" y="66" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<rect x="55" y="66" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<rect x="64" y="66" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<rect x="73" y="66" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<rect x="82" y="66" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<rect x="91" y="66" width="8" height="14" fill="#fff" stroke="#5D4037" stroke-width=".8" opacity="0.9"/>
-<rect x="100" y="66" width="8" height="14" fill="#fff" stroke="#5D4037" stroke-width=".8" opacity="0.9"/>
-<rect x="109" y="66" width="8" height="14" fill="#fff" stroke="#5D4037" stroke-width=".8" opacity="0.9"/>
-<rect x="118" y="66" width="8" height="14" fill="#fff" stroke="#5D4037" stroke-width=".8" opacity="0.9"/>
-<rect x="127" y="66" width="8" height="14" fill="#fff" stroke="#5D4037" stroke-width=".8" opacity="0.9"/>
-<rect x="136" y="66" width="8" height="14" fill="#fff" stroke="#5D4037" stroke-width=".8" opacity="0.9"/>
-<rect x="145" y="66" width="8" height="14" fill="#fff" stroke="#5D4037" stroke-width=".8" opacity="0.9"/>
-<text x="164" y="77" font-size="7.6" fill="#2B2F33" text-anchor="start">le 9e : tableau de 16, 8 recopiés</text>
-<line x1="14" y1="53" x2="14" y2="65" stroke="#6B7378" stroke-width="0.9"/><polygon points="14,65 11.3,58.6 16.7,58.6" fill="#6B7378"/>
-<rect x="10" y="94" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<rect x="19" y="94" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<rect x="28" y="94" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<rect x="37" y="94" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<rect x="46" y="94" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<rect x="55" y="94" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<rect x="64" y="94" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<rect x="73" y="94" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<rect x="82" y="94" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<rect x="91" y="94" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<rect x="100" y="94" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<rect x="109" y="94" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<rect x="118" y="94" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<rect x="127" y="94" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<rect x="136" y="94" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<rect x="145" y="94" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<rect x="154" y="94" width="8" height="14" fill="#5D4037" stroke="#5D4037" stroke-width=".8" opacity="1"/>
-<rect x="163" y="94" width="8" height="14" fill="#fff" stroke="#5D4037" stroke-width=".8" opacity="0.9"/>
-<rect x="172" y="94" width="8" height="14" fill="#fff" stroke="#5D4037" stroke-width=".8" opacity="0.9"/>
-<rect x="181" y="94" width="8" height="14" fill="#fff" stroke="#5D4037" stroke-width=".8" opacity="0.9"/>
-<rect x="190" y="94" width="8" height="14" fill="#fff" stroke="#5D4037" stroke-width=".8" opacity="0.9"/>
-<rect x="199" y="94" width="8" height="14" fill="#fff" stroke="#5D4037" stroke-width=".8" opacity="0.9"/>
-<rect x="208" y="94" width="8" height="14" fill="#fff" stroke="#5D4037" stroke-width=".8" opacity="0.9"/>
-<rect x="217" y="94" width="8" height="14" fill="#fff" stroke="#5D4037" stroke-width=".8" opacity="0.9"/>
-<rect x="226" y="94" width="8" height="14" fill="#fff" stroke="#5D4037" stroke-width=".8" opacity="0.9"/>
-<rect x="235" y="94" width="8" height="14" fill="#fff" stroke="#5D4037" stroke-width=".8" opacity="0.9"/>
-<rect x="244" y="94" width="8" height="14" fill="#fff" stroke="#5D4037" stroke-width=".8" opacity="0.9"/>
-<rect x="253" y="94" width="8" height="14" fill="#fff" stroke="#5D4037" stroke-width=".8" opacity="0.9"/>
-<rect x="262" y="94" width="8" height="14" fill="#fff" stroke="#5D4037" stroke-width=".8" opacity="0.9"/>
-<rect x="271" y="94" width="8" height="14" fill="#fff" stroke="#5D4037" stroke-width=".8" opacity="0.9"/>
-<rect x="280" y="94" width="8" height="14" fill="#fff" stroke="#5D4037" stroke-width=".8" opacity="0.9"/>
-<rect x="289" y="94" width="8" height="14" fill="#fff" stroke="#5D4037" stroke-width=".8" opacity="0.9"/>
-<text x="308" y="105" font-size="7.6" fill="#2B2F33" text-anchor="start">le 17e : 32, 16 recopiés</text>
-<line x1="14" y1="81" x2="14" y2="93" stroke="#6B7378" stroke-width="0.9"/><polygon points="14,93 11.3,86.6 16.7,86.6" fill="#6B7378"/>
-<text x="10" y="138" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">Capacités relevées : 0, 4, 8, 16, 32 … 1 048 576 ; 18 réallocations pour un million d'Add (mesuré).</text>
-<text x="10" y="158" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Chaque recopie coûte cher, mais elles s'espacent : en moyenne, un Add reste à coût constant.</text>
-<text x="10" y="174" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Count dit combien d'éléments sont rangés ; Capacity, combien de cases le tableau caché possède.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 133</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Le tableau qui grandit</h1>
+<p class="chapeau">Une <code>List&lt;T&gt;</code> n'est qu'un tableau ordinaire, caché, plus un compteur. Quand le tableau est plein, elle en alloue un deux fois plus grand et recopie tout. Ce mécanisme simple explique presque tout : pourquoi Add est rapide, pourquoi Insert(0) ne l'est pas, et où part la mémoire.</p>
+<div class="meta">
+<span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>03</b>, <b>55</b>, <b>94</b></span>
+<span class="pastille">Exemples · <b>Magpie</b> plugin, <b>SnapSet</b></span>
+</div>
+<div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+<svg viewbox="0 0 600 204" width="100%">
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="10" y="10"></rect>
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="19" y="10"></rect>
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="28" y="10"></rect>
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="37" y="10"></rect>
+<text fill="#6B7378" font-size="7.6" font-weight="700" text-anchor="start" x="56" y="21">capacité 4, pleine</text>
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="10" y="38"></rect>
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="19" y="38"></rect>
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="28" y="38"></rect>
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="37" y="38"></rect>
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="46" y="38"></rect>
+<rect fill="#fff" height="14" opacity="0.9" stroke="#5D4037" stroke-width=".8" width="8" x="55" y="38"></rect>
+<rect fill="#fff" height="14" opacity="0.9" stroke="#5D4037" stroke-width=".8" width="8" x="64" y="38"></rect>
+<rect fill="#fff" height="14" opacity="0.9" stroke="#5D4037" stroke-width=".8" width="8" x="73" y="38"></rect>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="92" y="49">le 5e Add : nouveau tableau de 8, 4 éléments recopiés</text>
+<line stroke="#6B7378" stroke-width="0.9" x1="14" x2="14" y1="25" y2="37"></line><polygon fill="#6B7378" points="14,37 11.3,30.6 16.7,30.6"></polygon>
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="10" y="66"></rect>
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="19" y="66"></rect>
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="28" y="66"></rect>
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="37" y="66"></rect>
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="46" y="66"></rect>
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="55" y="66"></rect>
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="64" y="66"></rect>
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="73" y="66"></rect>
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="82" y="66"></rect>
+<rect fill="#fff" height="14" opacity="0.9" stroke="#5D4037" stroke-width=".8" width="8" x="91" y="66"></rect>
+<rect fill="#fff" height="14" opacity="0.9" stroke="#5D4037" stroke-width=".8" width="8" x="100" y="66"></rect>
+<rect fill="#fff" height="14" opacity="0.9" stroke="#5D4037" stroke-width=".8" width="8" x="109" y="66"></rect>
+<rect fill="#fff" height="14" opacity="0.9" stroke="#5D4037" stroke-width=".8" width="8" x="118" y="66"></rect>
+<rect fill="#fff" height="14" opacity="0.9" stroke="#5D4037" stroke-width=".8" width="8" x="127" y="66"></rect>
+<rect fill="#fff" height="14" opacity="0.9" stroke="#5D4037" stroke-width=".8" width="8" x="136" y="66"></rect>
+<rect fill="#fff" height="14" opacity="0.9" stroke="#5D4037" stroke-width=".8" width="8" x="145" y="66"></rect>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="164" y="77">le 9e : tableau de 16, 8 recopiés</text>
+<line stroke="#6B7378" stroke-width="0.9" x1="14" x2="14" y1="53" y2="65"></line><polygon fill="#6B7378" points="14,65 11.3,58.6 16.7,58.6"></polygon>
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="10" y="94"></rect>
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="19" y="94"></rect>
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="28" y="94"></rect>
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="37" y="94"></rect>
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="46" y="94"></rect>
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="55" y="94"></rect>
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="64" y="94"></rect>
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="73" y="94"></rect>
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="82" y="94"></rect>
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="91" y="94"></rect>
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="100" y="94"></rect>
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="109" y="94"></rect>
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="118" y="94"></rect>
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="127" y="94"></rect>
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="136" y="94"></rect>
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="145" y="94"></rect>
+<rect fill="#5D4037" height="14" opacity="1" stroke="#5D4037" stroke-width=".8" width="8" x="154" y="94"></rect>
+<rect fill="#fff" height="14" opacity="0.9" stroke="#5D4037" stroke-width=".8" width="8" x="163" y="94"></rect>
+<rect fill="#fff" height="14" opacity="0.9" stroke="#5D4037" stroke-width=".8" width="8" x="172" y="94"></rect>
+<rect fill="#fff" height="14" opacity="0.9" stroke="#5D4037" stroke-width=".8" width="8" x="181" y="94"></rect>
+<rect fill="#fff" height="14" opacity="0.9" stroke="#5D4037" stroke-width=".8" width="8" x="190" y="94"></rect>
+<rect fill="#fff" height="14" opacity="0.9" stroke="#5D4037" stroke-width=".8" width="8" x="199" y="94"></rect>
+<rect fill="#fff" height="14" opacity="0.9" stroke="#5D4037" stroke-width=".8" width="8" x="208" y="94"></rect>
+<rect fill="#fff" height="14" opacity="0.9" stroke="#5D4037" stroke-width=".8" width="8" x="217" y="94"></rect>
+<rect fill="#fff" height="14" opacity="0.9" stroke="#5D4037" stroke-width=".8" width="8" x="226" y="94"></rect>
+<rect fill="#fff" height="14" opacity="0.9" stroke="#5D4037" stroke-width=".8" width="8" x="235" y="94"></rect>
+<rect fill="#fff" height="14" opacity="0.9" stroke="#5D4037" stroke-width=".8" width="8" x="244" y="94"></rect>
+<rect fill="#fff" height="14" opacity="0.9" stroke="#5D4037" stroke-width=".8" width="8" x="253" y="94"></rect>
+<rect fill="#fff" height="14" opacity="0.9" stroke="#5D4037" stroke-width=".8" width="8" x="262" y="94"></rect>
+<rect fill="#fff" height="14" opacity="0.9" stroke="#5D4037" stroke-width=".8" width="8" x="271" y="94"></rect>
+<rect fill="#fff" height="14" opacity="0.9" stroke="#5D4037" stroke-width=".8" width="8" x="280" y="94"></rect>
+<rect fill="#fff" height="14" opacity="0.9" stroke="#5D4037" stroke-width=".8" width="8" x="289" y="94"></rect>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="308" y="105">le 17e : 32, 16 recopiés</text>
+<line stroke="#6B7378" stroke-width="0.9" x1="14" x2="14" y1="81" y2="93"></line><polygon fill="#6B7378" points="14,93 11.3,86.6 16.7,86.6"></polygon>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="10" y="138">Capacités relevées : 0, 4, 8, 16, 32 … 1 048 576 ; 18 réallocations pour un million d'Add (mesuré).</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="10" y="158">Chaque recopie coûte cher, mais elles s'espacent : en moyenne, un Add reste à coût constant.</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="10" y="174">Count dit combien d'éléments sont rangés ; Capacity, combien de cases le tableau caché possède.</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Une liste réserve plus de place qu'elle n'en utilise, double quand elle déborde, et n'est rapide qu'à sa fin : ajouter ou retirer ailleurs décale tout ce qui suit.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Une étagère qu'on remplace par une deux fois plus longue quand elle est pleine. Ajouter un livre au bout est facile ; en glisser un au début oblige à pousser tous les autres.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>expliquer Count et Capacity ;</li>
-        <li>donner une capacité utile ;</li>
-        <li>éviter le grand tas sans raison ;</li>
-        <li>choisir le bon bout.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Une liste réserve plus de place qu'elle n'en utilise, double quand elle déborde, et n'est rapide qu'à sa fin : ajouter ou retirer ailleurs décale tout ce qui suit.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Une étagère qu'on remplace par une deux fois plus longue quand elle est pleine. Ajouter un livre au bout est facile ; en glisser un au début oblige à pousser tous les autres.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>expliquer Count et Capacity ;</li>
+<li>donner une capacité utile ;</li>
+<li>éviter le grand tas sans raison ;</li>
+<li>choisir le bon bout.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À retenir</span>
     Si tu connais la taille, ou son ordre de grandeur, donne-la au constructeur. Si tu travailles au début de la liste, ce n'est pas une liste qu'il te faut, mais une file ou une pile.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 133 · Le tableau qui grandit</div>
+<div class="folio">1</div>
+<div class="pied">Cours 133 · Le tableau qui grandit</div>
 </section>
-
 <!-- ============ PAGE 2 · LE DOUBLEMENT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 133</b></div>
-  <p class="rubrique">Schéma 1 · Le prix du doublement</p>
-  <h2>Deux fois la mémoire, sans le savoir</h2>
-  <p style="max-width:165mm">Chaque doublement abandonne l'ancien tableau au ramasse-miettes. On a compté les octets alloués pour remplir une liste, avec et sans capacité donnée d'avance.</p>
-
-  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#5D4037" text-anchor="start" font-weight="700">Un million de points de 24 octets ajoutés un par un (.NET 8, trois séries, mesuré)</text>
-<text x="16" y="48" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">sans capacité</text>
-<rect x="190" y="38" width="300" height="13" fill="#C62828" opacity=".8"/>
-<text x="496.0" y="48" font-size="7.4" fill="#C62828" text-anchor="start" font-weight="700">48,0 Mio alloués · 97 à 350 ms</text>
-<text x="16" y="72" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">new List&lt;Pt&gt;(1 000 000)</text>
-<rect x="190" y="62" width="143" height="13" fill="#2E7D32" opacity=".8"/>
-<text x="339.125" y="72" font-size="7.4" fill="#2E7D32" text-anchor="start" font-weight="700">22,9 Mio · 20 à 159 ms</text>
-<text x="16" y="96" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">puis ToArray()</text>
-<rect x="190" y="86" width="143" height="13" fill="#E65100" opacity=".8"/>
-<text x="339.125" y="96" font-size="7.4" fill="#E65100" text-anchor="start" font-weight="700">22,9 Mio de plus · 7 à 206 ms</text>
-<text x="16" y="122" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Le nuage de Magpie, 2 500 points, sans capacité puis ToArray :</text>
-<rect x="16" y="130" width="270" height="22" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
-<text x="151.0" y="143.46666666666667" font-size="7.4" fill="#C62828" text-anchor="middle" font-weight="700">250,8 Kio alloués, tableau caché de 4 096</text>
-<rect x="300" y="130" width="280" height="22" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="440.0" y="143.46666666666667" font-size="7.4" fill="#2E7D32" text-anchor="middle" font-weight="700">117,3 Kio avec new List(2500)</text>
-<text x="16" y="174" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Sans capacité, on alloue environ deux fois la taille finale : tous les tableaux abandonnés en route.</text>
-<text x="16" y="192" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Les durées varient d'une série à l'autre ; les octets, eux, sont identiques à chaque série.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 133</b></div>
+<p class="rubrique">Schéma 1 · Le prix du doublement</p>
+<h2>Deux fois la mémoire, sans le savoir</h2>
+<p style="max-width:165mm">Chaque doublement abandonne l'ancien tableau au ramasse-miettes. On a compté les octets alloués pour remplir une liste, avec et sans capacité donnée d'avance.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 206" width="100%">
+<rect fill="#EFE9E1" height="206" width="600" x="0" y="0"></rect>
+<text fill="#5D4037" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">Un million de points de 24 octets ajoutés un par un (.NET 8, trois séries, mesuré)</text>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="16" y="48">sans capacité</text>
+<rect fill="#C62828" height="13" opacity=".8" width="300" x="190" y="38"></rect>
+<text fill="#C62828" font-size="7.4" font-weight="700" text-anchor="start" x="496.0" y="48">48,0 Mio alloués · 97 à 350 ms</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="16" y="72">new List&lt;Pt&gt;(1 000 000)</text>
+<rect fill="#2E7D32" height="13" opacity=".8" width="143" x="190" y="62"></rect>
+<text fill="#2E7D32" font-size="7.4" font-weight="700" text-anchor="start" x="339.125" y="72">22,9 Mio · 20 à 159 ms</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="16" y="96">puis ToArray()</text>
+<rect fill="#E65100" height="13" opacity=".8" width="143" x="190" y="86"></rect>
+<text fill="#E65100" font-size="7.4" font-weight="700" text-anchor="start" x="339.125" y="96">22,9 Mio de plus · 7 à 206 ms</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="122">Le nuage de Magpie, 2 500 points, sans capacité puis ToArray :</text>
+<rect fill="#fff" height="22" rx="4" stroke="#C62828" stroke-width="1.2" width="270" x="16" y="130"></rect>
+<text fill="#C62828" font-size="7.4" font-weight="700" text-anchor="middle" x="151.0" y="143.46666666666667">250,8 Kio alloués, tableau caché de 4 096</text>
+<rect fill="#fff" height="22" rx="4" stroke="#2E7D32" stroke-width="1.2" width="280" x="300" y="130"></rect>
+<text fill="#2E7D32" font-size="7.4" font-weight="700" text-anchor="middle" x="440.0" y="143.46666666666667">117,3 Kio avec new List(2500)</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="174">Sans capacité, on alloue environ deux fois la taille finale : tous les tableaux abandonnés en route.</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="192">Les durées varient d'une série à l'autre ; les octets, eux, sont identiques à chaque série.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, réserver d'avance quand on connaît l'ordre de grandeur</span>var nuage = new List&lt;Point3d&gt;(TailleVisee);      // un seul tableau, aucune recopie en route
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, réserver d'avance quand on connaît l'ordre de grandeur</span>var nuage = new List&lt;Point3d&gt;(TailleVisee);      // un seul tableau, aucune recopie en route
 foreach (var p in Echantillonner()) nuage.Add(p);
 return nuage.ToArray();                              // une copie exacte, une seule fois</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Coût amorti</h3>
-      <p>Pour n éléments, les recopies déplacent au total moins de 2n éléments : 4, puis 8, puis 16… La somme ne dépasse jamais le double de la fin. Chaque Add coûte donc une constante, en moyenne.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>ToArray recopie encore</h3>
-      <p>ToArray alloue un tableau exact et y recopie tout. C'est utile pour rendre un résultat figé ; c'est une copie de plus si la liste est jetée juste après.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Coût amorti</h3>
+<p>Pour n éléments, les recopies déplacent au total moins de 2n éléments : 4, puis 8, puis 16… La somme ne dépasse jamais le double de la fin. Chaque Add coûte donc une constante, en moyenne.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>ToArray recopie encore</h3>
+<p>ToArray alloue un tableau exact et y recopie tout. C'est utile pour rendre un résultat figé ; c'est une copie de plus si la liste est jetée juste après.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Donner une capacité énorme « par sécurité ». La mémoire est réservée tout de suite, utilisée ou non ; une capacité trop grande coûte autant qu'un doublement de trop.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 133 · Le tableau qui grandit</div>
+<div class="folio">2</div>
+<div class="pied">Cours 133 · Le tableau qui grandit</div>
 </section>
-
 <!-- ============ PAGE 3 · LE GRAND TAS ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 133</b></div>
-  <p class="rubrique">Schéma 2 · Le grand tas</p>
-  <h2>Le seuil des 85 000 octets</h2>
-  <p style="max-width:165mm">Le ramasse-miettes range à part les gros tableaux. Une liste qui double peut franchir ce seuil alors que son contenu ne le franchit pas. On a regardé où naissait chaque tableau.</p>
-
-  <svg viewBox="0 0 600 200" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="200" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#5D4037" text-anchor="start" font-weight="700">Où naît le tableau caché d'une List&lt;Pt&gt; (24 octets par point), selon sa taille (mesuré)</text>
-<line x1="40" y1="70" x2="560" y2="70" stroke="#6B7378" stroke-width="1"/>
-<line x1="408" y1="44" x2="408" y2="96" stroke="#C62828" stroke-width="1.4" stroke-dasharray="4 3"/>
-<text x="408.33333333333337" y="40" font-size="7.4" fill="#C62828" text-anchor="middle" font-weight="700">85 000 octets</text>
-<circle cx="300" cy="70" r="4" fill="#2E7D32"/>
-<text x="300.0" y="60" font-size="7.2" fill="#2E7D32" text-anchor="middle" font-weight="700">2 500 points exacts : 60 000 o</text>
-<circle cx="253" cy="70" r="4" fill="#6B7378"/>
-<text x="252.99200000000002" y="88" font-size="7.2" fill="#6B7378" text-anchor="middle" font-weight="700">capacité 2 048 : 49 152 o</text>
-<circle cx="466" cy="70" r="4" fill="#C62828"/>
-<text x="465.98400000000004" y="88" font-size="7.2" fill="#C62828" text-anchor="middle" font-weight="700">capacité 4 096 : 98 304 o</text>
-<rect x="40" y="108" width="250" height="22" rx="4" fill="#EAF4EA" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="165.0" y="121.46666666666667" font-size="7.4" fill="#2E7D32" text-anchor="middle" font-weight="700">tas ordinaire : né en génération 0</text>
-<rect x="310" y="108" width="250" height="22" rx="4" fill="#FBEAEA" stroke="#C62828" stroke-width="1.2"/>
-<text x="435.0" y="121.46666666666667" font-size="7.4" fill="#C62828" text-anchor="middle" font-weight="700">grand tas (LOH) : né en génération 2</text>
-<text x="16" y="152" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Au-delà de 85 000 octets, un tableau va directement dans le grand tas, ramassé avec la génération 2.</text>
-<text x="16" y="168" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Le nuage de 2 500 points sans capacité y finit ; son ToArray de 60 000 octets, non (mesuré).</text>
-<text x="16" y="188" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Le grand tas n'est pas compacté par défaut : des trous de tailles variées peuvent s'y accumuler (documentation).</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 133</b></div>
+<p class="rubrique">Schéma 2 · Le grand tas</p>
+<h2>Le seuil des 85 000 octets</h2>
+<p style="max-width:165mm">Le ramasse-miettes range à part les gros tableaux. Une liste qui double peut franchir ce seuil alors que son contenu ne le franchit pas. On a regardé où naissait chaque tableau.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 200" width="100%">
+<rect fill="#EFE9E1" height="200" width="600" x="0" y="0"></rect>
+<text fill="#5D4037" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">Où naît le tableau caché d'une List&lt;Pt&gt; (24 octets par point), selon sa taille (mesuré)</text>
+<line stroke="#6B7378" stroke-width="1" x1="40" x2="560" y1="70" y2="70"></line>
+<line stroke="#C62828" stroke-dasharray="4 3" stroke-width="1.4" x1="408" x2="408" y1="44" y2="96"></line>
+<text fill="#C62828" font-size="7.4" font-weight="700" text-anchor="middle" x="408.33333333333337" y="40">85 000 octets</text>
+<circle cx="300" cy="70" fill="#2E7D32" r="4"></circle>
+<text fill="#2E7D32" font-size="7.2" font-weight="700" text-anchor="middle" x="300.0" y="60">2 500 points exacts : 60 000 o</text>
+<circle cx="253" cy="70" fill="#6B7378" r="4"></circle>
+<text fill="#6B7378" font-size="7.2" font-weight="700" text-anchor="middle" x="252.99200000000002" y="88">capacité 2 048 : 49 152 o</text>
+<circle cx="466" cy="70" fill="#C62828" r="4"></circle>
+<text fill="#C62828" font-size="7.2" font-weight="700" text-anchor="middle" x="465.98400000000004" y="88">capacité 4 096 : 98 304 o</text>
+<rect fill="#EAF4EA" height="22" rx="4" stroke="#2E7D32" stroke-width="1.2" width="250" x="40" y="108"></rect>
+<text fill="#2E7D32" font-size="7.4" font-weight="700" text-anchor="middle" x="165.0" y="121.46666666666667">tas ordinaire : né en génération 0</text>
+<rect fill="#FBEAEA" height="22" rx="4" stroke="#C62828" stroke-width="1.2" width="250" x="310" y="108"></rect>
+<text fill="#C62828" font-size="7.4" font-weight="700" text-anchor="middle" x="435.0" y="121.46666666666667">grand tas (LOH) : né en génération 2</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="152">Au-delà de 85 000 octets, un tableau va directement dans le grand tas, ramassé avec la génération 2.</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="168">Le nuage de 2 500 points sans capacité y finit ; son ToArray de 60 000 octets, non (mesuré).</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="188">Le grand tas n'est pas compacté par défaut : des trous de tailles variées peuvent s'y accumuler (documentation).</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, lire où un tableau est né</span>var t = new byte[84_000];  Console.WriteLine(GC.GetGeneration(t));   // 0 : tas ordinaire
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, lire où un tableau est né</span>var t = new byte[84_000];  Console.WriteLine(GC.GetGeneration(t));   // 0 : tas ordinaire
 var u = new byte[86_000];  Console.WriteLine(GC.GetGeneration(u));   // 2 : grand tas</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Pourquoi un tas à part</h3>
-      <p>Déplacer un gros bloc pour compacter coûte cher. Le runtime évite donc de déplacer les gros tableaux, et ne les ramasse qu'aux collectes complètes, les plus lentes.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Ce qu'on y gagne à prévoir</h3>
-      <p>2 500 points de 24 octets font 60 000 octets : sous le seuil. C'est le tableau intermédiaire de 4 096 cases, créé par le doublement, qui le franchit.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Pourquoi un tas à part</h3>
+<p>Déplacer un gros bloc pour compacter coûte cher. Le runtime évite donc de déplacer les gros tableaux, et ne les ramasse qu'aux collectes complètes, les plus lentes.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Ce qu'on y gagne à prévoir</h3>
+<p>2 500 points de 24 octets font 60 000 octets : sous le seuil. C'est le tableau intermédiaire de 4 096 cases, créé par le doublement, qui le franchit.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Croire qu'un objet « moyen » reste toujours dans le tas ordinaire. Le seuil porte sur chaque tableau, y compris le tableau caché d'une liste qui a doublé une fois de trop.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 133 · Le tableau qui grandit</div>
+<div class="folio">3</div>
+<div class="pied">Cours 133 · Le tableau qui grandit</div>
 </section>
-
 <!-- ============ PAGE 4 · LE BON BOUT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 133</b></div>
-  <p class="rubrique">Schéma 3 · Le bon bout</p>
-  <h2>Le début coûte, la fin est gratuite</h2>
-  <p style="max-width:165mm">Insérer ou retirer en tête oblige à décaler tous les éléments suivants. Répété n fois, le travail grandit comme n². On a vidé et rempli des listes par chaque bout.</p>
-
-  <svg viewBox="0 0 600 228" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="228" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#5D4037" text-anchor="start" font-weight="700">Vider ou remplir une List&lt;int&gt; par un bout ou par l'autre (meilleure des séries, mesuré)</text>
-<text x="16" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">opération répétée n fois</text>
-<text x="210" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">n = 1 000</text>
-<text x="330" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">n = 10 000</text>
-<text x="450" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">n = 100 000</text>
-<rect x="10" y="48" width="580" height="18" fill="#fff" opacity=".55"/>
-<text x="16" y="61" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">Add (à la fin)</text>
-<text x="210" y="61" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">—</text>
-<text x="330" y="61" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">0,10 ms</text>
-<text x="450" y="61" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">0,7 ms</text>
-<text x="16" y="79" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">RemoveAt(Count - 1)</text>
-<text x="210" y="79" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">0,012 ms</text>
-<text x="330" y="79" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">0,022 ms</text>
-<text x="450" y="79" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">0,22 ms</text>
-<rect x="10" y="84" width="580" height="18" fill="#fff" opacity=".55"/>
-<text x="16" y="97" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">Queue.Dequeue</text>
-<text x="210" y="97" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">0,015 ms</text>
-<text x="330" y="97" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">0,026 ms</text>
-<text x="450" y="97" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">0,24 ms</text>
-<text x="16" y="115" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">Insert(0, x)</text>
-<text x="210" y="115" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">0,11 ms</text>
-<text x="330" y="115" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">3,2 ms</text>
-<text x="450" y="115" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">346 ms</text>
-<rect x="10" y="120" width="580" height="18" fill="#fff" opacity=".55"/>
-<text x="16" y="133" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">RemoveAt(0)</text>
-<text x="210" y="133" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">0,04 ms</text>
-<text x="330" y="133" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">59 ms</text>
-<text x="450" y="133" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">7 773 ms</text>
-<text x="16" y="152" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Retirer ou insérer au début décale tout le reste : n fois n cases déplacées. À la fin, rien ne bouge.</text>
-<text x="16" y="168" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Comparer deux listes en multi-ensemble par IndexOf + RemoveAt : 2,6 µs à 100 éléments, 38,7 ms à 10 000 ;</text>
-<text x="16" y="184" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">par un dictionnaire de comptes : 2,4 µs et 1,1 ms (mesuré).</text>
-<text x="16" y="206" font-size="7.2" fill="#6B7378" text-anchor="start" font-style="italic">RemoveAt(0) plus lent qu'Insert(0) à grande taille : écart propre à la copie mémoire de cette machine, non expliqué ici.</text>
-<text x="16" y="220" font-size="7.2" fill="#6B7378" text-anchor="start" font-style="italic">Les deux restent quadratiques ; c'est la seule conclusion à retenir.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 133</b></div>
+<p class="rubrique">Schéma 3 · Le bon bout</p>
+<h2>Le début coûte, la fin est gratuite</h2>
+<p style="max-width:165mm">Insérer ou retirer en tête oblige à décaler tous les éléments suivants. Répété n fois, le travail grandit comme n². On a vidé et rempli des listes par chaque bout.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 228" width="100%">
+<rect fill="#EFE9E1" height="228" width="600" x="0" y="0"></rect>
+<text fill="#5D4037" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">Vider ou remplir une List&lt;int&gt; par un bout ou par l'autre (meilleure des séries, mesuré)</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="16" y="40">opération répétée n fois</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="210" y="40">n = 1 000</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="330" y="40">n = 10 000</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="450" y="40">n = 100 000</text>
+<rect fill="#fff" height="18" opacity=".55" width="580" x="10" y="48"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="16" y="61">Add (à la fin)</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="210" y="61">—</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="330" y="61">0,10 ms</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="450" y="61">0,7 ms</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="16" y="79">RemoveAt(Count - 1)</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="210" y="79">0,012 ms</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="330" y="79">0,022 ms</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="450" y="79">0,22 ms</text>
+<rect fill="#fff" height="18" opacity=".55" width="580" x="10" y="84"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="16" y="97">Queue.Dequeue</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="210" y="97">0,015 ms</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="330" y="97">0,026 ms</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="450" y="97">0,24 ms</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="16" y="115">Insert(0, x)</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="210" y="115">0,11 ms</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="330" y="115">3,2 ms</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="450" y="115">346 ms</text>
+<rect fill="#fff" height="18" opacity=".55" width="580" x="10" y="120"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="16" y="133">RemoveAt(0)</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="210" y="133">0,04 ms</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="330" y="133">59 ms</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="450" y="133">7 773 ms</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="152">Retirer ou insérer au début décale tout le reste : n fois n cases déplacées. À la fin, rien ne bouge.</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="168">Comparer deux listes en multi-ensemble par IndexOf + RemoveAt : 2,6 µs à 100 éléments, 38,7 ms à 10 000 ;</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="184">par un dictionnaire de comptes : 2,4 µs et 1,1 ms (mesuré).</text>
+<text fill="#6B7378" font-size="7.2" font-style="italic" text-anchor="start" x="16" y="206">RemoveAt(0) plus lent qu'Insert(0) à grande taille : écart propre à la copie mémoire de cette machine, non expliqué ici.</text>
+<text fill="#6B7378" font-size="7.2" font-style="italic" text-anchor="start" x="16" y="220">Les deux restent quadratiques ; c'est la seule conclusion à retenir.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, une file pour traiter dans l'ordre d'arrivée</span>var aTraiter = new Queue&lt;Guid&gt;(depart);           // tableau circulaire : rien n'est décalé
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, une file pour traiter dans l'ordre d'arrivée</span>var aTraiter = new Queue&lt;Guid&gt;(depart);           // tableau circulaire : rien n'est décalé
 while (aTraiter.Count &gt; 0) Traiter(aTraiter.Dequeue());</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Retirer sans décaler</h3>
-      <p>Si l'ordre n'importe pas, on peut retirer l'élément i en y mettant le dernier, puis retirer la fin. Deux écritures au lieu d'un décalage.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Le tableau reste le plus rapide</h3>
-      <p>Dix millions de lectures : 7,2 à 11,4 ms sur un tableau, 23 à 25 ms par l'indexeur de List (mesuré). La liste vérifie l'indice contre son Count, puis le tableau le revérifie (déduit).</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Retirer sans décaler</h3>
+<p>Si l'ordre n'importe pas, on peut retirer l'élément i en y mettant le dernier, puis retirer la fin. Deux écritures au lieu d'un décalage.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Le tableau reste le plus rapide</h3>
+<p>Dix millions de lectures : 7,2 à 11,4 ms sur un tableau, 23 à 25 ms par l'indexeur de List (mesuré). La liste vérifie l'indice contre son Count, puis le tableau le revérifie (déduit).</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Ajouter ou retirer dans une liste pendant un foreach sur elle. L'énumérateur s'en aperçoit au tour suivant et lève InvalidOperationException (mesuré).
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 133 · Le tableau qui grandit</div>
+<div class="folio">4</div>
+<div class="pied">Cours 133 · Le tableau qui grandit</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 133</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>Des listes qui grandissent dans Magpie et SnapSet</h2>
-  <p style="max-width:165mm">Un nuage sans capacité, sa copie finale, une liste dimensionnée d'avance, une pile tenue par la fin, et une comparaison quadratique assumée.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 133</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>Des listes qui grandissent dans Magpie et SnapSet</h2>
+<p style="max-width:165mm">Un nuage sans capacité, sa copie finale, une liste dimensionnée d'avance, une pile tenue par la fin, et une comparaison quadratique assumée.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">magpie/plugin/Core/GeometrySampler.cs</span></div>
 <div class="l k1"><span class="n">127</span>var cloud = new List&lt;Point3d&gt;();<span class="rep r1">1</span></div>
@@ -311,137 +284,55 @@ while (aTraiter.Count &gt; 0) Traiter(aTraiter.Dequeue());</div>
 <div class="l"><span class="cm">magpie/plugin/Core/GenericChecker.cs</span></div>
 <div class="l k5"><span class="n">298</span>int i = restant.IndexOf(v);  …  restant.RemoveAt(i);<span class="rep r5">5</span></div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>Sans capacité</b>Jusqu'à 2 500.</li>
-      <li><span class="rep r2">2</span><b>Copie finale</b>Tableau exact.</li>
-      <li><span class="rep r3">3</span><b>Dimensionnée</b>Taille connue.</li>
-      <li><span class="rep r4">4</span><b>Par la fin</b>Une pile.</li>
-      <li><span class="rep r5">5</span><b>Quadratique</b>Petites listes.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À surveiller · Le nuage de points passe par le grand tas</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>Sans capacité</b>Jusqu'à 2 500.</li>
+<li><span class="rep r2">2</span><b>Copie finale</b>Tableau exact.</li>
+<li><span class="rep r3">3</span><b>Dimensionnée</b>Taille connue.</li>
+<li><span class="rep r4">4</span><b>Par la fin</b>Une pile.</li>
+<li><span class="rep r5">5</span><b>Quadratique</b>Petites listes.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À surveiller · Le nuage de points passe par le grand tas</span>
     GeometrySampler.cs:127 remplit le nuage sans capacité, jusqu'à environ 2 500 points (TargetCloudSize, ligne 55). Sur une recopie avec des points de 24 octets : 250,8 Kio alloués au lieu de 117,3, et un tableau caché de 4 096 cases né dans le grand tas. La comparaison de la ligne 298 reste négligeable aux tailles d'un exercice (2,6 µs à 100 éléments). Relevé sans rien modifier.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 133 · Le tableau qui grandit</div>
+<div class="folio">5</div>
+<div class="pied">Cours 133 · Le tableau qui grandit</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 133</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 133</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">Une List&lt;T&gt; pleine qui reçoit un Add…</div><ul>
-      <li><span>A</span>ajoute une case</li><li><span>B</span>chaîne un second bloc</li><li><span>C</span>lève une exception</li><li><span>D</span>alloue un tableau deux fois plus grand et recopie</li></ul></div>
 
-    <div class="q"><div class="enonce">Pour un million d'Add, le tableau a été réalloué…</div><ul>
-      <li><span>A</span>1 000 fois</li><li><span>B</span>jamais</li><li><span>C</span>18 fois</li><li><span>D</span>un million de fois</li></ul></div>
 
-    <div class="q"><div class="enonce">Capacity, c'est…</div><ul>
-      <li><span>A</span>le nombre de cases du tableau caché</li><li><span>B</span>la taille en octets</li><li><span>C</span>le nombre d'éléments</li><li><span>D</span>la limite maximale</li></ul></div>
 
-    <div class="q"><div class="enonce">Un million de points sans capacité ont alloué…</div><ul>
-      <li><span>A</span>moitié moins</li><li><span>B</span>48,0 Mio, contre 22,9 avec</li><li><span>C</span>autant qu'avec</li><li><span>D</span>1 Gio</li></ul></div>
-
-    <div class="q"><div class="enonce">Un tableau de plus de 85 000 octets… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>n'est ramassé qu'aux collectes complètes</li><li><span>B</span>est découpé</li><li><span>C</span>naît dans le grand tas</li><li><span>D</span>est refusé</li></ul></div>
-
-    <div class="q"><div class="enonce">2 500 points de 24 octets, rangés exactement, occupent…</div><ul>
-      <li><span>A</span>98 304 octets</li><li><span>B</span>2 500 octets</li><li><span>C</span>1 Mo</li><li><span>D</span>60 000 octets, sous le seuil</li></ul></div>
-
-    <div class="q"><div class="enonce">ToArray() sur une liste…</div><ul>
-      <li><span>A</span>alloue un tableau exact et recopie</li><li><span>B</span>ne coûte rien</li><li><span>C</span>rend le tableau caché</li><li><span>D</span>vide la liste</li></ul></div>
-
-    <div class="q"><div class="enonce">RemoveAt(Count - 1) répété 100 000 fois a pris…</div><ul>
-      <li><span>A</span>moins d'une milliseconde</li><li><span>B</span>huit secondes</li><li><span>C</span>autant que RemoveAt(0)</li><li><span>D</span>une seconde</li></ul></div>
-
-    <div class="q"><div class="enonce">Insert(0, x) répété n fois coûte de l'ordre de…</div><ul>
-      <li><span>A</span>log n</li><li><span>B</span>n²</li><li><span>C</span>n</li><li><span>D</span>une constante</li></ul></div>
-
-    <div class="q"><div class="enonce">Pour traiter dans l'ordre d'arrivée, on prend…</div><ul>
-      <li><span>A</span>une List et RemoveAt(0)</li><li><span>B</span>un HashSet</li><li><span>C</span>un tableau trié</li><li><span>D</span>une Queue</li></ul></div>
-
-    <div class="q"><div class="enonce">Ajouter à une liste pendant un foreach sur elle…</div><ul>
-      <li><span>A</span>ignore l'ajout</li><li><span>B</span>boucle sans fin</li><li><span>C</span>lève InvalidOperationException</li><li><span>D</span>marche</li></ul></div>
-
-    <div class="q"><div class="enonce">La comparaison IndexOf + RemoveAt de Magpie, à 100 éléments…</div><ul>
-      <li><span>A</span>fausse</li><li><span>B</span>39 ms</li><li><span>C</span>2,6 µs : négligeable</li><li><span>D</span>une seconde</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 133 · Le tableau qui grandit</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">new List&lt;T&gt;(n)</td><td>réserver n cases d'avance</td><td>Metrique.cs:2419</td></tr>
+<tr><td class="c">list.Capacity</td><td>la taille du tableau caché</td><td>page 1</td></tr>
+<tr><td class="c">list.ToArray()</td><td>une copie exacte, figée</td><td>GeometrySampler.cs:167</td></tr>
+<tr><td class="c">list.RemoveAt(list.Count - 1)</td><td>retirer à la fin, sans décaler</td><td>PlacementPrises.cs:144</td></tr>
+<tr><td class="c">GC.GetGeneration(objet)</td><td>savoir où un objet est rangé</td><td>page 3</td></tr>
+<tr><td class="c">Queue&lt;T&gt;</td><td>entrer à un bout, sortir à l'autre</td><td>page 4</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Capacité</dt><dd>Le nombre de cases réservées, au moins égal au nombre d'éléments.</dd>
+<dt>Coût amorti</dt><dd>Le coût moyen d'une opération sur une longue suite, recopies comprises.</dd>
+<dt>Grand tas (LOH)</dt><dd>La zone des objets de plus de 85 000 octets, ramassée avec la génération 2.</dd>
+<dt>Tableau dynamique</dt><dd>Un tableau qui se remplace par un plus grand quand il est plein.</dd>
+<dt>Décalage</dt><dd>Le déplacement des éléments suivants lors d'une insertion ou d'un retrait.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 134</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 133 · Le tableau qui grandit</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 133</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · D.</b> Doublement.</div>
-    <div><b>02 · C.</b> De 4 à 1 048 576.</div>
-    <div><b>03 · A.</b> Count compte les éléments.</div>
-    <div><b>04 · B.</b> Les tableaux abandonnés.</div>
-    <div><b>05 · A et C.</b> Grand tas.</div>
-    <div><b>06 · D.</b> 2 500 × 24.</div>
-    <div><b>07 · A.</b> Une copie de plus.</div>
-    <div><b>08 · A.</b> 0,22 ms mesuré.</div>
-    <div><b>09 · B.</b> n décalages de n.</div>
-    <div><b>10 · D.</b> Tableau circulaire.</div>
-    <div><b>11 · C.</b> Version vérifiée.</div>
-    <div><b>12 · C.</b> GenericChecker.cs:298.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 134, « Piles et files ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">new List&lt;T&gt;(n)</td><td>réserver n cases d'avance</td><td>Metrique.cs:2419</td></tr>
-      <tr><td class="c">list.Capacity</td><td>la taille du tableau caché</td><td>page 1</td></tr>
-      <tr><td class="c">list.ToArray()</td><td>une copie exacte, figée</td><td>GeometrySampler.cs:167</td></tr>
-      <tr><td class="c">list.RemoveAt(list.Count - 1)</td><td>retirer à la fin, sans décaler</td><td>PlacementPrises.cs:144</td></tr>
-      <tr><td class="c">GC.GetGeneration(objet)</td><td>savoir où un objet est rangé</td><td>page 3</td></tr>
-      <tr><td class="c">Queue&lt;T&gt;</td><td>entrer à un bout, sortir à l'autre</td><td>page 4</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Capacité</dt><dd>Le nombre de cases réservées, au moins égal au nombre d'éléments.</dd>
-    <dt>Coût amorti</dt><dd>Le coût moyen d'une opération sur une longue suite, recopies comprises.</dd>
-    <dt>Grand tas (LOH)</dt><dd>La zone des objets de plus de 85 000 octets, ramassée avec la génération 2.</dd>
-    <dt>Tableau dynamique</dt><dd>Un tableau qui se remplace par un plus grand quand il est plein.</dd>
-    <dt>Décalage</dt><dd>Le déplacement des éléments suivants lors d'une insertion ou d'un retrait.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 134</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 133 · Le tableau qui grandit</div>
-</section>
-
 </body>
 </html>

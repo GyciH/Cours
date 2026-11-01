@@ -1,280 +1,253 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>137 · Les données triées</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-2">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 137</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Les données triées</h1>
-  <p class="chapeau">Un ordre est une information. Dans un tableau trié, on trouve une valeur en coupant en deux à chaque regard, on compte un intervalle sans le parcourir, on compare deux ensembles de façon reproductible. Encore faut-il trier au bon moment, et avec une règle d'ordre qui en soit vraiment une.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>55</b>, <b>131</b>, <b>133</b></span>
-    <span class="pastille">Exemples · <b>Magpie</b>, <b>SnapSet</b>, <b>Cuttlefish</b></span>
-  </div>
-
-  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
-    <svg viewBox="0 0 600 204" width="100%">
-<rect x="10" y="14" width="36" height="22" rx="4" fill="#fff" stroke="#5D4037" stroke-width="1.2"/>
-<text x="28.0" y="27.666666666666668" font-size="8" fill="#5D4037" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">2</text>
-<rect x="50" y="14" width="36" height="22" rx="4" fill="#fff" stroke="#5D4037" stroke-width="1.2"/>
-<text x="68.0" y="27.666666666666668" font-size="8" fill="#5D4037" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">5</text>
-<rect x="90" y="14" width="36" height="22" rx="4" fill="#fff" stroke="#5D4037" stroke-width="1.2"/>
-<text x="108.0" y="27.666666666666668" font-size="8" fill="#5D4037" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">8</text>
-<rect x="130" y="14" width="36" height="22" rx="4" fill="#fff" stroke="#5D4037" stroke-width="1.2"/>
-<text x="148.0" y="27.666666666666668" font-size="8" fill="#5D4037" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">12</text>
-<rect x="170" y="14" width="36" height="22" rx="4" fill="#fff" stroke="#5D4037" stroke-width="1.2"/>
-<text x="188.0" y="27.666666666666668" font-size="8" fill="#5D4037" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">16</text>
-<rect x="210" y="14" width="36" height="22" rx="4" fill="#fff" stroke="#5D4037" stroke-width="1.2"/>
-<text x="228.0" y="27.666666666666668" font-size="8" fill="#5D4037" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">23</text>
-<rect x="250" y="14" width="36" height="22" rx="4" fill="#fff" stroke="#5D4037" stroke-width="1.2"/>
-<text x="268.0" y="27.666666666666668" font-size="8" fill="#5D4037" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">38</text>
-<rect x="290" y="14" width="36" height="22" rx="4" fill="#EFEBE9" stroke="#5D4037" stroke-width="1.2"/>
-<text x="308.0" y="27.666666666666668" font-size="8" fill="#5D4037" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">41</text>
-<rect x="330" y="14" width="36" height="22" rx="4" fill="#fff" stroke="#5D4037" stroke-width="1.2"/>
-<text x="348.0" y="27.666666666666668" font-size="8" fill="#5D4037" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">56</text>
-<rect x="370" y="14" width="36" height="22" rx="4" fill="#fff" stroke="#5D4037" stroke-width="1.2"/>
-<text x="388.0" y="27.666666666666668" font-size="8" fill="#5D4037" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">72</text>
-<rect x="410" y="14" width="36" height="22" rx="4" fill="#fff" stroke="#5D4037" stroke-width="1.2"/>
-<text x="428.0" y="27.666666666666668" font-size="8" fill="#5D4037" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">91</text>
-<rect x="10" y="50" width="436" height="14" rx="3" fill="#1565C0" opacity=".15"/>
-<rect x="210" y="50" width="36" height="14" rx="3" fill="#1565C0" opacity=".7"/>
-<text x="460" y="61" font-size="7.4" fill="#2B2F33" text-anchor="start">milieu 23 < 41 : à droite</text>
-<rect x="250" y="72" width="196" height="14" rx="3" fill="#1565C0" opacity=".15"/>
-<rect x="330" y="72" width="36" height="14" rx="3" fill="#1565C0" opacity=".7"/>
-<text x="460" y="83" font-size="7.4" fill="#2B2F33" text-anchor="start">milieu 56 > 41 : à gauche</text>
-<rect x="250" y="94" width="76" height="14" rx="3" fill="#1565C0" opacity=".15"/>
-<rect x="250" y="94" width="36" height="14" rx="3" fill="#1565C0" opacity=".7"/>
-<text x="460" y="105" font-size="7.4" fill="#2B2F33" text-anchor="start">milieu 38 < 41 : à droite</text>
-<rect x="290" y="116" width="36" height="14" rx="3" fill="#1565C0" opacity=".15"/>
-<rect x="290" y="116" width="36" height="14" rx="3" fill="#2E7D32" opacity=".7"/>
-<text x="460" y="127" font-size="7.4" fill="#2E7D32" text-anchor="start" font-weight="700">41 : trouvé</text>
-<text x="10" y="158" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">Chercher 41 parmi 11 valeurs triées : 4 regards. Parmi 100 000 : 17 au plus. Chaque regard coupe en deux.</text>
-<text x="10" y="176" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Sans ordre, il faut tout regarder ; avec un hachage, un seul regard, mais plus aucune notion d'avant et d'après.</text>
-<text x="10" y="192" font-size="7.2" fill="#6B7378" text-anchor="start" font-style="italic">Exemple construit à la main.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 137</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Les données triées</h1>
+<p class="chapeau">Un ordre est une information. Dans un tableau trié, on trouve une valeur en coupant en deux à chaque regard, on compte un intervalle sans le parcourir, on compare deux ensembles de façon reproductible. Encore faut-il trier au bon moment, et avec une règle d'ordre qui en soit vraiment une.</p>
+<div class="meta">
+<span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>55</b>, <b>131</b>, <b>133</b></span>
+<span class="pastille">Exemples · <b>Magpie</b>, <b>SnapSet</b>, <b>Cuttlefish</b></span>
+</div>
+<div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+<svg viewbox="0 0 600 204" width="100%">
+<rect fill="#fff" height="22" rx="4" stroke="#5D4037" stroke-width="1.2" width="36" x="10" y="14"></rect>
+<text class="mono" fill="#5D4037" font-size="8" font-weight="700" style="font-size:8px" text-anchor="middle" x="28.0" y="27.666666666666668">2</text>
+<rect fill="#fff" height="22" rx="4" stroke="#5D4037" stroke-width="1.2" width="36" x="50" y="14"></rect>
+<text class="mono" fill="#5D4037" font-size="8" font-weight="700" style="font-size:8px" text-anchor="middle" x="68.0" y="27.666666666666668">5</text>
+<rect fill="#fff" height="22" rx="4" stroke="#5D4037" stroke-width="1.2" width="36" x="90" y="14"></rect>
+<text class="mono" fill="#5D4037" font-size="8" font-weight="700" style="font-size:8px" text-anchor="middle" x="108.0" y="27.666666666666668">8</text>
+<rect fill="#fff" height="22" rx="4" stroke="#5D4037" stroke-width="1.2" width="36" x="130" y="14"></rect>
+<text class="mono" fill="#5D4037" font-size="8" font-weight="700" style="font-size:8px" text-anchor="middle" x="148.0" y="27.666666666666668">12</text>
+<rect fill="#fff" height="22" rx="4" stroke="#5D4037" stroke-width="1.2" width="36" x="170" y="14"></rect>
+<text class="mono" fill="#5D4037" font-size="8" font-weight="700" style="font-size:8px" text-anchor="middle" x="188.0" y="27.666666666666668">16</text>
+<rect fill="#fff" height="22" rx="4" stroke="#5D4037" stroke-width="1.2" width="36" x="210" y="14"></rect>
+<text class="mono" fill="#5D4037" font-size="8" font-weight="700" style="font-size:8px" text-anchor="middle" x="228.0" y="27.666666666666668">23</text>
+<rect fill="#fff" height="22" rx="4" stroke="#5D4037" stroke-width="1.2" width="36" x="250" y="14"></rect>
+<text class="mono" fill="#5D4037" font-size="8" font-weight="700" style="font-size:8px" text-anchor="middle" x="268.0" y="27.666666666666668">38</text>
+<rect fill="#EFEBE9" height="22" rx="4" stroke="#5D4037" stroke-width="1.2" width="36" x="290" y="14"></rect>
+<text class="mono" fill="#5D4037" font-size="8" font-weight="700" style="font-size:8px" text-anchor="middle" x="308.0" y="27.666666666666668">41</text>
+<rect fill="#fff" height="22" rx="4" stroke="#5D4037" stroke-width="1.2" width="36" x="330" y="14"></rect>
+<text class="mono" fill="#5D4037" font-size="8" font-weight="700" style="font-size:8px" text-anchor="middle" x="348.0" y="27.666666666666668">56</text>
+<rect fill="#fff" height="22" rx="4" stroke="#5D4037" stroke-width="1.2" width="36" x="370" y="14"></rect>
+<text class="mono" fill="#5D4037" font-size="8" font-weight="700" style="font-size:8px" text-anchor="middle" x="388.0" y="27.666666666666668">72</text>
+<rect fill="#fff" height="22" rx="4" stroke="#5D4037" stroke-width="1.2" width="36" x="410" y="14"></rect>
+<text class="mono" fill="#5D4037" font-size="8" font-weight="700" style="font-size:8px" text-anchor="middle" x="428.0" y="27.666666666666668">91</text>
+<rect fill="#1565C0" height="14" opacity=".15" rx="3" width="436" x="10" y="50"></rect>
+<rect fill="#1565C0" height="14" opacity=".7" rx="3" width="36" x="210" y="50"></rect>
+<text fill="#2B2F33" font-size="7.4" text-anchor="start" x="460" y="61">milieu 23 &lt; 41 : à droite</text>
+<rect fill="#1565C0" height="14" opacity=".15" rx="3" width="196" x="250" y="72"></rect>
+<rect fill="#1565C0" height="14" opacity=".7" rx="3" width="36" x="330" y="72"></rect>
+<text fill="#2B2F33" font-size="7.4" text-anchor="start" x="460" y="83">milieu 56 &gt; 41 : à gauche</text>
+<rect fill="#1565C0" height="14" opacity=".15" rx="3" width="76" x="250" y="94"></rect>
+<rect fill="#1565C0" height="14" opacity=".7" rx="3" width="36" x="250" y="94"></rect>
+<text fill="#2B2F33" font-size="7.4" text-anchor="start" x="460" y="105">milieu 38 &lt; 41 : à droite</text>
+<rect fill="#1565C0" height="14" opacity=".15" rx="3" width="36" x="290" y="116"></rect>
+<rect fill="#2E7D32" height="14" opacity=".7" rx="3" width="36" x="290" y="116"></rect>
+<text fill="#2E7D32" font-size="7.4" font-weight="700" text-anchor="start" x="460" y="127">41 : trouvé</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="10" y="158">Chercher 41 parmi 11 valeurs triées : 4 regards. Parmi 100 000 : 17 au plus. Chaque regard coupe en deux.</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="10" y="176">Sans ordre, il faut tout regarder ; avec un hachage, un seul regard, mais plus aucune notion d'avant et d'après.</text>
+<text fill="#6B7378" font-size="7.2" font-style="italic" text-anchor="start" x="10" y="192">Exemple construit à la main.</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Trier une fois puis chercher par dichotomie suffit presque toujours ; un arbre trié ne sert que si l'on mêle sans cesse ajouts et recherches.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Un dictionnaire papier : on l'ouvre au milieu, on sait aussitôt dans quelle moitié chercher. Un sac de fiches en vrac oblige à toutes les lire.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>choisir quand trier ;</li>
-        <li>chercher et compter par dichotomie ;</li>
-        <li>choisir entre arbre et tableau ;</li>
-        <li>écrire un comparateur cohérent.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Trier une fois puis chercher par dichotomie suffit presque toujours ; un arbre trié ne sert que si l'on mêle sans cesse ajouts et recherches.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Un dictionnaire papier : on l'ouvre au milieu, on sait aussitôt dans quelle moitié chercher. Un sac de fiches en vrac oblige à toutes les lire.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>choisir quand trier ;</li>
+<li>chercher et compter par dichotomie ;</li>
+<li>choisir entre arbre et tableau ;</li>
+<li>écrire un comparateur cohérent.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À retenir</span>
     Un hachage répond à « est-ce là ? » ; un ordre répond aussi à « qu'y a-t-il entre a et b ? » et « lequel vient après ? ». Choisis la structure d'après les questions que tu poseras.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 137 · Les données triées</div>
+<div class="folio">1</div>
+<div class="pied">Cours 137 · Les données triées</div>
 </section>
-
 <!-- ============ PAGE 2 · CONSTRUIRE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 137</b></div>
-  <p class="rubrique">Schéma 1 · Construire trié</p>
-  <h2>Trier une fois, à la fin</h2>
-  <p style="max-width:165mm">Il existe plusieurs collections qui restent triées à chaque ajout. On les a remplies avec les mêmes 100 000 entiers, et comparées à une liste triée d'un coup.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#5D4037" text-anchor="start" font-weight="700">Ranger 100 000 entiers tirés au hasard, de cinq façons (.NET 8, trois séries, mesuré)</text>
-<text x="16" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">méthode</text>
-<text x="270" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">durée</text>
-<text x="420" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">mémoire allouée</text>
-<rect x="10" y="48" width="580" height="18" fill="#fff" opacity=".55"/>
-<text x="16" y="61" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">List, tous les Add, puis un seul Sort()</text>
-<text x="270" y="61" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">13 à 107 ms</text>
-<text x="420" y="61" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">1,00 Mio</text>
-<text x="16" y="79" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">SortedSet, Add un par un</text>
-<text x="270" y="79" font-size="7.6" fill="#E65100" text-anchor="start" font-weight="700">66 à 149 ms</text>
-<text x="420" y="79" font-size="7.6" fill="#E65100" text-anchor="start" font-weight="700">3,81 Mio</text>
-<rect x="10" y="84" width="580" height="18" fill="#fff" opacity=".55"/>
-<text x="16" y="97" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">List, BinarySearch puis Insert à sa place</text>
-<text x="270" y="97" font-size="7.6" fill="#E65100" text-anchor="start" font-weight="700">221 à 264 ms</text>
-<text x="420" y="97" font-size="7.6" fill="#E65100" text-anchor="start" font-weight="700">1,00 Mio</text>
-<text x="16" y="115" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">SortedList, Add un par un</text>
-<text x="270" y="115" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">442 à 522 ms</text>
-<text x="420" y="115" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">2,0 à 3,5 Mio</text>
-<rect x="10" y="120" width="580" height="18" fill="#fff" opacity=".55"/>
-<text x="16" y="133" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">HashSet (rapide, mais sans ordre)</text>
-<text x="270" y="133" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700">8,5 à 54 ms</text>
-<text x="420" y="133" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700">4,61 Mio</text>
-<text x="16" y="156" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Tout ajouter puis trier une fois bat tout le reste. Garder trié en permanence ne se justifie</text>
-<text x="16" y="172" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">que si l'on cherche entre deux ajouts. SortedSet : un arbre équilibré, 40 octets par entier (mesuré).</text>
-<text x="16" y="196" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">SortedList garde deux tableaux triés : chaque ajout au hasard décale la moitié des éléments, comme List.Insert.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 137</b></div>
+<p class="rubrique">Schéma 1 · Construire trié</p>
+<h2>Trier une fois, à la fin</h2>
+<p style="max-width:165mm">Il existe plusieurs collections qui restent triées à chaque ajout. On les a remplies avec les mêmes 100 000 entiers, et comparées à une liste triée d'un coup.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#5D4037" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">Ranger 100 000 entiers tirés au hasard, de cinq façons (.NET 8, trois séries, mesuré)</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="16" y="40">méthode</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="270" y="40">durée</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="420" y="40">mémoire allouée</text>
+<rect fill="#fff" height="18" opacity=".55" width="580" x="10" y="48"></rect>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="16" y="61">List, tous les Add, puis un seul Sort()</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="270" y="61">13 à 107 ms</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="420" y="61">1,00 Mio</text>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="16" y="79">SortedSet, Add un par un</text>
+<text fill="#E65100" font-size="7.6" font-weight="700" text-anchor="start" x="270" y="79">66 à 149 ms</text>
+<text fill="#E65100" font-size="7.6" font-weight="700" text-anchor="start" x="420" y="79">3,81 Mio</text>
+<rect fill="#fff" height="18" opacity=".55" width="580" x="10" y="84"></rect>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="16" y="97">List, BinarySearch puis Insert à sa place</text>
+<text fill="#E65100" font-size="7.6" font-weight="700" text-anchor="start" x="270" y="97">221 à 264 ms</text>
+<text fill="#E65100" font-size="7.6" font-weight="700" text-anchor="start" x="420" y="97">1,00 Mio</text>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="16" y="115">SortedList, Add un par un</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="270" y="115">442 à 522 ms</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="420" y="115">2,0 à 3,5 Mio</text>
+<rect fill="#fff" height="18" opacity=".55" width="580" x="10" y="120"></rect>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="16" y="133">HashSet (rapide, mais sans ordre)</text>
+<text fill="#6B7378" font-size="7.6" font-weight="700" text-anchor="start" x="270" y="133">8,5 à 54 ms</text>
+<text fill="#6B7378" font-size="7.6" font-weight="700" text-anchor="start" x="420" y="133">4,61 Mio</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="156">Tout ajouter puis trier une fois bat tout le reste. Garder trié en permanence ne se justifie</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="172">que si l'on cherche entre deux ajouts. SortedSet : un arbre équilibré, 40 octets par entier (mesuré).</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="196">SortedList garde deux tableaux triés : chaque ajout au hasard décale la moitié des éléments, comme List.Insert.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, garder une liste triée quand les ajouts sont rares</span>int i = triee.BinarySearch(x);
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, garder une liste triée quand les ajouts sont rares</span>int i = triee.BinarySearch(x);
 if (i &lt; 0) triee.Insert(~i, x);          // ~i : la place où x devrait être</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Ce que rend BinarySearch</h3>
-      <p>L'index si la valeur est là ; sinon un nombre négatif, dont le complément ~i donne la place où l'insérer pour garder l'ordre. Une seule recherche répond aux deux questions.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Arbre ou tableau</h3>
-      <p>SortedSet et SortedDictionary sont des arbres : ajout et retrait en log n, mais 40 octets par entier et des sauts en mémoire. SortedList, deux tableaux : compacte, lente à remplir dans le désordre.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Ce que rend BinarySearch</h3>
+<p>L'index si la valeur est là ; sinon un nombre négatif, dont le complément ~i donne la place où l'insérer pour garder l'ordre. Une seule recherche répond aux deux questions.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Arbre ou tableau</h3>
+<p>SortedSet et SortedDictionary sont des arbres : ajout et retrait en log n, mais 40 octets par entier et des sauts en mémoire. SortedList, deux tableaux : compacte, lente à remplir dans le désordre.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Remplir une SortedList dans le désordre. Chaque ajout décale la moitié du tableau : 442 à 522 ms pour 100 000 entiers, contre 13 à 107 ms pour une liste triée d'un coup (mesuré).
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 137 · Les données triées</div>
+<div class="folio">2</div>
+<div class="pied">Cours 137 · Les données triées</div>
 </section>
-
 <!-- ============ PAGE 3 · CHERCHER ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 137</b></div>
-  <p class="rubrique">Schéma 2 · Chercher et compter</p>
-  <h2>L'ordre répond à plus de questions</h2>
-  <p style="max-width:165mm">Pour savoir si une valeur est là, le hachage gagne de peu. Pour compter les valeurs d'un intervalle, il n'y a plus de comparaison possible.</p>
-
-  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#5D4037" text-anchor="start" font-weight="700">Dans ces 100 000 entiers : chercher une valeur, puis compter ceux d'un intervalle (mesuré)</text>
-<text x="16" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">structure</text>
-<text x="230" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">une recherche</text>
-<text x="400" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">compter 1 % des valeurs</text>
-<rect x="10" y="48" width="580" height="18" fill="#fff" opacity=".55"/>
-<text x="16" y="61" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">tableau trié, Array.BinarySearch</text>
-<text x="230" y="61" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">128 à 158 ns</text>
-<text x="400" y="61" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">0,16 à 0,23 µs (deux recherches)</text>
-<text x="16" y="79" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">SortedSet</text>
-<text x="230" y="79" font-size="7.6" fill="#E65100" text-anchor="start" font-weight="700">558 à 883 ns</text>
-<text x="400" y="79" font-size="7.6" fill="#E65100" text-anchor="start" font-weight="700">52 à 110 µs (GetViewBetween)</text>
-<rect x="10" y="84" width="580" height="18" fill="#fff" opacity=".55"/>
-<text x="16" y="97" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">HashSet</text>
-<text x="230" y="97" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">60 à 212 ns</text>
-<text x="400" y="97" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">1 223 à 1 274 µs (tout balayer)</text>
-<text x="16" y="115" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">List non triée, Contains</text>
-<text x="230" y="115" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">13 à 16 µs</text>
-<text x="400" y="115" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">—</text>
-<text x="16" y="140" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Pour une égalité, le hachage. Pour « entre a et b », « le suivant », « le plus proche » : l'ordre.</text>
-<text x="16" y="156" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Deux BinarySearch donnent les deux bornes ; leur écart est le compte, sans rien parcourir.</text>
-<text x="16" y="180" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">GetViewBetween compte en parcourant la vue : il reste linéaire dans la taille de l'intervalle (déduit des mesures).</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 137</b></div>
+<p class="rubrique">Schéma 2 · Chercher et compter</p>
+<h2>L'ordre répond à plus de questions</h2>
+<p style="max-width:165mm">Pour savoir si une valeur est là, le hachage gagne de peu. Pour compter les valeurs d'un intervalle, il n'y a plus de comparaison possible.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 206" width="100%">
+<rect fill="#EFE9E1" height="206" width="600" x="0" y="0"></rect>
+<text fill="#5D4037" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">Dans ces 100 000 entiers : chercher une valeur, puis compter ceux d'un intervalle (mesuré)</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="16" y="40">structure</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="230" y="40">une recherche</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="400" y="40">compter 1 % des valeurs</text>
+<rect fill="#fff" height="18" opacity=".55" width="580" x="10" y="48"></rect>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="16" y="61">tableau trié, Array.BinarySearch</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="230" y="61">128 à 158 ns</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="400" y="61">0,16 à 0,23 µs (deux recherches)</text>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="16" y="79">SortedSet</text>
+<text fill="#E65100" font-size="7.6" font-weight="700" text-anchor="start" x="230" y="79">558 à 883 ns</text>
+<text fill="#E65100" font-size="7.6" font-weight="700" text-anchor="start" x="400" y="79">52 à 110 µs (GetViewBetween)</text>
+<rect fill="#fff" height="18" opacity=".55" width="580" x="10" y="84"></rect>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="16" y="97">HashSet</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="230" y="97">60 à 212 ns</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="400" y="97">1 223 à 1 274 µs (tout balayer)</text>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="16" y="115">List non triée, Contains</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="230" y="115">13 à 16 µs</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="400" y="115">—</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="140">Pour une égalité, le hachage. Pour « entre a et b », « le suivant », « le plus proche » : l'ordre.</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="156">Deux BinarySearch donnent les deux bornes ; leur écart est le compte, sans rien parcourir.</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="180">GetViewBetween compte en parcourant la vue : il reste linéaire dans la taille de l'intervalle (déduit des mesures).</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, compter les valeurs comprises entre a et b</span>int Borne(int[] t, int v) { int i = Array.BinarySearch(t, v); return i &lt; 0 ? ~i : i; }
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, compter les valeurs comprises entre a et b</span>int Borne(int[] t, int v) { int i = Array.BinarySearch(t, v); return i &lt; 0 ? ~i : i; }
 int combien = Borne(trie, b + 1) - Borne(trie, a);       // valeurs distinctes : aucun parcours</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Le plus proche</h3>
-      <p>La place ~i rendue par BinarySearch désigne les deux voisins de la valeur cherchée : t[~i − 1] et t[~i]. Le plus proche est l'un des deux.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Doublons</h3>
-      <p>Avec des valeurs répétées, BinarySearch rend l'une d'elles, pas forcément la première. Pour compter, il faut une recherche qui rende la première place, pas « une » place.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Le plus proche</h3>
+<p>La place ~i rendue par BinarySearch désigne les deux voisins de la valeur cherchée : t[~i − 1] et t[~i]. Le plus proche est l'un des deux.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Doublons</h3>
+<p>Avec des valeurs répétées, BinarySearch rend l'une d'elles, pas forcément la première. Pour compter, il faut une recherche qui rende la première place, pas « une » place.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Appeler BinarySearch sur une liste qui n'est pas triée, ou triée selon une autre règle. Aucune erreur : la réponse est simplement fausse, et tantôt juste par hasard.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 137 · Les données triées</div>
+<div class="folio">3</div>
+<div class="pied">Cours 137 · Les données triées</div>
 </section>
-
 <!-- ============ PAGE 4 · COHÉRENT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 137</b></div>
-  <p class="rubrique">Schéma 3 · Un ordre cohérent</p>
-  <h2>« Égal à la tolérance près » n'est pas un ordre</h2>
-  <p style="max-width:165mm">En géométrie, on a envie de dire que deux réels proches sont égaux. Un comparateur qui le dit casse la transitivité, dont tout algorithme de tri dépend. On a mesuré les dégâts.</p>
-
-  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#5D4037" text-anchor="start" font-weight="700">Trier des réels avec un comparateur « égaux à 0,5 près » (Array.Sort, 300 essais par taille, mesuré)</text>
-<text x="16" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">éléments</text>
-<text x="150" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">essais mal triés</text>
-<text x="340" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">pire écart trouvé</text>
-<text x="480" y="40" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">exceptions</text>
-<rect x="10" y="48" width="580" height="18" fill="#fff" opacity=".55"/>
-<text x="16" y="61" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">10</text>
-<text x="150" y="61" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">27 sur 300</text>
-<text x="340" y="61" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">0,95</text>
-<text x="480" y="61" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700">0</text>
-<text x="16" y="79" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">50</text>
-<text x="150" y="79" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">300 sur 300</text>
-<text x="340" y="79" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">1,70</text>
-<text x="480" y="79" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700">0</text>
-<rect x="10" y="84" width="580" height="18" fill="#fff" opacity=".55"/>
-<text x="16" y="97" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">200</text>
-<text x="150" y="97" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">300 sur 300</text>
-<text x="340" y="97" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">2,01</text>
-<text x="480" y="97" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700">0</text>
-<text x="16" y="115" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">2 000</text>
-<text x="150" y="115" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">300 sur 300</text>
-<text x="340" y="115" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">1,54</text>
-<text x="480" y="115" font-size="7.6" fill="#6B7378" text-anchor="start" font-weight="700">0</text>
-<text x="16" y="140" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">« Mal trié » : un élément placé avant un autre plus petit que lui d'au moins 0,5, la tolérance même.</text>
-<text x="16" y="156" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">A égal B et B égal C n'impliquent pas A égal C : le tri suppose le contraire et se trompe en silence.</text>
-<text x="16" y="178" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Et NaN : Array.Sort et OrderBy l'ont placé en premier, devant tous les nombres (mesuré).</text>
-<text x="16" y="194" font-size="7.2" fill="#6B7378" text-anchor="start" font-style="italic">Réels tirés entre 0 et 10 ; « pire écart » : la plus grande distance entre un élément et un plus petit placé après.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 137</b></div>
+<p class="rubrique">Schéma 3 · Un ordre cohérent</p>
+<h2>« Égal à la tolérance près » n'est pas un ordre</h2>
+<p style="max-width:165mm">En géométrie, on a envie de dire que deux réels proches sont égaux. Un comparateur qui le dit casse la transitivité, dont tout algorithme de tri dépend. On a mesuré les dégâts.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 206" width="100%">
+<rect fill="#EFE9E1" height="206" width="600" x="0" y="0"></rect>
+<text fill="#5D4037" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">Trier des réels avec un comparateur « égaux à 0,5 près » (Array.Sort, 300 essais par taille, mesuré)</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="16" y="40">éléments</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="150" y="40">essais mal triés</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="340" y="40">pire écart trouvé</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="480" y="40">exceptions</text>
+<rect fill="#fff" height="18" opacity=".55" width="580" x="10" y="48"></rect>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="16" y="61">10</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="150" y="61">27 sur 300</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="340" y="61">0,95</text>
+<text fill="#6B7378" font-size="7.6" font-weight="700" text-anchor="start" x="480" y="61">0</text>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="16" y="79">50</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="150" y="79">300 sur 300</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="340" y="79">1,70</text>
+<text fill="#6B7378" font-size="7.6" font-weight="700" text-anchor="start" x="480" y="79">0</text>
+<rect fill="#fff" height="18" opacity=".55" width="580" x="10" y="84"></rect>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="16" y="97">200</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="150" y="97">300 sur 300</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="340" y="97">2,01</text>
+<text fill="#6B7378" font-size="7.6" font-weight="700" text-anchor="start" x="480" y="97">0</text>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="16" y="115">2 000</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="150" y="115">300 sur 300</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="340" y="115">1,54</text>
+<text fill="#6B7378" font-size="7.6" font-weight="700" text-anchor="start" x="480" y="115">0</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="140">« Mal trié » : un élément placé avant un autre plus petit que lui d'au moins 0,5, la tolérance même.</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="156">A égal B et B égal C n'impliquent pas A égal C : le tri suppose le contraire et se trompe en silence.</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="178">Et NaN : Array.Sort et OrderBy l'ont placé en premier, devant tous les nombres (mesuré).</text>
+<text fill="#6B7378" font-size="7.2" font-style="italic" text-anchor="start" x="16" y="194">Réels tirés entre 0 et 10 ; « pire écart » : la plus grande distance entre un élément et un plus petit placé après.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, trier strictement, puis regrouper les voisins proches</span>var tries = valeurs.OrderBy(v =&gt; v).ToList();               // un ordre total, sans tolérance
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, trier strictement, puis regrouper les voisins proches</span>var tries = valeurs.OrderBy(v =&gt; v).ToList();               // un ordre total, sans tolérance
 var groupes = new List&lt;List&lt;double&gt;&gt;();
 foreach (var v in tries)
     if (groupes.Count &gt; 0 &amp;&amp; v - groupes[^1][^1] &lt; tol) groupes[^1].Add(v); else groupes.Add(new() { v });</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Ce qu'exige un comparateur</h3>
-      <p>Si a &lt; b et b &lt; c, alors a &lt; c ; si a = b et b = c, alors a = c. Un comparateur à tolérance viole la seconde règle dès que trois valeurs s'échelonnent.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Aucune exception</h3>
-      <p>.NET signale parfois un comparateur incohérent, mais pas ici : 0 exception sur 1 200 tris. Le résultat est faux, et rien ne le dit (mesuré).</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Ce qu'exige un comparateur</h3>
+<p>Si a &lt; b et b &lt; c, alors a &lt; c ; si a = b et b = c, alors a = c. Un comparateur à tolérance viole la seconde règle dès que trois valeurs s'échelonnent.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Aucune exception</h3>
+<p>.NET signale parfois un comparateur incohérent, mais pas ici : 0 exception sur 1 200 tris. Le résultat est faux, et rien ne le dit (mesuré).</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Mettre la tolérance dans la comparaison du tri. Dès 50 valeurs, tous les essais ont rendu des éléments placés avant un plus petit, jusqu'à quatre fois la tolérance (mesuré).
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 137 · Les données triées</div>
+<div class="folio">4</div>
+<div class="pied">Cours 137 · Les données triées</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 137</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>Trier pour lire, pour comparer, pour apparier</h2>
-  <p style="max-width:165mm">Un tri pour que l'empreinte ne dépende pas du hasard, un pour une sélection dans l'ordre, un pour apparier des intersections, et un dictionnaire trié imposé par Grasshopper.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 137</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>Trier pour lire, pour comparer, pour apparier</h2>
+<p style="max-width:165mm">Un tri pour que l'empreinte ne dépende pas du hasard, un pour une sélection dans l'ordre, un pour apparier des intersections, et un dictionnaire trié imposé par Grasshopper.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">magpie/plugin/Admin/MagpieExerciseEditor.cs</span></div>
 <div class="l k1"><span class="n">304</span>foreach (var obj in MembresPresents(doc).OrderBy(…))<span class="rep r1">1</span></div>
@@ -285,137 +258,55 @@ foreach (var v in tries)
 <div class="l k4"><span class="n">94</span>….Select(e =&gt; e.ParameterA).OrderBy(x =&gt; x).ToList();<span class="rep r4">4</span></div>
 <div class="l k5"><span class="n">213</span>InstanceGuidsChanged(SortedDictionary&lt;Guid, Guid&gt; map)<span class="rep r5">5</span></div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>Empreinte</b>Ordre par Guid.</li>
-      <li><span class="rep r2">2</span><b>Sélection</b>Index croissants.</li>
-      <li><span class="rep r3">3</span><b>Retrier</b>Après bascule.</li>
-      <li><span class="rep r4">4</span><b>Apparier</b>Pair-impair.</li>
-      <li><span class="rep r5">5</span><b>Imposé</b>API Grasshopper.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À surveiller · Hatch apparie des intersections triées deux à deux</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>Empreinte</b>Ordre par Guid.</li>
+<li><span class="rep r2">2</span><b>Sélection</b>Index croissants.</li>
+<li><span class="rep r3">3</span><b>Retrier</b>Après bascule.</li>
+<li><span class="rep r4">4</span><b>Apparier</b>Pair-impair.</li>
+<li><span class="rep r5">5</span><b>Imposé</b>API Grasshopper.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À surveiller · Hatch apparie des intersections triées deux à deux</span>
     Hatch.cs:94 trie les paramètres d'intersection, puis garde les morceaux 0–1, 2–3… Si une ligne passe exactement par un sommet ou touche un bord, Rhino peut rendre une intersection double ou simple, et l'appariement se décale d'un cran pour le reste de la ligne (déduit, non mesuré : Rhino ne tourne pas ici). Le tri lui-même est strict et sans tolérance, donc sûr. Relevé sans rien modifier.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 137 · Les données triées</div>
+<div class="folio">5</div>
+<div class="pied">Cours 137 · Les données triées</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 137</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 137</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">Dans 100 000 valeurs triées, une dichotomie regarde au plus…</div><ul>
-      <li><span>A</span>17 valeurs</li><li><span>B</span>une seule</li><li><span>C</span>100 000</li><li><span>D</span>50 000</li></ul></div>
 
-    <div class="q"><div class="enonce">Pour ranger 100 000 entiers triés, le plus rapide a été…</div><ul>
-      <li><span>A</span>tout ajouter puis un seul Sort</li><li><span>B</span>SortedSet</li><li><span>C</span>Insert à sa place</li><li><span>D</span>SortedList</li></ul></div>
 
-    <div class="q"><div class="enonce">SortedList remplie dans le désordre est lente parce que…</div><ul>
-      <li><span>A</span>elle hache</li><li><span>B</span>elle alloue un nœud</li><li><span>C</span>elle trie tout à chaque ajout</li><li><span>D</span>chaque ajout décale son tableau</li></ul></div>
 
-    <div class="q"><div class="enonce">Un SortedSet&lt;int&gt; occupe par élément…</div><ul>
-      <li><span>A</span>1 Ko</li><li><span>B</span>40 octets</li><li><span>C</span>4 octets</li><li><span>D</span>8 octets</li></ul></div>
-
-    <div class="q"><div class="enonce">BinarySearch sur une valeur absente… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>rend un nombre négatif</li><li><span>B</span>lève une exception</li><li><span>C</span>rend 0</li><li><span>D</span>donne la place d'insertion par ~i</li></ul></div>
-
-    <div class="q"><div class="enonce">Compter les valeurs entre a et b dans un tableau trié…</div><ul>
-      <li><span>A</span>impossible</li><li><span>B</span>deux recherches, aucun parcours</li><li><span>C</span>un parcours complet</li><li><span>D</span>un HashSet</li></ul></div>
-
-    <div class="q"><div class="enonce">Pour « est-ce là ? », le plus rapide mesuré a été…</div><ul>
-      <li><span>A</span>un tri</li><li><span>B</span>SortedSet</li><li><span>C</span>le HashSet, de peu devant la dichotomie</li><li><span>D</span>List.Contains</li></ul></div>
-
-    <div class="q"><div class="enonce">BinarySearch sur une liste non triée…</div><ul>
-      <li><span>A</span>rend toujours -1</li><li><span>B</span>trie la liste</li><li><span>C</span>rend une réponse fausse sans erreur</li><li><span>D</span>lève une exception</li></ul></div>
-
-    <div class="q"><div class="enonce">Un comparateur « égaux à 0,5 près » viole…</div><ul>
-      <li><span>A</span>la symétrie</li><li><span>B</span>la stabilité</li><li><span>C</span>rien</li><li><span>D</span>la transitivité de l'égalité</li></ul></div>
-
-    <div class="q"><div class="enonce">Avec ce comparateur, à partir de 50 valeurs…</div><ul>
-      <li><span>A</span>tous les essais étaient mal triés</li><li><span>B</span>la moitié</li><li><span>C</span>aucun</li><li><span>D</span>une exception à chaque fois</li></ul></div>
-
-    <div class="q"><div class="enonce">Array.Sort place NaN…</div><ul>
-      <li><span>A</span>au hasard</li><li><span>B</span>en dernier</li><li><span>C</span>nulle part : exception</li><li><span>D</span>en premier</li></ul></div>
-
-    <div class="q"><div class="enonce">L'éditeur d'exercices de Magpie trie par InstanceGuid pour…</div><ul>
-      <li><span>A</span>aller plus vite</li><li><span>B</span>supprimer les doublons</li><li><span>C</span>une empreinte qui ne dépend pas de l'ordre du document</li><li><span>D</span>afficher</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 137 · Les données triées</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">list.Sort() / OrderBy(…)</td><td>trier en place / trier une copie, stable</td><td>ModeleListeChamp.cs:591</td></tr>
+<tr><td class="c">Array.BinarySearch(t, v)</td><td>chercher par dichotomie</td><td>page 3</td></tr>
+<tr><td class="c">~i</td><td>la place d'insertion d'une valeur absente</td><td>page 2</td></tr>
+<tr><td class="c">SortedSet&lt;T&gt; / SortedDictionary</td><td>un arbre qui reste trié</td><td>Conteneur.cs:213</td></tr>
+<tr><td class="c">set.GetViewBetween(a, b)</td><td>la vue d'un intervalle</td><td>page 3</td></tr>
+<tr><td class="c">Comparer&lt;T&gt;.Create(…)</td><td>un comparateur, qui doit rester transitif</td><td>page 4</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Dichotomie</dt><dd>Une recherche qui coupe l'intervalle en deux à chaque regard.</dd>
+<dt>Arbre équilibré</dt><dd>Un arbre trié dont la hauteur reste en log n, quels que soient les ajouts.</dd>
+<dt>Transitivité</dt><dd>La règle : si a vient avant b et b avant c, alors a vient avant c.</dd>
+<dt>Ordre total</dt><dd>Un ordre où deux éléments sont toujours comparables, sans tolérance.</dd>
+<dt>Forme canonique</dt><dd>Une écriture unique d'un contenu, pour le comparer sans ambiguïté.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 138</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 137 · Les données triées</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2A</b> · Algorithmes et structures</span><b>Cours 137</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · A.</b> 2¹⁷ &gt; 100 000.</div>
-    <div><b>02 · A.</b> 13 à 107 ms.</div>
-    <div><b>03 · D.</b> Comme List.Insert.</div>
-    <div><b>04 · B.</b> Un nœud d'arbre.</div>
-    <div><b>05 · A et D.</b> ~i.</div>
-    <div><b>06 · B.</b> 0,16 à 0,23 µs.</div>
-    <div><b>07 · C.</b> 60 à 212 ns.</div>
-    <div><b>08 · C.</b> Aucune vérification.</div>
-    <div><b>09 · D.</b> A = B, B = C, A ≠ C.</div>
-    <div><b>10 · A.</b> 300 sur 300.</div>
-    <div><b>11 · D.</b> Mesuré, page 4.</div>
-    <div><b>12 · C.</b> MagpieExerciseEditor.cs:304.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 138, « Union-find ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">list.Sort() / OrderBy(…)</td><td>trier en place / trier une copie, stable</td><td>ModeleListeChamp.cs:591</td></tr>
-      <tr><td class="c">Array.BinarySearch(t, v)</td><td>chercher par dichotomie</td><td>page 3</td></tr>
-      <tr><td class="c">~i</td><td>la place d'insertion d'une valeur absente</td><td>page 2</td></tr>
-      <tr><td class="c">SortedSet&lt;T&gt; / SortedDictionary</td><td>un arbre qui reste trié</td><td>Conteneur.cs:213</td></tr>
-      <tr><td class="c">set.GetViewBetween(a, b)</td><td>la vue d'un intervalle</td><td>page 3</td></tr>
-      <tr><td class="c">Comparer&lt;T&gt;.Create(…)</td><td>un comparateur, qui doit rester transitif</td><td>page 4</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Dichotomie</dt><dd>Une recherche qui coupe l'intervalle en deux à chaque regard.</dd>
-    <dt>Arbre équilibré</dt><dd>Un arbre trié dont la hauteur reste en log n, quels que soient les ajouts.</dd>
-    <dt>Transitivité</dt><dd>La règle : si a vient avant b et b avant c, alors a vient avant c.</dd>
-    <dt>Ordre total</dt><dd>Un ordre où deux éléments sont toujours comparables, sans tolérance.</dd>
-    <dt>Forme canonique</dt><dd>Une écriture unique d'un contenu, pour le comparer sans ambiguïté.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 138</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 137 · Les données triées</div>
-</section>
-
 </body>
 </html>

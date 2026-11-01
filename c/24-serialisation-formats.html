@@ -1,119 +1,108 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>24 · Sérialisation et formats de fichiers</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-10">
-
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 24</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Sérialisation et<br>formats de fichiers</h1>
-  <p class="chapeau">Un exercice Magpie vit en mémoire le temps d'une session. Pour le livrer, le copier ou le rouvrir demain, il faut le mettre à plat dans un fichier, puis savoir le reconstruire à l'identique.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>03</b> collections · <b>12</b> persistance</span>
-    <span class="pastille">Exemples · <b>MagpieRepository</b>, <b>GeometrySerializer</b>, <b>GrapheDeDepart</b> (Magpie)</span>
-  </div>
-
-  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
-    <svg viewBox="0 0 600 214" width="100%">
-<rect x="16" y="30" width="196" height="150" rx="5" fill="#fff" stroke="#1565C0" stroke-width="1.3"/>
-<text x="26" y="47" font-size="9.8" fill="#1565C0" text-anchor="start" font-weight="700">en mémoire : un objet</text>
-<text x="26" y="63" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">ExerciseDefinition</text>
-<text x="26" y="76" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">  Id    = "A_01"</text>
-<text x="26" y="89" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">  Mode  = SetEqualityText</text>
-<text x="26" y="102" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">  StarterGraphText</text>
-<text x="26" y="115" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">  ExpectedGeometry…</text>
-<text x="26" y="128" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">  AttendUnArbre (calculé)</text>
-<line x1="216" y1="104" x2="262" y2="104" stroke="#4A4A68" stroke-width="2"/><polygon points="262,104 255.6,106.7 255.6,101.3" fill="#4A4A68"/>
-<text x="239" y="96" font-size="9" fill="#4A4A68" text-anchor="middle" font-weight="700">écrire</text>
-<line x1="262" y1="120" x2="216" y2="120" stroke="#6B7378" stroke-width="1.4"/><polygon points="216,120 222.4,117.3 222.4,122.7" fill="#6B7378"/>
-<text x="239" y="134" font-size="9" fill="#6B7378" text-anchor="middle" font-weight="700">relire</text>
-<rect x="266" y="20" width="318" height="176" rx="5" fill="#FBFAF7" stroke="#6B7378"/>
-<text x="278" y="38" font-size="9.8" fill="#4A4A68" text-anchor="start" font-weight="700">sur le disque : un exercice .json (simplifié)</text>
-<text x="278" y="58" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px;white-space:pre">{</text>
-<text x="278" y="72" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px;white-space:pre">  "Id": "A_01",</text>
-<text x="278" y="86" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px;white-space:pre">  "Mode": "SetEqualityText",</text>
-<text x="278" y="100" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px;white-space:pre">  "StarterGraphText": "&lt;?xml … &lt;Archive …",</text>
-<text x="278" y="114" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px;white-space:pre">  "ExpectedGeometryBase64": "…",</text>
-<text x="278" y="128" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px;white-space:pre">  …</text>
-<text x="278" y="142" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px;white-space:pre">}</text>
-<rect x="420" y="81" width="158" height="16" fill="none" stroke="#7B1FA2" stroke-width="1.2" rx="3"/>
-<rect x="452" y="95" width="26" height="16" fill="none" stroke="#E65100" stroke-width="1.2" rx="3"/>
-<text x="278" y="172" font-size="8.8" fill="#7B1FA2" text-anchor="start" font-weight="700">du XML (un graphe Grasshopper)</text>
-<text x="278" y="186" font-size="8.8" fill="#E65100" text-anchor="start" font-weight="700">du binaire en base64 (une géométrie)</text>
-<text x="114" y="200" font-size="8.6" fill="#6B7378" text-anchor="middle" font-style="italic">« AttendUnArbre » n'est jamais écrit</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 24</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Sérialisation et<br/>formats de fichiers</h1>
+<p class="chapeau">Un exercice Magpie vit en mémoire le temps d'une session. Pour le livrer, le copier ou le rouvrir demain, il faut le mettre à plat dans un fichier, puis savoir le reconstruire à l'identique.</p>
+<div class="meta">
+<span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>03</b> collections · <b>12</b> persistance</span>
+<span class="pastille">Exemples · <b>MagpieRepository</b>, <b>GeometrySerializer</b>, <b>GrapheDeDepart</b> (Magpie)</span>
+</div>
+<div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+<svg viewbox="0 0 600 214" width="100%">
+<rect fill="#fff" height="150" rx="5" stroke="#1565C0" stroke-width="1.3" width="196" x="16" y="30"></rect>
+<text fill="#1565C0" font-size="9.8" font-weight="700" text-anchor="start" x="26" y="47">en mémoire : un objet</text>
+<text class="mono" fill="#2B2F33" font-size="8.8" style="font-size:8.8px;white-space:pre" text-anchor="start" x="26" y="63">ExerciseDefinition</text>
+<text class="mono" fill="#2B2F33" font-size="8.8" style="font-size:8.8px;white-space:pre" text-anchor="start" x="26" y="76">  Id    = "A_01"</text>
+<text class="mono" fill="#2B2F33" font-size="8.8" style="font-size:8.8px;white-space:pre" text-anchor="start" x="26" y="89">  Mode  = SetEqualityText</text>
+<text class="mono" fill="#2B2F33" font-size="8.8" style="font-size:8.8px;white-space:pre" text-anchor="start" x="26" y="102">  StarterGraphText</text>
+<text class="mono" fill="#2B2F33" font-size="8.8" style="font-size:8.8px;white-space:pre" text-anchor="start" x="26" y="115">  ExpectedGeometry…</text>
+<text class="mono" fill="#2B2F33" font-size="8.8" style="font-size:8.8px;white-space:pre" text-anchor="start" x="26" y="128">  AttendUnArbre (calculé)</text>
+<line stroke="#4A4A68" stroke-width="2" x1="216" x2="262" y1="104" y2="104"></line><polygon fill="#4A4A68" points="262,104 255.6,106.7 255.6,101.3"></polygon>
+<text fill="#4A4A68" font-size="9" font-weight="700" text-anchor="middle" x="239" y="96">écrire</text>
+<line stroke="#6B7378" stroke-width="1.4" x1="262" x2="216" y1="120" y2="120"></line><polygon fill="#6B7378" points="216,120 222.4,117.3 222.4,122.7"></polygon>
+<text fill="#6B7378" font-size="9" font-weight="700" text-anchor="middle" x="239" y="134">relire</text>
+<rect fill="#FBFAF7" height="176" rx="5" stroke="#6B7378" width="318" x="266" y="20"></rect>
+<text fill="#4A4A68" font-size="9.8" font-weight="700" text-anchor="start" x="278" y="38">sur le disque : un exercice .json (simplifié)</text>
+<text class="mono" fill="#2B2F33" font-size="9" style="font-size:9px;white-space:pre" text-anchor="start" x="278" y="58">{</text>
+<text class="mono" fill="#2B2F33" font-size="9" style="font-size:9px;white-space:pre" text-anchor="start" x="278" y="72">  "Id": "A_01",</text>
+<text class="mono" fill="#2B2F33" font-size="9" style="font-size:9px;white-space:pre" text-anchor="start" x="278" y="86">  "Mode": "SetEqualityText",</text>
+<text class="mono" fill="#2B2F33" font-size="9" style="font-size:9px;white-space:pre" text-anchor="start" x="278" y="100">  "StarterGraphText": "&lt;?xml … &lt;Archive …",</text>
+<text class="mono" fill="#2B2F33" font-size="9" style="font-size:9px;white-space:pre" text-anchor="start" x="278" y="114">  "ExpectedGeometryBase64": "…",</text>
+<text class="mono" fill="#2B2F33" font-size="9" style="font-size:9px;white-space:pre" text-anchor="start" x="278" y="128">  …</text>
+<text class="mono" fill="#2B2F33" font-size="9" style="font-size:9px;white-space:pre" text-anchor="start" x="278" y="142">}</text>
+<rect fill="none" height="16" rx="3" stroke="#7B1FA2" stroke-width="1.2" width="158" x="420" y="81"></rect>
+<rect fill="none" height="16" rx="3" stroke="#E65100" stroke-width="1.2" width="26" x="452" y="95"></rect>
+<text fill="#7B1FA2" font-size="8.8" font-weight="700" text-anchor="start" x="278" y="172">du XML (un graphe Grasshopper)</text>
+<text fill="#E65100" font-size="8.8" font-weight="700" text-anchor="start" x="278" y="186">du binaire en base64 (une géométrie)</text>
+<text fill="#6B7378" font-size="8.6" font-style="italic" text-anchor="middle" x="114" y="200">« AttendUnArbre » n'est jamais écrit</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p><b>Sérialiser</b>, c'est transformer un objet en une suite de caractères ou d'octets qu'on peut écrire ; <b>désérialiser</b>, c'est reconstruire l'objet à partir d'elle. Le format (JSON, XML, binaire) est le contrat entre les deux.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Un meuble en kit. On le démonte en pièces numérotées et on écrit la notice ; le carton voyage ; à l'arrivée, la notice permet de remonter le même meuble. Sans notice commune, les pièces ne servent à rien.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>relier un fichier JSON à sa classe C#, avec Newtonsoft ;</li>
-        <li>mettre des octets dans du texte grâce au base64 ;</li>
-        <li>écrire et relire un graphe Grasshopper en XML ;</li>
-        <li>embarquer un fichier dans une DLL et le relire.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:5mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p><b>Sérialiser</b>, c'est transformer un objet en une suite de caractères ou d'octets qu'on peut écrire ; <b>désérialiser</b>, c'est reconstruire l'objet à partir d'elle. Le format (JSON, XML, binaire) est le contrat entre les deux.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Un meuble en kit. On le démonte en pièces numérotées et on écrit la notice ; le carton voyage ; à l'arrivée, la notice permet de remonter le même meuble. Sans notice commune, les pièces ne servent à rien.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>relier un fichier JSON à sa classe C#, avec Newtonsoft ;</li>
+<li>mettre des octets dans du texte grâce au base64 ;</li>
+<li>écrire et relire un graphe Grasshopper en XML ;</li>
+<li>embarquer un fichier dans une DLL et le relire.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:5mm">
+<span class="titre">À retenir</span>
     Un format écrit dure plus longtemps que le code qui l'a produit. Chaque choix (un nom de clé, une énumération en toutes lettres, le nom d'un nœud racine) devient une promesse : les fichiers déjà distribués doivent encore se relire.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 24 · Sérialisation et formats de fichiers</div>
+<div class="folio">1</div>
+<div class="pied">Cours 24 · Sérialisation et formats de fichiers</div>
 </section>
-
 <!-- ============ PAGE 2 · JSON ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 24</b></div>
-  <p class="rubrique">Schéma 1 · JSON et Newtonsoft</p>
-  <h2>Une classe, un fichier texte</h2>
-  <p style="max-width:165mm">JSON écrit des objets avec des accolades, des listes avec des crochets, et des valeurs simples : texte, nombre, booléen, <code>null</code>. <b>Newtonsoft.Json</b> fait correspondre chaque propriété publique à une clé du même nom.</p>
-
-  <svg viewBox="0 0 600 200" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="200" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="12" fill="#4A4A68" text-anchor="start" font-weight="700">Une propriété publique, une clé ; le même nom des deux côtés</text>
-<text x="16" y="50" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">public string Id { get; set; }</text>
-<line x1="296" y1="47" x2="330" y2="47" stroke="#1565C0" stroke-width="1.2"/><polygon points="330,47 323.6,49.7 323.6,44.3" fill="#1565C0"/>
-<line x1="330" y1="47" x2="296" y2="47" stroke="#1565C0" stroke-width="1.2"/><polygon points="296,47 302.4,44.3 302.4,49.7" fill="#1565C0"/>
-<text x="340" y="50" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">"Id": "A_00"</text>
-<text x="16" y="76" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">public ValidationMode Mode { get; set; }</text>
-<line x1="296" y1="73" x2="330" y2="73" stroke="#1565C0" stroke-width="1.2"/><polygon points="330,73 323.6,75.7 323.6,70.3" fill="#1565C0"/>
-<line x1="330" y1="73" x2="296" y2="73" stroke="#1565C0" stroke-width="1.2"/><polygon points="296,73 302.4,70.3 302.4,75.7" fill="#1565C0"/>
-<text x="340" y="76" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">"Mode": "ExactOrderedListText"</text>
-<text x="16" y="102" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">public List&lt;string&gt; ExpectedTexts { get; set; }</text>
-<line x1="296" y1="99" x2="330" y2="99" stroke="#1565C0" stroke-width="1.2"/><polygon points="330,99 323.6,101.7 323.6,96.3" fill="#1565C0"/>
-<line x1="330" y1="99" x2="296" y2="99" stroke="#1565C0" stroke-width="1.2"/><polygon points="296,99 302.4,96.3 302.4,101.7" fill="#1565C0"/>
-<text x="340" y="102" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">"ExpectedTexts": [ "Votre réponse" ]</text>
-<text x="16" y="128" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">public double Tolerance { get; set; } = 0.0;</text>
-<line x1="296" y1="125" x2="330" y2="125" stroke="#1565C0" stroke-width="1.2"/><polygon points="330,125 323.6,127.7 323.6,122.3" fill="#1565C0"/>
-<line x1="330" y1="125" x2="296" y2="125" stroke="#1565C0" stroke-width="1.2"/><polygon points="296,125 302.4,122.3 302.4,127.7" fill="#1565C0"/>
-<text x="340" y="128" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">"Tolerance": 0.0</text>
-<text x="16" y="154" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">[JsonIgnore] public bool AttendUnArbre =&gt; …</text>
-<line x1="296" y1="151" x2="330" y2="151" stroke="#C62828" stroke-width="1.2"/><polygon points="330,151 323.6,153.7 323.6,148.3" fill="#C62828"/>
-<line x1="330" y1="151" x2="296" y2="151" stroke="#C62828" stroke-width="1.2"/><polygon points="296,151 302.4,148.3 302.4,153.7" fill="#C62828"/>
-<text x="340" y="154" font-size="8.8" fill="#C62828" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">(aucune clé)</text>
-<text x="16" y="186" font-size="8.8" fill="#6B7378" text-anchor="start" font-style="italic">ExerciseDefinition.cs (à gauche) et Resources/Exercises/A_00.json (à droite), extraits.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 24</b></div>
+<p class="rubrique">Schéma 1 · JSON et Newtonsoft</p>
+<h2>Une classe, un fichier texte</h2>
+<p style="max-width:165mm">JSON écrit des objets avec des accolades, des listes avec des crochets, et des valeurs simples : texte, nombre, booléen, <code>null</code>. <b>Newtonsoft.Json</b> fait correspondre chaque propriété publique à une clé du même nom.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 200" width="100%">
+<rect fill="#EFE9E1" height="200" width="600" x="0" y="0"></rect>
+<text fill="#4A4A68" font-size="12" font-weight="700" text-anchor="start" x="16" y="22">Une propriété publique, une clé ; le même nom des deux côtés</text>
+<text class="mono" fill="#2B2F33" font-size="8.8" style="font-size:8.8px;white-space:pre" text-anchor="start" x="16" y="50">public string Id { get; set; }</text>
+<line stroke="#1565C0" stroke-width="1.2" x1="296" x2="330" y1="47" y2="47"></line><polygon fill="#1565C0" points="330,47 323.6,49.7 323.6,44.3"></polygon>
+<line stroke="#1565C0" stroke-width="1.2" x1="330" x2="296" y1="47" y2="47"></line><polygon fill="#1565C0" points="296,47 302.4,44.3 302.4,49.7"></polygon>
+<text class="mono" fill="#2B2F33" font-size="8.8" style="font-size:8.8px;white-space:pre" text-anchor="start" x="340" y="50">"Id": "A_00"</text>
+<text class="mono" fill="#2B2F33" font-size="8.8" style="font-size:8.8px;white-space:pre" text-anchor="start" x="16" y="76">public ValidationMode Mode { get; set; }</text>
+<line stroke="#1565C0" stroke-width="1.2" x1="296" x2="330" y1="73" y2="73"></line><polygon fill="#1565C0" points="330,73 323.6,75.7 323.6,70.3"></polygon>
+<line stroke="#1565C0" stroke-width="1.2" x1="330" x2="296" y1="73" y2="73"></line><polygon fill="#1565C0" points="296,73 302.4,70.3 302.4,75.7"></polygon>
+<text class="mono" fill="#2B2F33" font-size="8.8" style="font-size:8.8px;white-space:pre" text-anchor="start" x="340" y="76">"Mode": "ExactOrderedListText"</text>
+<text class="mono" fill="#2B2F33" font-size="8.8" style="font-size:8.8px;white-space:pre" text-anchor="start" x="16" y="102">public List&lt;string&gt; ExpectedTexts { get; set; }</text>
+<line stroke="#1565C0" stroke-width="1.2" x1="296" x2="330" y1="99" y2="99"></line><polygon fill="#1565C0" points="330,99 323.6,101.7 323.6,96.3"></polygon>
+<line stroke="#1565C0" stroke-width="1.2" x1="330" x2="296" y1="99" y2="99"></line><polygon fill="#1565C0" points="296,99 302.4,96.3 302.4,101.7"></polygon>
+<text class="mono" fill="#2B2F33" font-size="8.8" style="font-size:8.8px;white-space:pre" text-anchor="start" x="340" y="102">"ExpectedTexts": [ "Votre réponse" ]</text>
+<text class="mono" fill="#2B2F33" font-size="8.8" style="font-size:8.8px;white-space:pre" text-anchor="start" x="16" y="128">public double Tolerance { get; set; } = 0.0;</text>
+<line stroke="#1565C0" stroke-width="1.2" x1="296" x2="330" y1="125" y2="125"></line><polygon fill="#1565C0" points="330,125 323.6,127.7 323.6,122.3"></polygon>
+<line stroke="#1565C0" stroke-width="1.2" x1="330" x2="296" y1="125" y2="125"></line><polygon fill="#1565C0" points="296,125 302.4,122.3 302.4,127.7"></polygon>
+<text class="mono" fill="#2B2F33" font-size="8.8" style="font-size:8.8px;white-space:pre" text-anchor="start" x="340" y="128">"Tolerance": 0.0</text>
+<text class="mono" fill="#2B2F33" font-size="8.8" style="font-size:8.8px;white-space:pre" text-anchor="start" x="16" y="154">[JsonIgnore] public bool AttendUnArbre =&gt; …</text>
+<line stroke="#C62828" stroke-width="1.2" x1="296" x2="330" y1="151" y2="151"></line><polygon fill="#C62828" points="330,151 323.6,153.7 323.6,148.3"></polygon>
+<line stroke="#C62828" stroke-width="1.2" x1="330" x2="296" y1="151" y2="151"></line><polygon fill="#C62828" points="296,151 302.4,148.3 302.4,153.7"></polygon>
+<text class="mono" fill="#C62828" font-size="8.8" style="font-size:8.8px;white-space:pre" text-anchor="start" x="340" y="154">(aucune clé)</text>
+<text fill="#6B7378" font-size="8.8" font-style="italic" text-anchor="start" x="16" y="186">ExerciseDefinition.cs (à gauche) et Resources/Exercises/A_00.json (à droite), extraits.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">MagpieRepository.cs · 31–35 et 90–95</span>private static readonly JsonSerializerSettings Reglages = new JsonSerializerSettings
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">MagpieRepository.cs · 31–35 et 90–95</span>private static readonly JsonSerializerSettings Reglages = new JsonSerializerSettings
 {
     Formatting = Formatting.Indented,
     Converters = { new StringEnumConverter() }
@@ -125,73 +114,67 @@ public static void SaveExercise(ExerciseDefinition ex)
     string path = Path.Combine(ExercisesFolder, $"{ex.Id}.json");
     File.WriteAllText(path, JsonConvert.SerializeObject(ex, Reglages));
 }</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Relire, c'est l'appel inverse</h3>
-      <p><code>JsonConvert.DeserializeObject&lt;ExerciseDefinition&gt;(texte)</code> crée l'objet avec son constructeur sans argument, puis remplit chaque propriété dont il trouve la clé. Une clé absente laisse la valeur par défaut : <code>Tolerance = 0.0</code>, une liste vide.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Ce qui n'est pas écrit</h3>
-      <p><code>AttendUnArbre</code> se calcule à partir d'<code>ExpectedBranchSizes</code>. L'écrire serait stocker deux fois la même information, avec le risque qu'elles divergent : <code>[JsonIgnore]</code> l'exclut.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Relire, c'est l'appel inverse</h3>
+<p><code>JsonConvert.DeserializeObject&lt;ExerciseDefinition&gt;(texte)</code> crée l'objet avec son constructeur sans argument, puis remplit chaque propriété dont il trouve la clé. Une clé absente laisse la valeur par défaut : <code>Tolerance = 0.0</code>, une liste vide.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Ce qui n'est pas écrit</h3>
+<p><code>AttendUnArbre</code> se calcule à partir d'<code>ExpectedBranchSizes</code>. L'écrire serait stocker deux fois la même information, avec le risque qu'elles divergent : <code>[JsonIgnore]</code> l'exclut.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Une énumération écrite en entier. Sans <code>StringEnumConverter</code>, Newtonsoft écrit <code>"Mode": 0</code> : le fichier dépend de la <b>position</b> du membre dans l'enum, et le volet web, qui cherche ses validateurs par nom, ne reconnaît pas le mode (commentaire des lignes 25–30). La lecture accepte les deux formes.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 24 · Sérialisation et formats de fichiers</div>
+<div class="folio">2</div>
+<div class="pied">Cours 24 · Sérialisation et formats de fichiers</div>
 </section>
-
 <!-- ============ PAGE 3 · BINAIRE ET BASE64 ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 24</b></div>
-  <p class="rubrique">Schéma 2 · Binaire et base64</p>
-  <h2>Une courbe dans un fichier texte</h2>
-  <p style="max-width:165mm">Une géométrie de référence ne se décrit pas en quelques clés. Magpie la confie à Grasshopper, qui sait déjà l'écrire (cours 12), puis range le résultat binaire dans une chaîne.</p>
-
-  <svg viewBox="0 0 600 220" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="220" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="12" fill="#4A4A68" text-anchor="start" font-weight="700">Une géométrie dans un fichier texte : quatre étapes</text>
-<rect x="16" y="36" width="124" height="44" rx="5" fill="#fff" stroke="#1565C0" stroke-width="1.3"/>
-<text x="78" y="55" font-size="10" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:10px">GH_Curve</text>
-<text x="78" y="71" font-size="8.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.4px">l'objet</text>
-<line x1="142" y1="58" x2="160" y2="58" stroke="#6B7378" stroke-width="1.4"/><polygon points="160,58 153.6,60.7 153.6,55.3" fill="#6B7378"/>
-<rect x="162" y="36" width="124" height="44" rx="5" fill="#fff" stroke="#7B1FA2" stroke-width="1.3"/>
-<text x="224" y="55" font-size="10" fill="#7B1FA2" text-anchor="middle" font-weight="700" class="mono" style="font-size:10px">GH_LooseChunk</text>
-<text x="224" y="71" font-size="8.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.4px">goo.Write(chunk)</text>
-<line x1="288" y1="58" x2="306" y2="58" stroke="#6B7378" stroke-width="1.4"/><polygon points="306,58 299.6,60.7 299.6,55.3" fill="#6B7378"/>
-<rect x="308" y="36" width="124" height="44" rx="5" fill="#fff" stroke="#E65100" stroke-width="1.3"/>
-<text x="370" y="55" font-size="10" fill="#E65100" text-anchor="middle" font-weight="700" class="mono" style="font-size:10px">byte[]</text>
-<text x="370" y="71" font-size="8.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.4px">Serialize_Binary()</text>
-<line x1="434" y1="58" x2="452" y2="58" stroke="#6B7378" stroke-width="1.4"/><polygon points="452,58 445.6,60.7 445.6,55.3" fill="#6B7378"/>
-<rect x="454" y="36" width="124" height="44" rx="5" fill="#fff" stroke="#2E7D32" stroke-width="1.3"/>
-<text x="516" y="55" font-size="10" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:10px">string</text>
-<text x="516" y="71" font-size="8.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.4px">ToBase64String</text>
-<text x="16" y="106" font-size="9.6" fill="#2B2F33" text-anchor="start" font-weight="700">Base64 : 3 octets (24 bits) deviennent 4 caractères de 6 bits, pris dans A–Z a–z 0–9 + /</text>
-<rect x="30" y="118" width="128" height="22" fill="#fff" stroke="#E65100"/>
-<text x="94" y="133" font-size="9.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:9.4px;white-space:pre">M = 01001101</text>
-<rect x="162" y="118" width="128" height="22" fill="#fff" stroke="#E65100"/>
-<text x="226" y="133" font-size="9.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:9.4px;white-space:pre">a = 01100001</text>
-<rect x="294" y="118" width="128" height="22" fill="#fff" stroke="#E65100"/>
-<text x="358" y="133" font-size="9.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:9.4px;white-space:pre">g = 01100111</text>
-<rect x="30" y="156" width="95" height="22" fill="#fff" stroke="#2E7D32"/>
-<text x="77.5" y="171" font-size="9.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:9.4px;white-space:pre">010011 → T</text>
-<rect x="129" y="156" width="95" height="22" fill="#fff" stroke="#2E7D32"/>
-<text x="176.5" y="171" font-size="9.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:9.4px;white-space:pre">010110 → W</text>
-<rect x="228" y="156" width="95" height="22" fill="#fff" stroke="#2E7D32"/>
-<text x="275.5" y="171" font-size="9.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:9.4px;white-space:pre">000101 → F</text>
-<rect x="327" y="156" width="95" height="22" fill="#fff" stroke="#2E7D32"/>
-<text x="374.5" y="171" font-size="9.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:9.4px;white-space:pre">100111 → n</text>
-<text x="440" y="133" font-size="9.2" fill="#E65100" text-anchor="start" font-weight="700">3 octets : « Mag »</text>
-<text x="440" y="171" font-size="9.2" fill="#2E7D32" text-anchor="start" font-weight="700">4 caractères : « TWFn »</text>
-<text x="16" y="204" font-size="9" fill="#2B2F33" text-anchor="start">Le texte grossit d'un tiers, mais il passe partout : dans un JSON, un e-mail, une requête HTTP.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 24</b></div>
+<p class="rubrique">Schéma 2 · Binaire et base64</p>
+<h2>Une courbe dans un fichier texte</h2>
+<p style="max-width:165mm">Une géométrie de référence ne se décrit pas en quelques clés. Magpie la confie à Grasshopper, qui sait déjà l'écrire (cours 12), puis range le résultat binaire dans une chaîne.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 220" width="100%">
+<rect fill="#EFE9E1" height="220" width="600" x="0" y="0"></rect>
+<text fill="#4A4A68" font-size="12" font-weight="700" text-anchor="start" x="16" y="22">Une géométrie dans un fichier texte : quatre étapes</text>
+<rect fill="#fff" height="44" rx="5" stroke="#1565C0" stroke-width="1.3" width="124" x="16" y="36"></rect>
+<text class="mono" fill="#1565C0" font-size="10" font-weight="700" style="font-size:10px" text-anchor="middle" x="78" y="55">GH_Curve</text>
+<text class="mono" fill="#2B2F33" font-size="8.4" style="font-size:8.4px" text-anchor="middle" x="78" y="71">l'objet</text>
+<line stroke="#6B7378" stroke-width="1.4" x1="142" x2="160" y1="58" y2="58"></line><polygon fill="#6B7378" points="160,58 153.6,60.7 153.6,55.3"></polygon>
+<rect fill="#fff" height="44" rx="5" stroke="#7B1FA2" stroke-width="1.3" width="124" x="162" y="36"></rect>
+<text class="mono" fill="#7B1FA2" font-size="10" font-weight="700" style="font-size:10px" text-anchor="middle" x="224" y="55">GH_LooseChunk</text>
+<text class="mono" fill="#2B2F33" font-size="8.4" style="font-size:8.4px" text-anchor="middle" x="224" y="71">goo.Write(chunk)</text>
+<line stroke="#6B7378" stroke-width="1.4" x1="288" x2="306" y1="58" y2="58"></line><polygon fill="#6B7378" points="306,58 299.6,60.7 299.6,55.3"></polygon>
+<rect fill="#fff" height="44" rx="5" stroke="#E65100" stroke-width="1.3" width="124" x="308" y="36"></rect>
+<text class="mono" fill="#E65100" font-size="10" font-weight="700" style="font-size:10px" text-anchor="middle" x="370" y="55">byte[]</text>
+<text class="mono" fill="#2B2F33" font-size="8.4" style="font-size:8.4px" text-anchor="middle" x="370" y="71">Serialize_Binary()</text>
+<line stroke="#6B7378" stroke-width="1.4" x1="434" x2="452" y1="58" y2="58"></line><polygon fill="#6B7378" points="452,58 445.6,60.7 445.6,55.3"></polygon>
+<rect fill="#fff" height="44" rx="5" stroke="#2E7D32" stroke-width="1.3" width="124" x="454" y="36"></rect>
+<text class="mono" fill="#2E7D32" font-size="10" font-weight="700" style="font-size:10px" text-anchor="middle" x="516" y="55">string</text>
+<text class="mono" fill="#2B2F33" font-size="8.4" style="font-size:8.4px" text-anchor="middle" x="516" y="71">ToBase64String</text>
+<text fill="#2B2F33" font-size="9.6" font-weight="700" text-anchor="start" x="16" y="106">Base64 : 3 octets (24 bits) deviennent 4 caractères de 6 bits, pris dans A–Z a–z 0–9 + /</text>
+<rect fill="#fff" height="22" stroke="#E65100" width="128" x="30" y="118"></rect>
+<text class="mono" fill="#2B2F33" font-size="9.4" style="font-size:9.4px;white-space:pre" text-anchor="middle" x="94" y="133">M = 01001101</text>
+<rect fill="#fff" height="22" stroke="#E65100" width="128" x="162" y="118"></rect>
+<text class="mono" fill="#2B2F33" font-size="9.4" style="font-size:9.4px;white-space:pre" text-anchor="middle" x="226" y="133">a = 01100001</text>
+<rect fill="#fff" height="22" stroke="#E65100" width="128" x="294" y="118"></rect>
+<text class="mono" fill="#2B2F33" font-size="9.4" style="font-size:9.4px;white-space:pre" text-anchor="middle" x="358" y="133">g = 01100111</text>
+<rect fill="#fff" height="22" stroke="#2E7D32" width="95" x="30" y="156"></rect>
+<text class="mono" fill="#2B2F33" font-size="9.4" style="font-size:9.4px;white-space:pre" text-anchor="middle" x="77.5" y="171">010011 → T</text>
+<rect fill="#fff" height="22" stroke="#2E7D32" width="95" x="129" y="156"></rect>
+<text class="mono" fill="#2B2F33" font-size="9.4" style="font-size:9.4px;white-space:pre" text-anchor="middle" x="176.5" y="171">010110 → W</text>
+<rect fill="#fff" height="22" stroke="#2E7D32" width="95" x="228" y="156"></rect>
+<text class="mono" fill="#2B2F33" font-size="9.4" style="font-size:9.4px;white-space:pre" text-anchor="middle" x="275.5" y="171">000101 → F</text>
+<rect fill="#fff" height="22" stroke="#2E7D32" width="95" x="327" y="156"></rect>
+<text class="mono" fill="#2B2F33" font-size="9.4" style="font-size:9.4px;white-space:pre" text-anchor="middle" x="374.5" y="171">100111 → n</text>
+<text fill="#E65100" font-size="9.2" font-weight="700" text-anchor="start" x="440" y="133">3 octets : « Mag »</text>
+<text fill="#2E7D32" font-size="9.2" font-weight="700" text-anchor="start" x="440" y="171">4 caractères : « TWFn »</text>
+<text fill="#2B2F33" font-size="9" text-anchor="start" x="16" y="204">Le texte grossit d'un tiers, mais il passe partout : dans un JSON, un e-mail, une requête HTTP.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">GeometrySerializer.cs · 15–22</span>public static string Serialize(GH_ISerializable goo)
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">GeometrySerializer.cs · 15–22</span>public static string Serialize(GH_ISerializable goo)
 {
     var chunk = new GH_LooseChunk(ChunkName);
     goo.Write(chunk);                            // objet -&gt; GH_Chunk
@@ -199,71 +182,65 @@ public static void SaveExercise(ExerciseDefinition ex)
     byte[] bytes = chunk.Serialize_Binary();       // GH_Chunk -&gt; byte[]
     return Convert.ToBase64String(bytes);           // byte[] -&gt; string
 }</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Le mécanisme natif, réutilisé</h3>
-      <p><code>Write</code> et <code>Read</code> de <code>GH_ISerializable</code> sont ceux qu'emploie Grasshopper pour « Internaliser les données » et pour le copier-coller. Magpie n'écrit aucun format de courbe : il marche pour tout type qui sait déjà s'écrire.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Le type voyage à côté</h3>
-      <p>Les octets ne disent pas s'il faut reconstruire un <code>GH_Point</code> ou un <code>GH_Curve</code>. D'où la clé <code>ExpectedGeometryTypeName</code> (« curve »…) et <code>GeometryTypeRegistry</code>, une table nom → type, qui choisit le bon <code>Deserialize&lt;T&gt;</code>.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Le mécanisme natif, réutilisé</h3>
+<p><code>Write</code> et <code>Read</code> de <code>GH_ISerializable</code> sont ceux qu'emploie Grasshopper pour « Internaliser les données » et pour le copier-coller. Magpie n'écrit aucun format de courbe : il marche pour tout type qui sait déjà s'écrire.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Le type voyage à côté</h3>
+<p>Les octets ne disent pas s'il faut reconstruire un <code>GH_Point</code> ou un <code>GH_Curve</code>. D'où la clé <code>ExpectedGeometryTypeName</code> (« curve »…) et <code>GeometryTypeRegistry</code>, une table nom → type, qui choisit le bon <code>Deserialize&lt;T&gt;</code>.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Mettre les octets « tels quels » dans une chaîne. Un octet quelconque n'est pas forcément un caractère valide : des guillemets ou un code de contrôle casseraient le JSON. Le base64 n'emploie que 64 caractères sûrs, au prix d'un tiers de taille en plus.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 24 · Sérialisation et formats de fichiers</div>
+<div class="folio">3</div>
+<div class="pied">Cours 24 · Sérialisation et formats de fichiers</div>
 </section>
-
 <!-- ============ PAGE 4 · RESSOURCES ET .3DM ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 24</b></div>
-  <p class="rubrique">Schéma 3 · Ressources embarquées</p>
-  <h2>Livrer des fichiers sans dossier à installer</h2>
-  <p style="max-width:165mm">L'apprenant installe un .gha, rien d'autre. Les exercices du parcours, les icônes et le gabarit de certificat sont donc <b>dans</b> la DLL, copiés à la compilation.</p>
-
-  <svg viewBox="0 0 600 226" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="226" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="12" fill="#4A4A68" text-anchor="start" font-weight="700">Un fichier qui voyage DANS la DLL</text>
-<rect x="16" y="34" width="176" height="64" rx="5" fill="#fff" stroke="#1565C0" stroke-width="1.3"/>
-<text x="26" y="51" font-size="9.8" fill="#1565C0" text-anchor="start" font-weight="700">sur le disque</text>
-<text x="26" y="67" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">plugin\Resources\</text>
-<text x="26" y="80" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">  Exercises\A_00.json</text>
-<line x1="194" y1="66" x2="214" y2="66" stroke="#6B7378" stroke-width="1.4"/><polygon points="214,66 207.6,68.7 207.6,63.3" fill="#6B7378"/>
-<rect x="216" y="34" width="172" height="64" rx="5" fill="#fff" stroke="#7B1FA2" stroke-width="1.3"/>
-<text x="226" y="51" font-size="9.8" fill="#7B1FA2" text-anchor="start" font-weight="700">Magpie.Core.csproj</text>
-<text x="226" y="67" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px;white-space:pre">&lt;EmbeddedResource</text>
-<text x="226" y="80" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px;white-space:pre"> Include="..\Resources\**\*"</text>
-<line x1="390" y1="66" x2="410" y2="66" stroke="#6B7378" stroke-width="1.4"/><polygon points="410,66 403.6,68.7 403.6,63.3" fill="#6B7378"/>
-<rect x="412" y="34" width="172" height="64" rx="5" fill="#fff" stroke="#E65100" stroke-width="1.3"/>
-<text x="422" y="51" font-size="9.8" fill="#E65100" text-anchor="start" font-weight="700">dans Magpie.Core.dll</text>
-<text x="422" y="67" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">Magpie.Resources.</text>
-<text x="422" y="80" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px;white-space:pre">Exercises.A_00.json</text>
-<text x="16" y="120" font-size="9.4" fill="#2B2F33" text-anchor="start" font-weight="700">Relire : assembly.GetManifestResourceStream(nom) rend un flux, comme un fichier ouvert.</text>
-<line x1="16" y1="132" x2="584" y2="132" stroke="#CFC6BA"/>
-<text x="16" y="152" font-size="9.8" fill="#4A4A68" text-anchor="start" font-weight="700">Qui fournit l'exercice « A_00 » ? La première source qui l'a, dans cet ordre :</text>
-<rect x="16" y="164" width="180" height="46" rx="5" fill="#fff" stroke="#2E7D32" stroke-width="1.3"/>
-<circle cx="34" cy="187" r="9" fill="#2E7D32"/><text x="34" y="191" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">1</text>
-<text x="50" y="183" font-size="9.6" fill="#2E7D32" text-anchor="start" font-weight="700">dossier local</text>
-<text x="50" y="198" font-size="8.8" fill="#2B2F33" text-anchor="start">ce que l'auteur a enregistré</text>
-<text x="202" y="191" font-size="14" fill="#6B7378" text-anchor="middle" font-weight="700">›</text>
-<rect x="208" y="164" width="180" height="46" rx="5" fill="#fff" stroke="#1565C0" stroke-width="1.3"/>
-<circle cx="226" cy="187" r="9" fill="#1565C0"/><text x="226" y="191" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">2</text>
-<text x="242" y="183" font-size="9.6" fill="#1565C0" text-anchor="start" font-weight="700">cache des paquets</text>
-<text x="242" y="198" font-size="8.8" fill="#2B2F33" text-anchor="start">parcours importés</text>
-<text x="394" y="191" font-size="14" fill="#6B7378" text-anchor="middle" font-weight="700">›</text>
-<rect x="400" y="164" width="180" height="46" rx="5" fill="#fff" stroke="#E65100" stroke-width="1.3"/>
-<circle cx="418" cy="187" r="9" fill="#E65100"/><text x="418" y="191" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">3</text>
-<text x="434" y="183" font-size="9.6" fill="#E65100" text-anchor="start" font-weight="700">ressources embarquées</text>
-<text x="434" y="198" font-size="8.8" fill="#2B2F33" text-anchor="start">livré dans le .gha</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 24</b></div>
+<p class="rubrique">Schéma 3 · Ressources embarquées</p>
+<h2>Livrer des fichiers sans dossier à installer</h2>
+<p style="max-width:165mm">L'apprenant installe un .gha, rien d'autre. Les exercices du parcours, les icônes et le gabarit de certificat sont donc <b>dans</b> la DLL, copiés à la compilation.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 226" width="100%">
+<rect fill="#EFE9E1" height="226" width="600" x="0" y="0"></rect>
+<text fill="#4A4A68" font-size="12" font-weight="700" text-anchor="start" x="16" y="22">Un fichier qui voyage DANS la DLL</text>
+<rect fill="#fff" height="64" rx="5" stroke="#1565C0" stroke-width="1.3" width="176" x="16" y="34"></rect>
+<text fill="#1565C0" font-size="9.8" font-weight="700" text-anchor="start" x="26" y="51">sur le disque</text>
+<text class="mono" fill="#2B2F33" font-size="8.8" style="font-size:8.8px;white-space:pre" text-anchor="start" x="26" y="67">plugin\Resources\</text>
+<text class="mono" fill="#2B2F33" font-size="8.8" style="font-size:8.8px;white-space:pre" text-anchor="start" x="26" y="80">  Exercises\A_00.json</text>
+<line stroke="#6B7378" stroke-width="1.4" x1="194" x2="214" y1="66" y2="66"></line><polygon fill="#6B7378" points="214,66 207.6,68.7 207.6,63.3"></polygon>
+<rect fill="#fff" height="64" rx="5" stroke="#7B1FA2" stroke-width="1.3" width="172" x="216" y="34"></rect>
+<text fill="#7B1FA2" font-size="9.8" font-weight="700" text-anchor="start" x="226" y="51">Magpie.Core.csproj</text>
+<text class="mono" fill="#2B2F33" font-size="8.2" style="font-size:8.2px;white-space:pre" text-anchor="start" x="226" y="67">&lt;EmbeddedResource</text>
+<text class="mono" fill="#2B2F33" font-size="8.2" style="font-size:8.2px;white-space:pre" text-anchor="start" x="226" y="80"> Include="..\Resources\**\*"</text>
+<line stroke="#6B7378" stroke-width="1.4" x1="390" x2="410" y1="66" y2="66"></line><polygon fill="#6B7378" points="410,66 403.6,68.7 403.6,63.3"></polygon>
+<rect fill="#fff" height="64" rx="5" stroke="#E65100" stroke-width="1.3" width="172" x="412" y="34"></rect>
+<text fill="#E65100" font-size="9.8" font-weight="700" text-anchor="start" x="422" y="51">dans Magpie.Core.dll</text>
+<text class="mono" fill="#2B2F33" font-size="8.8" style="font-size:8.8px;white-space:pre" text-anchor="start" x="422" y="67">Magpie.Resources.</text>
+<text class="mono" fill="#2B2F33" font-size="8.8" style="font-size:8.8px;white-space:pre" text-anchor="start" x="422" y="80">Exercises.A_00.json</text>
+<text fill="#2B2F33" font-size="9.4" font-weight="700" text-anchor="start" x="16" y="120">Relire : assembly.GetManifestResourceStream(nom) rend un flux, comme un fichier ouvert.</text>
+<line stroke="#CFC6BA" x1="16" x2="584" y1="132" y2="132"></line>
+<text fill="#4A4A68" font-size="9.8" font-weight="700" text-anchor="start" x="16" y="152">Qui fournit l'exercice « A_00 » ? La première source qui l'a, dans cet ordre :</text>
+<rect fill="#fff" height="46" rx="5" stroke="#2E7D32" stroke-width="1.3" width="180" x="16" y="164"></rect>
+<circle cx="34" cy="187" fill="#2E7D32" r="9"></circle><text fill="#fff" font-size="10" font-weight="700" text-anchor="middle" x="34" y="191">1</text>
+<text fill="#2E7D32" font-size="9.6" font-weight="700" text-anchor="start" x="50" y="183">dossier local</text>
+<text fill="#2B2F33" font-size="8.8" text-anchor="start" x="50" y="198">ce que l'auteur a enregistré</text>
+<text fill="#6B7378" font-size="14" font-weight="700" text-anchor="middle" x="202" y="191">›</text>
+<rect fill="#fff" height="46" rx="5" stroke="#1565C0" stroke-width="1.3" width="180" x="208" y="164"></rect>
+<circle cx="226" cy="187" fill="#1565C0" r="9"></circle><text fill="#fff" font-size="10" font-weight="700" text-anchor="middle" x="226" y="191">2</text>
+<text fill="#1565C0" font-size="9.6" font-weight="700" text-anchor="start" x="242" y="183">cache des paquets</text>
+<text fill="#2B2F33" font-size="8.8" text-anchor="start" x="242" y="198">parcours importés</text>
+<text fill="#6B7378" font-size="14" font-weight="700" text-anchor="middle" x="394" y="191">›</text>
+<rect fill="#fff" height="46" rx="5" stroke="#E65100" stroke-width="1.3" width="180" x="400" y="164"></rect>
+<circle cx="418" cy="187" fill="#E65100" r="9"></circle><text fill="#fff" font-size="10" font-weight="700" text-anchor="middle" x="418" y="191">3</text>
+<text fill="#E65100" font-size="9.6" font-weight="700" text-anchor="start" x="434" y="183">ressources embarquées</text>
+<text fill="#2B2F33" font-size="8.8" text-anchor="start" x="434" y="198">livré dans le .gha</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">MagpieSources.cs · 164–178</span>private string Lire(string nom)
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">MagpieSources.cs · 164–178</span>private string Lire(string nom)
 {
     using (var flux = _assembly.GetManifestResourceStream(nom))
     {
@@ -273,200 +250,113 @@ public static void SaveExercise(ExerciseDefinition ex)
             return lecteur.ReadToEnd();
     }
 }</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Le gabarit .3dm du certificat</h3>
-      <p>Rhino ne sait ouvrir un .3dm que depuis un chemin. <code>MagpieCertificateGenerator</code> copie donc la ressource dans un fichier temporaire, l'ouvre par <code>RhinoDoc.CreateHeadless</code> (sans toucher au document de l'utilisateur), remplace le texte des objets nommés <code>Magpie_Nom</code>, <code>Magpie_Date</code>… puis imprime la mise en plan en PDF.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Un glob, pas une liste</h3>
-      <p>Le .csproj embarque <code>Resources\**\*</code>. Ajouter un exercice ne demande aucune édition du projet ; en contrepartie, tout fichier déposé là part dans le binaire livré. Les JSON de parcours y arrivent par <code>outils/publier-parcours.mjs</code>.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Le gabarit .3dm du certificat</h3>
+<p>Rhino ne sait ouvrir un .3dm que depuis un chemin. <code>MagpieCertificateGenerator</code> copie donc la ressource dans un fichier temporaire, l'ouvre par <code>RhinoDoc.CreateHeadless</code> (sans toucher au document de l'utilisateur), remplace le texte des objets nommés <code>Magpie_Nom</code>, <code>Magpie_Date</code>… puis imprime la mise en plan en PDF.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Un glob, pas une liste</h3>
+<p>Le .csproj embarque <code>Resources\**\*</code>. Ajouter un exercice ne demande aucune édition du projet ; en contrepartie, tout fichier déposé là part dans le binaire livré. Les JSON de parcours y arrivent par <code>outils/publier-parcours.mjs</code>.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Le BOM. Un fichier réenregistré à la main peut commencer par trois octets invisibles qui marquent l'UTF-8. Lus comme un caractère, ils rendent le JSON invalide. <code>detectEncodingFromByteOrderMarks: true</code> les reconnaît et les retire.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 24 · Sérialisation et formats de fichiers</div>
+<div class="folio">4</div>
+<div class="pied">Cours 24 · Sérialisation et formats de fichiers</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 24</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>GrapheDeDepart.cs : un graphe en XML</h2>
-  <p style="max-width:165mm">Les composants posés sur le canvas de l'apprenant au début d'un exercice sont enregistrés dans <code>StarterGraphText</code>. C'est le texte qu'un copier Grasshopper produirait, écrit sans passer par le presse-papiers.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 24</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>GrapheDeDepart.cs : un graphe en XML</h2>
+<p style="max-width:165mm">Les composants posés sur le canvas de l'apprenant au début d'un exercice sont enregistrés dans <code>StarterGraphText</code>. C'est le texte qu'un copier Grasshopper produirait, écrit sans passer par le presse-papiers.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l k1"><span class="n">27</span><span class="kw">private const string</span> Racine = <span class="st">"Clipboard"</span>;<span class="rep r1">1</span></div>
 <div class="l"><span class="n">31</span><span class="kw">public static string</span> Ecrire(<span class="ty">GH_Document</span> doc, <span class="ty">IEnumerable</span>&lt;<span class="ty">Guid</span>&gt; ids)</div>
 <div class="l"><span class="n">32</span>{</div>
-<div class="l"><span class="n">33</span>  <span class="kw">if</span> (doc == <span class="kw">null</span> || ids == <span class="kw">null</span>) <span class="kw">return null</span>;</div>
-<div class="l k2"><span class="n">35</span>  <span class="kw">var</span> objets = ids<span class="rep r2">2</span></div>
+<div class="l"><span class="n">33</span> <span class="kw">if</span> (doc == <span class="kw">null</span> || ids == <span class="kw">null</span>) <span class="kw">return null</span>;</div>
+<div class="l k2"><span class="n">35</span> <span class="kw">var</span> objets = ids<span class="rep r2">2</span></div>
 <div class="l k2"><span class="n">36</span>    .Select(id =&gt; doc.FindObject(id, <span class="kw">true</span>))</div>
 <div class="l k2"><span class="n">37</span>    .Where(o =&gt; o != <span class="kw">null</span>)</div>
 <div class="l k2"><span class="n">38</span>    .ToList();</div>
-<div class="l"><span class="n">39</span>  <span class="kw">if</span> (objets.Count == 0) <span class="kw">return null</span>;</div>
-<div class="l k3"><span class="n">41</span>  <span class="kw">var</span> archive = <span class="kw">new</span> <span class="ty">GH_Archive</span>();<span class="rep r3">3</span></div>
-<div class="l k3"><span class="n">42</span>  <span class="kw">if</span> (!doc.Write(archive.CreateTopLevelNode(Racine), objets))</div>
-<div class="l k3"><span class="n"> </span>    <span class="kw">return null</span>;</div>
-<div class="l k4"><span class="n">44</span>  <span class="kw">string</span> texte = archive.Serialize_Xml();<span class="rep r4">4</span></div>
-<div class="l k4"><span class="n">45</span>  <span class="kw">return string</span>.IsNullOrEmpty(texte) ? <span class="kw">null</span> : texte;</div>
+<div class="l"><span class="n">39</span> <span class="kw">if</span> (objets.Count == 0) <span class="kw">return null</span>;</div>
+<div class="l k3"><span class="n">41</span> <span class="kw">var</span> archive = <span class="kw">new</span> <span class="ty">GH_Archive</span>();<span class="rep r3">3</span></div>
+<div class="l k3"><span class="n">42</span> <span class="kw">if</span> (!doc.Write(archive.CreateTopLevelNode(Racine), objets))</div>
+<div class="l k3"><span class="n"> </span> <span class="kw">return null</span>;</div>
+<div class="l k4"><span class="n">44</span> <span class="kw">string</span> texte = archive.Serialize_Xml();<span class="rep r4">4</span></div>
+<div class="l k4"><span class="n">45</span> <span class="kw">return string</span>.IsNullOrEmpty(texte) ? <span class="kw">null</span> : texte;</div>
 <div class="l"><span class="n">46</span>}</div>
 <div class="l"><span class="n">53</span><span class="kw">public static</span> <span class="ty">GH_Document</span> Lire(<span class="kw">string</span> texte)</div>
 <div class="l"><span class="n">54</span>{</div>
-<div class="l"><span class="n">55</span>  <span class="kw">if</span> (<span class="kw">string</span>.IsNullOrEmpty(texte)) <span class="kw">return null</span>;</div>
-<div class="l k5"><span class="n">57</span>  <span class="kw">try</span><span class="rep r5">5</span></div>
+<div class="l"><span class="n">55</span> <span class="kw">if</span> (<span class="kw">string</span>.IsNullOrEmpty(texte)) <span class="kw">return null</span>;</div>
+<div class="l k5"><span class="n">57</span> <span class="kw">try</span><span class="rep r5">5</span></div>
 <div class="l"><span class="n">58</span>  {</div>
-<div class="l k5"><span class="n">59</span>    <span class="kw">var</span> archive = <span class="kw">new</span> <span class="ty">GH_Archive</span>();</div>
-<div class="l k5"><span class="n">60</span>    <span class="kw">if</span> (!archive.Deserialize_Xml(texte)) <span class="kw">return null</span>;</div>
-<div class="l k6"><span class="n">62</span>    <span class="kw">var</span> doc = <span class="kw">new</span> <span class="ty">GH_Document</span>();<span class="rep r6">6</span></div>
-<div class="l k6"><span class="n">63</span>    <span class="kw">return</span> archive.ExtractObject(doc, Racine) ? doc : <span class="kw">null</span>;</div>
+<div class="l k5"><span class="n">59</span> <span class="kw">var</span> archive = <span class="kw">new</span> <span class="ty">GH_Archive</span>();</div>
+<div class="l k5"><span class="n">60</span> <span class="kw">if</span> (!archive.Deserialize_Xml(texte)) <span class="kw">return null</span>;</div>
+<div class="l k6"><span class="n">62</span> <span class="kw">var</span> doc = <span class="kw">new</span> <span class="ty">GH_Document</span>();<span class="rep r6">6</span></div>
+<div class="l k6"><span class="n">63</span> <span class="kw">return</span> archive.ExtractObject(doc, Racine) ? doc : <span class="kw">null</span>;</div>
 <div class="l"><span class="n">64</span>  }</div>
-<div class="l k7"><span class="n">65</span>  <span class="kw">catch</span><span class="rep r7">7</span></div>
+<div class="l k7"><span class="n">65</span> <span class="kw">catch</span><span class="rep r7">7</span></div>
 <div class="l k7"><span class="n">66</span>  {</div>
-<div class="l k7"><span class="n">69</span>    <span class="kw">return null</span>;</div>
+<div class="l k7"><span class="n">69</span> <span class="kw">return null</span>;</div>
 <div class="l k7"><span class="n">70</span>  }</div>
 <div class="l"><span class="n">71</span>}</div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>Un nom figé</b>Celui que Grasshopper donne à un copier. Le changer rendrait illisibles tous les graphes déjà enregistrés.</li>
-      <li><span class="rep r2">2</span><b>Les objets choisis</b>LINQ (cours 03) : les Guid retrouvés dans le document, les absents écartés.</li>
-      <li><span class="rep r3">3</span><b>Une archive GH_IO</b>Le document écrit une partie de lui-même dans le nœud « Clipboard ».</li>
-      <li><span class="rep r4">4</span><b>En XML</b>Le format des fichiers .ghx : lisible, et ici de 52 794 caractères pour l'exercice A_01.</li>
-      <li><span class="rep r5">5</span><b>Relire</b>Le texte redevient une archive…</li>
-      <li><span class="rep r6">6</span><b>…puis un document neuf</b>Hors de tout canvas ; les objets gardent leurs Guid.</li>
-      <li><span class="rep r7">7</span><b>Échouer sans planter</b>Un graphe illisible donne un exercice sans graphe de départ, comme le Paste natif.</li>
-    </ul>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>Un nom figé</b>Celui que Grasshopper donne à un copier. Le changer rendrait illisibles tous les graphes déjà enregistrés.</li>
+<li><span class="rep r2">2</span><b>Les objets choisis</b>LINQ (cours 03) : les Guid retrouvés dans le document, les absents écartés.</li>
+<li><span class="rep r3">3</span><b>Une archive GH_IO</b>Le document écrit une partie de lui-même dans le nœud « Clipboard ».</li>
+<li><span class="rep r4">4</span><b>En XML</b>Le format des fichiers .ghx : lisible, et ici de 52 794 caractères pour l'exercice A_01.</li>
+<li><span class="rep r5">5</span><b>Relire</b>Le texte redevient une archive…</li>
+<li><span class="rep r6">6</span><b>…puis un document neuf</b>Hors de tout canvas ; les objets gardent leurs Guid.</li>
+<li><span class="rep r7">7</span><b>Échouer sans planter</b>Un graphe illisible donne un exercice sans graphe de départ, comme le Paste natif.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">Pourquoi pas le presse-papiers</span>
+<code>GH_DocumentIO.Copy</code> fait la même chose en passant par le presse-papiers. Il écrasait celui de l'utilisateur, échouait quand une autre application le tenait, et reste un risque sous Rhino Mac (en-tête du fichier). Même texte produit, donc les exercices anciens se relisent sans conversion.
   </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">Pourquoi pas le presse-papiers</span>
-    <code>GH_DocumentIO.Copy</code> fait la même chose en passant par le presse-papiers. Il écrasait celui de l'utilisateur, échouait quand une autre application le tenait, et reste un risque sous Rhino Mac (en-tête du fichier). Même texte produit, donc les exercices anciens se relisent sans conversion.
-  </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 24 · Sérialisation et formats de fichiers</div>
+<div class="folio">5</div>
+<div class="pied">Cours 24 · Sérialisation et formats de fichiers</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 24</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 24</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">Sérialiser un objet, c'est…</div><ul>
-      <li><span>A</span>le compresser</li><li><span>B</span>le transformer en texte ou en octets qu'on peut relire</li><li><span>C</span>le chiffrer</li><li><span>D</span>le copier en mémoire</li></ul></div>
 
-    <div class="q"><div class="enonce">Newtonsoft relie une clé JSON à…</div><ul>
-      <li><span>A</span>une propriété publique du même nom</li><li><span>B</span>un champ privé</li><li><span>C</span>la position dans le fichier</li><li><span>D</span>un attribut obligatoire</li></ul></div>
 
-    <div class="q"><div class="enonce">Pourquoi [JsonIgnore] sur AttendUnArbre ?</div><ul>
-      <li><span>A</span>elle est privée</li><li><span>B</span>elle est calculée : l'écrire doublerait l'information</li><li><span>C</span>JSON ne sait pas écrire un booléen</li><li><span>D</span>par sécurité</li></ul></div>
 
-    <div class="q"><div class="enonce">Sans StringEnumConverter, "Mode" s'écrit…</div><ul>
-      <li><span>A</span>"ExactOrderedListText"</li><li><span>B</span>un entier, selon la position dans l'enum</li><li><span>C</span>null</li><li><span>D</span>en base64</li></ul></div>
-
-    <div class="q"><div class="enonce">Le base64 sert à…</div><ul>
-      <li><span>A</span>compresser</li><li><span>B</span>chiffrer</li><li><span>C</span>mettre des octets quelconques dans du texte</li><li><span>D</span>trier</li></ul></div>
-
-    <div class="q"><div class="enonce">Trois octets donnent en base64…</div><ul>
-      <li><span>A</span>3 caractères</li><li><span>B</span>4 caractères</li><li><span>C</span>6 caractères</li><li><span>D</span>8 caractères</li></ul></div>
-
-    <div class="q"><div class="enonce">Pourquoi ExpectedGeometryTypeName à côté du base64 ?</div><ul>
-      <li><span>A</span>pour l'affichage</li><li><span>B</span>le type concret ne se devine pas depuis les octets</li><li><span>C</span>c'est exigé par JSON</li><li><span>D</span>pour la tolérance</li></ul></div>
-
-    <div class="q"><div class="enonce">Une ressource embarquée se relit par…</div><ul>
-      <li><span>A</span>File.ReadAllText</li><li><span>B</span>assembly.GetManifestResourceStream(nom)</li><li><span>C</span>le registre Windows</li><li><span>D</span>une requête HTTP</li></ul></div>
-
-    <div class="q"><div class="enonce">Resources\Exercises\A_00.json devient la ressource…</div><ul>
-      <li><span>A</span>A_00.json</li><li><span>B</span>Exercises/A_00</li><li><span>C</span>Magpie.Resources.Exercises.A_00.json</li><li><span>D</span>Resources.A_00</li></ul></div>
-
-    <div class="q"><div class="enonce">A_00 est dans le dossier local et dans la DLL. Laquelle sert ?</div><ul>
-      <li><span>A</span>la locale</li><li><span>B</span>l'embarquée</li><li><span>C</span>la plus récente</li><li><span>D</span>une erreur est levée</li></ul></div>
-
-    <div class="q"><div class="enonce">Pourquoi ne pas renommer le nœud « Clipboard » ?</div><ul>
-      <li><span>A</span>Grasshopper l'interdit</li><li><span>B</span>les graphes déjà enregistrés deviendraient illisibles</li><li><span>C</span>pour le presse-papiers</li><li><span>D</span>par convention seulement</li></ul></div>
-
-    <div class="q"><div class="enonce">Le certificat… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>copie le gabarit .3dm dans un fichier temporaire</li><li><span>B</span>l'ouvre sans toucher au document actif</li><li><span>C</span>remplit des objets texte nommés</li><li><span>D</span>écrit le PDF dans le .3dm</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 24 · Sérialisation et formats de fichiers</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">JsonConvert.SerializeObject(ex, Reglages)</td><td>objet → JSON</td><td>MagpieRepository:94</td></tr>
+<tr><td class="c">JsonConvert.DeserializeObject&lt;T&gt;(texte)</td><td>JSON → objet</td><td>MagpieRepository:255</td></tr>
+<tr><td class="c">new StringEnumConverter()</td><td>une enum en toutes lettres</td><td>MagpieRepository:34</td></tr>
+<tr><td class="c">Convert.ToBase64String(bytes)</td><td>octets → texte</td><td>GeometrySerializer:21</td></tr>
+<tr><td class="c">archive.Serialize_Xml()</td><td>un graphe en XML</td><td>GrapheDeDepart:44</td></tr>
+<tr><td class="c">GetManifestResourceStream(nom)</td><td>lire une ressource embarquée</td><td>MagpieSources:166</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Sérialiser</dt><dd>Écrire un objet sous une forme qu'on peut stocker et relire.</dd>
+<dt>JSON</dt><dd>Un format texte d'objets, de listes et de valeurs simples.</dd>
+<dt>Base64</dt><dd>Une écriture d'octets avec 64 caractères sûrs.</dd>
+<dt>Ressource embarquée</dt><dd>Un fichier copié dans la DLL à la compilation.</dd>
+<dt>BOM</dt><dd>Trois octets en tête d'un fichier qui annoncent l'UTF-8.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 115</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 24 · Sérialisation et formats de fichiers</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 24</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · B.</b> Écrire pour pouvoir reconstruire, ailleurs ou plus tard.</div>
-    <div><b>02 · A.</b> Par le nom, avec un get et un set publics.</div>
-    <div><b>03 · B.</b> Une seule source de vérité : ExpectedBranchSizes.</div>
-    <div><b>04 · B.</b> Fragile : réordonner l'enum changerait le sens des fichiers.</div>
-    <div><b>05 · C.</b> 64 caractères sûrs, aucun guillemet.</div>
-    <div><b>06 · B.</b> 24 bits = 4 × 6 bits : « Mag » → « TWFn ».</div>
-    <div><b>07 · B.</b> GeometryTypeRegistry choisit le type d'après ce nom.</div>
-    <div><b>08 · B.</b> Un flux, lu ensuite comme un fichier.</div>
-    <div><b>09 · C.</b> Espace de noms, puis le chemin avec des points.</div>
-    <div><b>10 · A.</b> Local, puis cache, puis embarqué : le premier gagne.</div>
-    <div><b>11 · B.</b> Un format écrit est une promesse.</div>
-    <div><b>12 · A, B et C.</b> Le PDF est écrit dans le dossier Certificats.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis la page 4 et le code de la page 5. <b>10 à 12</b> : passe au cours 115, « Texte ou binaire ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">JsonConvert.SerializeObject(ex, Reglages)</td><td>objet → JSON</td><td>MagpieRepository:94</td></tr>
-      <tr><td class="c">JsonConvert.DeserializeObject&lt;T&gt;(texte)</td><td>JSON → objet</td><td>MagpieRepository:255</td></tr>
-      <tr><td class="c">new StringEnumConverter()</td><td>une enum en toutes lettres</td><td>MagpieRepository:34</td></tr>
-      <tr><td class="c">Convert.ToBase64String(bytes)</td><td>octets → texte</td><td>GeometrySerializer:21</td></tr>
-      <tr><td class="c">archive.Serialize_Xml()</td><td>un graphe en XML</td><td>GrapheDeDepart:44</td></tr>
-      <tr><td class="c">GetManifestResourceStream(nom)</td><td>lire une ressource embarquée</td><td>MagpieSources:166</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Sérialiser</dt><dd>Écrire un objet sous une forme qu'on peut stocker et relire.</dd>
-    <dt>JSON</dt><dd>Un format texte d'objets, de listes et de valeurs simples.</dd>
-    <dt>Base64</dt><dd>Une écriture d'octets avec 64 caractères sûrs.</dd>
-    <dt>Ressource embarquée</dt><dd>Un fichier copié dans la DLL à la compilation.</dd>
-    <dt>BOM</dt><dd>Trois octets en tête d'un fichier qui annoncent l'UTF-8.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 115</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 24 · Sérialisation et formats de fichiers</div>
-</section>
-
 </body>
 </html>

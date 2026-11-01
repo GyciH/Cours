@@ -1,276 +1,249 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>119 · Ranger des nombres</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-10">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 119</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Ranger des nombres</h1>
-  <p class="chapeau">Un nombre à virgule n'est presque jamais rangé tel qu'on l'a écrit : il devient le <b>double</b> le plus proche, en binaire. Ce qu'on relit ensuite dépend de trois choix : la précision du rangement, la façon de l'écrire en texte, et la façon de le comparer. Les exercices de Magpie font les trois.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>115</b>, <b>117</b></span>
-    <span class="pastille">Exemples · <b>Magpie</b> plugin, web, exercices</span>
-  </div>
-
-  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
-    <svg viewBox="0 0 600 214" width="100%">
-<text x="10" y="16" font-size="8.6" fill="#4A4A68" text-anchor="start" font-weight="700">0.1 rangé dans un double : 64 bits, en trois parts (calculé)</text>
-<rect x="10" y="26" width="24.9" height="22" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
-<text x="22.45" y="39.46666666666667" font-size="7.4" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.4px">0</text>
-<text x="22.45" y="62" font-size="7.4" fill="#C62828" text-anchor="middle" font-weight="700">signe</text>
-<rect x="38.9" y="26" width="73.9" height="22" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
-<text x="75.85" y="39.46666666666667" font-size="7.4" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.4px">01111111011</text>
-<text x="75.85" y="62" font-size="7.4" fill="#1565C0" text-anchor="middle" font-weight="700">exposant (11 bits)</text>
-<rect x="116.80000000000001" y="26" width="274.8" height="22" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="254.20000000000002" y="39.46666666666667" font-size="7.4" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.4px">1001100110011001100110011001100110011001100110011010</text>
-<text x="254.20000000000002" y="62" font-size="7.4" fill="#2E7D32" text-anchor="middle" font-weight="700">mantisse (52 bits)</text>
-<text x="10" y="90" font-size="7.9" fill="#2B2F33" text-anchor="start" font-weight="700">La mantisse de 0.1 est une suite infinie 1001 1001… coupée à 52 bits et arrondie : le dernier groupe finit en 1010.</text>
-<text x="10" y="108" font-size="7.8" fill="#2B2F33" text-anchor="start">Le double le plus proche de 0.1 vaut exactement</text>
-<text x="10" y="124" font-size="8" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">0.1000000000000000055511151231257827021181583404541015625</text>
-<text x="10" y="142" font-size="7.8" fill="#2B2F33" text-anchor="start">En simple précision (32 bits, 23 de mantisse), le plus proche vaut 0.100000001490116119384765625.</text>
-<text x="10" y="166" font-size="7.9" fill="#2B2F33" text-anchor="start" font-weight="700">Une fraction dont le dénominateur est une puissance de 2 (0.5, 0.25, 577.5) tombe juste ; 0.1, 0.3 ou 0.01 jamais.</text>
-<text x="10" y="184" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Un double garde 15 à 17 chiffres significatifs ; un simple, 6 à 9. L'écart entre deux doubles voisins de 1 vaut 2,2 × 10⁻¹⁶.</text>
-<text x="10" y="204" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Octets du double, de poids fort à poids faible : 3f b9 99 99 99 99 99 9a. Du simple : 3d cc cc cd.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 119</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Ranger des nombres</h1>
+<p class="chapeau">Un nombre à virgule n'est presque jamais rangé tel qu'on l'a écrit : il devient le <b>double</b> le plus proche, en binaire. Ce qu'on relit ensuite dépend de trois choix : la précision du rangement, la façon de l'écrire en texte, et la façon de le comparer. Les exercices de Magpie font les trois.</p>
+<div class="meta">
+<span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>115</b>, <b>117</b></span>
+<span class="pastille">Exemples · <b>Magpie</b> plugin, web, exercices</span>
+</div>
+<div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+<svg viewbox="0 0 600 214" width="100%">
+<text fill="#4A4A68" font-size="8.6" font-weight="700" text-anchor="start" x="10" y="16">0.1 rangé dans un double : 64 bits, en trois parts (calculé)</text>
+<rect fill="#fff" height="22" rx="4" stroke="#C62828" stroke-width="1.2" width="24.9" x="10" y="26"></rect>
+<text class="mono" fill="#C62828" font-size="7.4" font-weight="700" style="font-size:7.4px" text-anchor="middle" x="22.45" y="39.46666666666667">0</text>
+<text fill="#C62828" font-size="7.4" font-weight="700" text-anchor="middle" x="22.45" y="62">signe</text>
+<rect fill="#fff" height="22" rx="4" stroke="#1565C0" stroke-width="1.2" width="73.9" x="38.9" y="26"></rect>
+<text class="mono" fill="#1565C0" font-size="7.4" font-weight="700" style="font-size:7.4px" text-anchor="middle" x="75.85" y="39.46666666666667">01111111011</text>
+<text fill="#1565C0" font-size="7.4" font-weight="700" text-anchor="middle" x="75.85" y="62">exposant (11 bits)</text>
+<rect fill="#fff" height="22" rx="4" stroke="#2E7D32" stroke-width="1.2" width="274.8" x="116.80000000000001" y="26"></rect>
+<text class="mono" fill="#2E7D32" font-size="7.4" font-weight="700" style="font-size:7.4px" text-anchor="middle" x="254.20000000000002" y="39.46666666666667">1001100110011001100110011001100110011001100110011010</text>
+<text fill="#2E7D32" font-size="7.4" font-weight="700" text-anchor="middle" x="254.20000000000002" y="62">mantisse (52 bits)</text>
+<text fill="#2B2F33" font-size="7.9" font-weight="700" text-anchor="start" x="10" y="90">La mantisse de 0.1 est une suite infinie 1001 1001… coupée à 52 bits et arrondie : le dernier groupe finit en 1010.</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="10" y="108">Le double le plus proche de 0.1 vaut exactement</text>
+<text class="mono" fill="#2E7D32" font-size="8" font-weight="700" style="font-size:8px" text-anchor="start" x="10" y="124">0.1000000000000000055511151231257827021181583404541015625</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="10" y="142">En simple précision (32 bits, 23 de mantisse), le plus proche vaut 0.100000001490116119384765625.</text>
+<text fill="#2B2F33" font-size="7.9" font-weight="700" text-anchor="start" x="10" y="166">Une fraction dont le dénominateur est une puissance de 2 (0.5, 0.25, 577.5) tombe juste ; 0.1, 0.3 ou 0.01 jamais.</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="10" y="184">Un double garde 15 à 17 chiffres significatifs ; un simple, 6 à 9. L'écart entre deux doubles voisins de 1 vaut 2,2 × 10⁻¹⁶.</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="10" y="204">Octets du double, de poids fort à poids faible : 3f b9 99 99 99 99 99 9a. Du simple : 3d cc cc cd.</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Un double est une approximation fidèle, mais une approximation : on l'écrit sans rien perdre, et on le compare avec une tolérance, jamais à l'égalité nue.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Un réglet gradué au demi-millimètre. 12,3 mm se lit 12,5 ou 12,0 ; le relevé est honnête, mais deux pièces « de 12,3 » mesurées par deux chemins différents peuvent tomber sur deux traits voisins.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>dire quand un nombre tombe juste en binaire ;</li>
-        <li>choisir entre simple et double ;</li>
-        <li>écrire un double sans le perdre ;</li>
-        <li>comparer deux doubles relus.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Un double est une approximation fidèle, mais une approximation : on l'écrit sans rien perdre, et on le compare avec une tolérance, jamais à l'égalité nue.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Un réglet gradué au demi-millimètre. 12,3 mm se lit 12,5 ou 12,0 ; le relevé est honnête, mais deux pièces « de 12,3 » mesurées par deux chemins différents peuvent tomber sur deux traits voisins.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>dire quand un nombre tombe juste en binaire ;</li>
+<li>choisir entre simple et double ;</li>
+<li>écrire un double sans le perdre ;</li>
+<li>comparer deux doubles relus.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À retenir</span>
     0.1 + 0.2 vaut 0.30000000000000004 dans tous les langages qui suivent la norme IEEE 754 : C#, JavaScript, Python, et Grasshopper. Ce n'est pas un défaut, c'est le prix d'un format fixe de 64 bits.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 119 · Ranger des nombres</div>
+<div class="folio">1</div>
+<div class="pied">Cours 119 · Ranger des nombres</div>
 </section>
-
 <!-- ============ PAGE 2 · SIMPLE OU DOUBLE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 119</b></div>
-  <p class="rubrique">Schéma 1 · Simple ou double</p>
-  <h2>La précision dont on a besoin</h2>
-  <p style="max-width:165mm">Un simple (float, 4 octets) garde environ 7 chiffres, un double (8 octets) environ 16. Grasshopper choisit selon l'usage : les positions des objets sur le canvas en simple, la géométrie en double. On a arrondi quelques valeurs en simple pour voir ce qu'elles deviennent.</p>
-
-  <svg viewBox="0 0 600 222" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="222" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.4" fill="#4A4A68" text-anchor="start" font-weight="700">Une valeur arrondie en simple précision, comme GH_IO range les positions du canvas (Python, mesuré)</text>
-<text x="28" y="42" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">double</text>
-<text x="250" y="42" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">relu après un simple</text>
-<text x="470" y="42" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">écart</text>
-<rect x="16" y="50" width="568" height="17" rx="3" fill="#fff"/>
-<text x="28" y="62" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">0.1</text>
-<text x="250" y="62" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">0.10000000149011612</text>
-<text x="470" y="62" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">1,5 × 10⁻⁹</text>
-<rect x="16" y="70" width="568" height="17" rx="3" fill="#ECECF2"/>
-<text x="28" y="82" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">123.456</text>
-<text x="250" y="82" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">123.45600128173828</text>
-<text x="470" y="82" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">1,3 × 10⁻⁶</text>
-<rect x="16" y="90" width="568" height="17" rx="3" fill="#fff"/>
-<text x="28" y="102" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">484.5 (une position de A_01)</text>
-<text x="250" y="102" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">484.5</text>
-<text x="470" y="102" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">0, exact</text>
-<rect x="16" y="110" width="568" height="17" rx="3" fill="#ECECF2"/>
-<text x="28" y="122" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">1234567.891</text>
-<text x="250" y="122" font-size="7.6" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">1234567.875</text>
-<text x="470" y="122" font-size="7.6" fill="#E65100" text-anchor="start" font-weight="700">0,016</text>
-<rect x="16" y="130" width="568" height="17" rx="3" fill="#fff"/>
-<text x="28" y="142" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">16777217</text>
-<text x="250" y="142" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">16777216</text>
-<text x="470" y="142" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">1</text>
-<text x="16" y="170" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Dans A_01.gh, les 334 coordonnées du canvas (types 31 et 35) sont en simple : toutes entières ou en .5 (mesuré).</text>
-<text x="16" y="186" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Un pixel n'a pas besoin de plus. La géométrie, elle, est en double : un point (type 51), c'est 3 × 8 octets.</text>
-<text x="16" y="206" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">En simple, 1234567.891 m perd 16 mm : une coordonnée Lambert 93 ne tiendrait pas au millimètre.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 119</b></div>
+<p class="rubrique">Schéma 1 · Simple ou double</p>
+<h2>La précision dont on a besoin</h2>
+<p style="max-width:165mm">Un simple (float, 4 octets) garde environ 7 chiffres, un double (8 octets) environ 16. Grasshopper choisit selon l'usage : les positions des objets sur le canvas en simple, la géométrie en double. On a arrondi quelques valeurs en simple pour voir ce qu'elles deviennent.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 222" width="100%">
+<rect fill="#EFE9E1" height="222" width="600" x="0" y="0"></rect>
+<text fill="#4A4A68" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="22">Une valeur arrondie en simple précision, comme GH_IO range les positions du canvas (Python, mesuré)</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="28" y="42">double</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="250" y="42">relu après un simple</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="470" y="42">écart</text>
+<rect fill="#fff" height="17" rx="3" width="568" x="16" y="50"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="28" y="62">0.1</text>
+<text class="mono" fill="#2E7D32" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="250" y="62">0.10000000149011612</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="470" y="62">1,5 × 10⁻⁹</text>
+<rect fill="#ECECF2" height="17" rx="3" width="568" x="16" y="70"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="28" y="82">123.456</text>
+<text class="mono" fill="#2E7D32" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="250" y="82">123.45600128173828</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="470" y="82">1,3 × 10⁻⁶</text>
+<rect fill="#fff" height="17" rx="3" width="568" x="16" y="90"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="28" y="102">484.5 (une position de A_01)</text>
+<text class="mono" fill="#2E7D32" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="250" y="102">484.5</text>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="470" y="102">0, exact</text>
+<rect fill="#ECECF2" height="17" rx="3" width="568" x="16" y="110"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="28" y="122">1234567.891</text>
+<text class="mono" fill="#E65100" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="250" y="122">1234567.875</text>
+<text fill="#E65100" font-size="7.6" font-weight="700" text-anchor="start" x="470" y="122">0,016</text>
+<rect fill="#fff" height="17" rx="3" width="568" x="16" y="130"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="28" y="142">16777217</text>
+<text class="mono" fill="#C62828" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="250" y="142">16777216</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="470" y="142">1</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="170">Dans A_01.gh, les 334 coordonnées du canvas (types 31 et 35) sont en simple : toutes entières ou en .5 (mesuré).</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="186">Un pixel n'a pas besoin de plus. La géométrie, elle, est en double : un point (type 51), c'est 3 × 8 octets.</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="16" y="206">En simple, 1234567.891 m perd 16 mm : une coordonnée Lambert 93 ne tiendrait pas au millimètre.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Python, voir l'arrondi d'un simple</span>import struct
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Python, voir l'arrondi d'un simple</span>import struct
 def en_simple(x):
     return struct.unpack("&lt;f", struct.pack("&lt;f", x))[0]
 print(en_simple(1234567.891))      # 1234567.875 : le simple le plus proche</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>La précision est relative</h3>
-      <p>Un simple garde le même nombre de chiffres à toutes les échelles. Près de 1, l'écart entre deux simples voisins est 10⁻⁷ ; près d'un million, il vaut 0,0625. Loin de l'origine, la précision s'effondre.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Dans Rhino</h3>
-      <p>RhinoCommon calcule en double, mais l'affichage passe souvent en simple. C'est pourquoi Rhino conseille de modéliser près de l'origine : un objet placé à des millions d'unités tremble à l'écran, sans que ses coordonnées soient fausses.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>La précision est relative</h3>
+<p>Un simple garde le même nombre de chiffres à toutes les échelles. Près de 1, l'écart entre deux simples voisins est 10⁻⁷ ; près d'un million, il vaut 0,0625. Loin de l'origine, la précision s'effondre.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Dans Rhino</h3>
+<p>RhinoCommon calcule en double, mais l'affichage passe souvent en simple. C'est pourquoi Rhino conseille de modéliser près de l'origine : un objet placé à des millions d'unités tremble à l'écran, sans que ses coordonnées soient fausses.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Ranger une coordonnée de terrain en float pour gagner 4 octets. En coordonnées Lambert 93, un Y vaut plus de six millions de mètres : un simple ne le tient qu'au demi-mètre près. Le gain de place ne vaut jamais la perte.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 119 · Ranger des nombres</div>
+<div class="folio">2</div>
+<div class="pied">Cours 119 · Ranger des nombres</div>
 </section>
-
 <!-- ============ PAGE 3 · EN TEXTE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 119</b></div>
-  <p class="rubrique">Schéma 2 · Écrire un nombre en texte</p>
-  <h2>Aller et retour sans perte</h2>
-  <p style="max-width:165mm">Dans un JSON ou un .ghx, un double devient du texte. Il faut que ce texte, relu, redonne exactement le même double. Les écritures modernes le garantissent ; d'autres arrondissent, et certaines valeurs n'ont pas d'écriture du tout.</p>
-
-  <svg viewBox="0 0 600 240" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="240" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#4A4A68" text-anchor="start" font-weight="700">Le même double écrit en texte par cinq écritures (Node 22, .NET 8, Newtonsoft 13.0.1, Python 3, mesuré)</text>
-<text x="196" y="42" font-size="7" fill="#6B7378" text-anchor="middle" font-weight="700">JSON.stringify</text>
-<text x="302" y="42" font-size="7" fill="#6B7378" text-anchor="middle" font-weight="700">C# "R" invariant</text>
-<text x="398" y="42" font-size="7" fill="#6B7378" text-anchor="middle" font-weight="700">C# "G15"</text>
-<text x="476" y="42" font-size="7" fill="#6B7378" text-anchor="middle" font-weight="700">Newtonsoft</text>
-<text x="556" y="42" font-size="7" fill="#6B7378" text-anchor="middle" font-weight="700">Python json</text>
-<rect x="16" y="50" width="568" height="19" rx="3" fill="#fff"/>
-<text x="24" y="63" font-size="7.2" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.2px">0.1 + 0.2</text>
-<text x="196" y="63" font-size="6.8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:6.8px">0.30000000000000004</text>
-<text x="302" y="63" font-size="6.8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:6.8px">0.30000000000000004</text>
-<text x="398" y="63" font-size="6.8" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.8px">0.3</text>
-<text x="476" y="63" font-size="6.8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:6.8px">0.300…04</text>
-<text x="556" y="63" font-size="6.8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:6.8px">0.300…04</text>
-<rect x="16" y="72" width="568" height="19" rx="3" fill="#ECECF2"/>
-<text x="24" y="85" font-size="7.2" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.2px">40799999.99999998</text>
-<text x="196" y="85" font-size="6.8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:6.8px">40799999.99999998</text>
-<text x="302" y="85" font-size="6.8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:6.8px">40799999.99999998</text>
-<text x="398" y="85" font-size="6.8" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.8px">40800000</text>
-<text x="476" y="85" font-size="6.8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:6.8px">identique</text>
-<text x="556" y="85" font-size="6.8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:6.8px">identique</text>
-<rect x="16" y="94" width="568" height="19" rx="3" fill="#fff"/>
-<text x="24" y="107" font-size="7.2" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.2px">-0</text>
-<text x="196" y="107" font-size="6.8" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.8px">0</text>
-<text x="302" y="107" font-size="6.8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:6.8px">-0</text>
-<text x="398" y="107" font-size="6.8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:6.8px">-0</text>
-<text x="476" y="107" font-size="6.8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:6.8px">-0.0</text>
-<text x="556" y="107" font-size="6.8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:6.8px">-0.0</text>
-<rect x="16" y="116" width="568" height="19" rx="3" fill="#ECECF2"/>
-<text x="24" y="129" font-size="7.2" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.2px">NaN</text>
-<text x="196" y="129" font-size="6.8" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.8px">null</text>
-<text x="302" y="129" font-size="6.8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:6.8px">NaN</text>
-<text x="398" y="129" font-size="6.8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:6.8px">NaN</text>
-<text x="476" y="129" font-size="6.8" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.8px">"NaN"</text>
-<text x="556" y="129" font-size="6.8" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.8px">NaN</text>
-<rect x="16" y="138" width="568" height="19" rx="3" fill="#fff"/>
-<text x="24" y="151" font-size="7.2" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.2px">ticks 639245427181410294</text>
-<text x="196" y="151" font-size="6.8" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.8px">…410300</text>
-<text x="302" y="151" font-size="6.8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:6.8px">…410294</text>
-<text x="398" y="151" font-size="6.8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:6.8px">—</text>
-<text x="476" y="151" font-size="6.8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:6.8px">…410294</text>
-<text x="556" y="151" font-size="6.8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:6.8px">…410294</text>
-<text x="16" y="178" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">L'écriture « R » (aller-retour) donne le texte le plus court qui redonne le même double ; G15 arrondit, et 0.3 relu ≠ 0.1 + 0.2.</text>
-<text x="16" y="194" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">NaN n'existe pas en JSON : chacun l'écrit à sa façon, et Python écrit du JSON invalide. -0 survit partout sauf en JavaScript.</text>
-<text x="16" y="210" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">Un entier de 64 bits dépasse 2⁵³ : JSON.parse le range dans un double et perd les derniers chiffres (écart de 6 ici).</text>
-<text x="16" y="228" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Le plugin écrit ses nombres en « R » invariant (GenericChecker.cs:339, MagpieExerciseEditor.cs:810).</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 119</b></div>
+<p class="rubrique">Schéma 2 · Écrire un nombre en texte</p>
+<h2>Aller et retour sans perte</h2>
+<p style="max-width:165mm">Dans un JSON ou un .ghx, un double devient du texte. Il faut que ce texte, relu, redonne exactement le même double. Les écritures modernes le garantissent ; d'autres arrondissent, et certaines valeurs n'ont pas d'écriture du tout.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 240" width="100%">
+<rect fill="#EFE9E1" height="240" width="600" x="0" y="0"></rect>
+<text fill="#4A4A68" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">Le même double écrit en texte par cinq écritures (Node 22, .NET 8, Newtonsoft 13.0.1, Python 3, mesuré)</text>
+<text fill="#6B7378" font-size="7" font-weight="700" text-anchor="middle" x="196" y="42">JSON.stringify</text>
+<text fill="#6B7378" font-size="7" font-weight="700" text-anchor="middle" x="302" y="42">C# "R" invariant</text>
+<text fill="#6B7378" font-size="7" font-weight="700" text-anchor="middle" x="398" y="42">C# "G15"</text>
+<text fill="#6B7378" font-size="7" font-weight="700" text-anchor="middle" x="476" y="42">Newtonsoft</text>
+<text fill="#6B7378" font-size="7" font-weight="700" text-anchor="middle" x="556" y="42">Python json</text>
+<rect fill="#fff" height="19" rx="3" width="568" x="16" y="50"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.2" font-weight="700" style="font-size:7.2px" text-anchor="start" x="24" y="63">0.1 + 0.2</text>
+<text class="mono" fill="#2B2F33" font-size="6.8" style="font-size:6.8px" text-anchor="middle" x="196" y="63">0.30000000000000004</text>
+<text class="mono" fill="#2B2F33" font-size="6.8" style="font-size:6.8px" text-anchor="middle" x="302" y="63">0.30000000000000004</text>
+<text class="mono" fill="#C62828" font-size="6.8" font-weight="700" style="font-size:6.8px" text-anchor="middle" x="398" y="63">0.3</text>
+<text class="mono" fill="#2B2F33" font-size="6.8" style="font-size:6.8px" text-anchor="middle" x="476" y="63">0.300…04</text>
+<text class="mono" fill="#2B2F33" font-size="6.8" style="font-size:6.8px" text-anchor="middle" x="556" y="63">0.300…04</text>
+<rect fill="#ECECF2" height="19" rx="3" width="568" x="16" y="72"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.2" font-weight="700" style="font-size:7.2px" text-anchor="start" x="24" y="85">40799999.99999998</text>
+<text class="mono" fill="#2B2F33" font-size="6.8" style="font-size:6.8px" text-anchor="middle" x="196" y="85">40799999.99999998</text>
+<text class="mono" fill="#2B2F33" font-size="6.8" style="font-size:6.8px" text-anchor="middle" x="302" y="85">40799999.99999998</text>
+<text class="mono" fill="#C62828" font-size="6.8" font-weight="700" style="font-size:6.8px" text-anchor="middle" x="398" y="85">40800000</text>
+<text class="mono" fill="#2B2F33" font-size="6.8" style="font-size:6.8px" text-anchor="middle" x="476" y="85">identique</text>
+<text class="mono" fill="#2B2F33" font-size="6.8" style="font-size:6.8px" text-anchor="middle" x="556" y="85">identique</text>
+<rect fill="#fff" height="19" rx="3" width="568" x="16" y="94"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.2" font-weight="700" style="font-size:7.2px" text-anchor="start" x="24" y="107">-0</text>
+<text class="mono" fill="#C62828" font-size="6.8" font-weight="700" style="font-size:6.8px" text-anchor="middle" x="196" y="107">0</text>
+<text class="mono" fill="#2B2F33" font-size="6.8" style="font-size:6.8px" text-anchor="middle" x="302" y="107">-0</text>
+<text class="mono" fill="#2B2F33" font-size="6.8" style="font-size:6.8px" text-anchor="middle" x="398" y="107">-0</text>
+<text class="mono" fill="#2B2F33" font-size="6.8" style="font-size:6.8px" text-anchor="middle" x="476" y="107">-0.0</text>
+<text class="mono" fill="#2B2F33" font-size="6.8" style="font-size:6.8px" text-anchor="middle" x="556" y="107">-0.0</text>
+<rect fill="#ECECF2" height="19" rx="3" width="568" x="16" y="116"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.2" font-weight="700" style="font-size:7.2px" text-anchor="start" x="24" y="129">NaN</text>
+<text class="mono" fill="#C62828" font-size="6.8" font-weight="700" style="font-size:6.8px" text-anchor="middle" x="196" y="129">null</text>
+<text class="mono" fill="#2B2F33" font-size="6.8" style="font-size:6.8px" text-anchor="middle" x="302" y="129">NaN</text>
+<text class="mono" fill="#2B2F33" font-size="6.8" style="font-size:6.8px" text-anchor="middle" x="398" y="129">NaN</text>
+<text class="mono" fill="#C62828" font-size="6.8" font-weight="700" style="font-size:6.8px" text-anchor="middle" x="476" y="129">"NaN"</text>
+<text class="mono" fill="#C62828" font-size="6.8" font-weight="700" style="font-size:6.8px" text-anchor="middle" x="556" y="129">NaN</text>
+<rect fill="#fff" height="19" rx="3" width="568" x="16" y="138"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.2" font-weight="700" style="font-size:7.2px" text-anchor="start" x="24" y="151">ticks 639245427181410294</text>
+<text class="mono" fill="#C62828" font-size="6.8" font-weight="700" style="font-size:6.8px" text-anchor="middle" x="196" y="151">…410300</text>
+<text class="mono" fill="#2B2F33" font-size="6.8" style="font-size:6.8px" text-anchor="middle" x="302" y="151">…410294</text>
+<text class="mono" fill="#2B2F33" font-size="6.8" style="font-size:6.8px" text-anchor="middle" x="398" y="151">—</text>
+<text class="mono" fill="#2B2F33" font-size="6.8" style="font-size:6.8px" text-anchor="middle" x="476" y="151">…410294</text>
+<text class="mono" fill="#2B2F33" font-size="6.8" style="font-size:6.8px" text-anchor="middle" x="556" y="151">…410294</text>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="16" y="178">L'écriture « R » (aller-retour) donne le texte le plus court qui redonne le même double ; G15 arrondit, et 0.3 relu ≠ 0.1 + 0.2.</text>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="16" y="194">NaN n'existe pas en JSON : chacun l'écrit à sa façon, et Python écrit du JSON invalide. -0 survit partout sauf en JavaScript.</text>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="16" y="210">Un entier de 64 bits dépasse 2⁵³ : JSON.parse le range dans un double et perd les derniers chiffres (écart de 6 ici).</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="228">Le plugin écrit ses nombres en « R » invariant (GenericChecker.cs:339, MagpieExerciseEditor.cs:810).</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, écrire et relire un double sans perte</span>string texte = x.ToString("R", CultureInfo.InvariantCulture);    // point décimal, aller-retour
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#, écrire et relire un double sans perte</span>string texte = x.ToString("R", CultureInfo.InvariantCulture);    // point décimal, aller-retour
 double y = double.Parse(texte, CultureInfo.InvariantCulture);
 Debug.Assert(BitConverter.DoubleToInt64Bits(x) == BitConverter.DoubleToInt64Bits(y));</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>La culture</h3>
-      <p>En fr-FR, ToString() écrit « 0,30000000000000004 » : une virgule, illisible pour JSON et pour l'autre volet (cours 111). L'invariant est la règle pour tout ce qui est écrit dans un fichier.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Les grands entiers</h3>
-      <p>Les dates GH_IO sont des ticks .NET, des entiers de 64 bits : 639245427181410294 pour le 09/09/2026 à 09:25. En JavaScript, au-delà de 2⁵³, il faut BigInt, ou garder la valeur en chaîne.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>La culture</h3>
+<p>En fr-FR, ToString() écrit « 0,30000000000000004 » : une virgule, illisible pour JSON et pour l'autre volet (cours 111). L'invariant est la règle pour tout ce qui est écrit dans un fichier.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Les grands entiers</h3>
+<p>Les dates GH_IO sont des ticks .NET, des entiers de 64 bits : 639245427181410294 pour le 09/09/2026 à 09:25. En JavaScript, au-delà de 2⁵³, il faut BigInt, ou garder la valeur en chaîne.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Arrondir à l'écriture « pour faire propre ». Un fichier qui garde 0.3 au lieu de 0.30000000000000004 ne redonnera plus le résultat calculé, et une comparaison stricte avec une réponse recalculée échouera. On arrondit à l'affichage, jamais au rangement.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 119 · Ranger des nombres</div>
+<div class="folio">3</div>
+<div class="pied">Cours 119 · Ranger des nombres</div>
 </section>
-
 <!-- ============ PAGE 4 · COMPARER ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 119</b></div>
-  <p class="rubrique">Schéma 3 · Comparer des nombres relus</p>
-  <h2>À tolérance zéro, deux règles</h2>
-  <p style="max-width:165mm">Corriger un exercice, c'est comparer le nombre calculé par l'étudiant au nombre rangé par l'auteur. Le plugin et le volet web le font chacun de leur côté ; à tolérance nulle, ils ne font pas la même chose.</p>
-
-  <svg viewBox="0 0 600 218" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="218" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.4" fill="#4A4A68" text-anchor="start" font-weight="700">Une réponse calculée 0.1 + 0.2, attendue 0.3, en mode SingleValue, Tolerance 0</text>
-<rect x="16" y="36" width="278" height="70" rx="4" fill="#E8F5E9" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="155" y="54" font-size="8" fill="#2E7D32" text-anchor="middle" font-weight="700">plugin · GenericChecker.cs:375</text>
-<text x="155" y="72" font-size="9" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">|écart| &lt; 1e-9</text>
-<text x="155" y="92" font-size="8" fill="#2E7D32" text-anchor="middle" font-weight="700">accepté (déduit du code)</text>
-<rect x="306" y="36" width="278" height="70" rx="4" fill="#FDECEA" stroke="#C62828" stroke-width="1.2"/>
-<text x="445" y="54" font-size="8" fill="#C62828" text-anchor="middle" font-weight="700">web · validation.mjs:116</text>
-<text x="445" y="72" font-size="9" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">|écart| &gt; Tolerance, soit 0</text>
-<text x="445" y="92" font-size="8" fill="#C62828" text-anchor="middle" font-weight="700">refusé (copie, mesuré)</text>
-<text x="16" y="128" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">L'écart vaut 5,6 × 10⁻¹⁷ : invisible, mais pas nul. Les deux volets ne posent pas la même règle à tolérance zéro.</text>
-<text x="16" y="146" font-size="7.6" fill="#2B2F33" text-anchor="start">Dans le dépôt : 29 des 40 exercices numériques ont Tolerance 0. 28 attendent des entiers ; A_04 attend 577.5, 281.25</text>
-<text x="16" y="160" font-size="7.6" fill="#2B2F33" text-anchor="start">et 182.5, des fractions de puissances de 2, exactes en binaire (mesuré). Aucun n'est touché aujourd'hui.</text>
-<text x="16" y="182" font-size="7.8" fill="#4A4A68" text-anchor="start" font-weight="700">Comparer des doubles, c'est toujours choisir une tolérance : absolue (|a − b| ≤ ε), relative (|a − b| ≤ ε·|b|), ou les deux.</text>
-<text x="16" y="202" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">IA-14 attend 40799999.99999998 à 0,01 près : 40800000 passe (mesuré). La valeur stockée garde l'arrondi du calcul de l'auteur.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 119</b></div>
+<p class="rubrique">Schéma 3 · Comparer des nombres relus</p>
+<h2>À tolérance zéro, deux règles</h2>
+<p style="max-width:165mm">Corriger un exercice, c'est comparer le nombre calculé par l'étudiant au nombre rangé par l'auteur. Le plugin et le volet web le font chacun de leur côté ; à tolérance nulle, ils ne font pas la même chose.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 218" width="100%">
+<rect fill="#EFE9E1" height="218" width="600" x="0" y="0"></rect>
+<text fill="#4A4A68" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="22">Une réponse calculée 0.1 + 0.2, attendue 0.3, en mode SingleValue, Tolerance 0</text>
+<rect fill="#E8F5E9" height="70" rx="4" stroke="#2E7D32" stroke-width="1.2" width="278" x="16" y="36"></rect>
+<text fill="#2E7D32" font-size="8" font-weight="700" text-anchor="middle" x="155" y="54">plugin · GenericChecker.cs:375</text>
+<text class="mono" fill="#2B2F33" font-size="9" font-weight="700" style="font-size:9px" text-anchor="middle" x="155" y="72">|écart| &lt; 1e-9</text>
+<text fill="#2E7D32" font-size="8" font-weight="700" text-anchor="middle" x="155" y="92">accepté (déduit du code)</text>
+<rect fill="#FDECEA" height="70" rx="4" stroke="#C62828" stroke-width="1.2" width="278" x="306" y="36"></rect>
+<text fill="#C62828" font-size="8" font-weight="700" text-anchor="middle" x="445" y="54">web · validation.mjs:116</text>
+<text class="mono" fill="#2B2F33" font-size="9" font-weight="700" style="font-size:9px" text-anchor="middle" x="445" y="72">|écart| &gt; Tolerance, soit 0</text>
+<text fill="#C62828" font-size="8" font-weight="700" text-anchor="middle" x="445" y="92">refusé (copie, mesuré)</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="128">L'écart vaut 5,6 × 10⁻¹⁷ : invisible, mais pas nul. Les deux volets ne posent pas la même règle à tolérance zéro.</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="16" y="146">Dans le dépôt : 29 des 40 exercices numériques ont Tolerance 0. 28 attendent des entiers ; A_04 attend 577.5, 281.25</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="16" y="160">et 182.5, des fractions de puissances de 2, exactes en binaire (mesuré). Aucun n'est touché aujourd'hui.</text>
+<text fill="#4A4A68" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="182">Comparer des doubles, c'est toujours choisir une tolérance : absolue (|a − b| ≤ ε), relative (|a − b| ≤ ε·|b|), ou les deux.</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="202">IA-14 attend 40799999.99999998 à 0,01 près : 40800000 passe (mesuré). La valeur stockée garde l'arrondi du calcul de l'auteur.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript, une comparaison qui tient l'arrondi</span>function proches(a, b, tol = 0) {
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript, une comparaison qui tient l'arrondi</span>function proches(a, b, tol = 0) {
   const ulp = Number.EPSILON * Math.max(1, Math.abs(a), Math.abs(b)) * 4;  // quelques arrondis
   return Math.abs(a - b) &lt;= Math.max(tol, ulp);
 }</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Absolue ou relative</h3>
-      <p>Le 1e-9 du plugin est absolu : parfait près de 1, trop serré près de 10⁸ où deux doubles voisins sont déjà à 1,5 × 10⁻⁸. Une tolérance relative suit l'échelle du nombre.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Les listes exactes</h3>
-      <p>En ExactOrderedList, le plugin compare par égalité stricte et ignore Tolerance (GenericChecker.cs:238) ; le web applique Tolerance élément par élément. Les 16 exercices concernés ont Tolerance 0 : les deux règles coïncident.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Absolue ou relative</h3>
+<p>Le 1e-9 du plugin est absolu : parfait près de 1, trop serré près de 10⁸ où deux doubles voisins sont déjà à 1,5 × 10⁻⁸. Une tolérance relative suit l'échelle du nombre.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Les listes exactes</h3>
+<p>En ExactOrderedList, le plugin compare par égalité stricte et ignore Tolerance (GenericChecker.cs:238) ; le web applique Tolerance élément par élément. Les 16 exercices concernés ont Tolerance 0 : les deux règles coïncident.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Écrire un exercice qui attend 0.3 avec une tolérance nulle. La réponse juste, calculée par Grasshopper comme 0.1 + 0.2, est refusée par le volet web. Une tolérance, même minuscule, dit ce que « égal » veut dire.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 119 · Ranger des nombres</div>
+<div class="folio">4</div>
+<div class="pied">Cours 119 · Ranger des nombres</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 119</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>Les nombres d'un exercice, du fichier à la note</h2>
-  <p style="max-width:165mm">Les valeurs attendues sont des doubles, écrites en aller-retour ; la comparaison, elle, n'a pas la même règle des deux côtés.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 119</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>Les nombres d'un exercice, du fichier à la note</h2>
+<p style="max-width:165mm">Les valeurs attendues sont des doubles, écrites en aller-retour ; la comparaison, elle, n'a pas la même règle des deux côtés.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">magpie/plugin/Core/ExerciseDefinition.cs · GenericChecker.cs</span></div>
 <div class="l k1"><span class="n">16</span>public List&lt;double&gt; ExpectedNumbers { get; set; } = …;<span class="rep r1">1</span></div>
@@ -280,137 +253,55 @@ Debug.Assert(BitConverter.DoubleToInt64Bits(x) == BitConverter.DoubleToInt64Bits
 <div class="l k4"><span class="n">110</span>  const tolerance = config.Tolerance ?? 0;<span class="rep r4">4</span></div>
 <div class="l k5"><span class="n">116</span>  if (Math.abs(value - expected) &gt; tolerance) {<span class="rep r5">5</span></div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>Des doubles</b>8 octets chacun.</li>
-      <li><span class="rep r2">2</span><b>Aller-retour</b>Invariant.</li>
-      <li><span class="rep r3">3</span><b>Plugin</b>Epsilon fixe.</li>
-      <li><span class="rep r4">4</span><b>Web</b>0 par défaut.</li>
-      <li><span class="rep r5">5</span><b>Égalité nue</b>À tolérance 0.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À surveiller · SingleValue à tolérance nulle</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>Des doubles</b>8 octets chacun.</li>
+<li><span class="rep r2">2</span><b>Aller-retour</b>Invariant.</li>
+<li><span class="rep r3">3</span><b>Plugin</b>Epsilon fixe.</li>
+<li><span class="rep r4">4</span><b>Web</b>0 par défaut.</li>
+<li><span class="rep r5">5</span><b>Égalité nue</b>À tolérance 0.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À surveiller · SingleValue à tolérance nulle</span>
     Les 11 exercices SingleValue du dépôt ont Tolerance 0 et attendent des entiers (mesuré). Le plugin accepte tout écart sous 1e-9 (ligne 375) ; le web exige l'égalité exacte (ligne 116). Mesuré sur une copie : 0.1 + 0.2 contre 0.3 est refusé côté web. Déduit : un futur exercice SingleValue à valeur décimale serait réussi dans Grasshopper et échoué en ligne, pour la même réponse. Relevé sans rien modifier.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 119 · Ranger des nombres</div>
+<div class="folio">5</div>
+<div class="pied">Cours 119 · Ranger des nombres</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 119</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 119</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">Tombent juste en binaire… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>0.1</li><li><span>B</span>577.5</li><li><span>C</span>0.25</li><li><span>D</span>0.3</li></ul></div>
 
-    <div class="q"><div class="enonce">Un double garde environ…</div><ul>
-      <li><span>A</span>16 chiffres significatifs</li><li><span>B</span>autant qu'on veut</li><li><span>C</span>32</li><li><span>D</span>7</li></ul></div>
 
-    <div class="q"><div class="enonce">GH_IO range les positions du canvas en…</div><ul>
-      <li><span>A</span>double</li><li><span>B</span>texte</li><li><span>C</span>simple précision</li><li><span>D</span>entiers 64 bits</li></ul></div>
 
-    <div class="q"><div class="enonce">1234567.891 rangé en simple devient…</div><ul>
-      <li><span>A</span>1234567.891</li><li><span>B</span>1234567.9</li><li><span>C</span>1234568</li><li><span>D</span>1234567.875</li></ul></div>
-
-    <div class="q"><div class="enonce">L'écriture « R » de C# garantit…</div><ul>
-      <li><span>A</span>une virgule française</li><li><span>B</span>que le texte relu redonne le même double</li><li><span>C</span>deux décimales</li><li><span>D</span>15 chiffres exactement</li></ul></div>
-
-    <div class="q"><div class="enonce">0.1 + 0.2 écrit en « G15 »…</div><ul>
-      <li><span>A</span>lève une erreur</li><li><span>B</span>donne 0,3</li><li><span>C</span>donne 0.3, qui relu n'est plus le même double</li><li><span>D</span>donne 0.30000000000000004</li></ul></div>
-
-    <div class="q"><div class="enonce">JSON.stringify(NaN) donne…</div><ul>
-      <li><span>A</span>0</li><li><span>B</span>NaN</li><li><span>C</span>"NaN"</li><li><span>D</span>null</li></ul></div>
-
-    <div class="q"><div class="enonce">JSON.parse d'un entier de 18 chiffres…</div><ul>
-      <li><span>A</span>perd les derniers chiffres</li><li><span>B</span>donne un BigInt</li><li><span>C</span>le garde exact</li><li><span>D</span>lève une erreur</li></ul></div>
-
-    <div class="q"><div class="enonce">SingleValue, Tolerance 0, réponse 0.1 + 0.2, attendu 0.3 : côté web…</div><ul>
-      <li><span>A</span>erreur</li><li><span>B</span>accepté</li><li><span>C</span>refusé</li><li><span>D</span>arrondi</li></ul></div>
-
-    <div class="q"><div class="enonce">Même cas, côté plugin (ligne 375)…</div><ul>
-      <li><span>A</span>ignoré</li><li><span>B</span>accepté, l'écart est sous 1e-9</li><li><span>C</span>erreur</li><li><span>D</span>refusé</li></ul></div>
-
-    <div class="q"><div class="enonce">Une tolérance absolue de 1e-9 est trop serrée…</div><ul>
-      <li><span>A</span>pour de très grands nombres</li><li><span>B</span>pour des entiers</li><li><span>C</span>jamais</li><li><span>D</span>pour des nombres près de 1</li></ul></div>
-
-    <div class="q"><div class="enonce">Pour écrire un double dans un fichier, on prend…</div><ul>
-      <li><span>A</span>un simple</li><li><span>B</span>l'invariant et l'aller-retour</li><li><span>C</span>deux décimales</li><li><span>D</span>la culture de l'utilisateur</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 119 · Ranger des nombres</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">x.ToString("R", Invariant)</td><td>écrire un double sans perte</td><td>GenericChecker.cs:339</td></tr>
+<tr><td class="c">struct.pack("&lt;f", x)</td><td>voir l'arrondi d'un simple</td><td>page 2</td></tr>
+<tr><td class="c">Number.EPSILON</td><td>2,2 × 10⁻¹⁶, l'écart près de 1</td><td>page 4</td></tr>
+<tr><td class="c">BigInt("639245427181410294")</td><td>un entier 64 bits en JavaScript</td><td>page 3</td></tr>
+<tr><td class="c">Math.abs(a - b) &lt;= tol</td><td>comparer avec une tolérance</td><td>validation.mjs:116</td></tr>
+<tr><td class="c">Decimal(0.1)</td><td>voir la valeur exacte d'un double</td><td>page 1</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Double</dt><dd>Un nombre IEEE 754 sur 64 bits : signe, exposant, mantisse.</dd>
+<dt>Simple (float)</dt><dd>Le même principe sur 32 bits, environ 7 chiffres.</dd>
+<dt>Aller-retour</dt><dd>Une écriture qui, relue, redonne exactement le même nombre.</dd>
+<dt>Tolérance relative</dt><dd>Un écart permis proportionnel à la taille des nombres.</dd>
+<dt>Ticks</dt><dd>Les intervalles de 100 ns depuis l'an 1, la date .NET.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 120</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 119 · Ranger des nombres</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 119</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · B et C.</b> Dénominateurs en puissance de 2.</div>
-    <div><b>02 · A.</b> 15 à 17.</div>
-    <div><b>03 · C.</b> Types 31 et 35.</div>
-    <div><b>04 · D.</b> 16 mm de moins.</div>
-    <div><b>05 · B.</b> Le plus court qui suffit.</div>
-    <div><b>06 · C.</b> 15 chiffres ne suffisent pas.</div>
-    <div><b>07 · D.</b> NaN n'existe pas en JSON.</div>
-    <div><b>08 · A.</b> Au-delà de 2⁵³.</div>
-    <div><b>09 · C.</b> Égalité exacte, ligne 116.</div>
-    <div><b>10 · B.</b> 5,6 × 10⁻¹⁷.</div>
-    <div><b>11 · A.</b> Prévoir le relatif.</div>
-    <div><b>12 · B.</b> Comme FormatNombre.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 120, « Faire évoluer un format ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">x.ToString("R", Invariant)</td><td>écrire un double sans perte</td><td>GenericChecker.cs:339</td></tr>
-      <tr><td class="c">struct.pack("&lt;f", x)</td><td>voir l'arrondi d'un simple</td><td>page 2</td></tr>
-      <tr><td class="c">Number.EPSILON</td><td>2,2 × 10⁻¹⁶, l'écart près de 1</td><td>page 4</td></tr>
-      <tr><td class="c">BigInt("639245427181410294")</td><td>un entier 64 bits en JavaScript</td><td>page 3</td></tr>
-      <tr><td class="c">Math.abs(a - b) &lt;= tol</td><td>comparer avec une tolérance</td><td>validation.mjs:116</td></tr>
-      <tr><td class="c">Decimal(0.1)</td><td>voir la valeur exacte d'un double</td><td>page 1</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Double</dt><dd>Un nombre IEEE 754 sur 64 bits : signe, exposant, mantisse.</dd>
-    <dt>Simple (float)</dt><dd>Le même principe sur 32 bits, environ 7 chiffres.</dd>
-    <dt>Aller-retour</dt><dd>Une écriture qui, relue, redonne exactement le même nombre.</dd>
-    <dt>Tolérance relative</dt><dd>Un écart permis proportionnel à la taille des nombres.</dd>
-    <dt>Ticks</dt><dd>Les intervalles de 100 ns depuis l'an 1, la date .NET.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 120</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 119 · Ranger des nombres</div>
-</section>
-
 </body>
 </html>

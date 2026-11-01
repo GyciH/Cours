@@ -1,268 +1,246 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>35 · Mettre en ligne</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-8">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 35</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Mettre en ligne</h1>
-  <p class="chapeau">Sur ton poste, Magpie Web tourne avec deux serveurs, Vite et le backend. En ligne, il n'en reste qu'<b>un</b> : une application Node hébergée chez o2switch, qui sert à la fois la page construite et l'API. Mettre en ligne, c'est envoyer le code, le construire sur place et redémarrer, sans jamais toucher aux données ni aux secrets du serveur.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>06</b>, <b>30</b>, <b>31</b> et <b>34</b></span>
-    <span class="pastille">Exemples · <b>outils/deployer.sh</b>, <b>app.cjs</b>, <b>README.md</b> (Magpie web)</span>
-  </div>
-
-  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
-    <svg viewBox="0 0 600 214" width="100%">
-<rect x="10" y="70" width="96" height="50" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.3"/>
-<text x="58.0" y="92.0" font-size="9" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">Navigateur</text>
-<text x="58.0" y="106.0" font-size="8.2" fill="#2B2F33" text-anchor="middle">apprenant</text>
-<line x1="107" y1="95" x2="150" y2="95" stroke="#1565C0" stroke-width="1.4"/><polygon points="150,95 143.6,97.7 143.6,92.3" fill="#1565C0"/>
-<text x="128" y="88" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700">HTTPS</text>
-<rect x="152" y="10" width="258" height="190" rx="6" fill="#F4EEDF" stroke="#7A5A12" stroke-width="1.4"/>
-<text x="162" y="28" font-size="9.6" fill="#7A5A12" text-anchor="start" font-weight="700">o2switch (hébergement mutualisé)</text>
-<rect x="164" y="40" width="100" height="34" rx="4" fill="#fff" stroke="#6D4C41" stroke-width="1.3"/>
-<text x="214.0" y="60.5" font-size="9" fill="#6D4C41" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">Passenger</text>
-<line x1="265" y1="57" x2="290" y2="57" stroke="#6B7378" stroke-width="1.4"/><polygon points="290,57 283.6,59.7 283.6,54.3" fill="#6B7378"/>
-<rect x="292" y="40" width="108" height="34" rx="4" fill="#fff" stroke="#7A5A12" stroke-width="1.3"/>
-<text x="346.0" y="60.5" font-size="9" fill="#7A5A12" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">app.cjs</text>
-<line x1="346" y1="75" x2="346" y2="92" stroke="#6B7378" stroke-width="1.4"/><polygon points="346,92 343.3,85.6 348.7,85.6" fill="#6B7378"/>
-<rect x="292" y="94" width="108" height="34" rx="4" fill="#fff" stroke="#7A5A12" stroke-width="1.3"/>
-<text x="346.0" y="114.5" font-size="8.6" fill="#7A5A12" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">compute-proxy</text>
-<rect x="164" y="94" width="100" height="26" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.3"/>
-<text x="214.0" y="110.5" font-size="8.6" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">dist/</text>
-<rect x="164" y="128" width="100" height="26" rx="4" fill="#fff" stroke="#6D4C41" stroke-width="1.3"/>
-<text x="214.0" y="144.5" font-size="8.6" fill="#6D4C41" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">magpie.db</text>
-<rect x="164" y="162" width="100" height="26" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.3"/>
-<text x="214.0" y="178.5" font-size="8.6" fill="#E65100" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">.env</text>
-<text x="292" y="150" font-size="8" fill="#6B7378" text-anchor="start">le front construit,</text>
-<text x="292" y="162" font-size="8" fill="#6B7378" text-anchor="start">la base et les secrets</text>
-<text x="292" y="174" font-size="8" fill="#6B7378" text-anchor="start">vivent sur le serveur</text>
-<line x1="401" y1="111" x2="470" y2="111" stroke="#E65100" stroke-width="1.4" stroke-dasharray="5 3"/>
-<polygon points="472,111 465,107.5 465,114.5" fill="#E65100"/>
-<text x="436" y="102" font-size="8" fill="#E65100" text-anchor="middle" font-weight="700">tunnel</text>
-<text x="436" y="126" font-size="8" fill="#E65100" text-anchor="middle" font-style="italic">(prévu)</text>
-<rect x="474" y="86" width="116" height="50" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.3"/>
-<text x="532.0" y="108.0" font-size="8.8" fill="#7B1FA2" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.8px">Rhino Compute</text>
-<text x="532.0" y="122.0" font-size="8.2" fill="#2B2F33" text-anchor="middle">ton ordinateur</text>
-<text x="532" y="152" font-size="7.8" fill="#7B1FA2" text-anchor="middle" class="mono" style="font-size:7.8px">clé COMPUTE_API_KEY</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 35</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Mettre en ligne</h1>
+<p class="chapeau">Sur ton poste, Magpie Web tourne avec deux serveurs, Vite et le backend. En ligne, il n'en reste qu'<b>un</b> : une application Node hébergée chez o2switch, qui sert à la fois la page construite et l'API. Mettre en ligne, c'est envoyer le code, le construire sur place et redémarrer, sans jamais toucher aux données ni aux secrets du serveur.</p>
+<div class="meta">
+<span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>06</b>, <b>30</b>, <b>31</b> et <b>34</b></span>
+<span class="pastille">Exemples · <b>outils/deployer.sh</b>, <b>app.cjs</b>, <b>README.md</b> (Magpie web)</span>
+</div>
+<div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+<svg viewbox="0 0 600 214" width="100%">
+<rect fill="#fff" height="50" rx="4" stroke="#1565C0" stroke-width="1.3" width="96" x="10" y="70"></rect>
+<text class="mono" fill="#1565C0" font-size="9" font-weight="700" style="font-size:9px" text-anchor="middle" x="58.0" y="92.0">Navigateur</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="middle" x="58.0" y="106.0">apprenant</text>
+<line stroke="#1565C0" stroke-width="1.4" x1="107" x2="150" y1="95" y2="95"></line><polygon fill="#1565C0" points="150,95 143.6,97.7 143.6,92.3"></polygon>
+<text fill="#1565C0" font-size="8" font-weight="700" text-anchor="middle" x="128" y="88">HTTPS</text>
+<rect fill="#F4EEDF" height="190" rx="6" stroke="#7A5A12" stroke-width="1.4" width="258" x="152" y="10"></rect>
+<text fill="#7A5A12" font-size="9.6" font-weight="700" text-anchor="start" x="162" y="28">o2switch (hébergement mutualisé)</text>
+<rect fill="#fff" height="34" rx="4" stroke="#6D4C41" stroke-width="1.3" width="100" x="164" y="40"></rect>
+<text class="mono" fill="#6D4C41" font-size="9" font-weight="700" style="font-size:9px" text-anchor="middle" x="214.0" y="60.5">Passenger</text>
+<line stroke="#6B7378" stroke-width="1.4" x1="265" x2="290" y1="57" y2="57"></line><polygon fill="#6B7378" points="290,57 283.6,59.7 283.6,54.3"></polygon>
+<rect fill="#fff" height="34" rx="4" stroke="#7A5A12" stroke-width="1.3" width="108" x="292" y="40"></rect>
+<text class="mono" fill="#7A5A12" font-size="9" font-weight="700" style="font-size:9px" text-anchor="middle" x="346.0" y="60.5">app.cjs</text>
+<line stroke="#6B7378" stroke-width="1.4" x1="346" x2="346" y1="75" y2="92"></line><polygon fill="#6B7378" points="346,92 343.3,85.6 348.7,85.6"></polygon>
+<rect fill="#fff" height="34" rx="4" stroke="#7A5A12" stroke-width="1.3" width="108" x="292" y="94"></rect>
+<text class="mono" fill="#7A5A12" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="346.0" y="114.5">compute-proxy</text>
+<rect fill="#fff" height="26" rx="4" stroke="#2E7D32" stroke-width="1.3" width="100" x="164" y="94"></rect>
+<text class="mono" fill="#2E7D32" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="214.0" y="110.5">dist/</text>
+<rect fill="#fff" height="26" rx="4" stroke="#6D4C41" stroke-width="1.3" width="100" x="164" y="128"></rect>
+<text class="mono" fill="#6D4C41" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="214.0" y="144.5">magpie.db</text>
+<rect fill="#fff" height="26" rx="4" stroke="#E65100" stroke-width="1.3" width="100" x="164" y="162"></rect>
+<text class="mono" fill="#E65100" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="214.0" y="178.5">.env</text>
+<text fill="#6B7378" font-size="8" text-anchor="start" x="292" y="150">le front construit,</text>
+<text fill="#6B7378" font-size="8" text-anchor="start" x="292" y="162">la base et les secrets</text>
+<text fill="#6B7378" font-size="8" text-anchor="start" x="292" y="174">vivent sur le serveur</text>
+<line stroke="#E65100" stroke-dasharray="5 3" stroke-width="1.4" x1="401" x2="470" y1="111" y2="111"></line>
+<polygon fill="#E65100" points="472,111 465,107.5 465,114.5"></polygon>
+<text fill="#E65100" font-size="8" font-weight="700" text-anchor="middle" x="436" y="102">tunnel</text>
+<text fill="#E65100" font-size="8" font-style="italic" text-anchor="middle" x="436" y="126">(prévu)</text>
+<rect fill="#fff" height="50" rx="4" stroke="#7B1FA2" stroke-width="1.3" width="116" x="474" y="86"></rect>
+<text class="mono" fill="#7B1FA2" font-size="8.8" font-weight="700" style="font-size:8.8px" text-anchor="middle" x="532.0" y="108.0">Rhino Compute</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="middle" x="532.0" y="122.0">ton ordinateur</text>
+<text class="mono" fill="#7B1FA2" font-size="7.8" style="font-size:7.8px" text-anchor="middle" x="532" y="152">clé COMPUTE_API_KEY</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Le code voyage, l'état reste : le dépôt part sur le serveur à chaque mise en ligne, mais la base et le fichier <code>.env</code> du serveur ne sont jamais envoyés ni écrasés.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Changer le moteur d'une voiture sans vider le coffre ni changer les clés. Le moteur, c'est le code ; le coffre, la base ; les clés, les mots de passe du serveur.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>suivre deployer.sh, du poste au redémarrage ;</li>
-        <li>dire ce qui part en ligne et ce qui reste sur place ;</li>
-        <li>régler une variable d'environnement sans l'écrire dans le code ;</li>
-        <li>dire pourquoi l'administration exige HTTPS.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:5mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Le code voyage, l'état reste : le dépôt part sur le serveur à chaque mise en ligne, mais la base et le fichier <code>.env</code> du serveur ne sont jamais envoyés ni écrasés.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Changer le moteur d'une voiture sans vider le coffre ni changer les clés. Le moteur, c'est le code ; le coffre, la base ; les clés, les mots de passe du serveur.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>suivre deployer.sh, du poste au redémarrage ;</li>
+<li>dire ce qui part en ligne et ce qui reste sur place ;</li>
+<li>régler une variable d'environnement sans l'écrire dans le code ;</li>
+<li>dire pourquoi l'administration exige HTTPS.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:5mm">
+<span class="titre">À retenir</span>
     Compute ne part pas en ligne : il reste sur ton poste, faute de licence serveur. L'hébergement prévoit de le joindre par un <b>tunnel</b> protégé par une clé partagée (<code>COMPUTE_API_KEY</code>) ; ce test complet est encore à faire (journal web, § 21).
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 35 · Mettre en ligne</div>
+<div class="folio">1</div>
+<div class="pied">Cours 35 · Mettre en ligne</div>
 </section>
-
 <!-- ============ PAGE 2 · LE SCRIPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 35</b></div>
-  <p class="rubrique">Schéma 1 · Le trajet d'une mise en ligne</p>
-  <h2>Une commande, six étapes</h2>
-  <p style="max-width:165mm"><code>deployer.sh</code> se lance depuis ton poste. Il n'a pas besoin que le serveur accède à GitHub : il lui envoie lui-même le code, par SSH, puis lui fait construire et redémarrer l'application.</p>
-
-  <svg viewBox="0 0 600 170" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="170" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="12" fill="#7A5A12" text-anchor="start" font-weight="700">deployer.sh, de ton poste au serveur</text>
-<rect x="12" y="34" width="112" height="120" rx="5" fill="#fff" stroke="#1565C0" stroke-width="1.3"/>
-<text x="68" y="50" font-size="8.6" fill="#1565C0" text-anchor="middle" font-weight="700">ton poste</text>
-<text x="68" y="80" font-size="8.6" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.6px">git archive</text>
-<text x="68" y="94" font-size="8.2" fill="#6B7378" text-anchor="middle" class="mono" style="font-size:8.2px">web/ @ commit</text>
-<text x="68" y="120" font-size="8.6" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8.6px">| ssh o2switch</text>
-<line x1="125" y1="94" x2="148" y2="94" stroke="#1565C0" stroke-width="1.4"/><polygon points="148,94 141.6,96.7 141.6,91.3" fill="#1565C0"/>
-<rect x="150" y="34" width="440" height="120" rx="5" fill="#fff" stroke="#7A5A12" stroke-width="1.3"/>
-<text x="160" y="50" font-size="8.6" fill="#7A5A12" text-anchor="start" font-weight="700">le serveur, ~/magpie-app</text>
-<rect x="160" y="62" width="64" height="76" rx="4" fill="#F4EEDF" stroke="#7A5A12"/>
-<circle cx="192" cy="76" r="8" fill="#7A5A12"/><text x="192" y="79.5" font-size="8.6" fill="#fff" text-anchor="middle" font-weight="700">1</text>
-<text x="192" y="100" font-size="6.9" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.9px">tar -x</text>
-<text x="192" y="114" font-size="7.2" fill="#6B7378" text-anchor="middle">dépaquette</text>
-<text x="192" y="131" font-size="7.2" fill="#7A5A12" text-anchor="middle">l. 21</text>
-<line x1="224" y1="100" x2="230" y2="100" stroke="#6B7378" stroke-width="1"/><polygon points="230,100 223.6,102.7 223.6,97.3" fill="#6B7378"/>
-<rect x="231" y="62" width="64" height="76" rx="4" fill="#F4EEDF" stroke="#7A5A12"/>
-<circle cx="263" cy="76" r="8" fill="#7A5A12"/><text x="263" y="79.5" font-size="8.6" fill="#fff" text-anchor="middle" font-weight="700">2</text>
-<text x="263" y="100" font-size="6.9" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.9px">activate</text>
-<text x="263" y="114" font-size="7.2" fill="#6B7378" text-anchor="middle">Node 24</text>
-<text x="263" y="131" font-size="7.2" fill="#7A5A12" text-anchor="middle">l. 24</text>
-<line x1="295" y1="100" x2="301" y2="100" stroke="#6B7378" stroke-width="1"/><polygon points="301,100 294.6,102.7 294.6,97.3" fill="#6B7378"/>
-<rect x="302" y="62" width="64" height="76" rx="4" fill="#F4EEDF" stroke="#7A5A12"/>
-<circle cx="334" cy="76" r="8" fill="#7A5A12"/><text x="334" y="79.5" font-size="8.6" fill="#fff" text-anchor="middle" font-weight="700">3</text>
-<text x="334" y="100" font-size="6.9" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.9px">npm install</text>
-<text x="334" y="114" font-size="7.2" fill="#6B7378" text-anchor="middle">--include=dev</text>
-<text x="334" y="131" font-size="7.2" fill="#7A5A12" text-anchor="middle">l. 27</text>
-<line x1="366" y1="100" x2="372" y2="100" stroke="#6B7378" stroke-width="1"/><polygon points="372,100 365.6,102.7 365.6,97.3" fill="#6B7378"/>
-<rect x="373" y="62" width="64" height="76" rx="4" fill="#F4EEDF" stroke="#7A5A12"/>
-<circle cx="405" cy="76" r="8" fill="#7A5A12"/><text x="405" y="79.5" font-size="8.6" fill="#fff" text-anchor="middle" font-weight="700">4</text>
-<text x="405" y="100" font-size="6.9" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.9px">npm run build</text>
-<text x="405" y="114" font-size="7.2" fill="#6B7378" text-anchor="middle">produit dist/</text>
-<text x="405" y="131" font-size="7.2" fill="#7A5A12" text-anchor="middle">l. 28</text>
-<line x1="437" y1="100" x2="443" y2="100" stroke="#6B7378" stroke-width="1"/><polygon points="443,100 436.6,102.7 436.6,97.3" fill="#6B7378"/>
-<rect x="444" y="62" width="64" height="76" rx="4" fill="#F4EEDF" stroke="#7A5A12"/>
-<circle cx="476" cy="76" r="8" fill="#7A5A12"/><text x="476" y="79.5" font-size="8.6" fill="#fff" text-anchor="middle" font-weight="700">5</text>
-<text x="476" y="100" font-size="6.9" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.9px">DEPLOYED</text>
-<text x="476" y="114" font-size="7.2" fill="#6B7378" text-anchor="middle">note le commit</text>
-<text x="476" y="131" font-size="7.2" fill="#7A5A12" text-anchor="middle">l. 29</text>
-<line x1="508" y1="100" x2="514" y2="100" stroke="#6B7378" stroke-width="1"/><polygon points="514,100 507.6,102.7 507.6,97.3" fill="#6B7378"/>
-<rect x="515" y="62" width="64" height="76" rx="4" fill="#F4EEDF" stroke="#7A5A12"/>
-<circle cx="547" cy="76" r="8" fill="#7A5A12"/><text x="547" y="79.5" font-size="8.6" fill="#fff" text-anchor="middle" font-weight="700">6</text>
-<text x="547" y="100" font-size="6.9" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:6.9px">restart.txt</text>
-<text x="547" y="114" font-size="7.2" fill="#6B7378" text-anchor="middle">Passenger relance</text>
-<text x="547" y="131" font-size="7.2" fill="#7A5A12" text-anchor="middle">l. 30</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 35</b></div>
+<p class="rubrique">Schéma 1 · Le trajet d'une mise en ligne</p>
+<h2>Une commande, six étapes</h2>
+<p style="max-width:165mm"><code>deployer.sh</code> se lance depuis ton poste. Il n'a pas besoin que le serveur accède à GitHub : il lui envoie lui-même le code, par SSH, puis lui fait construire et redémarrer l'application.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 170" width="100%">
+<rect fill="#EFE9E1" height="170" width="600" x="0" y="0"></rect>
+<text fill="#7A5A12" font-size="12" font-weight="700" text-anchor="start" x="16" y="22">deployer.sh, de ton poste au serveur</text>
+<rect fill="#fff" height="120" rx="5" stroke="#1565C0" stroke-width="1.3" width="112" x="12" y="34"></rect>
+<text fill="#1565C0" font-size="8.6" font-weight="700" text-anchor="middle" x="68" y="50">ton poste</text>
+<text class="mono" fill="#2B2F33" font-size="8.6" style="font-size:8.6px" text-anchor="middle" x="68" y="80">git archive</text>
+<text class="mono" fill="#6B7378" font-size="8.2" style="font-size:8.2px" text-anchor="middle" x="68" y="94">web/ @ commit</text>
+<text class="mono" fill="#2B2F33" font-size="8.6" style="font-size:8.6px" text-anchor="middle" x="68" y="120">| ssh o2switch</text>
+<line stroke="#1565C0" stroke-width="1.4" x1="125" x2="148" y1="94" y2="94"></line><polygon fill="#1565C0" points="148,94 141.6,96.7 141.6,91.3"></polygon>
+<rect fill="#fff" height="120" rx="5" stroke="#7A5A12" stroke-width="1.3" width="440" x="150" y="34"></rect>
+<text fill="#7A5A12" font-size="8.6" font-weight="700" text-anchor="start" x="160" y="50">le serveur, ~/magpie-app</text>
+<rect fill="#F4EEDF" height="76" rx="4" stroke="#7A5A12" width="64" x="160" y="62"></rect>
+<circle cx="192" cy="76" fill="#7A5A12" r="8"></circle><text fill="#fff" font-size="8.6" font-weight="700" text-anchor="middle" x="192" y="79.5">1</text>
+<text class="mono" fill="#2B2F33" font-size="6.9" font-weight="700" style="font-size:6.9px" text-anchor="middle" x="192" y="100">tar -x</text>
+<text fill="#6B7378" font-size="7.2" text-anchor="middle" x="192" y="114">dépaquette</text>
+<text fill="#7A5A12" font-size="7.2" text-anchor="middle" x="192" y="131">l. 21</text>
+<line stroke="#6B7378" stroke-width="1" x1="224" x2="230" y1="100" y2="100"></line><polygon fill="#6B7378" points="230,100 223.6,102.7 223.6,97.3"></polygon>
+<rect fill="#F4EEDF" height="76" rx="4" stroke="#7A5A12" width="64" x="231" y="62"></rect>
+<circle cx="263" cy="76" fill="#7A5A12" r="8"></circle><text fill="#fff" font-size="8.6" font-weight="700" text-anchor="middle" x="263" y="79.5">2</text>
+<text class="mono" fill="#2B2F33" font-size="6.9" font-weight="700" style="font-size:6.9px" text-anchor="middle" x="263" y="100">activate</text>
+<text fill="#6B7378" font-size="7.2" text-anchor="middle" x="263" y="114">Node 24</text>
+<text fill="#7A5A12" font-size="7.2" text-anchor="middle" x="263" y="131">l. 24</text>
+<line stroke="#6B7378" stroke-width="1" x1="295" x2="301" y1="100" y2="100"></line><polygon fill="#6B7378" points="301,100 294.6,102.7 294.6,97.3"></polygon>
+<rect fill="#F4EEDF" height="76" rx="4" stroke="#7A5A12" width="64" x="302" y="62"></rect>
+<circle cx="334" cy="76" fill="#7A5A12" r="8"></circle><text fill="#fff" font-size="8.6" font-weight="700" text-anchor="middle" x="334" y="79.5">3</text>
+<text class="mono" fill="#2B2F33" font-size="6.9" font-weight="700" style="font-size:6.9px" text-anchor="middle" x="334" y="100">npm install</text>
+<text fill="#6B7378" font-size="7.2" text-anchor="middle" x="334" y="114">--include=dev</text>
+<text fill="#7A5A12" font-size="7.2" text-anchor="middle" x="334" y="131">l. 27</text>
+<line stroke="#6B7378" stroke-width="1" x1="366" x2="372" y1="100" y2="100"></line><polygon fill="#6B7378" points="372,100 365.6,102.7 365.6,97.3"></polygon>
+<rect fill="#F4EEDF" height="76" rx="4" stroke="#7A5A12" width="64" x="373" y="62"></rect>
+<circle cx="405" cy="76" fill="#7A5A12" r="8"></circle><text fill="#fff" font-size="8.6" font-weight="700" text-anchor="middle" x="405" y="79.5">4</text>
+<text class="mono" fill="#2B2F33" font-size="6.9" font-weight="700" style="font-size:6.9px" text-anchor="middle" x="405" y="100">npm run build</text>
+<text fill="#6B7378" font-size="7.2" text-anchor="middle" x="405" y="114">produit dist/</text>
+<text fill="#7A5A12" font-size="7.2" text-anchor="middle" x="405" y="131">l. 28</text>
+<line stroke="#6B7378" stroke-width="1" x1="437" x2="443" y1="100" y2="100"></line><polygon fill="#6B7378" points="443,100 436.6,102.7 436.6,97.3"></polygon>
+<rect fill="#F4EEDF" height="76" rx="4" stroke="#7A5A12" width="64" x="444" y="62"></rect>
+<circle cx="476" cy="76" fill="#7A5A12" r="8"></circle><text fill="#fff" font-size="8.6" font-weight="700" text-anchor="middle" x="476" y="79.5">5</text>
+<text class="mono" fill="#2B2F33" font-size="6.9" font-weight="700" style="font-size:6.9px" text-anchor="middle" x="476" y="100">DEPLOYED</text>
+<text fill="#6B7378" font-size="7.2" text-anchor="middle" x="476" y="114">note le commit</text>
+<text fill="#7A5A12" font-size="7.2" text-anchor="middle" x="476" y="131">l. 29</text>
+<line stroke="#6B7378" stroke-width="1" x1="508" x2="514" y1="100" y2="100"></line><polygon fill="#6B7378" points="514,100 507.6,102.7 507.6,97.3"></polygon>
+<rect fill="#F4EEDF" height="76" rx="4" stroke="#7A5A12" width="64" x="515" y="62"></rect>
+<circle cx="547" cy="76" fill="#7A5A12" r="8"></circle><text fill="#fff" font-size="8.6" font-weight="700" text-anchor="middle" x="547" y="79.5">6</text>
+<text class="mono" fill="#2B2F33" font-size="6.9" font-weight="700" style="font-size:6.9px" text-anchor="middle" x="547" y="100">restart.txt</text>
+<text fill="#6B7378" font-size="7.2" text-anchor="middle" x="547" y="114">Passenger relance</text>
+<text fill="#7A5A12" font-size="7.2" text-anchor="middle" x="547" y="131">l. 30</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">outils/deployer.sh · 16–21</span>REF="${1:-HEAD}"
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">outils/deployer.sh · 16–21</span>REF="${1:-HEAD}"
 ROOT="$(git rev-parse --show-toplevel)"
 COMMIT="$(git -C "$ROOT" rev-parse --short "$REF")"
 
 echo "Envoi de web/ @ $COMMIT vers o2switch:~/magpie-app"
 git -C "$ROOT" archive --format=tar "$REF:web" | ssh o2switch 'tar -x -C ~/magpie-app'</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Le commit, pas la copie de travail</h3>
-      <p><code>git archive</code> emballe le dossier <code>web/</code> tel qu'il est dans un commit. Un fichier modifié mais pas commité ne part pas. La sortie de <code>git archive</code> entre directement dans <code>tar</code> sur le serveur, par le tube <code>|</code> : aucun fichier intermédiaire.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Construire sur place</h3>
-      <p>Le serveur installe les paquets, puis lance <code>npm run build</code> pour produire <code>dist/</code>. Passenger tourne en <code>NODE_ENV=production</code>, qui saute les paquets de développement ; Vite en est un, d'où <code>--include=dev</code> (ligne 27).</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Le commit, pas la copie de travail</h3>
+<p><code>git archive</code> emballe le dossier <code>web/</code> tel qu'il est dans un commit. Un fichier modifié mais pas commité ne part pas. La sortie de <code>git archive</code> entre directement dans <code>tar</code> sur le serveur, par le tube <code>|</code> : aucun fichier intermédiaire.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Construire sur place</h3>
+<p>Le serveur installe les paquets, puis lance <code>npm run build</code> pour produire <code>dist/</code>. Passenger tourne en <code>NODE_ENV=production</code>, qui saute les paquets de développement ; Vite en est un, d'où <code>--include=dev</code> (ligne 27).</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Corriger un fichier, lancer <code>deployer.sh</code>, et retrouver l'ancienne version en ligne : la correction n'était pas commitée. Le script écrit le commit envoyé dans un fichier <code>DEPLOYED</code> sur le serveur (ligne 29) ; c'est la première chose à lire en cas de doute.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 35 · Mettre en ligne</div>
+<div class="folio">2</div>
+<div class="pied">Cours 35 · Mettre en ligne</div>
 </section>
-
 <!-- ============ PAGE 3 · CE QUI PART, CE QUI RESTE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 35</b></div>
-  <p class="rubrique">Schéma 2 · Le code et l'état</p>
-  <h2>Ce qui part, ce qui reste</h2>
-  <p style="max-width:165mm">Tout ce qui est propre à une installation (la base, les secrets, les paquets installés, le front construit) est exclu du dépôt par <code>.gitignore</code>. Comme <code>git archive</code> n'emballe que le dépôt, la mise en ligne ne peut pas l'écraser.</p>
-
-  <svg viewBox="0 0 600 196" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="196" fill="#EFE9E1"/>
-<rect x="16" y="14" width="278" height="168" rx="5" fill="#fff" stroke="#1565C0" stroke-width="1.4"/>
-<rect x="16" y="14" width="278" height="22" rx="5" fill="#1565C0"/>
-<text x="26" y="29" font-size="9.6" fill="#fff" text-anchor="start" font-weight="700">Part en ligne (versionné)</text>
-<text x="28" y="60" font-size="9" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">web/*.mjs, app.cjs</text>
-<text x="28" y="74" font-size="8.4" fill="#2B2F33" text-anchor="start">le code du serveur</text>
-<text x="28" y="94" font-size="9" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">web/src/</text>
-<text x="28" y="108" font-size="8.4" fill="#2B2F33" text-anchor="start">les sources du front</text>
-<text x="28" y="128" font-size="9" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">data/</text>
-<text x="28" y="142" font-size="8.4" fill="#2B2F33" text-anchor="start">catalogue, exercices, parcours</text>
-<text x="28" y="162" font-size="9" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">.env.example</text>
-<text x="28" y="176" font-size="8.4" fill="#2B2F33" text-anchor="start">les noms des réglages</text>
-<rect x="306" y="14" width="278" height="168" rx="5" fill="#fff" stroke="#6D4C41" stroke-width="1.4"/>
-<rect x="306" y="14" width="278" height="22" rx="5" fill="#6D4C41"/>
-<text x="316" y="29" font-size="9.6" fill="#fff" text-anchor="start" font-weight="700">Reste sur le serveur (ignoré)</text>
-<text x="318" y="60" font-size="9" fill="#6D4C41" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">magpie.db</text>
-<text x="318" y="74" font-size="8.4" fill="#2B2F33" text-anchor="start">la base, avec ses comptes</text>
-<text x="318" y="94" font-size="9" fill="#6D4C41" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">.env</text>
-<text x="318" y="108" font-size="8.4" fill="#2B2F33" text-anchor="start">les vraies valeurs, secrets</text>
-<text x="318" y="128" font-size="9" fill="#6D4C41" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">node_modules/</text>
-<text x="318" y="142" font-size="8.4" fill="#2B2F33" text-anchor="start">installé par npm install</text>
-<text x="318" y="162" font-size="9" fill="#6D4C41" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">dist/</text>
-<text x="318" y="176" font-size="8.4" fill="#2B2F33" text-anchor="start">construit par npm run build</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 35</b></div>
+<p class="rubrique">Schéma 2 · Le code et l'état</p>
+<h2>Ce qui part, ce qui reste</h2>
+<p style="max-width:165mm">Tout ce qui est propre à une installation (la base, les secrets, les paquets installés, le front construit) est exclu du dépôt par <code>.gitignore</code>. Comme <code>git archive</code> n'emballe que le dépôt, la mise en ligne ne peut pas l'écraser.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 196" width="100%">
+<rect fill="#EFE9E1" height="196" width="600" x="0" y="0"></rect>
+<rect fill="#fff" height="168" rx="5" stroke="#1565C0" stroke-width="1.4" width="278" x="16" y="14"></rect>
+<rect fill="#1565C0" height="22" rx="5" width="278" x="16" y="14"></rect>
+<text fill="#fff" font-size="9.6" font-weight="700" text-anchor="start" x="26" y="29">Part en ligne (versionné)</text>
+<text class="mono" fill="#1565C0" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="28" y="60">web/*.mjs, app.cjs</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="start" x="28" y="74">le code du serveur</text>
+<text class="mono" fill="#1565C0" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="28" y="94">web/src/</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="start" x="28" y="108">les sources du front</text>
+<text class="mono" fill="#1565C0" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="28" y="128">data/</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="start" x="28" y="142">catalogue, exercices, parcours</text>
+<text class="mono" fill="#1565C0" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="28" y="162">.env.example</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="start" x="28" y="176">les noms des réglages</text>
+<rect fill="#fff" height="168" rx="5" stroke="#6D4C41" stroke-width="1.4" width="278" x="306" y="14"></rect>
+<rect fill="#6D4C41" height="22" rx="5" width="278" x="306" y="14"></rect>
+<text fill="#fff" font-size="9.6" font-weight="700" text-anchor="start" x="316" y="29">Reste sur le serveur (ignoré)</text>
+<text class="mono" fill="#6D4C41" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="318" y="60">magpie.db</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="start" x="318" y="74">la base, avec ses comptes</text>
+<text class="mono" fill="#6D4C41" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="318" y="94">.env</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="start" x="318" y="108">les vraies valeurs, secrets</text>
+<text class="mono" fill="#6D4C41" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="318" y="128">node_modules/</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="start" x="318" y="142">installé par npm install</text>
+<text class="mono" fill="#6D4C41" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="318" y="162">dist/</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="start" x="318" y="176">construit par npm run build</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">.gitignore (racine du dépôt) · 371–382, extraits</span>web/magpie.db
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">.gitignore (racine du dépôt) · 371–382, extraits</span>web/magpie.db
 web/dist/
 .env
 .env.*
 !.env.example</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>La base se reconstruit</h3>
-      <p><code>magpie.db</code> n'est pas versionnée, mais <code>data/</code> l'est : le catalogue, les exercices, les parcours et la liste des composants autorisés. <code>data/README.md</code> donne l'ordre pour tout reconstruire : <code>migrate-catalog</code>, les imports, puis <code>restore-authorized</code>.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Les réglages hors du code</h3>
-      <p><code>app.cjs</code> lit le <code>.env</code> posé à côté de lui (lignes 10–11). Les variables réglées dans cPanel gardent la priorité. <code>.env.example</code>, lui, est versionné : il liste les noms à remplir, jamais les valeurs.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>La base se reconstruit</h3>
+<p><code>magpie.db</code> n'est pas versionnée, mais <code>data/</code> l'est : le catalogue, les exercices, les parcours et la liste des composants autorisés. <code>data/README.md</code> donne l'ordre pour tout reconstruire : <code>migrate-catalog</code>, les imports, puis <code>restore-authorized</code>.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Les réglages hors du code</h3>
+<p><code>app.cjs</code> lit le <code>.env</code> posé à côté de lui (lignes 10–11). Les variables réglées dans cPanel gardent la priorité. <code>.env.example</code>, lui, est versionné : il liste les noms à remplir, jamais les valeurs.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Restaurer les composants autorisés avec <code>authorize-components.mjs</code>. Il travaille par <b>nom</b>, et 18 noms sont partagés par plusieurs composants : « Addition » active celle des nombres et celle des vecteurs. <code>restore-authorized.mjs</code> travaille par <code>typeGuid</code>, sans ambiguïté (data/README.md).
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 35 · Mettre en ligne</div>
+<div class="folio">3</div>
+<div class="pied">Cours 35 · Mettre en ligne</div>
 </section>
-
 <!-- ============ PAGE 4 · SÉCURITÉ ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 35</b></div>
-  <p class="rubrique">Schéma 3 · En ligne, tout le monde peut frapper</p>
-  <h2>Les réglages qui protègent</h2>
-  <p style="max-width:165mm">Sur ton poste, seul toi atteins le serveur. En ligne, n'importe qui peut lui envoyer une requête. Les gardes du cours 33 restent les mêmes ; ce sont les réglages qui changent.</p>
-
-  <svg viewBox="0 0 600 212" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="212" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="12" fill="#7A5A12" text-anchor="start" font-weight="700">Six réglages, ce qu'ils gardent</text>
-<rect x="16" y="34" width="568" height="24" rx="3" fill="#fff" stroke="#C62828"/>
-<rect x="16" y="34" width="5" height="24" fill="#C62828"/>
-<text x="30" y="50" font-size="8.8" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:8.8px">MAGPIE_ADMIN_PASSWORD</text>
-<text x="250" y="50" font-size="8.8" fill="#2B2F33" text-anchor="start">vide : l'administration répond 503</text>
-<rect x="16" y="62" width="568" height="24" rx="3" fill="#fff" stroke="#2E7D32"/>
-<rect x="16" y="62" width="5" height="24" fill="#2E7D32"/>
-<text x="30" y="78" font-size="8.8" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8.8px">HTTPS (AutoSSL)</text>
-<text x="250" y="78" font-size="8.8" fill="#2B2F33" text-anchor="start">le mot de passe ne circule jamais en clair</text>
-<rect x="16" y="90" width="568" height="24" rx="3" fill="#fff" stroke="#6B7378"/>
-<rect x="16" y="90" width="5" height="24" fill="#6B7378"/>
-<text x="30" y="106" font-size="8.8" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:8.8px">MAGPIE_ALLOWED_ORIGINS</text>
-<text x="250" y="106" font-size="8.8" fill="#2B2F33" text-anchor="start">inutile en ligne : même origine</text>
-<rect x="16" y="118" width="568" height="24" rx="3" fill="#fff" stroke="#1565C0"/>
-<rect x="16" y="118" width="5" height="24" fill="#1565C0"/>
-<text x="30" y="134" font-size="8.8" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:8.8px">COMPUTE_TARGET</text>
-<text x="250" y="134" font-size="8.8" fill="#2B2F33" text-anchor="start">où trouver Rhino Compute</text>
-<rect x="16" y="146" width="568" height="24" rx="3" fill="#fff" stroke="#7B1FA2"/>
-<rect x="16" y="146" width="5" height="24" fill="#7B1FA2"/>
-<text x="30" y="162" font-size="8.8" fill="#7B1FA2" text-anchor="start" font-weight="700" class="mono" style="font-size:8.8px">COMPUTE_API_KEY</text>
-<text x="250" y="162" font-size="8.8" fill="#2B2F33" text-anchor="start">envoyée dans l'en-tête RhinoComputeKey</text>
-<rect x="16" y="174" width="568" height="24" rx="3" fill="#fff" stroke="#6D4C41"/>
-<rect x="16" y="174" width="5" height="24" fill="#6D4C41"/>
-<text x="30" y="190" font-size="8.8" fill="#6D4C41" text-anchor="start" font-weight="700" class="mono" style="font-size:8.8px">PORT</text>
-<text x="250" y="190" font-size="8.8" fill="#2B2F33" text-anchor="start">fixé par Passenger, pas par toi</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 35</b></div>
+<p class="rubrique">Schéma 3 · En ligne, tout le monde peut frapper</p>
+<h2>Les réglages qui protègent</h2>
+<p style="max-width:165mm">Sur ton poste, seul toi atteins le serveur. En ligne, n'importe qui peut lui envoyer une requête. Les gardes du cours 33 restent les mêmes ; ce sont les réglages qui changent.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 212" width="100%">
+<rect fill="#EFE9E1" height="212" width="600" x="0" y="0"></rect>
+<text fill="#7A5A12" font-size="12" font-weight="700" text-anchor="start" x="16" y="22">Six réglages, ce qu'ils gardent</text>
+<rect fill="#fff" height="24" rx="3" stroke="#C62828" width="568" x="16" y="34"></rect>
+<rect fill="#C62828" height="24" width="5" x="16" y="34"></rect>
+<text class="mono" fill="#C62828" font-size="8.8" font-weight="700" style="font-size:8.8px" text-anchor="start" x="30" y="50">MAGPIE_ADMIN_PASSWORD</text>
+<text fill="#2B2F33" font-size="8.8" text-anchor="start" x="250" y="50">vide : l'administration répond 503</text>
+<rect fill="#fff" height="24" rx="3" stroke="#2E7D32" width="568" x="16" y="62"></rect>
+<rect fill="#2E7D32" height="24" width="5" x="16" y="62"></rect>
+<text class="mono" fill="#2E7D32" font-size="8.8" font-weight="700" style="font-size:8.8px" text-anchor="start" x="30" y="78">HTTPS (AutoSSL)</text>
+<text fill="#2B2F33" font-size="8.8" text-anchor="start" x="250" y="78">le mot de passe ne circule jamais en clair</text>
+<rect fill="#fff" height="24" rx="3" stroke="#6B7378" width="568" x="16" y="90"></rect>
+<rect fill="#6B7378" height="24" width="5" x="16" y="90"></rect>
+<text class="mono" fill="#6B7378" font-size="8.8" font-weight="700" style="font-size:8.8px" text-anchor="start" x="30" y="106">MAGPIE_ALLOWED_ORIGINS</text>
+<text fill="#2B2F33" font-size="8.8" text-anchor="start" x="250" y="106">inutile en ligne : même origine</text>
+<rect fill="#fff" height="24" rx="3" stroke="#1565C0" width="568" x="16" y="118"></rect>
+<rect fill="#1565C0" height="24" width="5" x="16" y="118"></rect>
+<text class="mono" fill="#1565C0" font-size="8.8" font-weight="700" style="font-size:8.8px" text-anchor="start" x="30" y="134">COMPUTE_TARGET</text>
+<text fill="#2B2F33" font-size="8.8" text-anchor="start" x="250" y="134">où trouver Rhino Compute</text>
+<rect fill="#fff" height="24" rx="3" stroke="#7B1FA2" width="568" x="16" y="146"></rect>
+<rect fill="#7B1FA2" height="24" width="5" x="16" y="146"></rect>
+<text class="mono" fill="#7B1FA2" font-size="8.8" font-weight="700" style="font-size:8.8px" text-anchor="start" x="30" y="162">COMPUTE_API_KEY</text>
+<text fill="#2B2F33" font-size="8.8" text-anchor="start" x="250" y="162">envoyée dans l'en-tête RhinoComputeKey</text>
+<rect fill="#fff" height="24" rx="3" stroke="#6D4C41" width="568" x="16" y="174"></rect>
+<rect fill="#6D4C41" height="24" width="5" x="16" y="174"></rect>
+<text class="mono" fill="#6D4C41" font-size="8.8" font-weight="700" style="font-size:8.8px" text-anchor="start" x="30" y="190">PORT</text>
+<text fill="#2B2F33" font-size="8.8" text-anchor="start" x="250" y="190">fixé par Passenger, pas par toi</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">.env.example · 1–9</span># Copier en .env (ignoré par git) et remplir. …
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">.env.example · 1–9</span># Copier en .env (ignoré par git) et remplir. …
 MAGPIE_ADMIN_USER=enseignant
 MAGPIE_ADMIN_PASSWORD=
 # MAGPIE_ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
@@ -270,35 +248,30 @@ MAGPIE_ADMIN_PASSWORD=
 # COMPUTE_TIMEOUT_MS=20000
 # Clé partagée avec Rhino Compute (lancé avec RHINO_COMPUTE_KEY), obligatoire derrière un tunnel
 # COMPUTE_API_KEY=</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Fermé par défaut</h3>
-      <p>Sans <code>MAGPIE_ADMIN_PASSWORD</code>, l'administration répond 503 : elle est fermée, pas ouverte à tous. De même, le catalogue démarre sans aucun composant autorisé ; l'enseignant les active un par un.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Une seule origine</h3>
-      <p>En ligne, la page et l'API viennent du même serveur : le navigateur n'a aucun appel « d'ailleurs » à autoriser, et <code>MAGPIE_ALLOWED_ORIGINS</code> n'a pas à être réglée. Elle ne sert qu'en développement, quand Vite et le backend ont chacun leur port.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Fermé par défaut</h3>
+<p>Sans <code>MAGPIE_ADMIN_PASSWORD</code>, l'administration répond 503 : elle est fermée, pas ouverte à tous. De même, le catalogue démarre sans aucun composant autorisé ; l'enseignant les active un par un.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Une seule origine</h3>
+<p>En ligne, la page et l'API viennent du même serveur : le navigateur n'a aucun appel « d'ailleurs » à autoriser, et <code>MAGPIE_ALLOWED_ORIGINS</code> n'a pas à être réglée. Elle ne sert qu'en développement, quand Vite et le backend ont chacun leur port.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Ouvrir l'administration sans HTTPS. HTTP Basic envoie l'identifiant et le mot de passe en base64 à chaque requête : c'est un codage, pas un chiffrement, et n'importe qui sur le chemin le relit. Le README exige AutoSSL et la redirection de HTTP vers HTTPS.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 35 · Mettre en ligne</div>
+<div class="folio">4</div>
+<div class="pied">Cours 35 · Mettre en ligne</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 35</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>deployer.sh : le script entier</h2>
-  <p style="max-width:165mm">Trente et une lignes de shell, dont une moitié de commentaires. Il s'arrête à la première erreur, envoie un commit précis, et laisse une trace de ce qui tourne en ligne.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 35</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>deployer.sh : le script entier</h2>
+<p style="max-width:165mm">Trente et une lignes de shell, dont une moitié de commentaires. Il s'arrête à la première erreur, envoie un commit précis, et laisse une trace de ce qui tourne en ligne.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l k1"><span class="n">14</span><span class="kw">set</span> -e<span class="rep r1">1</span></div>
 <div class="l k2"><span class="n">16</span>REF=<span class="st">"${1:-HEAD}"</span><span class="rep r2">2</span></div>
@@ -316,139 +289,57 @@ MAGPIE_ADMIN_PASSWORD=
 <div class="l k7"><span class="n">30</span><span class="st">  touch tmp/restart.txt</span><span class="rep r7">7</span></div>
 <div class="l"><span class="n">31</span><span class="st">  echo 'Déployé : $COMMIT'"</span></div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>S'arrêter net</b>À la première commande en échec, le script s'interrompt.</li>
-      <li><span class="rep r2">2</span><b>Quoi envoyer</b>Le premier argument, sinon HEAD : le commit courant.</li>
-      <li><span class="rep r3">3</span><b>Le code, par le tube</b>Le dossier web/ du commit, déballé sur le serveur.</li>
-      <li><span class="rep r4">4</span><b>Le Node du serveur</b>L'environnement Node 24 créé par cPanel.</li>
-      <li><span class="rep r5">5</span><b>Installer, construire</b>Vite compris, puis dist/.</li>
-      <li><span class="rep r6">6</span><b>Une trace</b>Le commit en ligne, lisible à tout moment.</li>
-      <li><span class="rep r7">7</span><b>Redémarrer</b>Passenger relance l'application quand ce fichier change.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">Vérifier avant d'envoyer</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>S'arrêter net</b>À la première commande en échec, le script s'interrompt.</li>
+<li><span class="rep r2">2</span><b>Quoi envoyer</b>Le premier argument, sinon HEAD : le commit courant.</li>
+<li><span class="rep r3">3</span><b>Le code, par le tube</b>Le dossier web/ du commit, déballé sur le serveur.</li>
+<li><span class="rep r4">4</span><b>Le Node du serveur</b>L'environnement Node 24 créé par cPanel.</li>
+<li><span class="rep r5">5</span><b>Installer, construire</b>Vite compris, puis dist/.</li>
+<li><span class="rep r6">6</span><b>Une trace</b>Le commit en ligne, lisible à tout moment.</li>
+<li><span class="rep r7">7</span><b>Redémarrer</b>Passenger relance l'application quand ce fichier change.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">Vérifier avant d'envoyer</span>
     Le README propose une répétition locale : <code>npm run build</code>, puis <code>PORT=5185 node app.cjs</code>, et ouvrir <code>http://localhost:5185</code>. C'est exactement ce que fera le serveur : un seul processus, qui sert <code>dist/</code> et l'API.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 35 · Mettre en ligne</div>
+<div class="folio">5</div>
+<div class="pied">Cours 35 · Mettre en ligne</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 35</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 35</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">En ligne, combien de serveurs Node font tourner Magpie Web ?</div><ul>
-      <li><span>A</span>deux : Vite et le backend</li><li><span>B</span>un seul, qui sert dist/ et l'API</li><li><span>C</span>trois</li><li><span>D</span>aucun</li></ul></div>
 
-    <div class="q"><div class="enonce">git archive "$REF:web" emballe…</div><ul>
-      <li><span>A</span>la copie de travail</li><li><span>B</span>tout le dépôt</li><li><span>C</span>le dossier web/ tel qu'il est dans le commit</li><li><span>D</span>la base magpie.db</li></ul></div>
 
-    <div class="q"><div class="enonce">Lancé sans argument, deployer.sh envoie…</div><ul>
-      <li><span>A</span>master</li><li><span>B</span>le dernier tag</li><li><span>C</span>rien</li><li><span>D</span>HEAD, le commit courant</li></ul></div>
 
-    <div class="q"><div class="enonce">Pourquoi npm install --include=dev sur le serveur ?</div><ul>
-      <li><span>A</span>Vite est un paquet de développement, nécessaire au build</li><li><span>B</span>pour les tests</li><li><span>C</span>pour aller plus vite</li><li><span>D</span>Passenger l'exige</li></ul></div>
-
-    <div class="q"><div class="enonce">touch tmp/restart.txt sert à…</div><ul>
-      <li><span>A</span>vider le cache</li><li><span>B</span>faire redémarrer l'application par Passenger</li><li><span>C</span>noter le commit</li><li><span>D</span>créer la base</li></ul></div>
-
-    <div class="q"><div class="enonce">Ne partent jamais en ligne avec deployer.sh : <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>compute-proxy.mjs</li><li><span>B</span>magpie.db</li><li><span>C</span>le fichier .env</li><li><span>D</span>data/</li></ul></div>
-
-    <div class="q"><div class="enonce">!.env.example dans .gitignore…</div><ul>
-      <li><span>A</span>ignore le fichier</li><li><span>B</span>le supprime</li><li><span>C</span>le réintègre : il est versionné</li><li><span>D</span>le chiffre</li></ul></div>
-
-    <div class="q"><div class="enonce">Pour restaurer exactement les composants autorisés :</div><ul>
-      <li><span>A</span>authorize-components.mjs</li><li><span>B</span>migrate-catalog.mjs seul</li><li><span>C</span>la page /admin</li><li><span>D</span>restore-authorized.mjs, par typeGuid</li></ul></div>
-
-    <div class="q"><div class="enonce">Sans MAGPIE_ADMIN_PASSWORD, l'administration…</div><ul>
-      <li><span>A</span>est fermée : 503</li><li><span>B</span>est ouverte à tous</li><li><span>C</span>prend un mot de passe par défaut</li><li><span>D</span>plante le serveur</li></ul></div>
-
-    <div class="q"><div class="enonce">HTTP Basic sans HTTPS est dangereux car…</div><ul>
-      <li><span>A</span>le serveur ralentit</li><li><span>B</span>le base64 se décode : le mot de passe est lisible</li><li><span>C</span>le navigateur refuse</li><li><span>D</span>cPanel le bloque</li></ul></div>
-
-    <div class="q"><div class="enonce">En ligne, MAGPIE_ALLOWED_ORIGINS n'est pas à régler car…</div><ul>
-      <li><span>A</span>le CORS est désactivé</li><li><span>B</span>Passenger s'en charge</li><li><span>C</span>la page et l'API ont la même origine</li><li><span>D</span>HTTPS la remplace</li></ul></div>
-
-    <div class="q"><div class="enonce">En cas de doute sur la version en ligne, on lit…</div><ul>
-      <li><span>A</span>package.json</li><li><span>B</span>le fichier DEPLOYED du serveur</li><li><span>C</span>magpie.db</li><li><span>D</span>.env</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 35 · Mettre en ligne</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">web/outils/deployer.sh [branche]</td><td>mettre en ligne un commit</td><td>deployer.sh:9</td></tr>
+<tr><td class="c">git archive "$REF:web" | ssh … tar -x</td><td>envoyer le code par SSH</td><td>deployer.sh:21</td></tr>
+<tr><td class="c">npm install --include=dev</td><td>garder Vite pour le build</td><td>deployer.sh:27</td></tr>
+<tr><td class="c">touch tmp/restart.txt</td><td>redémarrer sous Passenger</td><td>deployer.sh:30</td></tr>
+<tr><td class="c">process.loadEnvFile(envFile)</td><td>lire le .env du serveur</td><td>app.cjs:11</td></tr>
+<tr><td class="c">npm run build ; PORT=5185 node app.cjs</td><td>répéter en local</td><td>README:99</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Passenger</dt><dd>Le serveur d'applications d'o2switch : il lance app.cjs et lui donne un port.</dd>
+<dt>SSH</dt><dd>Une connexion chiffrée pour lancer des commandes sur une autre machine.</dd>
+<dt>Tunnel</dt><dd>Un passage chiffré qui rend joignable un service resté sur ton poste.</dd>
+<dt>AutoSSL</dt><dd>Le certificat HTTPS gratuit et renouvelé tout seul par cPanel.</dd>
+<dt>Seed</dt><dd>Les données versionnées qui suffisent à reconstruire une base vide.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 38</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 35 · Mettre en ligne</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 35</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · B.</b> Vite ne sert qu'au développement.</div>
-    <div><b>02 · C.</b> Le commit, pas les fichiers modifiés.</div>
-    <div><b>03 · D.</b> REF="${1:-HEAD}".</div>
-    <div><b>04 · A.</b> NODE_ENV=production le sauterait.</div>
-    <div><b>05 · B.</b> Passenger surveille ce fichier.</div>
-    <div><b>06 · B et C.</b> Exclus du dépôt, donc de l'archive.</div>
-    <div><b>07 · C.</b> Le ! annule une exclusion.</div>
-    <div><b>08 · D.</b> Les noms sont ambigus, les GUID non.</div>
-    <div><b>09 · A.</b> Fermée, jamais ouverte par défaut.</div>
-    <div><b>10 · B.</b> Un codage n'est pas un chiffrement.</div>
-    <div><b>11 · C.</b> Aucun appel d'une autre origine.</div>
-    <div><b>12 · B.</b> Écrit par deployer.sh, ligne 29.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis la page 4 et le script de la page 5. <b>10 à 12</b> : passe au cours 38, « Des capsules natives dans le navigateur ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">web/outils/deployer.sh [branche]</td><td>mettre en ligne un commit</td><td>deployer.sh:9</td></tr>
-      <tr><td class="c">git archive "$REF:web" | ssh … tar -x</td><td>envoyer le code par SSH</td><td>deployer.sh:21</td></tr>
-      <tr><td class="c">npm install --include=dev</td><td>garder Vite pour le build</td><td>deployer.sh:27</td></tr>
-      <tr><td class="c">touch tmp/restart.txt</td><td>redémarrer sous Passenger</td><td>deployer.sh:30</td></tr>
-      <tr><td class="c">process.loadEnvFile(envFile)</td><td>lire le .env du serveur</td><td>app.cjs:11</td></tr>
-      <tr><td class="c">npm run build ; PORT=5185 node app.cjs</td><td>répéter en local</td><td>README:99</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Passenger</dt><dd>Le serveur d'applications d'o2switch : il lance app.cjs et lui donne un port.</dd>
-    <dt>SSH</dt><dd>Une connexion chiffrée pour lancer des commandes sur une autre machine.</dd>
-    <dt>Tunnel</dt><dd>Un passage chiffré qui rend joignable un service resté sur ton poste.</dd>
-    <dt>AutoSSL</dt><dd>Le certificat HTTPS gratuit et renouvelé tout seul par cPanel.</dd>
-    <dt>Seed</dt><dd>Les données versionnées qui suffisent à reconstruire une base vide.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 38</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 35 · Mettre en ligne</div>
-</section>
-
 </body>
 </html>

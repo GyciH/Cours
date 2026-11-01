@@ -1,291 +1,264 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>56 · Texte : Unicode, UTF-8 et encodages</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-2">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2B</b> · Le texte et les nombres</span><b>Cours 56</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Texte : Unicode, UTF-8 et encodages</h1>
-  <p class="chapeau">Un fichier ne contient pas des lettres mais des <b>octets</b>. Pour retrouver « é », il faut savoir quelle convention a servi à l'écrire. Unicode numérote tous les caractères du monde ; <b>UTF-8</b> dit comment ranger ces numéros en octets. Se tromper de convention donne « Ã© » à la place des accents.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>01</b> et <b>24</b></span>
-    <span class="pastille">Exemples · <b>EcrivainGeneration</b>, <b>ModeleZoneTexte</b> (SnapSet), <b>MagpieSources</b></span>
-  </div>
-
-  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
-    <svg viewBox="0 0 600 150" width="100%">
-<rect x="10" y="40" width="70" height="50" rx="3" fill="#fff" stroke="#2B2F33" stroke-width="1.2"/>
-<text x="45.0" y="72.33333333333333" font-size="22" fill="#2B2F33" text-anchor="middle" font-weight="700">é</text>
-<text x="45" y="106" font-size="8" fill="#6B7378" text-anchor="middle">caractère</text>
-<line x1="84" y1="65" x2="120" y2="65" stroke="#5D4037" stroke-width="1.4"/><polygon points="120,65 113.6,67.7 113.6,62.3" fill="#5D4037"/>
-<text x="102" y="56" font-size="7.4" fill="#5D4037" text-anchor="middle" font-weight="700">Unicode</text>
-<rect x="124" y="46" width="90" height="38" rx="3" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
-<text x="169.0" y="68.66666666666667" font-size="11" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:11px">U+00E9</text>
-<text x="169" y="106" font-size="8" fill="#6B7378" text-anchor="middle">point de code</text>
-<line x1="218" y1="65" x2="254" y2="65" stroke="#5D4037" stroke-width="1.4"/><polygon points="254,65 247.6,67.7 247.6,62.3" fill="#5D4037"/>
-<text x="236" y="56" font-size="7.4" fill="#5D4037" text-anchor="middle" font-weight="700">UTF-8</text>
-<rect x="258" y="46" width="40" height="38" rx="3" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="278.0" y="68.66666666666667" font-size="11" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:11px">C3</text>
-<rect x="302" y="46" width="40" height="38" rx="3" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="322.0" y="68.66666666666667" font-size="11" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:11px">A9</text>
-<text x="300" y="106" font-size="8" fill="#6B7378" text-anchor="middle">deux octets</text>
-<line x1="346" y1="56" x2="400" y2="36" stroke="#2E7D32" stroke-width="1.4"/><polygon points="400,36 394.9,40.8 393.0,35.7" fill="#2E7D32"/>
-<text x="372" y="30" font-size="7.4" fill="#2E7D32" text-anchor="middle" font-weight="700">lus en UTF-8</text>
-<rect x="404" y="14" width="60" height="38" rx="3" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="434.0" y="38.333333333333336" font-size="16" fill="#2E7D32" text-anchor="middle" font-weight="700">é</text>
-<text x="476" y="38" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700">juste</text>
-<line x1="346" y1="74" x2="400" y2="96" stroke="#C62828" stroke-width="1.4"/><polygon points="400,96 393.0,96.1 395.1,91.0" fill="#C62828"/>
-<text x="398" y="122" font-size="7.4" fill="#C62828" text-anchor="end" font-weight="700">lus en Windows-1252</text>
-<rect x="404" y="80" width="60" height="38" rx="3" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
-<text x="434.0" y="104.33333333333333" font-size="16" fill="#C62828" text-anchor="middle" font-weight="700">Ã©</text>
-<text x="476" y="104" font-size="8.4" fill="#C62828" text-anchor="start" font-weight="700">mojibake</text>
-<text x="300" y="142" font-size="8" fill="#6B7378" text-anchor="middle" font-style="italic">Les octets ne disent pas leur encodage : c'est le lecteur qui le suppose.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2B</b> · Le texte et les nombres</span><b>Cours 56</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Texte : Unicode, UTF-8 et encodages</h1>
+<p class="chapeau">Un fichier ne contient pas des lettres mais des <b>octets</b>. Pour retrouver « é », il faut savoir quelle convention a servi à l'écrire. Unicode numérote tous les caractères du monde ; <b>UTF-8</b> dit comment ranger ces numéros en octets. Se tromper de convention donne « Ã© » à la place des accents.</p>
+<div class="meta">
+<span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>01</b> et <b>24</b></span>
+<span class="pastille">Exemples · <b>EcrivainGeneration</b>, <b>ModeleZoneTexte</b> (SnapSet), <b>MagpieSources</b></span>
+</div>
+<div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+<svg viewbox="0 0 600 150" width="100%">
+<rect fill="#fff" height="50" rx="3" stroke="#2B2F33" stroke-width="1.2" width="70" x="10" y="40"></rect>
+<text fill="#2B2F33" font-size="22" font-weight="700" text-anchor="middle" x="45.0" y="72.33333333333333">é</text>
+<text fill="#6B7378" font-size="8" text-anchor="middle" x="45" y="106">caractère</text>
+<line stroke="#5D4037" stroke-width="1.4" x1="84" x2="120" y1="65" y2="65"></line><polygon fill="#5D4037" points="120,65 113.6,67.7 113.6,62.3"></polygon>
+<text fill="#5D4037" font-size="7.4" font-weight="700" text-anchor="middle" x="102" y="56">Unicode</text>
+<rect fill="#fff" height="38" rx="3" stroke="#1565C0" stroke-width="1.2" width="90" x="124" y="46"></rect>
+<text class="mono" fill="#1565C0" font-size="11" font-weight="700" style="font-size:11px" text-anchor="middle" x="169.0" y="68.66666666666667">U+00E9</text>
+<text fill="#6B7378" font-size="8" text-anchor="middle" x="169" y="106">point de code</text>
+<line stroke="#5D4037" stroke-width="1.4" x1="218" x2="254" y1="65" y2="65"></line><polygon fill="#5D4037" points="254,65 247.6,67.7 247.6,62.3"></polygon>
+<text fill="#5D4037" font-size="7.4" font-weight="700" text-anchor="middle" x="236" y="56">UTF-8</text>
+<rect fill="#fff" height="38" rx="3" stroke="#2E7D32" stroke-width="1.2" width="40" x="258" y="46"></rect>
+<text class="mono" fill="#2E7D32" font-size="11" font-weight="700" style="font-size:11px" text-anchor="middle" x="278.0" y="68.66666666666667">C3</text>
+<rect fill="#fff" height="38" rx="3" stroke="#2E7D32" stroke-width="1.2" width="40" x="302" y="46"></rect>
+<text class="mono" fill="#2E7D32" font-size="11" font-weight="700" style="font-size:11px" text-anchor="middle" x="322.0" y="68.66666666666667">A9</text>
+<text fill="#6B7378" font-size="8" text-anchor="middle" x="300" y="106">deux octets</text>
+<line stroke="#2E7D32" stroke-width="1.4" x1="346" x2="400" y1="56" y2="36"></line><polygon fill="#2E7D32" points="400,36 394.9,40.8 393.0,35.7"></polygon>
+<text fill="#2E7D32" font-size="7.4" font-weight="700" text-anchor="middle" x="372" y="30">lus en UTF-8</text>
+<rect fill="#fff" height="38" rx="3" stroke="#2E7D32" stroke-width="1.2" width="60" x="404" y="14"></rect>
+<text fill="#2E7D32" font-size="16" font-weight="700" text-anchor="middle" x="434.0" y="38.333333333333336">é</text>
+<text fill="#2E7D32" font-size="8.4" font-weight="700" text-anchor="start" x="476" y="38">juste</text>
+<line stroke="#C62828" stroke-width="1.4" x1="346" x2="400" y1="74" y2="96"></line><polygon fill="#C62828" points="400,96 393.0,96.1 395.1,91.0"></polygon>
+<text fill="#C62828" font-size="7.4" font-weight="700" text-anchor="end" x="398" y="122">lus en Windows-1252</text>
+<rect fill="#fff" height="38" rx="3" stroke="#C62828" stroke-width="1.2" width="60" x="404" y="80"></rect>
+<text fill="#C62828" font-size="16" font-weight="700" text-anchor="middle" x="434.0" y="104.33333333333333">Ã©</text>
+<text fill="#C62828" font-size="8.4" font-weight="700" text-anchor="start" x="476" y="104">mojibake</text>
+<text fill="#6B7378" font-size="8" font-style="italic" text-anchor="middle" x="300" y="142">Les octets ne disent pas leur encodage : c'est le lecteur qui le suppose.</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Un caractère a un <b>numéro</b> (son point de code Unicode) et une <b>écriture en octets</b> qui dépend de l'encodage ; lire un fichier, c'est faire le chemin inverse, et il faut connaître l'encodage pour ne pas se tromper de chemin.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Un numéro de téléphone noté sans indicatif. Les chiffres sont justes, mais composés depuis le mauvais pays, ils sonnent chez quelqu'un d'autre. Les octets C3 A9 sont « é » en UTF-8 et « Ã© » en Windows-1252.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>distinguer caractère, point de code et octet ;</li>
-        <li>dire combien d'octets UTF-8 prend un caractère, et pourquoi ;</li>
-        <li>reconnaître un mojibake, un &#xFFFD; et un BOM mal lu ;</li>
-        <li>comparer deux chaînes : ordinal, culture, normalisation, fins de ligne.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:5mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Un caractère a un <b>numéro</b> (son point de code Unicode) et une <b>écriture en octets</b> qui dépend de l'encodage ; lire un fichier, c'est faire le chemin inverse, et il faut connaître l'encodage pour ne pas se tromper de chemin.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Un numéro de téléphone noté sans indicatif. Les chiffres sont justes, mais composés depuis le mauvais pays, ils sonnent chez quelqu'un d'autre. Les octets C3 A9 sont « é » en UTF-8 et « Ã© » en Windows-1252.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>distinguer caractère, point de code et octet ;</li>
+<li>dire combien d'octets UTF-8 prend un caractère, et pourquoi ;</li>
+<li>reconnaître un mojibake, un &#xFFFD; et un BOM mal lu ;</li>
+<li>comparer deux chaînes : ordinal, culture, normalisation, fins de ligne.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:5mm">
+<span class="titre">À retenir</span>
     Aujourd'hui, la règle simple est : <b>UTF-8 partout</b>, à l'écriture comme à la lecture, et le dire explicitement dans le code. Les ennuis viennent presque toujours d'un endroit qui suppose un autre encodage sans le dire : un vieil outil, Excel, une console Windows.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 56 · Texte : Unicode, UTF-8 et encodages</div>
+<div class="folio">1</div>
+<div class="pied">Cours 56 · Texte : Unicode, UTF-8 et encodages</div>
 </section>
-
 <!-- ============ PAGE 2 · UTF-8 ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2B</b> · Le texte et les nombres</span><b>Cours 56</b></div>
-  <p class="rubrique">Schéma 1 · Comment UTF-8 range les numéros</p>
-  <h2>De 1 à 4 octets selon le caractère</h2>
-  <p style="max-width:165mm">UTF-8 garde l'ASCII tel quel (un octet, premier bit à 0). Au-delà, le premier octet annonce la longueur par sa série de 1, et chaque octet suivant commence par 10. Un lecteur qui tombe au milieu d'un caractère le sait donc toujours.</p>
-
-  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
-<text x="16" y="24" font-size="8" fill="#5D4037" text-anchor="start" font-weight="700">Les premiers bits de chaque octet disent combien d'octets suivent (gris) ; le reste porte le point de code (couleur).</text>
-<text x="30" y="60" font-size="16" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:16px">A</text>
-<text x="56" y="59" font-size="8.6" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">U+0041</text>
-<rect x="126" y="44" width="80" height="24" rx="3" fill="#fff" stroke="#2E7D32" stroke-width="1.1"/>
-<text x="132" y="60" font-size="9" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:9px;white-space:pre">0</text>
-<text x="137.6" y="60" font-size="9" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:9px;white-space:pre">1000001</text>
-<text x="584" y="60" font-size="8.4" fill="#2E7D32" text-anchor="end" font-weight="700">ASCII, 1 octet</text>
-<text x="30" y="100" font-size="16" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:16px">é</text>
-<text x="56" y="99" font-size="8.6" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">U+00E9</text>
-<rect x="126" y="84" width="80" height="24" rx="3" fill="#fff" stroke="#1565C0" stroke-width="1.1"/>
-<text x="132" y="100" font-size="9" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:9px;white-space:pre">110</text>
-<text x="148.8" y="100" font-size="9" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:9px;white-space:pre">00011</text>
-<rect x="210" y="84" width="80" height="24" rx="3" fill="#fff" stroke="#1565C0" stroke-width="1.1"/>
-<text x="216" y="100" font-size="9" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:9px;white-space:pre">10</text>
-<text x="227.2" y="100" font-size="9" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:9px;white-space:pre">101001</text>
-<text x="584" y="100" font-size="8.4" fill="#1565C0" text-anchor="end" font-weight="700">2 octets : C3 A9</text>
-<text x="30" y="140" font-size="16" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:16px">€</text>
-<text x="56" y="139" font-size="8.6" fill="#7B1FA2" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">U+20AC</text>
-<rect x="126" y="124" width="80" height="24" rx="3" fill="#fff" stroke="#7B1FA2" stroke-width="1.1"/>
-<text x="132" y="140" font-size="9" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:9px;white-space:pre">1110</text>
-<text x="154.4" y="140" font-size="9" fill="#7B1FA2" text-anchor="start" font-weight="700" class="mono" style="font-size:9px;white-space:pre">0010</text>
-<rect x="210" y="124" width="80" height="24" rx="3" fill="#fff" stroke="#7B1FA2" stroke-width="1.1"/>
-<text x="216" y="140" font-size="9" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:9px;white-space:pre">10</text>
-<text x="227.2" y="140" font-size="9" fill="#7B1FA2" text-anchor="start" font-weight="700" class="mono" style="font-size:9px;white-space:pre">000010</text>
-<rect x="294" y="124" width="80" height="24" rx="3" fill="#fff" stroke="#7B1FA2" stroke-width="1.1"/>
-<text x="300" y="140" font-size="9" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:9px;white-space:pre">10</text>
-<text x="311.2" y="140" font-size="9" fill="#7B1FA2" text-anchor="start" font-weight="700" class="mono" style="font-size:9px;white-space:pre">101100</text>
-<text x="584" y="140" font-size="8.4" fill="#7B1FA2" text-anchor="end" font-weight="700">3 octets : E2 82 AC</text>
-<text x="30" y="180" font-size="16" fill="#2B2F33" text-anchor="middle">😀</text>
-<text x="56" y="179" font-size="8.6" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">U+1F600</text>
-<rect x="126" y="164" width="80" height="24" rx="3" fill="#fff" stroke="#E65100" stroke-width="1.1"/>
-<text x="132" y="180" font-size="9" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:9px;white-space:pre">11110</text>
-<text x="160.0" y="180" font-size="9" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:9px;white-space:pre">000</text>
-<rect x="210" y="164" width="80" height="24" rx="3" fill="#fff" stroke="#E65100" stroke-width="1.1"/>
-<text x="216" y="180" font-size="9" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:9px;white-space:pre">10</text>
-<text x="227.2" y="180" font-size="9" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:9px;white-space:pre">011111</text>
-<rect x="294" y="164" width="80" height="24" rx="3" fill="#fff" stroke="#E65100" stroke-width="1.1"/>
-<text x="300" y="180" font-size="9" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:9px;white-space:pre">10</text>
-<text x="311.2" y="180" font-size="9" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:9px;white-space:pre">011000</text>
-<rect x="378" y="164" width="80" height="24" rx="3" fill="#fff" stroke="#E65100" stroke-width="1.1"/>
-<text x="384" y="180" font-size="9" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:9px;white-space:pre">10</text>
-<text x="395.2" y="180" font-size="9" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:9px;white-space:pre">000000</text>
-<text x="584" y="180" font-size="8.4" fill="#E65100" text-anchor="end" font-weight="700">4 octets : F0 9F 98 80</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2B</b> · Le texte et les nombres</span><b>Cours 56</b></div>
+<p class="rubrique">Schéma 1 · Comment UTF-8 range les numéros</p>
+<h2>De 1 à 4 octets selon le caractère</h2>
+<p style="max-width:165mm">UTF-8 garde l'ASCII tel quel (un octet, premier bit à 0). Au-delà, le premier octet annonce la longueur par sa série de 1, et chaque octet suivant commence par 10. Un lecteur qui tombe au milieu d'un caractère le sait donc toujours.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 206" width="100%">
+<rect fill="#EFE9E1" height="206" width="600" x="0" y="0"></rect>
+<text fill="#5D4037" font-size="8" font-weight="700" text-anchor="start" x="16" y="24">Les premiers bits de chaque octet disent combien d'octets suivent (gris) ; le reste porte le point de code (couleur).</text>
+<text class="mono" fill="#2B2F33" font-size="16" style="font-size:16px" text-anchor="middle" x="30" y="60">A</text>
+<text class="mono" fill="#2E7D32" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="56" y="59">U+0041</text>
+<rect fill="#fff" height="24" rx="3" stroke="#2E7D32" stroke-width="1.1" width="80" x="126" y="44"></rect>
+<text class="mono" fill="#6B7378" font-size="9" font-weight="700" style="font-size:9px;white-space:pre" text-anchor="start" x="132" y="60">0</text>
+<text class="mono" fill="#2E7D32" font-size="9" font-weight="700" style="font-size:9px;white-space:pre" text-anchor="start" x="137.6" y="60">1000001</text>
+<text fill="#2E7D32" font-size="8.4" font-weight="700" text-anchor="end" x="584" y="60">ASCII, 1 octet</text>
+<text class="mono" fill="#2B2F33" font-size="16" style="font-size:16px" text-anchor="middle" x="30" y="100">é</text>
+<text class="mono" fill="#1565C0" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="56" y="99">U+00E9</text>
+<rect fill="#fff" height="24" rx="3" stroke="#1565C0" stroke-width="1.1" width="80" x="126" y="84"></rect>
+<text class="mono" fill="#6B7378" font-size="9" font-weight="700" style="font-size:9px;white-space:pre" text-anchor="start" x="132" y="100">110</text>
+<text class="mono" fill="#1565C0" font-size="9" font-weight="700" style="font-size:9px;white-space:pre" text-anchor="start" x="148.8" y="100">00011</text>
+<rect fill="#fff" height="24" rx="3" stroke="#1565C0" stroke-width="1.1" width="80" x="210" y="84"></rect>
+<text class="mono" fill="#6B7378" font-size="9" font-weight="700" style="font-size:9px;white-space:pre" text-anchor="start" x="216" y="100">10</text>
+<text class="mono" fill="#1565C0" font-size="9" font-weight="700" style="font-size:9px;white-space:pre" text-anchor="start" x="227.2" y="100">101001</text>
+<text fill="#1565C0" font-size="8.4" font-weight="700" text-anchor="end" x="584" y="100">2 octets : C3 A9</text>
+<text class="mono" fill="#2B2F33" font-size="16" style="font-size:16px" text-anchor="middle" x="30" y="140">€</text>
+<text class="mono" fill="#7B1FA2" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="56" y="139">U+20AC</text>
+<rect fill="#fff" height="24" rx="3" stroke="#7B1FA2" stroke-width="1.1" width="80" x="126" y="124"></rect>
+<text class="mono" fill="#6B7378" font-size="9" font-weight="700" style="font-size:9px;white-space:pre" text-anchor="start" x="132" y="140">1110</text>
+<text class="mono" fill="#7B1FA2" font-size="9" font-weight="700" style="font-size:9px;white-space:pre" text-anchor="start" x="154.4" y="140">0010</text>
+<rect fill="#fff" height="24" rx="3" stroke="#7B1FA2" stroke-width="1.1" width="80" x="210" y="124"></rect>
+<text class="mono" fill="#6B7378" font-size="9" font-weight="700" style="font-size:9px;white-space:pre" text-anchor="start" x="216" y="140">10</text>
+<text class="mono" fill="#7B1FA2" font-size="9" font-weight="700" style="font-size:9px;white-space:pre" text-anchor="start" x="227.2" y="140">000010</text>
+<rect fill="#fff" height="24" rx="3" stroke="#7B1FA2" stroke-width="1.1" width="80" x="294" y="124"></rect>
+<text class="mono" fill="#6B7378" font-size="9" font-weight="700" style="font-size:9px;white-space:pre" text-anchor="start" x="300" y="140">10</text>
+<text class="mono" fill="#7B1FA2" font-size="9" font-weight="700" style="font-size:9px;white-space:pre" text-anchor="start" x="311.2" y="140">101100</text>
+<text fill="#7B1FA2" font-size="8.4" font-weight="700" text-anchor="end" x="584" y="140">3 octets : E2 82 AC</text>
+<text fill="#2B2F33" font-size="16" text-anchor="middle" x="30" y="180">😀</text>
+<text class="mono" fill="#E65100" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="56" y="179">U+1F600</text>
+<rect fill="#fff" height="24" rx="3" stroke="#E65100" stroke-width="1.1" width="80" x="126" y="164"></rect>
+<text class="mono" fill="#6B7378" font-size="9" font-weight="700" style="font-size:9px;white-space:pre" text-anchor="start" x="132" y="180">11110</text>
+<text class="mono" fill="#E65100" font-size="9" font-weight="700" style="font-size:9px;white-space:pre" text-anchor="start" x="160.0" y="180">000</text>
+<rect fill="#fff" height="24" rx="3" stroke="#E65100" stroke-width="1.1" width="80" x="210" y="164"></rect>
+<text class="mono" fill="#6B7378" font-size="9" font-weight="700" style="font-size:9px;white-space:pre" text-anchor="start" x="216" y="180">10</text>
+<text class="mono" fill="#E65100" font-size="9" font-weight="700" style="font-size:9px;white-space:pre" text-anchor="start" x="227.2" y="180">011111</text>
+<rect fill="#fff" height="24" rx="3" stroke="#E65100" stroke-width="1.1" width="80" x="294" y="164"></rect>
+<text class="mono" fill="#6B7378" font-size="9" font-weight="700" style="font-size:9px;white-space:pre" text-anchor="start" x="300" y="180">10</text>
+<text class="mono" fill="#E65100" font-size="9" font-weight="700" style="font-size:9px;white-space:pre" text-anchor="start" x="311.2" y="180">011000</text>
+<rect fill="#fff" height="24" rx="3" stroke="#E65100" stroke-width="1.1" width="80" x="378" y="164"></rect>
+<text class="mono" fill="#6B7378" font-size="9" font-weight="700" style="font-size:9px;white-space:pre" text-anchor="start" x="384" y="180">10</text>
+<text class="mono" fill="#E65100" font-size="9" font-weight="700" style="font-size:9px;white-space:pre" text-anchor="start" x="395.2" y="180">000000</text>
+<text fill="#E65100" font-size="8.4" font-weight="700" text-anchor="end" x="584" y="180">4 octets : F0 9F 98 80</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#</span>byte[] b = Encoding.UTF8.GetBytes("é");        // { 0xC3, 0xA9 }
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#</span>byte[] b = Encoding.UTF8.GetBytes("é");        // { 0xC3, 0xA9 }
 string s = Encoding.UTF8.GetString(b);          // "é"
 int n1 = "é".Length;                            // 1
 int n2 = "😀".Length;                           // 2 : une paire de substitution UTF-16
 int n3 = Encoding.UTF8.GetByteCount("😀");      // 4</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>En mémoire, C# parle UTF-16</h3>
-      <p>Une <code>string</code> .NET est une suite de <code>char</code> de 16 bits. Les caractères au-delà de U+FFFF (emojis, certains idéogrammes) y prennent deux <code>char</code>, une <b>paire de substitution</b>. L'UTF-8 n'intervient qu'à l'entrée et à la sortie.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Le même texte, plusieurs tailles</h3>
-      <p>« Café » fait 4 caractères, 4 <code>char</code>, mais 5 octets en UTF-8. Une limite exprimée en octets (une colonne de base de données, un champ réseau) n'est donc pas une limite en caractères.</p>
-    </div>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>En mémoire, C# parle UTF-16</h3>
+<p>Une <code>string</code> .NET est une suite de <code>char</code> de 16 bits. Les caractères au-delà de U+FFFF (emojis, certains idéogrammes) y prennent deux <code>char</code>, une <b>paire de substitution</b>. L'UTF-8 n'intervient qu'à l'entrée et à la sortie.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Le même texte, plusieurs tailles</h3>
+<p>« Café » fait 4 caractères, 4 <code>char</code>, mais 5 octets en UTF-8. Une limite exprimée en octets (une colonne de base de données, un champ réseau) n'est donc pas une limite en caractères.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
+<code>Length</code> compte des <code>char</code>, pas ce que l'œil voit comme un caractère. Couper une chaîne avec <code>Substring</code> au milieu d'une paire de substitution, ou entre un « e » et son accent combinant, produit un texte invalide ou une lettre sans accent.
   </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
-    <code>Length</code> compte des <code>char</code>, pas ce que l'œil voit comme un caractère. Couper une chaîne avec <code>Substring</code> au milieu d'une paire de substitution, ou entre un « e » et son accent combinant, produit un texte invalide ou une lettre sans accent.
-  </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 56 · Texte : Unicode, UTF-8 et encodages</div>
+<div class="folio">2</div>
+<div class="pied">Cours 56 · Texte : Unicode, UTF-8 et encodages</div>
 </section>
-
 <!-- ============ PAGE 3 · MAL LIRE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2B</b> · Le texte et les nombres</span><b>Cours 56</b></div>
-  <p class="rubrique">Schéma 2 · Trois façons de mal lire</p>
-  <h2>Mojibake, losange et BOM</h2>
-  <p style="max-width:165mm">Chaque symptôme dit quelle erreur a été faite. Des paires bizarres comme « Ã© » : de l'UTF-8 lu dans un encodage d'un octet. Un losange « &#xFFFD; » : un octet qui n'est pas de l'UTF-8 valide. « ï»¿ » en tête : la marque d'ordre des octets (BOM) lue comme du texte.</p>
-
-  <svg viewBox="0 0 600 196" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="196" fill="#EFE9E1"/>
-<rect x="16" y="12" width="182" height="172" rx="6" fill="#fff" stroke="#C62828" stroke-width="1.3"/>
-<text x="26" y="32" font-size="9" fill="#C62828" text-anchor="start" font-weight="700">Mojibake</text>
-<text x="26" y="54" font-size="7.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.8px">C3 A9 lus en Windows-1252</text>
-<text x="107" y="100" font-size="17" fill="#C62828" text-anchor="middle" font-weight="700">é → Ã©</text>
-<text x="26" y="146" font-size="7.8" fill="#2B2F33" text-anchor="start">UTF-8 pris pour l'ancien</text>
-<text x="26" y="160" font-size="7.8" fill="#2B2F33" text-anchor="start">encodage de Windows</text>
-<rect x="208" y="12" width="182" height="172" rx="6" fill="#fff" stroke="#E65100" stroke-width="1.3"/>
-<text x="218" y="32" font-size="9" fill="#E65100" text-anchor="start" font-weight="700">Caractère de remplacement</text>
-<text x="218" y="54" font-size="7.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.8px">E9 seul lu en UTF-8</text>
-<text x="299" y="100" font-size="17" fill="#E65100" text-anchor="middle" font-weight="700">é → &#xFFFD;</text>
-<text x="218" y="146" font-size="7.8" fill="#2B2F33" text-anchor="start">Windows-1252 pris pour UTF-8 :</text>
-<text x="218" y="160" font-size="7.8" fill="#2B2F33" text-anchor="start">octet invalide</text>
-<rect x="400" y="12" width="182" height="172" rx="6" fill="#fff" stroke="#7B1FA2" stroke-width="1.3"/>
-<text x="410" y="32" font-size="9" fill="#7B1FA2" text-anchor="start" font-weight="700">BOM affiché</text>
-<text x="410" y="54" font-size="7.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.8px">EF BB BF en tête du fichier</text>
-<text x="491" y="100" font-size="17" fill="#7B1FA2" text-anchor="middle" font-weight="700">→ ï»¿{ … }</text>
-<text x="410" y="146" font-size="7.8" fill="#2B2F33" text-anchor="start">marque d'ordre lue comme</text>
-<text x="410" y="160" font-size="7.8" fill="#2B2F33" text-anchor="start">du texte : JSON invalide</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2B</b> · Le texte et les nombres</span><b>Cours 56</b></div>
+<p class="rubrique">Schéma 2 · Trois façons de mal lire</p>
+<h2>Mojibake, losange et BOM</h2>
+<p style="max-width:165mm">Chaque symptôme dit quelle erreur a été faite. Des paires bizarres comme « Ã© » : de l'UTF-8 lu dans un encodage d'un octet. Un losange « &#xFFFD; » : un octet qui n'est pas de l'UTF-8 valide. « ï»¿ » en tête : la marque d'ordre des octets (BOM) lue comme du texte.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 196" width="100%">
+<rect fill="#EFE9E1" height="196" width="600" x="0" y="0"></rect>
+<rect fill="#fff" height="172" rx="6" stroke="#C62828" stroke-width="1.3" width="182" x="16" y="12"></rect>
+<text fill="#C62828" font-size="9" font-weight="700" text-anchor="start" x="26" y="32">Mojibake</text>
+<text class="mono" fill="#2B2F33" font-size="7.8" style="font-size:7.8px" text-anchor="start" x="26" y="54">C3 A9 lus en Windows-1252</text>
+<text fill="#C62828" font-size="17" font-weight="700" text-anchor="middle" x="107" y="100">é → Ã©</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="26" y="146">UTF-8 pris pour l'ancien</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="26" y="160">encodage de Windows</text>
+<rect fill="#fff" height="172" rx="6" stroke="#E65100" stroke-width="1.3" width="182" x="208" y="12"></rect>
+<text fill="#E65100" font-size="9" font-weight="700" text-anchor="start" x="218" y="32">Caractère de remplacement</text>
+<text class="mono" fill="#2B2F33" font-size="7.8" style="font-size:7.8px" text-anchor="start" x="218" y="54">E9 seul lu en UTF-8</text>
+<text fill="#E65100" font-size="17" font-weight="700" text-anchor="middle" x="299" y="100">é → &#xFFFD;</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="218" y="146">Windows-1252 pris pour UTF-8 :</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="218" y="160">octet invalide</text>
+<rect fill="#fff" height="172" rx="6" stroke="#7B1FA2" stroke-width="1.3" width="182" x="400" y="12"></rect>
+<text fill="#7B1FA2" font-size="9" font-weight="700" text-anchor="start" x="410" y="32">BOM affiché</text>
+<text class="mono" fill="#2B2F33" font-size="7.8" style="font-size:7.8px" text-anchor="start" x="410" y="54">EF BB BF en tête du fichier</text>
+<text fill="#7B1FA2" font-size="17" font-weight="700" text-anchor="middle" x="491" y="100">→ ï»¿{ … }</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="410" y="146">marque d'ordre lue comme</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="410" y="160">du texte : JSON invalide</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#</span>string a = File.ReadAllText(chemin);                        // UTF-8, et BOM reconnu s'il y en a un
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#</span>string a = File.ReadAllText(chemin);                        // UTF-8, et BOM reconnu s'il y en a un
 string b = File.ReadAllText(chemin, Encoding.GetEncoding(1252));   // un vieux fichier Windows (.NET Framework)
 File.WriteAllText(chemin, texte);                            // UTF-8 sans BOM
 File.WriteAllText(chemin, texte, new UTF8Encoding(true));    // UTF-8 avec BOM, pour Excel</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Le BOM</h3>
-      <p>Les trois octets EF BB BF en tête disent « ceci est de l'UTF-8 ». Utile à certains logiciels, gênant pour d'autres : un JSON ou un script qui commence par un BOM peut être refusé. Le cours 24 en parle à propos des ressources embarquées.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Les anciens encodages</h3>
-      <p>Windows-1252 (proche de Latin-1) range un caractère par octet : é vaut E9. Sous .NET Core et suivants, il faut d'abord enregistrer <code>CodePagesEncodingProvider</code> pour l'utiliser ; sous .NET Framework, il est disponible directement.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Le BOM</h3>
+<p>Les trois octets EF BB BF en tête disent « ceci est de l'UTF-8 ». Utile à certains logiciels, gênant pour d'autres : un JSON ou un script qui commence par un BOM peut être refusé. Le cours 24 en parle à propos des ressources embarquées.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Les anciens encodages</h3>
+<p>Windows-1252 (proche de Latin-1) range un caractère par octet : é vaut E9. Sous .NET Core et suivants, il faut d'abord enregistrer <code>CodePagesEncodingProvider</code> pour l'utiliser ; sous .NET Framework, il est disponible directement.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Excel, sous Windows, ouvre par double-clic un CSV en UTF-8 <b>sans BOM</b> comme un fichier de l'ancien encodage : tous les accents tournent au mojibake. Le même fichier avec BOM s'ouvre bien. Pour un export destiné à Excel, on écrit donc le BOM.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 56 · Texte : Unicode, UTF-8 et encodages</div>
+<div class="folio">3</div>
+<div class="pied">Cours 56 · Texte : Unicode, UTF-8 et encodages</div>
 </section>
-
 <!-- ============ PAGE 4 · COMPARER ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2B</b> · Le texte et les nombres</span><b>Cours 56</b></div>
-  <p class="rubrique">Schéma 3 · Comparer deux textes</p>
-  <h2>Égales pour qui ?</h2>
-  <p style="max-width:165mm">Deux chaînes peuvent s'afficher pareil sans avoir les mêmes <code>char</code>. La comparaison <b>ordinale</b> compare les nombres un à un : rapide et prévisible. La comparaison selon la <b>culture</b> compare comme un lecteur humain d'une langue donnée. La <b>normalisation</b> ramène un texte à une forme unique.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="26" font-size="8.6" fill="#5D4037" text-anchor="start" font-weight="700">Deux chaînes</text>
-<text x="260" y="26" font-size="8.6" fill="#5D4037" text-anchor="middle" font-weight="700">Ordinal</text>
-<text x="380" y="26" font-size="8.6" fill="#5D4037" text-anchor="middle" font-weight="700">Culture, sans casse</text>
-<text x="500" y="26" font-size="8.6" fill="#5D4037" text-anchor="middle" font-weight="700">après Normalize</text>
-<rect x="16" y="44" width="568" height="30" rx="3" fill="#fff" stroke="#CFC6B8"/>
-<text x="26" y="63" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px;white-space:pre">"é" et "e" + U+0301</text>
-<text x="260" y="64" font-size="12" fill="#C62828" text-anchor="middle" font-weight="700">≠</text>
-<text x="380" y="64" font-size="12" fill="#2E7D32" text-anchor="middle" font-weight="700">=</text>
-<text x="500" y="64" font-size="12" fill="#2E7D32" text-anchor="middle" font-weight="700">=</text>
-<rect x="16" y="82" width="568" height="30" rx="3" fill="#fff" stroke="#CFC6B8"/>
-<text x="26" y="101" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px;white-space:pre">"Paris" et "PARIS"</text>
-<text x="260" y="102" font-size="12" fill="#C62828" text-anchor="middle" font-weight="700">≠</text>
-<text x="380" y="102" font-size="12" fill="#2E7D32" text-anchor="middle" font-weight="700">=</text>
-<text x="500" y="102" font-size="12" fill="#C62828" text-anchor="middle" font-weight="700">≠</text>
-<rect x="16" y="120" width="568" height="30" rx="3" fill="#fff" stroke="#CFC6B8"/>
-<text x="26" y="139" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px;white-space:pre">"a\r\nb" et "a\nb"</text>
-<text x="260" y="140" font-size="12" fill="#C62828" text-anchor="middle" font-weight="700">≠</text>
-<text x="380" y="140" font-size="12" fill="#C62828" text-anchor="middle" font-weight="700">≠</text>
-<text x="500" y="140" font-size="12" fill="#C62828" text-anchor="middle" font-weight="700">≠</text>
-<rect x="16" y="158" width="568" height="30" rx="3" fill="#fff" stroke="#CFC6B8"/>
-<text x="26" y="177" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px;white-space:pre">"İ" et "i" (en turc)</text>
-<text x="260" y="178" font-size="12" fill="#C62828" text-anchor="middle" font-weight="700">≠</text>
-<text x="380" y="178" font-size="8.4" fill="#E65100" text-anchor="middle" font-weight="700">dépend</text>
-<text x="500" y="178" font-size="12" fill="#C62828" text-anchor="middle" font-weight="700">≠</text>
-<text x="16" y="206" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">Normalize compose « e » + accent en « é » ; il ne touche ni à la casse ni aux fins de ligne.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2B</b> · Le texte et les nombres</span><b>Cours 56</b></div>
+<p class="rubrique">Schéma 3 · Comparer deux textes</p>
+<h2>Égales pour qui ?</h2>
+<p style="max-width:165mm">Deux chaînes peuvent s'afficher pareil sans avoir les mêmes <code>char</code>. La comparaison <b>ordinale</b> compare les nombres un à un : rapide et prévisible. La comparaison selon la <b>culture</b> compare comme un lecteur humain d'une langue donnée. La <b>normalisation</b> ramène un texte à une forme unique.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#5D4037" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="26">Deux chaînes</text>
+<text fill="#5D4037" font-size="8.6" font-weight="700" text-anchor="middle" x="260" y="26">Ordinal</text>
+<text fill="#5D4037" font-size="8.6" font-weight="700" text-anchor="middle" x="380" y="26">Culture, sans casse</text>
+<text fill="#5D4037" font-size="8.6" font-weight="700" text-anchor="middle" x="500" y="26">après Normalize</text>
+<rect fill="#fff" height="30" rx="3" stroke="#CFC6B8" width="568" x="16" y="44"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.4" style="font-size:8.4px;white-space:pre" text-anchor="start" x="26" y="63">"é" et "e" + U+0301</text>
+<text fill="#C62828" font-size="12" font-weight="700" text-anchor="middle" x="260" y="64">≠</text>
+<text fill="#2E7D32" font-size="12" font-weight="700" text-anchor="middle" x="380" y="64">=</text>
+<text fill="#2E7D32" font-size="12" font-weight="700" text-anchor="middle" x="500" y="64">=</text>
+<rect fill="#fff" height="30" rx="3" stroke="#CFC6B8" width="568" x="16" y="82"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.4" style="font-size:8.4px;white-space:pre" text-anchor="start" x="26" y="101">"Paris" et "PARIS"</text>
+<text fill="#C62828" font-size="12" font-weight="700" text-anchor="middle" x="260" y="102">≠</text>
+<text fill="#2E7D32" font-size="12" font-weight="700" text-anchor="middle" x="380" y="102">=</text>
+<text fill="#C62828" font-size="12" font-weight="700" text-anchor="middle" x="500" y="102">≠</text>
+<rect fill="#fff" height="30" rx="3" stroke="#CFC6B8" width="568" x="16" y="120"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.4" style="font-size:8.4px;white-space:pre" text-anchor="start" x="26" y="139">"a\r\nb" et "a\nb"</text>
+<text fill="#C62828" font-size="12" font-weight="700" text-anchor="middle" x="260" y="140">≠</text>
+<text fill="#C62828" font-size="12" font-weight="700" text-anchor="middle" x="380" y="140">≠</text>
+<text fill="#C62828" font-size="12" font-weight="700" text-anchor="middle" x="500" y="140">≠</text>
+<rect fill="#fff" height="30" rx="3" stroke="#CFC6B8" width="568" x="16" y="158"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.4" style="font-size:8.4px;white-space:pre" text-anchor="start" x="26" y="177">"İ" et "i" (en turc)</text>
+<text fill="#C62828" font-size="12" font-weight="700" text-anchor="middle" x="260" y="178">≠</text>
+<text fill="#E65100" font-size="8.4" font-weight="700" text-anchor="middle" x="380" y="178">dépend</text>
+<text fill="#C62828" font-size="12" font-weight="700" text-anchor="middle" x="500" y="178">≠</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="start" x="16" y="206">Normalize compose « e » + accent en « é » ; il ne touche ni à la casse ni aux fins de ligne.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#</span>string.Equals(id1, id2, StringComparison.Ordinal);              // identifiants, clés, chemins
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#</span>string.Equals(id1, id2, StringComparison.Ordinal);              // identifiants, clés, chemins
 string.Equals(a, b, StringComparison.OrdinalIgnoreCase);         // idem, sans la casse
 texte.IndexOf(filtre, StringComparison.CurrentCultureIgnoreCase); // recherche pour l'utilisateur
 string nfc = saisie.Normalize(NormalizationForm.FormC);          // « e » + accent → « é »</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Ordinal pour la machine</h3>
-      <p>Clés de dictionnaire, identifiants, noms de fichiers, valeurs de schéma : on veut un résultat qui ne change pas selon le PC. On compare en <code>Ordinal</code> ou <code>OrdinalIgnoreCase</code>, et on passe en minuscules avec <code>ToLowerInvariant</code>.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Culture pour l'humain</h3>
-      <p>Une recherche tapée par l'utilisateur, un tri alphabétique affiché : là, la culture compte. Un macOS envoie souvent « é » décomposé (e + accent) ; normaliser en forme C à l'entrée évite deux versions d'un même nom.</p>
-    </div>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Ordinal pour la machine</h3>
+<p>Clés de dictionnaire, identifiants, noms de fichiers, valeurs de schéma : on veut un résultat qui ne change pas selon le PC. On compare en <code>Ordinal</code> ou <code>OrdinalIgnoreCase</code>, et on passe en minuscules avec <code>ToLowerInvariant</code>.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Culture pour l'humain</h3>
+<p>Une recherche tapée par l'utilisateur, un tri alphabétique affiché : là, la culture compte. Un macOS envoie souvent « é » décomposé (e + accent) ; normaliser en forme C à l'entrée évite deux versions d'un même nom.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
+<code>ToUpper()</code> et <code>ToLower()</code> sans argument suivent la culture du poste. En turc, « i ».ToUpper() donne « İ » (avec un point) : une comparaison de mots-clés qui marchait en France casse en Turquie. D'où les versions <code>…Invariant</code> pour tout ce qui n'est pas affiché.
   </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
-    <code>ToUpper()</code> et <code>ToLower()</code> sans argument suivent la culture du poste. En turc, « i ».ToUpper() donne « İ » (avec un point) : une comparaison de mots-clés qui marchait en France casse en Turquie. D'où les versions <code>…Invariant</code> pour tout ce qui n'est pas affiché.
-  </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 56 · Texte : Unicode, UTF-8 et encodages</div>
+<div class="folio">4</div>
+<div class="pied">Cours 56 · Texte : Unicode, UTF-8 et encodages</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2B</b> · Le texte et les nombres</span><b>Cours 56</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>UTF-8 sans BOM, BOM toléré, fins de ligne ramenées</h2>
-  <p style="max-width:165mm">SnapSet fixe l'encodage de ce qu'il génère et la forme de ce qu'il compare. Magpie lit ses ressources en acceptant un BOM, et passe par UTF-8 pour hacher un texte.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2B</b> · Le texte et les nombres</span><b>Cours 56</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>UTF-8 sans BOM, BOM toléré, fins de ligne ramenées</h2>
+<p style="max-width:165mm">SnapSet fixe l'encodage de ce qu'il génère et la forme de ce qu'il compare. Magpie lit ses ressources en acceptant un BOM, et passe par UTF-8 pour hacher un texte.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">SnapSet/…/Generation/EcrivainGeneration.cs</span></div>
 <div class="l k1"><span class="n">113</span><span class="kw">public static readonly</span> <span class="ty">Encoding</span> Encodage =<span class="rep r1">1</span></div>
-<div class="l k1"><span class="n"> </span>  <span class="kw">new</span> <span class="ty">UTF8Encoding</span>(encoderShouldEmitUTF8Identifier: <span class="kw">false</span>);</div>
+<div class="l k1"><span class="n"> </span> <span class="kw">new</span> <span class="ty">UTF8Encoding</span>(encoderShouldEmitUTF8Identifier: <span class="kw">false</span>);</div>
 <div class="l"><span class="cm">magpie/plugin/Core/MagpieSources.cs</span></div>
 <div class="l k2"><span class="n">175</span><span class="kw">using</span> (<span class="kw">var</span> lecteur = <span class="kw">new</span> <span class="ty">StreamReader</span>(flux, <span class="ty">Encoding</span>.UTF8,<span class="rep r2">2</span></div>
 <div class="l k2"><span class="n"> </span>    detectEncodingFromByteOrderMarks: <span class="kw">true</span>))</div>
@@ -293,144 +266,62 @@ string nfc = saisie.Normalize(NormalizationForm.FormC);          // « e » + 
 <div class="l k3"><span class="n">61</span>FinsAutres = { <span class="st">'\r'</span>, (<span class="kw">char</span>)<span class="nb">0x2028</span>, (<span class="kw">char</span>)<span class="nb">0x2029</span>,<span class="rep r3">3</span></div>
 <div class="l k3"><span class="n"></span>              (<span class="kw">char</span>)<span class="nb">0x85</span> };</div>
 <div class="l k3"><span class="n">130</span><span class="kw">return string</span>.Equals(Normaliser(a), Normaliser(b),</div>
-<div class="l k3"><span class="n"> </span>                     <span class="ty">StringComparison</span>.Ordinal);</div>
+<div class="l k3"><span class="n"> </span> <span class="ty">StringComparison</span>.Ordinal);</div>
 <div class="l"><span class="cm">magpie/plugin/Admin/MagpieExerciseEditor.cs</span></div>
 <div class="l k4"><span class="n">320</span>sha.ComputeHash(<span class="ty">Encoding</span>.UTF8.GetBytes(sb.ToString()))<span class="rep r4">4</span></div>
 <div class="l"><span class="cm">magpie/plugin/Admin/MagpieParcoursEditorAttributes.cs</span></div>
 <div class="l k5"><span class="n">624</span>texte.IndexOf(filtre,<span class="rep r5">5</span></div>
-<div class="l k5"><span class="n"></span>  <span class="ty">StringComparison</span>.CurrentCultureIgnoreCase)</div>
+<div class="l k5"><span class="n"></span> <span class="ty">StringComparison</span>.CurrentCultureIgnoreCase)</div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>UTF-8 sans BOM</b>Pour les deux fichiers C# que « Générer » écrit.</li>
-      <li><span class="rep r2">2</span><b>Lire, BOM ou pas</b>Un JSON réenregistré à la main garde sa validité.</li>
-      <li><span class="rep r3">3</span><b>Une seule fin de ligne</b>\r\n, \r et trois séparateurs Unicode → \n, puis comparaison ordinale.</li>
-      <li><span class="rep r4">4</span><b>Hacher des octets</b>SHA-256 prend des octets : l'encodage fait partie de l'empreinte.</li>
-      <li><span class="rep r5">5</span><b>Recherche pour l'humain</b>Le filtre de la liste d'exercices suit la culture.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">Pourquoi ramener les fins de ligne</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>UTF-8 sans BOM</b>Pour les deux fichiers C# que « Générer » écrit.</li>
+<li><span class="rep r2">2</span><b>Lire, BOM ou pas</b>Un JSON réenregistré à la main garde sa validité.</li>
+<li><span class="rep r3">3</span><b>Une seule fin de ligne</b>\r\n, \r et trois séparateurs Unicode → \n, puis comparaison ordinale.</li>
+<li><span class="rep r4">4</span><b>Hacher des octets</b>SHA-256 prend des octets : l'encodage fait partie de l'empreinte.</li>
+<li><span class="rep r5">5</span><b>Recherche pour l'humain</b>Le filtre de la liste d'exercices suit la culture.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">Pourquoi ramener les fins de ligne</span>
     Le commentaire des lignes 64–68 l'explique : deux textes qui ne diffèrent que par leurs fins de ligne sont le même texte, donc pas d'enregistrement d'annulation ni d'événement pour rien (cours 43). Le TextBox WinForms, lui, veut des \r\n : <code>PourTextBox</code> (ligne 98) les remet à l'affichage.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 56 · Texte : Unicode, UTF-8 et encodages</div>
+<div class="folio">5</div>
+<div class="pied">Cours 56 · Texte : Unicode, UTF-8 et encodages</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2B</b> · Le texte et les nombres</span><b>Cours 56</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2B</b> · Le texte et les nombres</span><b>Cours 56</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">U+00E9 est…</div><ul>
-      <li><span>A</span>le point de code de « é »</li><li><span>B</span>un octet</li><li><span>C</span>une couleur</li><li><span>D</span>un encodage</li></ul></div>
 
-    <div class="q"><div class="enonce">En UTF-8, « é » prend…</div><ul>
-      <li><span>A</span>1 octet</li><li><span>B</span>2 octets</li><li><span>C</span>4 octets</li><li><span>D</span>3 octets</li></ul></div>
 
-    <div class="q"><div class="enonce">Un octet UTF-8 qui commence par 10 est…</div><ul>
-      <li><span>A</span>invalide</li><li><span>B</span>la suite d'un caractère</li><li><span>C</span>un BOM</li><li><span>D</span>de l'ASCII</li></ul></div>
 
-    <div class="q"><div class="enonce"><code>"😀".Length</code> vaut…</div><ul>
-      <li><span>A</span>0</li><li><span>B</span>4</li><li><span>C</span>1</li><li><span>D</span>2</li></ul></div>
-
-    <div class="q"><div class="enonce">« Ã© » à la place de « é » signifie…</div><ul>
-      <li><span>A</span>fichier corrompu</li><li><span>B</span>BOM absent</li><li><span>C</span>UTF-8 lu comme Windows-1252</li><li><span>D</span>police manquante</li></ul></div>
-
-    <div class="q"><div class="enonce">« ï»¿ » en tête d'un fichier, c'est…</div><ul>
-      <li><span>A</span>un JSON valide</li><li><span>B</span>un emoji</li><li><span>C</span>un retour chariot</li><li><span>D</span>un BOM lu comme du texte</li></ul></div>
-
-    <div class="q"><div class="enonce"><code>File.WriteAllText(chemin, texte)</code> écrit…</div><ul>
-      <li><span>A</span>en UTF-16</li><li><span>B</span>en UTF-8 sans BOM</li><li><span>C</span>en Windows-1252</li><li><span>D</span>en UTF-8 avec BOM</li></ul></div>
-
-    <div class="q"><div class="enonce">Pour comparer deux identifiants : <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>CurrentCulture</li><li><span>B</span>Ordinal</li><li><span>C</span>ToUpper() puis ==</li><li><span>D</span>OrdinalIgnoreCase</li></ul></div>
-
-    <div class="q"><div class="enonce"><code>Normalize(FormC)</code> sert à…</div><ul>
-      <li><span>A</span>ôter les espaces</li><li><span>B</span>passer en minuscules</li><li><span>C</span>changer d'encodage</li><li><span>D</span>composer « e » + accent en « é »</li></ul></div>
-
-    <div class="q"><div class="enonce">SnapSet génère son code en…</div><ul>
-      <li><span>A</span>UTF-8 sans BOM</li><li><span>B</span>UTF-16</li><li><span>C</span>UTF-8 avec BOM</li><li><span>D</span>Windows-1252</li></ul></div>
-
-    <div class="q"><div class="enonce">Normaliser de ModeleZoneTexte ramène à « \n »…</div><ul>
-      <li><span>A</span>rien</li><li><span>B</span>les tabulations</li><li><span>C</span>\r\n, \r et trois séparateurs Unicode</li><li><span>D</span>\r\n seulement</li></ul></div>
-
-    <div class="q"><div class="enonce">Un CSV pour Excel s'écrit de préférence…</div><ul>
-      <li><span>A</span>en UTF-8 avec BOM</li><li><span>B</span>en ASCII</li><li><span>C</span>en UTF-16</li><li><span>D</span>en UTF-8 sans BOM</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 56 · Texte : Unicode, UTF-8 et encodages</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">new UTF8Encoding(false)</td><td>UTF-8 sans BOM</td><td>EcrivainGeneration.cs:113</td></tr>
+<tr><td class="c">detectEncodingFromByteOrderMarks: true</td><td>lire avec ou sans BOM</td><td>MagpieSources.cs:175</td></tr>
+<tr><td class="c">Encoding.UTF8.GetBytes(texte)</td><td>du texte aux octets</td><td>MagpieExerciseEditor.cs:320</td></tr>
+<tr><td class="c">StringComparison.Ordinal</td><td>comparer pour la machine</td><td>ModeleZoneTexte.cs:130</td></tr>
+<tr><td class="c">CurrentCultureIgnoreCase</td><td>chercher pour l'humain</td><td>…ParcoursEditorAttributes.cs:624</td></tr>
+<tr><td class="c">Normalize(NormalizationForm.FormC)</td><td>une forme unique</td><td>exemple page 4</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Point de code</dt><dd>Le numéro d'un caractère dans Unicode, noté U+ suivi de chiffres hexadécimaux.</dd>
+<dt>UTF-8</dt><dd>L'encodage qui écrit chaque point de code sur 1 à 4 octets, ASCII inchangé.</dd>
+<dt>Mojibake</dt><dd>Un texte devenu illisible parce qu'il a été décodé avec le mauvais encodage.</dd>
+<dt>Paire de substitution</dt><dd>Deux char UTF-16 pour un caractère au-delà de U+FFFF.</dd>
+<dt>Normalisation</dt><dd>Ramener un texte Unicode à une forme unique (C : composée, D : décomposée).</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 57</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 56 · Texte : Unicode, UTF-8 et encodages</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 2B</b> · Le texte et les nombres</span><b>Cours 56</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · A.</b> Son numéro dans Unicode.</div>
-    <div><b>02 · B.</b> C3 A9.</div>
-    <div><b>03 · B.</b> Octet de continuation.</div>
-    <div><b>04 · D.</b> Une paire de substitution.</div>
-    <div><b>05 · C.</b> Deux octets, deux lettres.</div>
-    <div><b>06 · D.</b> EF BB BF en Windows-1252.</div>
-    <div><b>07 · B.</b> Le défaut de .NET.</div>
-    <div><b>08 · B et D.</b> Stables d'un poste à l'autre.</div>
-    <div><b>09 · D.</b> Une forme unique.</div>
-    <div><b>10 · A.</b> EcrivainGeneration.cs:113.</div>
-    <div><b>11 · C.</b> ModeleZoneTexte.cs:61.</div>
-    <div><b>12 · A.</b> Excel reconnaît alors l'UTF-8.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 et 2. <b>7 à 9</b> : relis les pages 3 et 4. <b>10 à 12</b> : passe au cours 57, « Les expressions régulières ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">new UTF8Encoding(false)</td><td>UTF-8 sans BOM</td><td>EcrivainGeneration.cs:113</td></tr>
-      <tr><td class="c">detectEncodingFromByteOrderMarks: true</td><td>lire avec ou sans BOM</td><td>MagpieSources.cs:175</td></tr>
-      <tr><td class="c">Encoding.UTF8.GetBytes(texte)</td><td>du texte aux octets</td><td>MagpieExerciseEditor.cs:320</td></tr>
-      <tr><td class="c">StringComparison.Ordinal</td><td>comparer pour la machine</td><td>ModeleZoneTexte.cs:130</td></tr>
-      <tr><td class="c">CurrentCultureIgnoreCase</td><td>chercher pour l'humain</td><td>…ParcoursEditorAttributes.cs:624</td></tr>
-      <tr><td class="c">Normalize(NormalizationForm.FormC)</td><td>une forme unique</td><td>exemple page 4</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Point de code</dt><dd>Le numéro d'un caractère dans Unicode, noté U+ suivi de chiffres hexadécimaux.</dd>
-    <dt>UTF-8</dt><dd>L'encodage qui écrit chaque point de code sur 1 à 4 octets, ASCII inchangé.</dd>
-    <dt>Mojibake</dt><dd>Un texte devenu illisible parce qu'il a été décodé avec le mauvais encodage.</dd>
-    <dt>Paire de substitution</dt><dd>Deux char UTF-16 pour un caractère au-delà de U+FFFF.</dd>
-    <dt>Normalisation</dt><dd>Ramener un texte Unicode à une forme unique (C : composée, D : décomposée).</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 57</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 56 · Texte : Unicode, UTF-8 et encodages</div>
-</section>
-
 </body>
 </html>

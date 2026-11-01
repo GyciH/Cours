@@ -1,237 +1,210 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>122 · Du DOM aux pixels</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-8">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 122</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Du DOM aux pixels</h1>
-  <p class="chapeau">Entre un <code>setNodes</code> de React et l'image à l'écran, le navigateur fait cinq étapes : il relit l'arbre, applique les styles, calcule la mise en page, peint, puis compose. Chaque modification relance ce <b>pipeline</b> à partir d'un certain point. Savoir lequel, c'est savoir ce qu'une animation, un glisser ou une sélection vont coûter.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>121</b>, <b>31</b></span>
-    <span class="pastille">Exemples · <b>Magpie</b> web, React Flow</span>
-  </div>
-
-  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
-    <svg viewBox="0 0 600 212" width="100%">
-<rect x="10" y="10" width="106" height="74" rx="4" fill="#F4EEDF" stroke="#7A5A12" stroke-width="1.2"/>
-<text x="63" y="32" font-size="9" fill="#7A5A12" text-anchor="middle" font-weight="700">DOM</text>
-<text x="63" y="52" font-size="7.4" fill="#2B2F33" text-anchor="middle">l'arbre des</text>
-<text x="63" y="65" font-size="7.4" fill="#2B2F33" text-anchor="middle">éléments</text>
-<line x1="117" y1="47" x2="127" y2="47" stroke="#6B7378" stroke-width="1.2"/><polygon points="127,47 120.6,49.7 120.6,44.3" fill="#6B7378"/>
-<rect x="128" y="10" width="106" height="74" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
-<text x="181" y="32" font-size="9" fill="#7B1FA2" text-anchor="middle" font-weight="700">Style</text>
-<text x="181" y="52" font-size="7.4" fill="#2B2F33" text-anchor="middle">quelles règles</text>
-<text x="181" y="65" font-size="7.4" fill="#2B2F33" text-anchor="middle">pour chacun</text>
-<line x1="235" y1="47" x2="245" y2="47" stroke="#6B7378" stroke-width="1.2"/><polygon points="245,47 238.6,49.7 238.6,44.3" fill="#6B7378"/>
-<rect x="246" y="10" width="106" height="74" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
-<text x="299" y="32" font-size="9" fill="#1565C0" text-anchor="middle" font-weight="700">Mise en page</text>
-<text x="299" y="52" font-size="7.4" fill="#2B2F33" text-anchor="middle">où et quelle</text>
-<text x="299" y="65" font-size="7.4" fill="#2B2F33" text-anchor="middle">taille (layout)</text>
-<line x1="353" y1="47" x2="363" y2="47" stroke="#6B7378" stroke-width="1.2"/><polygon points="363,47 356.6,49.7 356.6,44.3" fill="#6B7378"/>
-<rect x="364" y="10" width="106" height="74" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
-<text x="417" y="32" font-size="9" fill="#E65100" text-anchor="middle" font-weight="700">Peinture</text>
-<text x="417" y="52" font-size="7.4" fill="#2B2F33" text-anchor="middle">les pixels</text>
-<text x="417" y="65" font-size="7.4" fill="#2B2F33" text-anchor="middle">de chaque calque</text>
-<line x1="471" y1="47" x2="481" y2="47" stroke="#6B7378" stroke-width="1.2"/><polygon points="481,47 474.6,49.7 474.6,44.3" fill="#6B7378"/>
-<rect x="482" y="10" width="106" height="74" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="535" y="32" font-size="9" fill="#2E7D32" text-anchor="middle" font-weight="700">Composition</text>
-<text x="535" y="52" font-size="7.4" fill="#2B2F33" text-anchor="middle">les calques</text>
-<text x="535" y="65" font-size="7.4" fill="#2B2F33" text-anchor="middle">assemblés</text>
-<line x1="246" y1="104" x2="592" y2="104" stroke="#C62828" stroke-width="3"/>
-<text x="240" y="107" font-size="7.4" fill="#C62828" text-anchor="end" font-weight="700">changer width, left, un texte : tout refaire depuis la mise en page</text>
-<line x1="364" y1="124" x2="592" y2="124" stroke="#E65100" stroke-width="3"/>
-<text x="358" y="127" font-size="7.4" fill="#E65100" text-anchor="end" font-weight="700">changer une couleur, une ombre : repeindre</text>
-<line x1="482" y1="144" x2="592" y2="144" stroke="#2E7D32" stroke-width="3"/>
-<text x="476" y="147" font-size="7.4" fill="#2E7D32" text-anchor="end" font-weight="700">changer transform, opacity : recomposer seulement</text>
-<text x="10" y="176" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">Chaque modification relance le pipeline à partir de l'étape qu'elle touche. Plus on entre tôt, plus c'est cher.</text>
-<text x="10" y="196" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">La composition a souvent lieu sur le processeur graphique, hors du fil principal : elle reste fluide même s'il est occupé.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 122</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Du DOM aux pixels</h1>
+<p class="chapeau">Entre un <code>setNodes</code> de React et l'image à l'écran, le navigateur fait cinq étapes : il relit l'arbre, applique les styles, calcule la mise en page, peint, puis compose. Chaque modification relance ce <b>pipeline</b> à partir d'un certain point. Savoir lequel, c'est savoir ce qu'une animation, un glisser ou une sélection vont coûter.</p>
+<div class="meta">
+<span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>121</b>, <b>31</b></span>
+<span class="pastille">Exemples · <b>Magpie</b> web, React Flow</span>
+</div>
+<div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+<svg viewbox="0 0 600 212" width="100%">
+<rect fill="#F4EEDF" height="74" rx="4" stroke="#7A5A12" stroke-width="1.2" width="106" x="10" y="10"></rect>
+<text fill="#7A5A12" font-size="9" font-weight="700" text-anchor="middle" x="63" y="32">DOM</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="middle" x="63" y="52">l'arbre des</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="middle" x="63" y="65">éléments</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="117" x2="127" y1="47" y2="47"></line><polygon fill="#6B7378" points="127,47 120.6,49.7 120.6,44.3"></polygon>
+<rect fill="#fff" height="74" rx="4" stroke="#7B1FA2" stroke-width="1.2" width="106" x="128" y="10"></rect>
+<text fill="#7B1FA2" font-size="9" font-weight="700" text-anchor="middle" x="181" y="32">Style</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="middle" x="181" y="52">quelles règles</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="middle" x="181" y="65">pour chacun</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="235" x2="245" y1="47" y2="47"></line><polygon fill="#6B7378" points="245,47 238.6,49.7 238.6,44.3"></polygon>
+<rect fill="#fff" height="74" rx="4" stroke="#1565C0" stroke-width="1.2" width="106" x="246" y="10"></rect>
+<text fill="#1565C0" font-size="9" font-weight="700" text-anchor="middle" x="299" y="32">Mise en page</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="middle" x="299" y="52">où et quelle</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="middle" x="299" y="65">taille (layout)</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="353" x2="363" y1="47" y2="47"></line><polygon fill="#6B7378" points="363,47 356.6,49.7 356.6,44.3"></polygon>
+<rect fill="#fff" height="74" rx="4" stroke="#E65100" stroke-width="1.2" width="106" x="364" y="10"></rect>
+<text fill="#E65100" font-size="9" font-weight="700" text-anchor="middle" x="417" y="32">Peinture</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="middle" x="417" y="52">les pixels</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="middle" x="417" y="65">de chaque calque</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="471" x2="481" y1="47" y2="47"></line><polygon fill="#6B7378" points="481,47 474.6,49.7 474.6,44.3"></polygon>
+<rect fill="#fff" height="74" rx="4" stroke="#2E7D32" stroke-width="1.2" width="106" x="482" y="10"></rect>
+<text fill="#2E7D32" font-size="9" font-weight="700" text-anchor="middle" x="535" y="32">Composition</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="middle" x="535" y="52">les calques</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="middle" x="535" y="65">assemblés</text>
+<line stroke="#C62828" stroke-width="3" x1="246" x2="592" y1="104" y2="104"></line>
+<text fill="#C62828" font-size="7.4" font-weight="700" text-anchor="end" x="240" y="107">changer width, left, un texte : tout refaire depuis la mise en page</text>
+<line stroke="#E65100" stroke-width="3" x1="364" x2="592" y1="124" y2="124"></line>
+<text fill="#E65100" font-size="7.4" font-weight="700" text-anchor="end" x="358" y="127">changer une couleur, une ombre : repeindre</text>
+<line stroke="#2E7D32" stroke-width="3" x1="482" x2="592" y1="144" y2="144"></line>
+<text fill="#2E7D32" font-size="7.4" font-weight="700" text-anchor="end" x="476" y="147">changer transform, opacity : recomposer seulement</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="10" y="176">Chaque modification relance le pipeline à partir de l'étape qu'elle touche. Plus on entre tôt, plus c'est cher.</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="10" y="196">La composition a souvent lieu sur le processeur graphique, hors du fil principal : elle reste fluide même s'il est occupé.</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Ce qui se déplace doit passer par transform, ce qui se lit doit se lire avant d'écrire, et ce qui se peint cher doit rester rare.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Un plan d'ensemble sur calques. Déplacer un calque entier est immédiat ; changer la cote d'une pièce oblige à recaler toutes celles qui en dépendent, puis à retracer.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>situer une modification dans le pipeline ;</li>
-        <li>éviter les mises en page forcées ;</li>
-        <li>animer sans mise en page ;</li>
-        <li>repérer une peinture coûteuse.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Ce qui se déplace doit passer par transform, ce qui se lit doit se lire avant d'écrire, et ce qui se peint cher doit rester rare.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Un plan d'ensemble sur calques. Déplacer un calque entier est immédiat ; changer la cote d'une pièce oblige à recaler toutes celles qui en dépendent, puis à retracer.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>situer une modification dans le pipeline ;</li>
+<li>éviter les mises en page forcées ;</li>
+<li>animer sans mise en page ;</li>
+<li>repérer une peinture coûteuse.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À retenir</span>
     Le navigateur est paresseux : il attend le rendu pour faire la mise en page et la peinture. Tout ce qui l'oblige à les faire plus tôt, ou plus souvent, se paie sur le fil principal.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 122 · Du DOM aux pixels</div>
+<div class="folio">1</div>
+<div class="pied">Cours 122 · Du DOM aux pixels</div>
 </section>
-
 <!-- ============ PAGE 2 · MISE EN PAGE FORCÉE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 122</b></div>
-  <p class="rubrique">Schéma 1 · La mise en page forcée</p>
-  <h2>Lire, puis écrire</h2>
-  <p style="max-width:165mm">Demander une taille juste après avoir changé un style force le navigateur à calculer la mise en page tout de suite. Dans une boucle, c'est une mise en page par tour. On a compté.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8" fill="#7A5A12" text-anchor="start" font-weight="700">500 lignes : lire leur hauteur, puis changer leur largeur. Chromium, compteur LayoutCount du protocole DevTools (mesuré)</text>
-<text x="16" y="50" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">lecture, écriture, lecture, écriture…</text>
-<rect x="16" y="56" width="291.4" height="14" rx="2" fill="#C62828"/>
-<text x="315.42857142857144" y="67" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700">59,4 et 68,0 ms (2 essais) · 500 mises en page forcées</text>
-<text x="16" y="94" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">toutes les lectures, puis toutes les écritures</text>
-<rect x="16" y="100" width="3.0" height="14" rx="2" fill="#2E7D32"/>
-<text x="27.0" y="111" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700">0,9 et 0,7 ms (2 essais) · aucune forcée dans la boucle</text>
-<text x="16" y="140" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Lire offsetHeight juste après une écriture oblige le navigateur à refaire la mise en page sur-le-champ, pour répondre juste.</text>
-<text x="16" y="156" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Dans la boucle alternée, il la refait 500 fois ; groupées, les écritures attendent toutes le rendu suivant. Rapport : 80.</text>
-<text x="16" y="180" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Forcent une mise en page : offsetWidth/Height, clientWidth, getBoundingClientRect, scrollTop, getComputedStyle…</text>
-<text x="16" y="196" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Le curseur de Magpie lit son rail une fois au début du glisser (nodeEditors.jsx:52), jamais à chaque mouvement.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 122</b></div>
+<p class="rubrique">Schéma 1 · La mise en page forcée</p>
+<h2>Lire, puis écrire</h2>
+<p style="max-width:165mm">Demander une taille juste après avoir changé un style force le navigateur à calculer la mise en page tout de suite. Dans une boucle, c'est une mise en page par tour. On a compté.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#7A5A12" font-size="8" font-weight="700" text-anchor="start" x="16" y="22">500 lignes : lire leur hauteur, puis changer leur largeur. Chromium, compteur LayoutCount du protocole DevTools (mesuré)</text>
+<text fill="#2B2F33" font-size="8" font-weight="700" text-anchor="start" x="16" y="50">lecture, écriture, lecture, écriture…</text>
+<rect fill="#C62828" height="14" rx="2" width="291.4" x="16" y="56"></rect>
+<text fill="#C62828" font-size="7.8" font-weight="700" text-anchor="start" x="315.42857142857144" y="67">59,4 et 68,0 ms (2 essais) · 500 mises en page forcées</text>
+<text fill="#2B2F33" font-size="8" font-weight="700" text-anchor="start" x="16" y="94">toutes les lectures, puis toutes les écritures</text>
+<rect fill="#2E7D32" height="14" rx="2" width="3.0" x="16" y="100"></rect>
+<text fill="#2E7D32" font-size="7.8" font-weight="700" text-anchor="start" x="27.0" y="111">0,9 et 0,7 ms (2 essais) · aucune forcée dans la boucle</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="140">Lire offsetHeight juste après une écriture oblige le navigateur à refaire la mise en page sur-le-champ, pour répondre juste.</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="156">Dans la boucle alternée, il la refait 500 fois ; groupées, les écritures attendent toutes le rendu suivant. Rapport : 80.</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="180">Forcent une mise en page : offsetWidth/Height, clientWidth, getBoundingClientRect, scrollTop, getComputedStyle…</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="196">Le curseur de Magpie lit son rail une fois au début du glisser (nodeEditors.jsx:52), jamais à chaque mouvement.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript, grouper lectures et écritures</span>const hauteurs = lignes.map((l) =&gt; l.offsetHeight);     // 1 : toutes les lectures
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript, grouper lectures et écritures</span>const hauteurs = lignes.map((l) =&gt; l.offsetHeight);     // 1 : toutes les lectures
 lignes.forEach((l, i) =&gt; { l.style.width = largeur(hauteurs[i]) + "px"; });   // 2 : toutes les écritures
 // une seule mise en page, au rendu suivant</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Lire une seule fois</h3>
-      <p>Pendant un glisser, le rail du curseur ne bouge pas. nodeEditors.jsx lit son rectangle au pointerdown (ligne 52) et le réutilise à chaque pointermove (ligne 54) : aucune mise en page forcée par mouvement.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Observer plutôt que demander</h3>
-      <p>ResizeObserver prévient quand une taille change, avec la nouvelle taille, sans rien forcer. Viewer3D s'en sert (ligne 116) pour ajuster le rendu 3D à son conteneur.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Lire une seule fois</h3>
+<p>Pendant un glisser, le rail du curseur ne bouge pas. nodeEditors.jsx lit son rectangle au pointerdown (ligne 52) et le réutilise à chaque pointermove (ligne 54) : aucune mise en page forcée par mouvement.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Observer plutôt que demander</h3>
+<p>ResizeObserver prévient quand une taille change, avec la nouvelle taille, sans rien forcer. Viewer3D s'en sert (ligne 116) pour ajuster le rendu 3D à son conteneur.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Mesurer un élément dans un gestionnaire de scroll ou de pointermove après l'avoir modifié. Chaque événement force une mise en page, plusieurs dizaines de fois par seconde ; le geste saccade alors que chaque mesure, isolée, paraît gratuite.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 122 · Du DOM aux pixels</div>
+<div class="folio">2</div>
+<div class="pied">Cours 122 · Du DOM aux pixels</div>
 </section>
-
 <!-- ============ PAGE 3 · TRANSFORM ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 122</b></div>
-  <p class="rubrique">Schéma 2 · Déplacer sans mise en page</p>
-  <h2>left ou transform</h2>
-  <p style="max-width:165mm">Deux façons de faire glisser un bloc à l'écran. La première change sa position dans la mise en page, la seconde le décale au moment de composer. Le résultat visuel est le même ; le travail, non.</p>
-
-  <svg viewBox="0 0 600 204" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="204" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#7A5A12" text-anchor="start" font-weight="700">Déplacer un bloc pendant 120 images, en changeant left ou transform (Chromium, compteurs DevTools, mesuré)</text>
-<rect x="16" y="36" width="568" height="38" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
-<text x="28" y="52" font-size="8" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">style.left = i + "px"</text>
-<text x="28" y="66" font-size="7.6" fill="#2B2F33" text-anchor="start">119 mises en page · 119 recalculs de style · temps de mise en page 3,1 ms</text>
-<rect x="16" y="82" width="568" height="38" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="28" y="98" font-size="8" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">style.transform = translateX(i px)</text>
-<text x="28" y="112" font-size="7.6" fill="#2B2F33" text-anchor="start">1 mises en page · 120 recalculs de style · temps de mise en page 0,1 ms</text>
-<text x="16" y="148" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Le recalcul de style a lieu dans les deux cas ; transform saute la mise en page et la peinture, il ne fait que recomposer.</text>
-<text x="16" y="164" font-size="7.8" fill="#2B2F33" text-anchor="start">React Flow 12.11.2, qu'utilise Magpie, place chaque nœud par transform: translate(x, y), et déplace le canvas de même.</text>
-<text x="16" y="186" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Le contenu de la page de test était court : sur une page réelle, la mise en page coûte bien plus que 3 ms pour 120 images.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 122</b></div>
+<p class="rubrique">Schéma 2 · Déplacer sans mise en page</p>
+<h2>left ou transform</h2>
+<p style="max-width:165mm">Deux façons de faire glisser un bloc à l'écran. La première change sa position dans la mise en page, la seconde le décale au moment de composer. Le résultat visuel est le même ; le travail, non.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 204" width="100%">
+<rect fill="#EFE9E1" height="204" width="600" x="0" y="0"></rect>
+<text fill="#7A5A12" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">Déplacer un bloc pendant 120 images, en changeant left ou transform (Chromium, compteurs DevTools, mesuré)</text>
+<rect fill="#fff" height="38" rx="4" stroke="#C62828" stroke-width="1.2" width="568" x="16" y="36"></rect>
+<text class="mono" fill="#C62828" font-size="8" font-weight="700" style="font-size:8px" text-anchor="start" x="28" y="52">style.left = i + "px"</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="28" y="66">119 mises en page · 119 recalculs de style · temps de mise en page 3,1 ms</text>
+<rect fill="#fff" height="38" rx="4" stroke="#2E7D32" stroke-width="1.2" width="568" x="16" y="82"></rect>
+<text class="mono" fill="#2E7D32" font-size="8" font-weight="700" style="font-size:8px" text-anchor="start" x="28" y="98">style.transform = translateX(i px)</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="28" y="112">1 mises en page · 120 recalculs de style · temps de mise en page 0,1 ms</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="148">Le recalcul de style a lieu dans les deux cas ; transform saute la mise en page et la peinture, il ne fait que recomposer.</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="16" y="164">React Flow 12.11.2, qu'utilise Magpie, place chaque nœud par transform: translate(x, y), et déplace le canvas de même.</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="186">Le contenu de la page de test était court : sur une page réelle, la mise en page coûte bien plus que 3 ms pour 120 images.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · CSS, une transition qui reste sur le compositeur</span>.panneau      { transition: transform 150ms ease-out, opacity 150ms ease-out; }
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · CSS, une transition qui reste sur le compositeur</span>.panneau      { transition: transform 150ms ease-out, opacity 150ms ease-out; }
 .panneau.cache { transform: translateX(100%); opacity: 0; }
 /* et non : transition: left 150ms, width 150ms, qui refont la mise en page à chaque image */</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Les calques</h3>
-      <p>Un élément animé par transform peut recevoir son propre calque de composition : le processeur graphique le déplace sans repeindre. <code>will-change: transform</code> le demande à l'avance, à réserver aux éléments qui bougent vraiment.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Le canvas de React Flow</h3>
-      <p>Faire défiler ou zoomer le graphe ne change qu'une transformation sur le conteneur : aucun nœud n'est remis en page. C'est ce qui garde le canvas fluide avec des dizaines de composants.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Les calques</h3>
+<p>Un élément animé par transform peut recevoir son propre calque de composition : le processeur graphique le déplace sans repeindre. <code>will-change: transform</code> le demande à l'avance, à réserver aux éléments qui bougent vraiment.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Le canvas de React Flow</h3>
+<p>Faire défiler ou zoomer le graphe ne change qu'une transformation sur le conteneur : aucun nœud n'est remis en page. C'est ce qui garde le canvas fluide avec des dizaines de composants.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Mettre will-change: transform sur tout. Chaque calque consomme de la mémoire graphique ; des centaines de calques ralentissent la composition qu'ils devaient accélérer.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 122 · Du DOM aux pixels</div>
+<div class="folio">3</div>
+<div class="pied">Cours 122 · Du DOM aux pixels</div>
 </section>
-
 <!-- ============ PAGE 4 · LA PEINTURE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 122</b></div>
-  <p class="rubrique">Schéma 3 · Le prix de la peinture</p>
-  <h2>Un effet par capsule</h2>
-  <p style="max-width:165mm">Certains effets se calculent pixel par pixel. Magpie dessine le contour vert d'une capsule sélectionnée avec quatre drop-shadow, comme Grasshopper teinte la sienne. On a mesuré ce qu'il coûte quand la vue se déplace.</p>
-
-  <svg viewBox="0 0 600 220" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="220" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="7.8" fill="#7A5A12" text-anchor="start" font-weight="700">200 capsules en image, la vue déplacée par transform pendant 60 images ; temps total des tâches (Chromium sans GPU, mesuré)</text>
-<text x="16" y="49" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">aucune capsule filtrée</text>
-<rect x="260" y="39" width="3.0" height="14" rx="2" fill="#2E7D32"/>
-<text x="271" y="50" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700">29 ms</text>
-<text x="16" y="75" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">5 capsules avec le filtre de sélection</text>
-<rect x="260" y="65" width="3.0" height="14" rx="2" fill="#2E7D32"/>
-<text x="271" y="76" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700">30 ms</text>
-<text x="16" y="101" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">200 capsules avec le filtre de sélection</text>
-<rect x="260" y="91" width="250.0" height="14" rx="2" fill="#C62828"/>
-<text x="518.0" y="102" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700">4 736 ms</text>
-<text x="16" y="130" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Le filtre de styles.css:865 empile quatre drop-shadow : chaque image filtrée est repeinte, pixel par pixel, à chaque image.</text>
-<text x="16" y="146" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Quelques capsules sélectionnées ne coûtent rien de mesurable ; deux cents font passer l'image de 0,5 à 79 ms.</text>
-<text x="16" y="170" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Mesure en rendu logiciel : avec un processeur graphique, l'écart serait moindre, mais le sens reste le même.</text>
-<text x="16" y="186" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Les effets de peinture coûteux : filter, box-shadow flou, backdrop-filter, grands dégradés, opacité sur de grandes zones.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 122</b></div>
+<p class="rubrique">Schéma 3 · Le prix de la peinture</p>
+<h2>Un effet par capsule</h2>
+<p style="max-width:165mm">Certains effets se calculent pixel par pixel. Magpie dessine le contour vert d'une capsule sélectionnée avec quatre drop-shadow, comme Grasshopper teinte la sienne. On a mesuré ce qu'il coûte quand la vue se déplace.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 220" width="100%">
+<rect fill="#EFE9E1" height="220" width="600" x="0" y="0"></rect>
+<text fill="#7A5A12" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="22">200 capsules en image, la vue déplacée par transform pendant 60 images ; temps total des tâches (Chromium sans GPU, mesuré)</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="49">aucune capsule filtrée</text>
+<rect fill="#2E7D32" height="14" rx="2" width="3.0" x="260" y="39"></rect>
+<text fill="#2E7D32" font-size="7.8" font-weight="700" text-anchor="start" x="271" y="50">29 ms</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="75">5 capsules avec le filtre de sélection</text>
+<rect fill="#2E7D32" height="14" rx="2" width="3.0" x="260" y="65"></rect>
+<text fill="#2E7D32" font-size="7.8" font-weight="700" text-anchor="start" x="271" y="76">30 ms</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="101">200 capsules avec le filtre de sélection</text>
+<rect fill="#C62828" height="14" rx="2" width="250.0" x="260" y="91"></rect>
+<text fill="#C62828" font-size="7.8" font-weight="700" text-anchor="start" x="518.0" y="102">4 736 ms</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="130">Le filtre de styles.css:865 empile quatre drop-shadow : chaque image filtrée est repeinte, pixel par pixel, à chaque image.</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="146">Quelques capsules sélectionnées ne coûtent rien de mesurable ; deux cents font passer l'image de 0,5 à 79 ms.</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="170">Mesure en rendu logiciel : avec un processeur graphique, l'écart serait moindre, mais le sens reste le même.</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="186">Les effets de peinture coûteux : filter, box-shadow flou, backdrop-filter, grands dégradés, opacité sur de grandes zones.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · CSS, un contour de sélection sans filtre</span>.magpie-capsule.is-selected { outline: 2px solid #36a84a; outline-offset: 1px; border-radius: 8px; }
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · CSS, un contour de sélection sans filtre</span>.magpie-capsule.is-selected { outline: 2px solid #36a84a; outline-offset: 1px; border-radius: 8px; }
 /* rectangle arrondi au lieu de la silhouette exacte : une peinture simple, mise en cache */</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Le compromis</h3>
-      <p>Le filtre épouse la forme réelle de l'image, ce qu'un contour rectangulaire ne fait pas. Une autre voie garde la silhouette : préparer une seconde image déjà détourée en vert, et l'afficher à la sélection.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Voir la peinture</h3>
-      <p>Dans les DevTools de Chrome, l'onglet Rendering a une case « Paint flashing » : chaque zone repeinte clignote en vert. Une zone qui clignote pendant un simple défilement est un suspect.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Le compromis</h3>
+<p>Le filtre épouse la forme réelle de l'image, ce qu'un contour rectangulaire ne fait pas. Une autre voie garde la silhouette : préparer une seconde image déjà détourée en vert, et l'afficher à la sélection.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Voir la peinture</h3>
+<p>Dans les DevTools de Chrome, l'onglet Rendering a une case « Paint flashing » : chaque zone repeinte clignote en vert. Une zone qui clignote pendant un simple défilement est un suspect.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Juger un effet sur une démonstration de trois éléments. Son coût est proportionnel au nombre d'éléments touchés : invisible pour cinq capsules sélectionnées, il devient le poste principal quand l'utilisateur sélectionne tout.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 122 · Du DOM aux pixels</div>
+<div class="folio">4</div>
+<div class="pied">Cours 122 · Du DOM aux pixels</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 122</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>Mesurer, déplacer, peindre dans Magpie web</h2>
-  <p style="max-width:165mm">Le curseur lit une fois, React Flow déplace par transform, la sélection peint un filtre.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 122</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>Mesurer, déplacer, peindre dans Magpie web</h2>
+<p style="max-width:165mm">Le curseur lit une fois, React Flow déplace par transform, la sélection peint un filtre.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">magpie/web/src/nodeEditors.jsx</span></div>
 <div class="l k1"><span class="n">52</span>const rect = railRef.current.getBoundingClientRect();<span class="rep r1">1</span></div>
@@ -241,137 +214,55 @@ lignes.forEach((l, i) =&gt; { l.style.width = largeur(hauteurs[i]) + "px"; });  
 <div class="l k4"><span class="n">862</span>.magpie-capsule.is-selected img {<span class="rep r4">4</span></div>
 <div class="l k5"><span class="n">865</span>  filter: drop-shadow(1.5px 0 0 #36a84a) drop-shadow(…) …<span class="rep r5">5</span></div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>Une lecture</b>Au début.</li>
-      <li><span class="rep r2">2</span><b>Réutilisée</b>À chaque geste.</li>
-      <li><span class="rep r3">3</span><b>Observer</b>Sans forcer.</li>
-      <li><span class="rep r4">4</span><b>La sélection</b>Image par image.</li>
-      <li><span class="rep r5">5</span><b>Quatre ombres</b>Repeintes.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À surveiller · tout sélectionner, puis déplacer la vue</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>Une lecture</b>Au début.</li>
+<li><span class="rep r2">2</span><b>Réutilisée</b>À chaque geste.</li>
+<li><span class="rep r3">3</span><b>Observer</b>Sans forcer.</li>
+<li><span class="rep r4">4</span><b>La sélection</b>Image par image.</li>
+<li><span class="rep r5">5</span><b>Quatre ombres</b>Repeintes.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À surveiller · tout sélectionner, puis déplacer la vue</span>
     Mesuré hors de l'application, dans Chromium sans processeur graphique : 200 images portant le filtre de styles.css:865 font passer une image de 0,5 à 79 ms quand la vue se déplace ; 5 images ne changent rien. Déduit : sur un grand graphe tout sélectionné, ou sur une machine modeste, le défilement peut saccader. Non mesuré dans Magpie. Relevé sans rien modifier.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 122 · Du DOM aux pixels</div>
+<div class="folio">5</div>
+<div class="pied">Cours 122 · Du DOM aux pixels</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 122</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 122</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">Changer la largeur d'un élément relance…</div><ul>
-      <li><span>A</span>la composition seule</li><li><span>B</span>rien</li><li><span>C</span>le style seul</li><li><span>D</span>la mise en page, la peinture et la composition</li></ul></div>
 
-    <div class="q"><div class="enonce">Changer transform relance…</div><ul>
-      <li><span>A</span>tout le pipeline</li><li><span>B</span>la composition, sans mise en page</li><li><span>C</span>la peinture seule</li><li><span>D</span>le DOM</li></ul></div>
 
-    <div class="q"><div class="enonce">Lire offsetHeight juste après une écriture…</div><ul>
-      <li><span>A</span>est gratuit</li><li><span>B</span>lève une erreur</li><li><span>C</span>force une mise en page immédiate</li><li><span>D</span>attend le rendu</li></ul></div>
 
-    <div class="q"><div class="enonce">Lectures et écritures alternées sur 500 lignes ont pris…</div><ul>
-      <li><span>A</span>0 ms</li><li><span>B</span>environ 60 ms, contre moins d'1 ms groupées</li><li><span>C</span>1 s</li><li><span>D</span>autant que groupées</li></ul></div>
-
-    <div class="q"><div class="enonce">Forcent une mise en page… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>classList.contains</li><li><span>B</span>offsetWidth</li><li><span>C</span>style.transform =</li><li><span>D</span>getBoundingClientRect</li></ul></div>
-
-    <div class="q"><div class="enonce">Déplacé par left pendant 120 images, le bloc a demandé…</div><ul>
-      <li><span>A</span>1 200</li><li><span>B</span>119 mises en page</li><li><span>C</span>1</li><li><span>D</span>0</li></ul></div>
-
-    <div class="q"><div class="enonce">React Flow place ses nœuds par…</div><ul>
-      <li><span>A</span>un canvas 2D</li><li><span>B</span>left et top</li><li><span>C</span>transform: translate</li><li><span>D</span>des marges</li></ul></div>
-
-    <div class="q"><div class="enonce">Le curseur de Magpie lit la taille de son rail…</div><ul>
-      <li><span>A</span>toutes les secondes</li><li><span>B</span>jamais</li><li><span>C</span>à chaque mouvement</li><li><span>D</span>une fois, au début du glisser</li></ul></div>
-
-    <div class="q"><div class="enonce">ResizeObserver…</div><ul>
-      <li><span>A</span>prévient d'un changement de taille sans forcer</li><li><span>B</span>ne marche qu'en 3D</li><li><span>C</span>force une mise en page</li><li><span>D</span>redimensionne l'élément</li></ul></div>
-
-    <div class="q"><div class="enonce">200 capsules filtrées, vue déplacée : le coût par image passe à…</div><ul>
-      <li><span>A</span>environ 79 ms</li><li><span>B</span>16,7 ms</li><li><span>C</span>1 s</li><li><span>D</span>0,5 ms</li></ul></div>
-
-    <div class="q"><div class="enonce">will-change: transform sur tous les éléments…</div><ul>
-      <li><span>A</span>est interdit</li><li><span>B</span>accélère tout</li><li><span>C</span>n'a aucun effet</li><li><span>D</span>consomme de la mémoire graphique et peut ralentir</li></ul></div>
-
-    <div class="q"><div class="enonce">Pour voir ce qui est repeint, on active…</div><ul>
-      <li><span>A</span>la console</li><li><span>B</span>le réseau lent</li><li><span>C</span>Paint flashing</li><li><span>D</span>le mode sombre</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 122 · Du DOM aux pixels</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">el.getBoundingClientRect()</td><td>lire une géométrie (force la mise en page)</td><td>nodeEditors.jsx:52</td></tr>
+<tr><td class="c">transform: translate(x, y)</td><td>déplacer sans mise en page</td><td>page 3</td></tr>
+<tr><td class="c">new ResizeObserver(f)</td><td>suivre une taille sans forcer</td><td>Viewer3D.jsx:116</td></tr>
+<tr><td class="c">will-change: transform</td><td>demander un calque</td><td>page 3</td></tr>
+<tr><td class="c">filter: drop-shadow(…)</td><td>peinture pixel par pixel</td><td>styles.css:865</td></tr>
+<tr><td class="c">Performance.getMetrics</td><td>compter les mises en page (DevTools)</td><td>page 2</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Mise en page (layout)</dt><dd>Le calcul de la position et de la taille de chaque boîte.</dd>
+<dt>Peinture</dt><dd>Le remplissage des pixels de chaque calque.</dd>
+<dt>Composition</dt><dd>L'assemblage des calques en une image, souvent par le GPU.</dd>
+<dt>Mise en page forcée</dt><dd>Un calcul de mise en page demandé avant le rendu, par une lecture.</dd>
+<dt>Calque</dt><dd>Une surface peinte à part, que le compositeur peut déplacer.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 123</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 122 · Du DOM aux pixels</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 122</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · D.</b> On entre tôt.</div>
-    <div><b>02 · B.</b> Sur le compositeur.</div>
-    <div><b>03 · C.</b> Pour répondre juste.</div>
-    <div><b>04 · B.</b> 59,4 et 68,0 ms contre 0,9 et 0,7.</div>
-    <div><b>05 · B et D.</b> Ce sont des lectures de géométrie.</div>
-    <div><b>06 · B.</b> Une par image.</div>
-    <div><b>07 · C.</b> Version 12.11.2.</div>
-    <div><b>08 · D.</b> Ligne 52.</div>
-    <div><b>09 · A.</b> Viewer3D.jsx:116.</div>
-    <div><b>10 · A.</b> 4 736 ms pour 60 images.</div>
-    <div><b>11 · D.</b> Un calque par élément.</div>
-    <div><b>12 · C.</b> Onglet Rendering.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 123, « Le stockage du navigateur ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">el.getBoundingClientRect()</td><td>lire une géométrie (force la mise en page)</td><td>nodeEditors.jsx:52</td></tr>
-      <tr><td class="c">transform: translate(x, y)</td><td>déplacer sans mise en page</td><td>page 3</td></tr>
-      <tr><td class="c">new ResizeObserver(f)</td><td>suivre une taille sans forcer</td><td>Viewer3D.jsx:116</td></tr>
-      <tr><td class="c">will-change: transform</td><td>demander un calque</td><td>page 3</td></tr>
-      <tr><td class="c">filter: drop-shadow(…)</td><td>peinture pixel par pixel</td><td>styles.css:865</td></tr>
-      <tr><td class="c">Performance.getMetrics</td><td>compter les mises en page (DevTools)</td><td>page 2</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Mise en page (layout)</dt><dd>Le calcul de la position et de la taille de chaque boîte.</dd>
-    <dt>Peinture</dt><dd>Le remplissage des pixels de chaque calque.</dd>
-    <dt>Composition</dt><dd>L'assemblage des calques en une image, souvent par le GPU.</dd>
-    <dt>Mise en page forcée</dt><dd>Un calcul de mise en page demandé avant le rendu, par une lecture.</dd>
-    <dt>Calque</dt><dd>Une surface peinte à part, que le compositeur peut déplacer.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 123</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 122 · Du DOM aux pixels</div>
-</section>
-
 </body>
 </html>

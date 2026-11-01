@@ -1,250 +1,223 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>95 · Le parallélisme de données</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-11">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 95</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Le parallélisme de données</h1>
-  <p class="chapeau">Un processeur actuel a plusieurs cœurs, et une boucle ordinaire n'en occupe qu'un. Quand chaque élément d'une liste se calcule sans dépendre des autres, on peut découper la liste et confier un morceau à chaque cœur : c'est le <b>parallélisme de données</b>. Le gain peut être presque égal au nombre de cœurs, ou négatif, ou faux.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>67</b> et <b>91</b></span>
-    <span class="pastille">Exemples · <b>Attractor.cs</b> (Cuttlefish), <b>PeintreFeuilles.cs</b> (SnapSet), exemples autonomes</span>
-  </div>
-
-  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
-    <svg viewBox="0 0 600 204" width="100%">
-<text x="300" y="18" font-size="8.4" fill="#4F46B8" text-anchor="middle" font-weight="700">100 000 éléments indépendants, un calcul lourd chacun, sur une machine à 4 cœurs (.NET 8, mesuré)</text>
-<text x="16" y="56" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700">1 cœur</text>
-<rect x="90" y="40.0" width="400.0" height="27.0" fill="#4F46B8"/>
-<text x="496.0" y="58" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">1358 ms</text>
-<text x="16" y="96" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700">2 cœurs</text>
-<rect x="90" y="80.0" width="202.4" height="13.0" fill="#4F46B8"/>
-<rect x="90" y="94.0" width="202.4" height="13.0" fill="#2E7D32"/>
-<text x="298.3564064801178" y="98" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">687 ms</text>
-<text x="16" y="136" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700">4 cœurs</text>
-<rect x="90" y="120.0" width="101.6" height="6.0" fill="#4F46B8"/>
-<rect x="90" y="127.0" width="101.6" height="6.0" fill="#2E7D32"/>
-<rect x="90" y="134.0" width="101.6" height="6.0" fill="#E65100"/>
-<rect x="90" y="141.0" width="101.6" height="6.0" fill="#1565C0"/>
-<text x="197.620029455081" y="138" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">345 ms</text>
-<text x="16" y="172" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">Quatre cœurs : 3,9 fois plus vite. Chaque élément ne dépend d'aucun autre : c'est le cas idéal.</text>
-<text x="16" y="190" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Parallel.For avec MaxDegreeOfParallelism = 1, 2, 4 ; médiane de 9 mesures.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 95</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Le parallélisme de données</h1>
+<p class="chapeau">Un processeur actuel a plusieurs cœurs, et une boucle ordinaire n'en occupe qu'un. Quand chaque élément d'une liste se calcule sans dépendre des autres, on peut découper la liste et confier un morceau à chaque cœur : c'est le <b>parallélisme de données</b>. Le gain peut être presque égal au nombre de cœurs, ou négatif, ou faux.</p>
+<div class="meta">
+<span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>67</b> et <b>91</b></span>
+<span class="pastille">Exemples · <b>Attractor.cs</b> (Cuttlefish), <b>PeintreFeuilles.cs</b> (SnapSet), exemples autonomes</span>
+</div>
+<div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+<svg viewbox="0 0 600 204" width="100%">
+<text fill="#4F46B8" font-size="8.4" font-weight="700" text-anchor="middle" x="300" y="18">100 000 éléments indépendants, un calcul lourd chacun, sur une machine à 4 cœurs (.NET 8, mesuré)</text>
+<text fill="#2B2F33" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="56">1 cœur</text>
+<rect fill="#4F46B8" height="27.0" width="400.0" x="90" y="40.0"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="496.0" y="58">1358 ms</text>
+<text fill="#2B2F33" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="96">2 cœurs</text>
+<rect fill="#4F46B8" height="13.0" width="202.4" x="90" y="80.0"></rect>
+<rect fill="#2E7D32" height="13.0" width="202.4" x="90" y="94.0"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="298.3564064801178" y="98">687 ms</text>
+<text fill="#2B2F33" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="136">4 cœurs</text>
+<rect fill="#4F46B8" height="6.0" width="101.6" x="90" y="120.0"></rect>
+<rect fill="#2E7D32" height="6.0" width="101.6" x="90" y="127.0"></rect>
+<rect fill="#E65100" height="6.0" width="101.6" x="90" y="134.0"></rect>
+<rect fill="#1565C0" height="6.0" width="101.6" x="90" y="141.0"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="197.620029455081" y="138">345 ms</text>
+<text fill="#2B2F33" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="172">Quatre cœurs : 3,9 fois plus vite. Chaque élément ne dépend d'aucun autre : c'est le cas idéal.</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="16" y="190">Parallel.For avec MaxDegreeOfParallelism = 1, 2, 4 ; médiane de 9 mesures.</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Des éléments indépendants, un travail assez lourd par élément, aucun état partagé non protégé : alors seulement, le parallèle paie.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Corriger cent copies à quatre : chacun prend une pile, et c'est quatre fois plus rapide. Mais si les quatre doivent écrire chaque note sur le même cahier, ils passent leur temps à se le passer.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>reconnaître une boucle parallélisable ;</li>
-        <li>régler la granularité ;</li>
-        <li>éviter une course aux données ;</li>
-        <li>savoir ce qui reste sur le fil de l'interface.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Des éléments indépendants, un travail assez lourd par élément, aucun état partagé non protégé : alors seulement, le parallèle paie.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Corriger cent copies à quatre : chacun prend une pile, et c'est quatre fois plus rapide. Mais si les quatre doivent écrire chaque note sur le même cahier, ils passent leur temps à se le passer.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>reconnaître une boucle parallélisable ;</li>
+<li>régler la granularité ;</li>
+<li>éviter une course aux données ;</li>
+<li>savoir ce qui reste sur le fil de l'interface.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À retenir</span>
     Le cours 67 a présenté les fils et les verrous. Ici, on ne lance pas de fils à la main : <code>Parallel.For</code> et PLINQ répartissent le travail sur le pool de threads de .NET, qui en crée autant qu'il y a de cœurs utiles.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 95 · Le parallélisme de données</div>
+<div class="folio">1</div>
+<div class="pied">Cours 95 · Le parallélisme de données</div>
 </section>
-
 <!-- ============ PAGE 2 · LA GRANULARITÉ ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 95</b></div>
-  <p class="rubrique">Schéma 1 · La granularité</p>
-  <h2>Assez de travail par morceau</h2>
-  <p style="max-width:165mm">Distribuer le travail a un coût : un appel de délégué, une synchronisation, des données à partager. Si chaque élément demande moins de travail que sa distribution, le parallèle ralentit tout. On regroupe alors les éléments en blocs.</p>
-
-  <svg viewBox="0 0 600 196" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="196" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">Dix millions d'éléments, un calcul minuscule chacun (a[i] = i × 2) : mesuré</text>
-<text x="16" y="54" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">boucle for séquentielle</text>
-<rect x="270" y="42" width="64.2" height="18" fill="#E65100"/>
-<text x="340.2" y="55" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">10,7 ms</text>
-<text x="16" y="86" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">Parallel.For, un appel par élément</text>
-<rect x="270" y="74" width="236.4" height="18" fill="#C62828"/>
-<text x="512.4" y="87" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">39,4 ms</text>
-<text x="16" y="118" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">Parallel.ForEach par blocs (Partitioner)</text>
-<rect x="270" y="106" width="30.0" height="18" fill="#2E7D32"/>
-<text x="306.0" y="119" font-size="8.6" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">5,0 ms</text>
-<text x="16" y="152" font-size="8" fill="#2B2F33" text-anchor="start">Un appel de délégué par élément coûte plus que le travail lui-même : le parallèle est 3,7 fois plus lent.</text>
-<text x="16" y="168" font-size="8" fill="#2B2F33" text-anchor="start">Par blocs, chaque cœur reçoit une plage et fait une boucle ordinaire : 2,1 fois plus vite.</text>
-<text x="16" y="184" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">La mémoire, partagée par les quatre cœurs, limite ce dernier gain.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 95</b></div>
+<p class="rubrique">Schéma 1 · La granularité</p>
+<h2>Assez de travail par morceau</h2>
+<p style="max-width:165mm">Distribuer le travail a un coût : un appel de délégué, une synchronisation, des données à partager. Si chaque élément demande moins de travail que sa distribution, le parallèle ralentit tout. On regroupe alors les éléments en blocs.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 196" width="100%">
+<rect fill="#EFE9E1" height="196" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">Dix millions d'éléments, un calcul minuscule chacun (a[i] = i × 2) : mesuré</text>
+<text fill="#2B2F33" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="54">boucle for séquentielle</text>
+<rect fill="#E65100" height="18" width="64.2" x="270" y="42"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="340.2" y="55">10,7 ms</text>
+<text fill="#2B2F33" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="86">Parallel.For, un appel par élément</text>
+<rect fill="#C62828" height="18" width="236.4" x="270" y="74"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="512.4" y="87">39,4 ms</text>
+<text fill="#2B2F33" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="118">Parallel.ForEach par blocs (Partitioner)</text>
+<rect fill="#2E7D32" height="18" width="30.0" x="270" y="106"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="306.0" y="119">5,0 ms</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="16" y="152">Un appel de délégué par élément coûte plus que le travail lui-même : le parallèle est 3,7 fois plus lent.</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="16" y="168">Par blocs, chaque cœur reçoit une plage et fait une boucle ordinaire : 2,1 fois plus vite.</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="16" y="184">La mémoire, partagée par les quatre cœurs, limite ce dernier gain.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · .NET 8, la version par blocs du schéma</span>var blocs = Partitioner.Create(0, a.Length);       // des plages [début, fin)
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · .NET 8, la version par blocs du schéma</span>var blocs = Partitioner.Create(0, a.Length);       // des plages [début, fin)
 Parallel.ForEach(blocs, plage =&gt; {
     for (int i = plage.Item1; i &lt; plage.Item2; i++)
         a[i] = i * 2.0;                             // une boucle ordinaire
 });</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Le plafond de la mémoire</h3>
-      <p>Écrire dix millions de nombres est limité par la mémoire, que les cœurs se partagent : quatre cœurs n'en tirent que 2,1 fois. Le calcul lourd du schéma de la page 1, qui reste dans le processeur, s'approchait de 4.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>La loi d'Amdahl, encore</h3>
-      <p>Seule la partie parallèle accélère (cours 91). Un composant qui passe 70 % de son temps à lire ses entrées et à écrire ses sorties, et 30 % à calculer, ne gagnera jamais plus de 1,4 fois, quel que soit le nombre de cœurs.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Le plafond de la mémoire</h3>
+<p>Écrire dix millions de nombres est limité par la mémoire, que les cœurs se partagent : quatre cœurs n'en tirent que 2,1 fois. Le calcul lourd du schéma de la page 1, qui reste dans le processeur, s'approchait de 4.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>La loi d'Amdahl, encore</h3>
+<p>Seule la partie parallèle accélère (cours 91). Un composant qui passe 70 % de son temps à lire ses entrées et à écrire ses sorties, et 30 % à calculer, ne gagnera jamais plus de 1,4 fois, quel que soit le nombre de cœurs.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Mettre <code>Parallel.For</code> sur toute boucle « pour aller plus vite ». Sur un corps minuscule, la mesure donne 39 ms au lieu de 11 : la distribution coûte plus que le travail.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 95 · Le parallélisme de données</div>
+<div class="folio">2</div>
+<div class="pied">Cours 95 · Le parallélisme de données</div>
 </section>
-
 <!-- ============ PAGE 3 · LA COURSE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 95</b></div>
-  <p class="rubrique">Schéma 2 · La course aux données</p>
-  <h2>Deux fils, une variable</h2>
-  <p style="max-width:165mm"><code>s += v[i]</code> se fait en trois temps : lire <code>s</code>, ajouter, écrire. Si deux fils lisent la même valeur avant que l'un n'écrive, une addition est perdue. Le résultat est faux, et différent à chaque exécution : c'est une <b>course aux données</b>.</p>
-
-  <svg viewBox="0 0 600 224" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="224" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">Additionner dix millions de 1 en parallèle dans une même variable : résultats et durées mesurés</text>
-<text x="16" y="44" font-size="8.4" fill="#C62828" text-anchor="start" font-weight="700">s += v[i] sans protection, cinq essais :</text>
-<text x="30" y="62" font-size="9" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">1 453 364</text>
-<text x="140" y="62" font-size="9" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">3 520 157</text>
-<text x="250" y="62" font-size="9" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">3 797 865</text>
-<text x="360" y="62" font-size="9" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">3 832 986</text>
-<text x="470" y="62" font-size="9" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">1 187 101</text>
-<text x="16" y="80" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">attendu : 10 000 000. Faux, et jamais le même.</text>
-<text x="30" y="104" font-size="8" fill="#6B7378" text-anchor="start" font-weight="700">méthode</text>
-<text x="300" y="104" font-size="8" fill="#6B7378" text-anchor="start" font-weight="700">résultat</text>
-<text x="440" y="104" font-size="8" fill="#6B7378" text-anchor="start" font-weight="700">durée</text>
-<rect x="16" y="112" width="568" height="20" rx="3" fill="#ECEBFA"/>
-<text x="30" y="126" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">lock autour de chaque addition</text>
-<text x="300" y="126" font-size="8.2" fill="#2E7D32" text-anchor="start" font-weight="700">juste</text>
-<text x="440" y="126" font-size="8.6" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">857 ms</text>
-<rect x="16" y="136" width="568" height="20" rx="3" fill="#fff"/>
-<text x="30" y="150" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">Interlocked.Add à chaque élément</text>
-<text x="300" y="150" font-size="8.2" fill="#2E7D32" text-anchor="start" font-weight="700">juste</text>
-<text x="440" y="150" font-size="8.6" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">671 ms</text>
-<rect x="16" y="160" width="568" height="20" rx="3" fill="#ECEBFA"/>
-<text x="30" y="174" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">une somme locale par fil, fusionnée à la fin</text>
-<text x="300" y="174" font-size="8.2" fill="#2E7D32" text-anchor="start" font-weight="700">juste</text>
-<text x="440" y="174" font-size="8.6" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">18,5 ms</text>
-<rect x="16" y="184" width="568" height="20" rx="3" fill="#fff"/>
-<text x="30" y="198" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">boucle séquentielle, pour comparer</text>
-<text x="300" y="198" font-size="8.2" fill="#2E7D32" text-anchor="start" font-weight="700">juste</text>
-<text x="440" y="198" font-size="8.6" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">16,1 ms</text>
-<text x="16" y="218" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Chaque fil lit s, ajoute, réécrit : deux fils qui lisent la même valeur perdent une addition.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 95</b></div>
+<p class="rubrique">Schéma 2 · La course aux données</p>
+<h2>Deux fils, une variable</h2>
+<p style="max-width:165mm"><code>s += v[i]</code> se fait en trois temps : lire <code>s</code>, ajouter, écrire. Si deux fils lisent la même valeur avant que l'un n'écrive, une addition est perdue. Le résultat est faux, et différent à chaque exécution : c'est une <b>course aux données</b>.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 224" width="100%">
+<rect fill="#EFE9E1" height="224" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">Additionner dix millions de 1 en parallèle dans une même variable : résultats et durées mesurés</text>
+<text fill="#C62828" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="44">s += v[i] sans protection, cinq essais :</text>
+<text class="mono" fill="#C62828" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="30" y="62">1 453 364</text>
+<text class="mono" fill="#C62828" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="140" y="62">3 520 157</text>
+<text class="mono" fill="#C62828" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="250" y="62">3 797 865</text>
+<text class="mono" fill="#C62828" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="360" y="62">3 832 986</text>
+<text class="mono" fill="#C62828" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="470" y="62">1 187 101</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="start" x="16" y="80">attendu : 10 000 000. Faux, et jamais le même.</text>
+<text fill="#6B7378" font-size="8" font-weight="700" text-anchor="start" x="30" y="104">méthode</text>
+<text fill="#6B7378" font-size="8" font-weight="700" text-anchor="start" x="300" y="104">résultat</text>
+<text fill="#6B7378" font-size="8" font-weight="700" text-anchor="start" x="440" y="104">durée</text>
+<rect fill="#ECEBFA" height="20" rx="3" width="568" x="16" y="112"></rect>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="30" y="126">lock autour de chaque addition</text>
+<text fill="#2E7D32" font-size="8.2" font-weight="700" text-anchor="start" x="300" y="126">juste</text>
+<text class="mono" fill="#C62828" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="440" y="126">857 ms</text>
+<rect fill="#fff" height="20" rx="3" width="568" x="16" y="136"></rect>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="30" y="150">Interlocked.Add à chaque élément</text>
+<text fill="#2E7D32" font-size="8.2" font-weight="700" text-anchor="start" x="300" y="150">juste</text>
+<text class="mono" fill="#C62828" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="440" y="150">671 ms</text>
+<rect fill="#ECEBFA" height="20" rx="3" width="568" x="16" y="160"></rect>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="30" y="174">une somme locale par fil, fusionnée à la fin</text>
+<text fill="#2E7D32" font-size="8.2" font-weight="700" text-anchor="start" x="300" y="174">juste</text>
+<text class="mono" fill="#2E7D32" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="440" y="174">18,5 ms</text>
+<rect fill="#fff" height="20" rx="3" width="568" x="16" y="184"></rect>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="30" y="198">boucle séquentielle, pour comparer</text>
+<text fill="#2E7D32" font-size="8.2" font-weight="700" text-anchor="start" x="300" y="198">juste</text>
+<text class="mono" fill="#6B7378" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="440" y="198">16,1 ms</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="16" y="218">Chaque fil lit s, ajoute, réécrit : deux fils qui lisent la même valeur perdent une addition.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · .NET 8, une somme locale par fil (la version juste et rapide du schéma)</span>double s = 0;
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · .NET 8, une somme locale par fil (la version juste et rapide du schéma)</span>double s = 0;
 Parallel.For(0, M,
     () =&gt; 0.0,                               // chaque fil part de 0
     (i, etat, local) =&gt; local + v[i],         // et additionne chez lui
     local =&gt; { lock (verrou) s += local; }); // une fusion par fil</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Juste, mais lent</h3>
-      <p>Un <code>lock</code> ou un <code>Interlocked</code> autour de chaque addition rendent le résultat juste, mais les quatre fils font la queue au même endroit : 40 à 55 fois plus lent que la boucle simple. La protection doit être rare, pas partout.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Ne rien partager</h3>
-      <p>La bonne forme : chaque fil travaille sur ses propres données et l'on fusionne à la fin, une fois par fil. PLINQ le fait seul : <code>v.AsParallel().Sum()</code> rend le bon total en 14,7 ms, mesuré. Écrire dans <code>o[i]</code>, une case par élément, est aussi sans partage.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Juste, mais lent</h3>
+<p>Un <code>lock</code> ou un <code>Interlocked</code> autour de chaque addition rendent le résultat juste, mais les quatre fils font la queue au même endroit : 40 à 55 fois plus lent que la boucle simple. La protection doit être rare, pas partout.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Ne rien partager</h3>
+<p>La bonne forme : chaque fil travaille sur ses propres données et l'on fusionne à la fin, une fois par fil. PLINQ le fait seul : <code>v.AsParallel().Sum()</code> rend le bon total en 14,7 ms, mesuré. Écrire dans <code>o[i]</code>, une case par élément, est aussi sans partage.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Conclure qu'un code parallèle est juste parce qu'un essai a donné le bon résultat. Une course peut ne se produire qu'une fois sur mille, sur une autre machine, avec d'autres données. On raisonne sur le partage, on ne le teste pas au hasard.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 95 · Le parallélisme de données</div>
+<div class="folio">3</div>
+<div class="pied">Cours 95 · Le parallélisme de données</div>
 </section>
-
 <!-- ============ PAGE 4 · CE QUI SE PARALLÉLISE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 95</b></div>
-  <p class="rubrique">Schéma 3 · Dans Grasshopper</p>
-  <h2>Ce qui peut quitter le fil de l'interface</h2>
-  <p style="max-width:165mm">Grasshopper calcule ses composants sur le fil de l'interface, l'un après l'autre. Un composant peut paralléliser son propre travail, à condition de ne toucher en parallèle que de la géométrie, jamais le document Rhino, le canvas ou une fenêtre.</p>
-
-  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">Avant de paralléliser, trois questions</text>
-<rect x="16" y="36" width="568" height="46" rx="4" fill="#ECEBFA" stroke="#4F46B8" stroke-width="1.2"/>
-<text x="30" y="54" font-size="9" fill="#4F46B8" text-anchor="start" font-weight="700">1 · Les éléments sont-ils indépendants ?</text>
-<text x="30" y="71" font-size="8" fill="#2B2F33" text-anchor="start">aucun ne lit ce qu'un autre écrit</text>
-<text x="330" y="71" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">Attractor : chaque point ne dépend que des courbes</text>
-<rect x="16" y="88" width="568" height="46" rx="4" fill="#fff" stroke="#4F46B8" stroke-width="1.2"/>
-<text x="30" y="106" font-size="9" fill="#4F46B8" text-anchor="start" font-weight="700">2 · Le travail par élément est-il assez lourd ?</text>
-<text x="30" y="123" font-size="8" fill="#2B2F33" text-anchor="start">sinon, regrouper en blocs</text>
-<text x="330" y="123" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">un ClosestPoint sur une NURBS : oui</text>
-<rect x="16" y="140" width="568" height="46" rx="4" fill="#ECEBFA" stroke="#4F46B8" stroke-width="1.2"/>
-<text x="30" y="158" font-size="9" fill="#4F46B8" text-anchor="start" font-weight="700">3 · Le code appelé est-il sûr à plusieurs ?</text>
-<text x="30" y="175" font-size="8" fill="#2B2F33" text-anchor="start">pas d'état partagé, ou protégé</text>
-<text x="330" y="175" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">géométrie seule : oui ; document, interface : non</text>
-<text x="16" y="200" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">Grasshopper calcule les composants l'un après l'autre ; GH_TaskCapableComponent parallélise l'intérieur d'un seul.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 95</b></div>
+<p class="rubrique">Schéma 3 · Dans Grasshopper</p>
+<h2>Ce qui peut quitter le fil de l'interface</h2>
+<p style="max-width:165mm">Grasshopper calcule ses composants sur le fil de l'interface, l'un après l'autre. Un composant peut paralléliser son propre travail, à condition de ne toucher en parallèle que de la géométrie, jamais le document Rhino, le canvas ou une fenêtre.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 206" width="100%">
+<rect fill="#EFE9E1" height="206" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">Avant de paralléliser, trois questions</text>
+<rect fill="#ECEBFA" height="46" rx="4" stroke="#4F46B8" stroke-width="1.2" width="568" x="16" y="36"></rect>
+<text fill="#4F46B8" font-size="9" font-weight="700" text-anchor="start" x="30" y="54">1 · Les éléments sont-ils indépendants ?</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="30" y="71">aucun ne lit ce qu'un autre écrit</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="start" x="330" y="71">Attractor : chaque point ne dépend que des courbes</text>
+<rect fill="#fff" height="46" rx="4" stroke="#4F46B8" stroke-width="1.2" width="568" x="16" y="88"></rect>
+<text fill="#4F46B8" font-size="9" font-weight="700" text-anchor="start" x="30" y="106">2 · Le travail par élément est-il assez lourd ?</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="30" y="123">sinon, regrouper en blocs</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="start" x="330" y="123">un ClosestPoint sur une NURBS : oui</text>
+<rect fill="#ECEBFA" height="46" rx="4" stroke="#4F46B8" stroke-width="1.2" width="568" x="16" y="140"></rect>
+<text fill="#4F46B8" font-size="9" font-weight="700" text-anchor="start" x="30" y="158">3 · Le code appelé est-il sûr à plusieurs ?</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="30" y="175">pas d'état partagé, ou protégé</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="start" x="330" y="175">géométrie seule : oui ; document, interface : non</text>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="16" y="200">Grasshopper calcule les composants l'un après l'autre ; GH_TaskCapableComponent parallélise l'intérieur d'un seul.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">cuttlefish/Attractor.cs · lignes 77 à 86 (extrait)</span>foreach (GH_Point ghPt in branch)
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">cuttlefish/Attractor.cs · lignes 77 à 86 (extrait)</span>foreach (GH_Point ghPt in branch)
 {
     Point3d pt = ghPt.Value;
     …
     foreach (var curve in curves)
     {
         if (curve.ClosestPoint(pt, out double t, dA))</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Un bon candidat</h3>
-      <p>Chaque point déplacé ne dépend que des courbes, qu'on ne modifie pas ; le résultat va dans son propre emplacement. Le travail, des <code>ClosestPoint</code> sur des courbes, est lourd. Les trois questions du schéma ont une réponse favorable.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Ce qui reste séquentiel</h3>
-      <p>L'écriture dans le <code>DataTree</code> de sortie n'est pas sûre à plusieurs : on calcule en parallèle dans un tableau, puis on remplit l'arbre dans l'ordre. Les messages d'erreur, les aperçus, le document se manipulent depuis le fil principal.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Un bon candidat</h3>
+<p>Chaque point déplacé ne dépend que des courbes, qu'on ne modifie pas ; le résultat va dans son propre emplacement. Le travail, des <code>ClosestPoint</code> sur des courbes, est lourd. Les trois questions du schéma ont une réponse favorable.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Ce qui reste séquentiel</h3>
+<p>L'écriture dans le <code>DataTree</code> de sortie n'est pas sûre à plusieurs : on calcule en parallèle dans un tableau, puis on remplit l'arbre dans l'ordre. Les messages d'erreur, les aperçus, le document se manipulent depuis le fil principal.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Toucher l'interface depuis un fil de travail. WinForms et GDI+ exigent le fil qui a créé la fenêtre : SnapSet repasse toujours par <code>canvas.BeginInvoke</code> pour ouvrir un menu ou une saisie (CapsuleExecution.cs:686), même depuis le fil principal, pour sortir du traitement de la souris.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 95 · Le parallélisme de données</div>
+<div class="folio">4</div>
+<div class="pied">Cours 95 · Le parallélisme de données</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 95</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>Le mesureur partagé de SnapSet</h2>
-  <p style="max-width:165mm">Aucun des trois dépôts ne fait de calcul parallèle. Mais SnapSet a un objet partagé par toutes les capsules, le mesureur de texte, et l'a protégé d'un verrou : il est prêt à être appelé de plusieurs fils. Sa création, elle, ne l'est pas.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 95</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>Le mesureur partagé de SnapSet</h2>
+<p style="max-width:165mm">Aucun des trois dépôts ne fait de calcul parallèle. Mais SnapSet a un objet partagé par toutes les capsules, le mesureur de texte, et l'a protégé d'un verrou : il est prêt à être appelé de plusieurs fils. Sa création, elle, ne l'est pas.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">SnapSet/src/SnapSet.Constituants/PeintreFeuilles.cs</span></div>
 <div class="l k1"><span class="n">60</span><span class="kw">private static</span> MesureurGdi _mesureur;<span class="rep r1">1</span></div>
@@ -258,137 +231,55 @@ Parallel.For(0, M,
 <div class="l"><span class="cm">cuttlefish/Attractor.cs</span></div>
 <div class="l k5"><span class="n">84</span><span class="kw">foreach</span> (<span class="kw">var</span> curve <span class="kw">in</span> curves)<span class="rep r5">5</span></div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>Un seul</b>Pour tout Rhino.</li>
-      <li><span class="rep r2">2</span><b>Créé au besoin</b>Sans verrou.</li>
-      <li><span class="rep r3">3</span><b>Ses caches</b>Protégés.</li>
-      <li><span class="rep r4">4</span><b>L'interface</b>Sur son fil.</li>
-      <li><span class="rep r5">5</span><b>Un candidat</b>Points indépendants.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À surveiller · une création paresseuse sans verrou</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>Un seul</b>Pour tout Rhino.</li>
+<li><span class="rep r2">2</span><b>Créé au besoin</b>Sans verrou.</li>
+<li><span class="rep r3">3</span><b>Ses caches</b>Protégés.</li>
+<li><span class="rep r4">4</span><b>L'interface</b>Sur son fil.</li>
+<li><span class="rep r5">5</span><b>Un candidat</b>Points indépendants.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À surveiller · une création paresseuse sans verrou</span>
     Si deux fils lisaient <code>Mesureur</code> pour la première fois en même temps, les deux pourraient voir <code>null</code> et créer chacun un mesureur : l'un serait perdu avec son cache. Aujourd'hui, toute la peinture passe par le fil de l'interface et le cas ne se produit pas ; il deviendrait possible le jour où une mesure se ferait depuis un calcul en parallèle. <code>Lazy&lt;MesureurGdi&gt;</code> réglerait la question sans coût. Déduit du code.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 95 · Le parallélisme de données</div>
+<div class="folio">5</div>
+<div class="pied">Cours 95 · Le parallélisme de données</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 95</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 95</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">Mesuré : un calcul lourd sur 4 cœurs va environ…</div><ul>
-      <li><span>A</span>3,9 fois plus vite</li><li><span>B</span>16 fois plus vite</li><li><span>C</span>aussi vite</li><li><span>D</span>4 fois plus lentement</li></ul></div>
 
-    <div class="q"><div class="enonce">Sur un corps minuscule, Parallel.For élément par élément était…</div><ul>
-      <li><span>A</span>4 fois plus rapide</li><li><span>B</span>aussi rapide</li><li><span>C</span>faux</li><li><span>D</span>3,7 fois plus lent que la boucle simple</li></ul></div>
 
-    <div class="q"><div class="enonce">Le remède à un corps trop léger est…</div><ul>
-      <li><span>A</span>d'ajouter des cœurs</li><li><span>B</span>un Thread.Sleep</li><li><span>C</span>un lock</li><li><span>D</span>de regrouper les éléments en blocs</li></ul></div>
 
-    <div class="q"><div class="enonce">Une course aux données donne un résultat…</div><ul>
-      <li><span>A</span>toujours juste</li><li><span>B</span>faux et variable d'un essai à l'autre</li><li><span>C</span>toujours zéro</li><li><span>D</span>une exception</li></ul></div>
-
-    <div class="q"><div class="enonce">Une somme parallèle juste et rapide s'obtient… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>sans aucune protection</li><li><span>B</span>avec PLINQ, AsParallel().Sum()</li><li><span>C</span>avec un lock à chaque addition</li><li><span>D</span>par des sommes locales fusionnées à la fin</li></ul></div>
-
-    <div class="q"><div class="enonce">Un lock autour de chaque addition a pris (mesuré)…</div><ul>
-      <li><span>A</span>4 ms</li><li><span>B</span>16 ms</li><li><span>C</span>857 ms contre 16 en séquentiel</li><li><span>D</span>il ne termine pas</li></ul></div>
-
-    <div class="q"><div class="enonce">Écrire o[i] = f(i) en parallèle est sûr parce que…</div><ul>
-      <li><span>A</span>les tableaux sont verrouillés</li><li><span>B</span>chaque élément a sa propre case</li><li><span>C</span>.NET trie les écritures</li><li><span>D</span>ce n'est pas sûr</li></ul></div>
-
-    <div class="q"><div class="enonce">Grasshopper calcule ses composants…</div><ul>
-      <li><span>A</span>sur un serveur</li><li><span>B</span>tous en parallèle</li><li><span>C</span>l'un après l'autre, sur le fil de l'interface</li><li><span>D</span>sur la carte graphique</li></ul></div>
-
-    <div class="q"><div class="enonce">En parallèle, un composant peut toucher sans risque…</div><ul>
-      <li><span>A</span>le canvas</li><li><span>B</span>de la géométrie qu'il ne modifie pas</li><li><span>C</span>une fenêtre WinForms</li><li><span>D</span>le document Rhino</li></ul></div>
-
-    <div class="q"><div class="enonce">SnapSet ouvre un menu par canvas.BeginInvoke pour…</div><ul>
-      <li><span>A</span>accélérer le menu</li><li><span>B</span>éviter le ramasse-miettes</li><li><span>C</span>calculer en parallèle</li><li><span>D</span>sortir du traitement de la souris, sur le fil de l'interface</li></ul></div>
-
-    <div class="q"><div class="enonce">Le risque de PeintreFeuilles.cs:71 serait…</div><ul>
-      <li><span>A</span>deux mesureurs créés par deux fils</li><li><span>B</span>aucun, jamais</li><li><span>C</span>une fuite de police</li><li><span>D</span>une boucle infinie</li></ul></div>
-
-    <div class="q"><div class="enonce">Pour une création paresseuse sûre à plusieurs fils…</div><ul>
-      <li><span>A</span>Lazy&lt;T&gt;</li><li><span>B</span>GC.Collect</li><li><span>C</span>Thread.Sleep</li><li><span>D</span>un champ public</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 95 · Le parallélisme de données</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">Parallel.For(0, n, i =&gt; …)</td><td>une boucle répartie sur les cœurs</td><td>schéma, page 1</td></tr>
+<tr><td class="c">Partitioner.Create(0, n)</td><td>découper en plages</td><td>exemple autonome, page 2</td></tr>
+<tr><td class="c">Parallel.For(…, init, corps, fin)</td><td>un état local par fil</td><td>exemple autonome, page 3</td></tr>
+<tr><td class="c">source.AsParallel()</td><td>une requête LINQ parallèle</td><td>page 3</td></tr>
+<tr><td class="c">Interlocked.Add(ref s, x)</td><td>une addition atomique</td><td>schéma 2, page 3</td></tr>
+<tr><td class="c">new Lazy&lt;T&gt;(() =&gt; …)</td><td>une création paresseuse sûre</td><td>page 5</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Parallélisme de données</dt><dd>Le même calcul sur des éléments différents, réparti sur les cœurs.</dd>
+<dt>Granularité</dt><dd>La quantité de travail confiée à chaque morceau.</dd>
+<dt>Course aux données</dt><dd>Deux fils qui lisent et écrivent la même donnée sans ordre garanti.</dd>
+<dt>Opération atomique</dt><dd>Une opération qu'aucun autre fil ne peut couper en deux.</dd>
+<dt>Pool de threads</dt><dd>Les fils réutilisables que .NET prête aux tâches.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : fiche récap de la partie 11</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 95 · Le parallélisme de données</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11D</b> · Mesurer et accélérer</span><b>Cours 95</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · A.</b> 1 358 ms contre 345.</div>
-    <div><b>02 · D.</b> 39,4 ms contre 10,7.</div>
-    <div><b>03 · D.</b> Partitioner.Create, puis une boucle.</div>
-    <div><b>04 · B.</b> Des additions perdues.</div>
-    <div><b>05 · B et D.</b> Ne rien partager pendant le calcul.</div>
-    <div><b>06 · C.</b> Les fils font la queue.</div>
-    <div><b>07 · B.</b> Aucune case partagée.</div>
-    <div><b>08 · C.</b> Un composant à la fois.</div>
-    <div><b>09 · B.</b> Lire n'est pas modifier.</div>
-    <div><b>10 · D.</b> CapsuleExecution.cs:686.</div>
-    <div><b>11 · A.</b> Deux null lus en même temps.</div>
-    <div><b>12 · A.</b> Sûr par défaut, sans coût.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : la partie 11 est terminée ; passe à sa fiche récap.
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">Parallel.For(0, n, i =&gt; …)</td><td>une boucle répartie sur les cœurs</td><td>schéma, page 1</td></tr>
-      <tr><td class="c">Partitioner.Create(0, n)</td><td>découper en plages</td><td>exemple autonome, page 2</td></tr>
-      <tr><td class="c">Parallel.For(…, init, corps, fin)</td><td>un état local par fil</td><td>exemple autonome, page 3</td></tr>
-      <tr><td class="c">source.AsParallel()</td><td>une requête LINQ parallèle</td><td>page 3</td></tr>
-      <tr><td class="c">Interlocked.Add(ref s, x)</td><td>une addition atomique</td><td>schéma 2, page 3</td></tr>
-      <tr><td class="c">new Lazy&lt;T&gt;(() =&gt; …)</td><td>une création paresseuse sûre</td><td>page 5</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Parallélisme de données</dt><dd>Le même calcul sur des éléments différents, réparti sur les cœurs.</dd>
-    <dt>Granularité</dt><dd>La quantité de travail confiée à chaque morceau.</dd>
-    <dt>Course aux données</dt><dd>Deux fils qui lisent et écrivent la même donnée sans ordre garanti.</dd>
-    <dt>Opération atomique</dt><dd>Une opération qu'aucun autre fil ne peut couper en deux.</dd>
-    <dt>Pool de threads</dt><dd>Les fils réutilisables que .NET prête aux tâches.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : fiche récap de la partie 11</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 95 · Le parallélisme de données</div>
-</section>
-
 </body>
 </html>

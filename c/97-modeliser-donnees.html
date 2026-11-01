@@ -1,303 +1,276 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>97 · Modéliser des données</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-10">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 97</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Modéliser des données</h1>
-  <p class="chapeau">Avant d'écrire une requête, on décide quelles tables existent, ce qui identifie une ligne et comment les tables se citent. Ce découpage, le <b>modèle de données</b>, fixe ce que la base peut garantir seule et ce que le code devra surveiller. Un fait rangé à deux endroits finit toujours par dire deux choses différentes.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>34</b></span>
-    <span class="pastille">Exemples · <b>db.mjs</b>, <b>exercises.mjs</b>, <b>compute-proxy.mjs</b> (Magpie)</span>
-  </div>
-
-  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
-    <svg viewBox="0 0 600 190" width="100%">
-<rect x="10" y="10" width="170" height="84" rx="4" fill="#fff" stroke="#4A4A68" stroke-width="1.2"/>
-<rect x="10" y="10" width="170" height="20" rx="4" fill="#4A4A68"/>
-<text x="18" y="24" font-size="8.8" fill="#fff" text-anchor="start" font-weight="700" class="mono" style="font-size:8.8px">parcours</text>
-<text x="18" y="46" font-size="7.6" fill="#4A4A68" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">id</text>
-<text x="174" y="46" font-size="6.8" fill="#6B7378" text-anchor="end" font-style="italic">clé primaire</text>
-<text x="18" y="60" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">title</text>
-<text x="18" y="74" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">sortOrder</text>
-<text x="18" y="88" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">exerciseIds</text>
-<text x="174" y="88" font-size="6.8" fill="#6B7378" text-anchor="end" font-style="italic">JSON</text>
-<rect x="230" y="10" width="190" height="112" rx="4" fill="#fff" stroke="#4A4A68" stroke-width="1.2"/>
-<rect x="230" y="10" width="190" height="20" rx="4" fill="#4A4A68"/>
-<text x="238" y="24" font-size="8.8" fill="#fff" text-anchor="start" font-weight="700" class="mono" style="font-size:8.8px">exercises</text>
-<text x="238" y="46" font-size="7.6" fill="#4A4A68" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">id</text>
-<text x="414" y="46" font-size="6.8" fill="#6B7378" text-anchor="end" font-style="italic">clé primaire</text>
-<text x="238" y="60" font-size="7.6" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">parcoursId</text>
-<text x="414" y="60" font-size="6.8" fill="#6B7378" text-anchor="end" font-style="italic">clé étrangère</text>
-<text x="238" y="74" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">sortOrder</text>
-<text x="238" y="88" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">title</text>
-<text x="238" y="102" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">starterGraph</text>
-<text x="414" y="102" font-size="6.8" fill="#6B7378" text-anchor="end" font-style="italic">JSON</text>
-<text x="238" y="116" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">validationConfig</text>
-<text x="414" y="116" font-size="6.8" fill="#6B7378" text-anchor="end" font-style="italic">JSON</text>
-<rect x="450" y="10" width="140" height="84" rx="4" fill="#fff" stroke="#4A4A68" stroke-width="1.2"/>
-<rect x="450" y="10" width="140" height="20" rx="4" fill="#4A4A68"/>
-<text x="458" y="24" font-size="8.8" fill="#fff" text-anchor="start" font-weight="700" class="mono" style="font-size:8.8px">components</text>
-<text x="458" y="46" font-size="7.6" fill="#4A4A68" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">typeGuid</text>
-<text x="584" y="46" font-size="6.8" fill="#6B7378" text-anchor="end" font-style="italic">clé primaire</text>
-<text x="458" y="60" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">name</text>
-<text x="458" y="74" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">inputs</text>
-<text x="584" y="74" font-size="6.8" fill="#6B7378" text-anchor="end" font-style="italic">JSON</text>
-<text x="458" y="88" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">isAuthorized</text>
-<line x1="228" y1="63" x2="184" y2="47" stroke="#1565C0" stroke-width="1.4"/><polygon points="184,47 191.0,46.6 189.1,51.8" fill="#1565C0"/>
-<text x="206" y="80" font-size="7.6" fill="#1565C0" text-anchor="middle" font-weight="700">n → 1</text>
-<line x1="420" y1="116" x2="450" y2="80" stroke="#6B7378" stroke-dasharray="3 3"/>
-<text x="14" y="148" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">Chaque exercice appartient à au plus un parcours : la clé étrangère est du côté « plusieurs ».</text>
-<text x="14" y="164" font-size="8" fill="#2B2F33" text-anchor="start">Les composants ne sont reliés par aucune clé : un graphe de départ les cite dans son JSON (pointillé).</text>
-<text x="14" y="180" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Extrait de db.mjs, lignes 16 à 55 et migration 3 ; colonnes secondaires omises.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 97</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Modéliser des données</h1>
+<p class="chapeau">Avant d'écrire une requête, on décide quelles tables existent, ce qui identifie une ligne et comment les tables se citent. Ce découpage, le <b>modèle de données</b>, fixe ce que la base peut garantir seule et ce que le code devra surveiller. Un fait rangé à deux endroits finit toujours par dire deux choses différentes.</p>
+<div class="meta">
+<span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>34</b></span>
+<span class="pastille">Exemples · <b>db.mjs</b>, <b>exercises.mjs</b>, <b>compute-proxy.mjs</b> (Magpie)</span>
+</div>
+<div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+<svg viewbox="0 0 600 190" width="100%">
+<rect fill="#fff" height="84" rx="4" stroke="#4A4A68" stroke-width="1.2" width="170" x="10" y="10"></rect>
+<rect fill="#4A4A68" height="20" rx="4" width="170" x="10" y="10"></rect>
+<text class="mono" fill="#fff" font-size="8.8" font-weight="700" style="font-size:8.8px" text-anchor="start" x="18" y="24">parcours</text>
+<text class="mono" fill="#4A4A68" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="18" y="46">id</text>
+<text fill="#6B7378" font-size="6.8" font-style="italic" text-anchor="end" x="174" y="46">clé primaire</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="18" y="60">title</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="18" y="74">sortOrder</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="18" y="88">exerciseIds</text>
+<text fill="#6B7378" font-size="6.8" font-style="italic" text-anchor="end" x="174" y="88">JSON</text>
+<rect fill="#fff" height="112" rx="4" stroke="#4A4A68" stroke-width="1.2" width="190" x="230" y="10"></rect>
+<rect fill="#4A4A68" height="20" rx="4" width="190" x="230" y="10"></rect>
+<text class="mono" fill="#fff" font-size="8.8" font-weight="700" style="font-size:8.8px" text-anchor="start" x="238" y="24">exercises</text>
+<text class="mono" fill="#4A4A68" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="238" y="46">id</text>
+<text fill="#6B7378" font-size="6.8" font-style="italic" text-anchor="end" x="414" y="46">clé primaire</text>
+<text class="mono" fill="#1565C0" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="238" y="60">parcoursId</text>
+<text fill="#6B7378" font-size="6.8" font-style="italic" text-anchor="end" x="414" y="60">clé étrangère</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="238" y="74">sortOrder</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="238" y="88">title</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="238" y="102">starterGraph</text>
+<text fill="#6B7378" font-size="6.8" font-style="italic" text-anchor="end" x="414" y="102">JSON</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="238" y="116">validationConfig</text>
+<text fill="#6B7378" font-size="6.8" font-style="italic" text-anchor="end" x="414" y="116">JSON</text>
+<rect fill="#fff" height="84" rx="4" stroke="#4A4A68" stroke-width="1.2" width="140" x="450" y="10"></rect>
+<rect fill="#4A4A68" height="20" rx="4" width="140" x="450" y="10"></rect>
+<text class="mono" fill="#fff" font-size="8.8" font-weight="700" style="font-size:8.8px" text-anchor="start" x="458" y="24">components</text>
+<text class="mono" fill="#4A4A68" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="458" y="46">typeGuid</text>
+<text fill="#6B7378" font-size="6.8" font-style="italic" text-anchor="end" x="584" y="46">clé primaire</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="458" y="60">name</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="458" y="74">inputs</text>
+<text fill="#6B7378" font-size="6.8" font-style="italic" text-anchor="end" x="584" y="74">JSON</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="458" y="88">isAuthorized</text>
+<line stroke="#1565C0" stroke-width="1.4" x1="228" x2="184" y1="63" y2="47"></line><polygon fill="#1565C0" points="184,47 191.0,46.6 189.1,51.8"></polygon>
+<text fill="#1565C0" font-size="7.6" font-weight="700" text-anchor="middle" x="206" y="80">n → 1</text>
+<line stroke="#6B7378" stroke-dasharray="3 3" x1="420" x2="450" y1="116" y2="80"></line>
+<text fill="#2B2F33" font-size="8.4" font-weight="700" text-anchor="start" x="14" y="148">Chaque exercice appartient à au plus un parcours : la clé étrangère est du côté « plusieurs ».</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="14" y="164">Les composants ne sont reliés par aucune clé : un graphe de départ les cite dans son JSON (pointillé).</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="14" y="180">Extrait de db.mjs, lignes 16 à 55 et migration 3 ; colonnes secondaires omises.</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Une table par sorte de chose, une clé qui ne change jamais pour chaque ligne, des liens par clé étrangère, et chaque fait à un seul endroit.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Un carnet d'adresses où l'on écrit l'adresse d'un ami sur sa fiche, et nulle part ailleurs. Celui qui la recopie dans chaque lettre devra toutes les corriger quand l'ami déménage.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>choisir une clé primaire ;</li>
-        <li>placer une clé étrangère ;</li>
-        <li>repérer un fait rangé deux fois ;</li>
-        <li>décider entre colonnes et JSON.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Une table par sorte de chose, une clé qui ne change jamais pour chaque ligne, des liens par clé étrangère, et chaque fait à un seul endroit.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Un carnet d'adresses où l'on écrit l'adresse d'un ami sur sa fiche, et nulle part ailleurs. Celui qui la recopie dans chaque lettre devra toutes les corriger quand l'ami déménage.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>choisir une clé primaire ;</li>
+<li>placer une clé étrangère ;</li>
+<li>repérer un fait rangé deux fois ;</li>
+<li>décider entre colonnes et JSON.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À retenir</span>
     Le cours 34 a montré comment lire et écrire dans <code>magpie.db</code>. Ce bloc regarde la base elle-même : sa forme ici, puis les requêtes, les index, les transactions, les accès simultanés et les sauvegardes.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 97 · Modéliser des données</div>
+<div class="folio">1</div>
+<div class="pied">Cours 97 · Modéliser des données</div>
 </section>
-
 <!-- ============ PAGE 2 · LES CLÉS ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 97</b></div>
-  <p class="rubrique">Schéma 1 · Clés et contraintes</p>
-  <h2>Ce que la base garantit seule</h2>
-  <p style="max-width:165mm">La <b>clé primaire</b> identifie une ligne : deux lignes ne peuvent pas la partager. La <b>clé étrangère</b> oblige une valeur à exister dans une autre table. <code>STRICT</code> impose le type de chaque colonne. Ces règles sont vérifiées à chaque écriture, quel que soit le code qui écrit.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#4A4A68" text-anchor="start" font-weight="700">Ce que SQLite refuse, avec le schéma de Magpie (node:sqlite, Node 22, mesuré)</text>
-<text x="30" y="44" font-size="7.8" fill="#6B7378" text-anchor="start" font-weight="700">on tente…</text>
-<text x="300" y="44" font-size="7.8" fill="#6B7378" text-anchor="start" font-weight="700">réglage</text>
-<text x="450" y="44" font-size="7.8" fill="#6B7378" text-anchor="start" font-weight="700">résultat</text>
-<rect x="16" y="52" width="568" height="20" rx="3" fill="#ECECF2"/>
-<text x="30" y="66" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">un exercice dont le parcours n'existe pas</text>
-<text x="300" y="66" font-size="7.8" fill="#6B7378" text-anchor="start">par défaut</text>
-<text x="450" y="66" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700">refusé</text>
-<rect x="16" y="76" width="568" height="20" rx="3" fill="#fff"/>
-<text x="30" y="90" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">supprimer un parcours qui a des exercices</text>
-<text x="300" y="90" font-size="7.8" fill="#6B7378" text-anchor="start">par défaut</text>
-<text x="450" y="90" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700">refusé</text>
-<rect x="16" y="100" width="568" height="20" rx="3" fill="#ECECF2"/>
-<text x="30" y="114" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">un exercice orphelin</text>
-<text x="300" y="114" font-size="7.8" fill="#6B7378" text-anchor="start">clés étrangères coupées</text>
-<text x="450" y="114" font-size="8.4" fill="#C62828" text-anchor="start" font-weight="700">accepté</text>
-<rect x="16" y="124" width="568" height="20" rx="3" fill="#fff"/>
-<text x="30" y="138" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">"abc" dans sortOrder INTEGER</text>
-<text x="300" y="138" font-size="7.8" fill="#6B7378" text-anchor="start">STRICT</text>
-<text x="450" y="138" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700">refusé</text>
-<rect x="16" y="148" width="568" height="20" rx="3" fill="#ECECF2"/>
-<text x="30" y="162" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">"7" dans sortOrder INTEGER</text>
-<text x="300" y="162" font-size="7.8" fill="#6B7378" text-anchor="start">STRICT</text>
-<text x="450" y="162" font-size="8.4" fill="#E65100" text-anchor="start" font-weight="700">converti en 7</text>
-<rect x="16" y="172" width="568" height="20" rx="3" fill="#fff"/>
-<text x="30" y="186" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">"abc" dans une colonne INTEGER</text>
-<text x="300" y="186" font-size="7.8" fill="#6B7378" text-anchor="start">sans STRICT</text>
-<text x="450" y="186" font-size="8.4" fill="#C62828" text-anchor="start" font-weight="700">rangé tel quel</text>
-<text x="16" y="206" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">node:sqlite active les clés étrangères par défaut (enableForeignKeyConstraints) ; SQLite seul, non : PRAGMA foreign_keys = ON.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 97</b></div>
+<p class="rubrique">Schéma 1 · Clés et contraintes</p>
+<h2>Ce que la base garantit seule</h2>
+<p style="max-width:165mm">La <b>clé primaire</b> identifie une ligne : deux lignes ne peuvent pas la partager. La <b>clé étrangère</b> oblige une valeur à exister dans une autre table. <code>STRICT</code> impose le type de chaque colonne. Ces règles sont vérifiées à chaque écriture, quel que soit le code qui écrit.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#4A4A68" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">Ce que SQLite refuse, avec le schéma de Magpie (node:sqlite, Node 22, mesuré)</text>
+<text fill="#6B7378" font-size="7.8" font-weight="700" text-anchor="start" x="30" y="44">on tente…</text>
+<text fill="#6B7378" font-size="7.8" font-weight="700" text-anchor="start" x="300" y="44">réglage</text>
+<text fill="#6B7378" font-size="7.8" font-weight="700" text-anchor="start" x="450" y="44">résultat</text>
+<rect fill="#ECECF2" height="20" rx="3" width="568" x="16" y="52"></rect>
+<text fill="#2B2F33" font-size="8" font-weight="700" text-anchor="start" x="30" y="66">un exercice dont le parcours n'existe pas</text>
+<text fill="#6B7378" font-size="7.8" text-anchor="start" x="300" y="66">par défaut</text>
+<text fill="#2E7D32" font-size="8.4" font-weight="700" text-anchor="start" x="450" y="66">refusé</text>
+<rect fill="#fff" height="20" rx="3" width="568" x="16" y="76"></rect>
+<text fill="#2B2F33" font-size="8" font-weight="700" text-anchor="start" x="30" y="90">supprimer un parcours qui a des exercices</text>
+<text fill="#6B7378" font-size="7.8" text-anchor="start" x="300" y="90">par défaut</text>
+<text fill="#2E7D32" font-size="8.4" font-weight="700" text-anchor="start" x="450" y="90">refusé</text>
+<rect fill="#ECECF2" height="20" rx="3" width="568" x="16" y="100"></rect>
+<text fill="#2B2F33" font-size="8" font-weight="700" text-anchor="start" x="30" y="114">un exercice orphelin</text>
+<text fill="#6B7378" font-size="7.8" text-anchor="start" x="300" y="114">clés étrangères coupées</text>
+<text fill="#C62828" font-size="8.4" font-weight="700" text-anchor="start" x="450" y="114">accepté</text>
+<rect fill="#fff" height="20" rx="3" width="568" x="16" y="124"></rect>
+<text fill="#2B2F33" font-size="8" font-weight="700" text-anchor="start" x="30" y="138">"abc" dans sortOrder INTEGER</text>
+<text fill="#6B7378" font-size="7.8" text-anchor="start" x="300" y="138">STRICT</text>
+<text fill="#2E7D32" font-size="8.4" font-weight="700" text-anchor="start" x="450" y="138">refusé</text>
+<rect fill="#ECECF2" height="20" rx="3" width="568" x="16" y="148"></rect>
+<text fill="#2B2F33" font-size="8" font-weight="700" text-anchor="start" x="30" y="162">"7" dans sortOrder INTEGER</text>
+<text fill="#6B7378" font-size="7.8" text-anchor="start" x="300" y="162">STRICT</text>
+<text fill="#E65100" font-size="8.4" font-weight="700" text-anchor="start" x="450" y="162">converti en 7</text>
+<rect fill="#fff" height="20" rx="3" width="568" x="16" y="172"></rect>
+<text fill="#2B2F33" font-size="8" font-weight="700" text-anchor="start" x="30" y="186">"abc" dans une colonne INTEGER</text>
+<text fill="#6B7378" font-size="7.8" text-anchor="start" x="300" y="186">sans STRICT</text>
+<text fill="#C62828" font-size="8.4" font-weight="700" text-anchor="start" x="450" y="186">rangé tel quel</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="206">node:sqlite active les clés étrangères par défaut (enableForeignKeyConstraints) ; SQLite seul, non : PRAGMA foreign_keys = ON.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/db.mjs · lignes 39 à 50 (extrait)</span>-- id reprend directement le "Id" du JSON natif Magpie (ex: "ex01_impairs"), pour
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/db.mjs · lignes 39 à 50 (extrait)</span>-- id reprend directement le "Id" du JSON natif Magpie (ex: "ex01_impairs"), pour
 -- pouvoir réimporter un exercice existant sans jamais changer sa référence.
 …
 CREATE TABLE IF NOT EXISTS exercises (
   id TEXT PRIMARY KEY,
   parcoursId TEXT REFERENCES parcours(id),</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Une clé naturelle</h3>
-      <p>Magpie prend pour clé l'identifiant écrit dans le fichier de l'exercice, <code>ex01_impairs</code>, plutôt qu'un numéro attribué par la base. Réimporter le fichier retombe sur la même ligne. Le prix : cet identifiant ne doit jamais être renommé.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>STRICT convertit sans perte</h3>
-      <p>La mesure nuance le cours 34 : <code>STRICT</code> refuse <code>"abc"</code> et <code>2.5</code> dans une colonne entière, mais range <code>"7"</code> comme l'entier 7, parce que la conversion ne perd rien. Sans <code>STRICT</code>, <code>"abc"</code> est rangé tel quel.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Une clé naturelle</h3>
+<p>Magpie prend pour clé l'identifiant écrit dans le fichier de l'exercice, <code>ex01_impairs</code>, plutôt qu'un numéro attribué par la base. Réimporter le fichier retombe sur la même ligne. Le prix : cet identifiant ne doit jamais être renommé.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>STRICT convertit sans perte</h3>
+<p>La mesure nuance le cours 34 : <code>STRICT</code> refuse <code>"abc"</code> et <code>2.5</code> dans une colonne entière, mais range <code>"7"</code> comme l'entier 7, parce que la conversion ne perd rien. Sans <code>STRICT</code>, <code>"abc"</code> est rangé tel quel.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Croire qu'une clé étrangère est toujours vérifiée. SQLite ne le fait que si on l'active ; node:sqlite l'active par défaut, mais un autre outil ouvrant <code>magpie.db</code> (un client graphique, l'outil sqlite3) peut accepter des orphelins.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 97 · Modéliser des données</div>
+<div class="folio">2</div>
+<div class="pied">Cours 97 · Modéliser des données</div>
 </section>
-
 <!-- ============ PAGE 3 · UN FAIT, UN ENDROIT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 97</b></div>
-  <p class="rubrique">Schéma 2 · La normalisation</p>
-  <h2>Un fait, un seul endroit</h2>
-  <p style="max-width:165mm">Normaliser, c'est ranger chaque information là où elle dépend de la clé, une seule fois. Copier une information ailleurs, pour la lire plus vite ou plus simplement, s'appelle <b>dénormaliser</b> : c'est permis, à condition que chaque écriture mette les deux copies à jour.</p>
-
-  <svg viewBox="0 0 600 222" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="222" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.4" fill="#4A4A68" text-anchor="start" font-weight="700">L'ordre d'un parcours, rangé à deux endroits : rejoué avec les fonctions de exercises.mjs (mesuré)</text>
-<text x="16" y="46" font-size="8.6" fill="#4A4A68" text-anchor="start" font-weight="700">1 · import du parcours</text>
-<text x="16" y="60" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">ex1 manque encore</text>
-<text x="16" y="78" font-size="7.2" fill="#1565C0" text-anchor="start" class="mono" style="font-size:7.2px">exercises.sortOrder</text>
-<rect x="16" y="84" width="170" height="15" rx="2" fill="#fff" stroke="#CFC6B8"/>
-<text x="24" y="95" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">ex2</text>
-<text x="176" y="95" font-size="7.8" fill="#2B2F33" text-anchor="end" font-weight="700" class="mono" style="font-size:7.8px">1</text>
-<rect x="16" y="102" width="170" height="15" rx="2" fill="#fff" stroke="#CFC6B8"/>
-<text x="24" y="113" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">ex3</text>
-<text x="176" y="113" font-size="7.8" fill="#2B2F33" text-anchor="end" font-weight="700" class="mono" style="font-size:7.8px">2</text>
-<text x="16" y="154" font-size="7.2" fill="#1565C0" text-anchor="start" class="mono" style="font-size:7.2px">parcours.exerciseIds</text>
-<text x="16" y="168" font-size="7.8" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">ex1, ex2, ex3</text>
-<line x1="190" y1="110" x2="204" y2="110" stroke="#6B7378" stroke-width="1.2"/><polygon points="204,110 197.6,112.7 197.6,107.3" fill="#6B7378"/>
-<text x="208" y="46" font-size="8.6" fill="#4A4A68" text-anchor="start" font-weight="700">2 · réordonné dans l'admin</text>
-<text x="208" y="60" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">ex3 avant ex2</text>
-<text x="208" y="78" font-size="7.2" fill="#1565C0" text-anchor="start" class="mono" style="font-size:7.2px">exercises.sortOrder</text>
-<rect x="208" y="84" width="170" height="15" rx="2" fill="#fff" stroke="#CFC6B8"/>
-<text x="216" y="95" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">ex3</text>
-<text x="368" y="95" font-size="7.8" fill="#2B2F33" text-anchor="end" font-weight="700" class="mono" style="font-size:7.8px">0</text>
-<rect x="208" y="102" width="170" height="15" rx="2" fill="#fff" stroke="#CFC6B8"/>
-<text x="216" y="113" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">ex2</text>
-<text x="368" y="113" font-size="7.8" fill="#2B2F33" text-anchor="end" font-weight="700" class="mono" style="font-size:7.8px">1</text>
-<text x="208" y="154" font-size="7.2" fill="#1565C0" text-anchor="start" class="mono" style="font-size:7.2px">parcours.exerciseIds</text>
-<text x="208" y="168" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">ex1, ex2, ex3</text>
-<line x1="382" y1="110" x2="396" y2="110" stroke="#6B7378" stroke-width="1.2"/><polygon points="396,110 389.6,112.7 389.6,107.3" fill="#6B7378"/>
-<text x="400" y="46" font-size="8.6" fill="#4A4A68" text-anchor="start" font-weight="700">3 · import de ex1</text>
-<text x="400" y="60" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">rattaché à sa place d'origine</text>
-<text x="400" y="78" font-size="7.2" fill="#1565C0" text-anchor="start" class="mono" style="font-size:7.2px">exercises.sortOrder</text>
-<rect x="400" y="84" width="170" height="15" rx="2" fill="#fff" stroke="#CFC6B8"/>
-<text x="408" y="95" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">ex1</text>
-<text x="560" y="95" font-size="7.8" fill="#C62828" text-anchor="end" font-weight="700" class="mono" style="font-size:7.8px">0</text>
-<rect x="400" y="102" width="170" height="15" rx="2" fill="#fff" stroke="#CFC6B8"/>
-<text x="408" y="113" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">ex3</text>
-<text x="560" y="113" font-size="7.8" fill="#C62828" text-anchor="end" font-weight="700" class="mono" style="font-size:7.8px">0</text>
-<rect x="400" y="120" width="170" height="15" rx="2" fill="#fff" stroke="#CFC6B8"/>
-<text x="408" y="131" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">ex2</text>
-<text x="560" y="131" font-size="7.8" fill="#2B2F33" text-anchor="end" font-weight="700" class="mono" style="font-size:7.8px">1</text>
-<text x="400" y="154" font-size="7.2" fill="#1565C0" text-anchor="start" class="mono" style="font-size:7.2px">parcours.exerciseIds</text>
-<text x="400" y="168" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">ex1, ex2, ex3</text>
-<text x="16" y="194" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">La liste JSON n'est jamais mise à jour par le réordonnancement : ex1 reprend la position 0 et la partage avec ex3.</text>
-<text x="16" y="210" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Les deux exercices à égalité sont alors rangés par titre (ORDER BY sortOrder, title).</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 97</b></div>
+<p class="rubrique">Schéma 2 · La normalisation</p>
+<h2>Un fait, un seul endroit</h2>
+<p style="max-width:165mm">Normaliser, c'est ranger chaque information là où elle dépend de la clé, une seule fois. Copier une information ailleurs, pour la lire plus vite ou plus simplement, s'appelle <b>dénormaliser</b> : c'est permis, à condition que chaque écriture mette les deux copies à jour.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 222" width="100%">
+<rect fill="#EFE9E1" height="222" width="600" x="0" y="0"></rect>
+<text fill="#4A4A68" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="22">L'ordre d'un parcours, rangé à deux endroits : rejoué avec les fonctions de exercises.mjs (mesuré)</text>
+<text fill="#4A4A68" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="46">1 · import du parcours</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="60">ex1 manque encore</text>
+<text class="mono" fill="#1565C0" font-size="7.2" style="font-size:7.2px" text-anchor="start" x="16" y="78">exercises.sortOrder</text>
+<rect fill="#fff" height="15" rx="2" stroke="#CFC6B8" width="170" x="16" y="84"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="24" y="95">ex2</text>
+<text class="mono" fill="#2B2F33" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="end" x="176" y="95">1</text>
+<rect fill="#fff" height="15" rx="2" stroke="#CFC6B8" width="170" x="16" y="102"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="24" y="113">ex3</text>
+<text class="mono" fill="#2B2F33" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="end" x="176" y="113">2</text>
+<text class="mono" fill="#1565C0" font-size="7.2" style="font-size:7.2px" text-anchor="start" x="16" y="154">parcours.exerciseIds</text>
+<text class="mono" fill="#6B7378" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="16" y="168">ex1, ex2, ex3</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="190" x2="204" y1="110" y2="110"></line><polygon fill="#6B7378" points="204,110 197.6,112.7 197.6,107.3"></polygon>
+<text fill="#4A4A68" font-size="8.6" font-weight="700" text-anchor="start" x="208" y="46">2 · réordonné dans l'admin</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="208" y="60">ex3 avant ex2</text>
+<text class="mono" fill="#1565C0" font-size="7.2" style="font-size:7.2px" text-anchor="start" x="208" y="78">exercises.sortOrder</text>
+<rect fill="#fff" height="15" rx="2" stroke="#CFC6B8" width="170" x="208" y="84"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="216" y="95">ex3</text>
+<text class="mono" fill="#2B2F33" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="end" x="368" y="95">0</text>
+<rect fill="#fff" height="15" rx="2" stroke="#CFC6B8" width="170" x="208" y="102"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="216" y="113">ex2</text>
+<text class="mono" fill="#2B2F33" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="end" x="368" y="113">1</text>
+<text class="mono" fill="#1565C0" font-size="7.2" style="font-size:7.2px" text-anchor="start" x="208" y="154">parcours.exerciseIds</text>
+<text class="mono" fill="#C62828" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="208" y="168">ex1, ex2, ex3</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="382" x2="396" y1="110" y2="110"></line><polygon fill="#6B7378" points="396,110 389.6,112.7 389.6,107.3"></polygon>
+<text fill="#4A4A68" font-size="8.6" font-weight="700" text-anchor="start" x="400" y="46">3 · import de ex1</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="400" y="60">rattaché à sa place d'origine</text>
+<text class="mono" fill="#1565C0" font-size="7.2" style="font-size:7.2px" text-anchor="start" x="400" y="78">exercises.sortOrder</text>
+<rect fill="#fff" height="15" rx="2" stroke="#CFC6B8" width="170" x="400" y="84"></rect>
+<text class="mono" fill="#C62828" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="408" y="95">ex1</text>
+<text class="mono" fill="#C62828" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="end" x="560" y="95">0</text>
+<rect fill="#fff" height="15" rx="2" stroke="#CFC6B8" width="170" x="400" y="102"></rect>
+<text class="mono" fill="#C62828" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="408" y="113">ex3</text>
+<text class="mono" fill="#C62828" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="end" x="560" y="113">0</text>
+<rect fill="#fff" height="15" rx="2" stroke="#CFC6B8" width="170" x="400" y="120"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="408" y="131">ex2</text>
+<text class="mono" fill="#2B2F33" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="end" x="560" y="131">1</text>
+<text class="mono" fill="#1565C0" font-size="7.2" style="font-size:7.2px" text-anchor="start" x="400" y="154">parcours.exerciseIds</text>
+<text class="mono" fill="#C62828" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="400" y="168">ex1, ex2, ex3</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="194">La liste JSON n'est jamais mise à jour par le réordonnancement : ex1 reprend la position 0 et la partage avec ex3.</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="16" y="210">Les deux exercices à égalité sont alors rangés par titre (ORDER BY sortOrder, title).</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/exercises.mjs · lignes 24 à 28 (extrait)</span>if (!current.parcoursId) {
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/exercises.mjs · lignes 24 à 28 (extrait)</span>if (!current.parcoursId) {
   for (const p of db.prepare("SELECT id, exerciseIds FROM parcours WHERE exerciseIds IS NOT NULL").all()) {
     const index = JSON.parse(p.exerciseIds).indexOf(config.Id);
     if (index === -1) continue;
     db.prepare("UPDATE exercises SET parcoursId = ?, sortOrder = ? WHERE id = ?").run(p.id, index, config.Id);</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Pourquoi deux copies</h3>
-      <p>La liste <code>exerciseIds</code> sert à rattacher un exercice importé après son parcours : la base doit se souvenir de la place qu'on lui réservait. L'ordre réel, lui, vit dans <code>sortOrder</code>. Deux rôles proches, deux endroits.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>La forme normalisée</h3>
-      <p>Une table de liaison, une ligne par place réservée, avec ou sans exercice importé, porterait à la fois l'appartenance et la position. Le réordonnancement n'aurait qu'un endroit à changer, et les deux usages liraient la même donnée.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Pourquoi deux copies</h3>
+<p>La liste <code>exerciseIds</code> sert à rattacher un exercice importé après son parcours : la base doit se souvenir de la place qu'on lui réservait. L'ordre réel, lui, vit dans <code>sortOrder</code>. Deux rôles proches, deux endroits.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>La forme normalisée</h3>
+<p>Une table de liaison, une ligne par place réservée, avec ou sans exercice importé, porterait à la fois l'appartenance et la position. Le réordonnancement n'aurait qu'un endroit à changer, et les deux usages liraient la même donnée.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Ajouter une copie « pour simplifier » sans écrire, au même moment, le code qui la tient à jour. La base ne sait pas que deux colonnes disent la même chose : rien ne signale leur divergence.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 97 · Modéliser des données</div>
+<div class="folio">3</div>
+<div class="pied">Cours 97 · Modéliser des données</div>
 </section>
-
 <!-- ============ PAGE 4 · LES RELATIONS ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 97</b></div>
-  <p class="rubrique">Schéma 3 · Les relations</p>
-  <h2>Un, plusieurs, et le JSON</h2>
-  <p style="max-width:165mm">Le sens d'une relation décide de la place de la clé étrangère. Un parcours a plusieurs exercices : la clé va dans <code>exercises</code>. Si un exercice devait vivre dans plusieurs parcours, aucune des deux tables ne suffirait : il faudrait une table de liaison.</p>
-
-  <svg viewBox="0 0 600 216" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="216" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#4A4A68" text-anchor="start" font-weight="700">Où se place la clé étrangère</text>
-<rect x="16" y="34" width="568" height="46" rx="4" fill="#ECECF2" stroke="#4A4A68" stroke-width="1.2"/>
-<text x="30" y="52" font-size="9" fill="#4A4A68" text-anchor="start" font-weight="700">un parcours, plusieurs exercices</text>
-<text x="30" y="69" font-size="8" fill="#2B2F33" text-anchor="start">la clé va dans la table « plusieurs »</text>
-<text x="300" y="52" font-size="7.6" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">exercises.parcoursId</text>
-<text x="574" y="69" font-size="7.4" fill="#6B7378" text-anchor="end" font-style="italic">Magpie aujourd'hui</text>
-<rect x="16" y="86" width="568" height="46" rx="4" fill="#fff" stroke="#4A4A68" stroke-width="1.2"/>
-<text x="30" y="104" font-size="9" fill="#4A4A68" text-anchor="start" font-weight="700">un exercice dans plusieurs parcours</text>
-<text x="30" y="121" font-size="8" fill="#2B2F33" text-anchor="start">une table de liaison, une ligne par lien</text>
-<text x="300" y="104" font-size="7.6" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">parcours_exercices(parcoursId, exerciseId, position)</text>
-<text x="574" y="121" font-size="7.4" fill="#6B7378" text-anchor="end" font-style="italic">exemple autonome</text>
-<rect x="16" y="138" width="568" height="46" rx="4" fill="#ECECF2" stroke="#4A4A68" stroke-width="1.2"/>
-<text x="30" y="156" font-size="9" fill="#4A4A68" text-anchor="start" font-weight="700">une valeur sans existence propre</text>
-<text x="30" y="173" font-size="8" fill="#2B2F33" text-anchor="start">une colonne, ou du JSON si on la relit d'un bloc</text>
-<text x="300" y="156" font-size="7.6" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">validationConfig</text>
-<text x="574" y="173" font-size="7.4" fill="#6B7378" text-anchor="end" font-style="italic">Magpie aujourd'hui</text>
-<text x="16" y="202" font-size="7.6" fill="#2B2F33" text-anchor="start">Un JSON reste lisible par la base : json_extract(validationConfig, '$.Mode') rend « Numbers » (mesuré), mais sans index ni contrôle.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 97</b></div>
+<p class="rubrique">Schéma 3 · Les relations</p>
+<h2>Un, plusieurs, et le JSON</h2>
+<p style="max-width:165mm">Le sens d'une relation décide de la place de la clé étrangère. Un parcours a plusieurs exercices : la clé va dans <code>exercises</code>. Si un exercice devait vivre dans plusieurs parcours, aucune des deux tables ne suffirait : il faudrait une table de liaison.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 216" width="100%">
+<rect fill="#EFE9E1" height="216" width="600" x="0" y="0"></rect>
+<text fill="#4A4A68" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">Où se place la clé étrangère</text>
+<rect fill="#ECECF2" height="46" rx="4" stroke="#4A4A68" stroke-width="1.2" width="568" x="16" y="34"></rect>
+<text fill="#4A4A68" font-size="9" font-weight="700" text-anchor="start" x="30" y="52">un parcours, plusieurs exercices</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="30" y="69">la clé va dans la table « plusieurs »</text>
+<text class="mono" fill="#1565C0" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="300" y="52">exercises.parcoursId</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="end" x="574" y="69">Magpie aujourd'hui</text>
+<rect fill="#fff" height="46" rx="4" stroke="#4A4A68" stroke-width="1.2" width="568" x="16" y="86"></rect>
+<text fill="#4A4A68" font-size="9" font-weight="700" text-anchor="start" x="30" y="104">un exercice dans plusieurs parcours</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="30" y="121">une table de liaison, une ligne par lien</text>
+<text class="mono" fill="#1565C0" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="300" y="104">parcours_exercices(parcoursId, exerciseId, position)</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="end" x="574" y="121">exemple autonome</text>
+<rect fill="#ECECF2" height="46" rx="4" stroke="#4A4A68" stroke-width="1.2" width="568" x="16" y="138"></rect>
+<text fill="#4A4A68" font-size="9" font-weight="700" text-anchor="start" x="30" y="156">une valeur sans existence propre</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="30" y="173">une colonne, ou du JSON si on la relit d'un bloc</text>
+<text class="mono" fill="#1565C0" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="300" y="156">validationConfig</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="end" x="574" y="173">Magpie aujourd'hui</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="16" y="202">Un JSON reste lisible par la base : json_extract(validationConfig, '$.Mode') rend « Numbers » (mesuré), mais sans index ni contrôle.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · SQLite, une table de liaison (Magpie n'en a pas)</span>CREATE TABLE parcours_exercices (
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · SQLite, une table de liaison (Magpie n'en a pas)</span>CREATE TABLE parcours_exercices (
   parcoursId TEXT NOT NULL REFERENCES parcours(id),
   exerciseId TEXT NOT NULL REFERENCES exercises(id),
   position   INTEGER NOT NULL,
   PRIMARY KEY (parcoursId, exerciseId)          -- un lien, une seule fois
 ) STRICT;</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Quand le JSON va bien</h3>
-      <p><code>validationConfig</code> se lit toujours en entier, par l'exercice, et n'est jamais cherché par son contenu. Le découper en colonnes n'apporterait rien, et le JSON reste celui du plugin, sans traduction. C'est le bon usage d'une colonne JSON.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Quand il gêne</h3>
-      <p>Dès qu'on cherche, trie ou relie par une valeur cachée dans le JSON, la base ne peut ni l'indexer simplement ni la contrôler. <code>exerciseIds</code> est dans ce cas : on y cherche un identifiant, en relisant tous les parcours.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Quand le JSON va bien</h3>
+<p><code>validationConfig</code> se lit toujours en entier, par l'exercice, et n'est jamais cherché par son contenu. Le découper en colonnes n'apporterait rien, et le JSON reste celui du plugin, sans traduction. C'est le bon usage d'une colonne JSON.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Quand il gêne</h3>
+<p>Dès qu'on cherche, trie ou relie par une valeur cachée dans le JSON, la base ne peut ni l'indexer simplement ni la contrôler. <code>exerciseIds</code> est dans ce cas : on y cherche un identifiant, en relisant tous les parcours.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Ranger une liste d'identifiants dans une colonne texte, séparés par des virgules ou en JSON, pour éviter une table de liaison. Aucune clé étrangère ne peut alors vérifier que ces identifiants existent.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 97 · Modéliser des données</div>
+<div class="folio">4</div>
+<div class="pied">Cours 97 · Modéliser des données</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 97</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>Le modèle de magpie.db</h2>
-  <p style="max-width:165mm">Trois tables, des clés naturelles, une clé étrangère vérifiée et des colonnes JSON lues d'un bloc : le modèle est simple et tient ses promesses. Un seul fait y est rangé deux fois.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 97</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>Le modèle de magpie.db</h2>
+<p style="max-width:165mm">Trois tables, des clés naturelles, une clé étrangère vérifiée et des colonnes JSON lues d'un bloc : le modèle est simple et tient ses promesses. Un seul fait y est rangé deux fois.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">magpie/web/db.mjs</span></div>
 <div class="l k1"><span class="n">18</span>      typeGuid <span class="kw">TEXT PRIMARY KEY</span>,<span class="rep r1">1</span></div>
@@ -308,137 +281,55 @@ CREATE TABLE IF NOT EXISTS exercises (
 <div class="l k5"><span class="n">304</span><span class="kw">const</span> setOrder = db.prepare(<span class="st">"UPDATE exercises …"</span>);<span class="rep r5">5</span></div>
 <div class="l k5"><span class="n">305</span>exerciseIds.forEach((id, index) =&gt; setOrder.run(index, id, …));</div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>Clé naturelle</b>Le GUID du composant.</li>
-      <li><span class="rep r2">2</span><b>Clé étrangère</b>Vérifiée par node:sqlite.</li>
-      <li><span class="rep r3">3</span><b>JSON d'un bloc</b>Jamais cherché.</li>
-      <li><span class="rep r4">4</span><b>La copie</b>L'ordre d'import.</li>
-      <li><span class="rep r5">5</span><b>Réordonner</b>Ne touche que sortOrder.</li>
-    </ul>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>Clé naturelle</b>Le GUID du composant.</li>
+<li><span class="rep r2">2</span><b>Clé étrangère</b>Vérifiée par node:sqlite.</li>
+<li><span class="rep r3">3</span><b>JSON d'un bloc</b>Jamais cherché.</li>
+<li><span class="rep r4">4</span><b>La copie</b>L'ordre d'import.</li>
+<li><span class="rep r5">5</span><b>Réordonner</b>Ne touche que sortOrder.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À surveiller · l'ordre d'un parcours rangé deux fois</span>
+<code>reorderParcours</code> (compute-proxy.mjs, lignes 295 à 306) change <code>sortOrder</code> mais pas <code>parcours.exerciseIds</code>. Un exercice importé ensuite reprend sa place d'origine dans la liste : rejoué avec les fonctions de exercises.mjs sur une base en mémoire, il partage la position 0 avec un autre, départagé par le titre. Le cas demande un parcours importé avant l'un de ses exercices, puis réordonné entre-temps. Mesuré sur une reproduction.
   </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À surveiller · l'ordre d'un parcours rangé deux fois</span>
-    <code>reorderParcours</code> (compute-proxy.mjs, lignes 295 à 306) change <code>sortOrder</code> mais pas <code>parcours.exerciseIds</code>. Un exercice importé ensuite reprend sa place d'origine dans la liste : rejoué avec les fonctions de exercises.mjs sur une base en mémoire, il partage la position 0 avec un autre, départagé par le titre. Le cas demande un parcours importé avant l'un de ses exercices, puis réordonné entre-temps. Mesuré sur une reproduction.
-  </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 97 · Modéliser des données</div>
+<div class="folio">5</div>
+<div class="pied">Cours 97 · Modéliser des données</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 97</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 97</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">Une clé primaire garantit que…</div><ul>
-      <li><span>A</span>la colonne est un entier</li><li><span>B</span>la table est petite</li><li><span>C</span>deux lignes ne partagent jamais la même valeur</li><li><span>D</span>les lignes sont triées</li></ul></div>
 
-    <div class="q"><div class="enonce">Magpie prend l'Id du fichier pour clé afin de…</div><ul>
-      <li><span>A</span>retomber sur la même ligne à chaque réimport</li><li><span>B</span>trier par date</li><li><span>C</span>cacher l'exercice</li><li><span>D</span>gagner de la place</li></ul></div>
 
-    <div class="q"><div class="enonce">Avec node:sqlite par défaut, un exercice dont le parcours n'existe pas est…</div><ul>
-      <li><span>A</span>refusé</li><li><span>B</span>accepté avec un avertissement</li><li><span>C</span>accepté</li><li><span>D</span>rattaché au premier parcours</li></ul></div>
 
-    <div class="q"><div class="enonce">Dans une colonne INTEGER d'une table STRICT, "7" est… </div><ul>
-      <li><span>A</span>remplacé par NULL</li><li><span>B</span>converti en l'entier 7</li><li><span>C</span>rangé comme texte</li><li><span>D</span>refusé</li></ul></div>
-
-    <div class="q"><div class="enonce">Dans une relation un parcours, plusieurs exercices, la clé étrangère va…</div><ul>
-      <li><span>A</span>dans une table de liaison obligatoire</li><li><span>B</span>dans les deux</li><li><span>C</span>dans la table des parcours</li><li><span>D</span>dans la table des exercices</li></ul></div>
-
-    <div class="q"><div class="enonce">Pour qu'un exercice vive dans plusieurs parcours, il faut…</div><ul>
-      <li><span>A</span>une seconde colonne parcoursId</li><li><span>B</span>une table de liaison</li><li><span>C</span>un index</li><li><span>D</span>un JSON dans exercises</li></ul></div>
-
-    <div class="q"><div class="enonce">Normaliser, c'est…</div><ul>
-      <li><span>A</span>tout mettre en JSON</li><li><span>B</span>trier les tables</li><li><span>C</span>ranger chaque fait à un seul endroit</li><li><span>D</span>supprimer les clés</li></ul></div>
-
-    <div class="q"><div class="enonce">Dans Magpie, l'ordre d'un parcours est rangé… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>dans components</li><li><span>B</span>dans parcours.exerciseIds</li><li><span>C</span>dans exercises.sortOrder</li><li><span>D</span>dans validationConfig</li></ul></div>
-
-    <div class="q"><div class="enonce">Après un réordonnancement, parcours.exerciseIds…</div><ul>
-      <li><span>A</span>est supprimé</li><li><span>B</span>garde l'ancien ordre</li><li><span>C</span>suit le nouvel ordre</li><li><span>D</span>est vidé</li></ul></div>
-
-    <div class="q"><div class="enonce">Une colonne JSON convient quand la valeur…</div><ul>
-      <li><span>A</span>sert à trier</li><li><span>B</span>sert à relier deux tables</li><li><span>C</span>doit être vérifiée par la base</li><li><span>D</span>se relit toujours en entier</li></ul></div>
-
-    <div class="q"><div class="enonce">Une liste d'identifiants dans une colonne texte… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>est indexée automatiquement</li><li><span>B</span>est vérifiée par STRICT</li><li><span>C</span>oblige à relire toutes les lignes pour chercher</li><li><span>D</span>échappe aux clés étrangères</li></ul></div>
-
-    <div class="q"><div class="enonce">Un outil comme sqlite3 ouvrant magpie.db…</div><ul>
-      <li><span>A</span>efface les clés</li><li><span>B</span>les vérifie toujours</li><li><span>C</span>refuse d'ouvrir le fichier</li><li><span>D</span>peut ne pas vérifier les clés étrangères</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 97 · Modéliser des données</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">id TEXT PRIMARY KEY</td><td>une clé primaire</td><td>db.mjs:18, 33, 48</td></tr>
+<tr><td class="c">col TEXT REFERENCES t(id)</td><td>une clé étrangère</td><td>db.mjs:49</td></tr>
+<tr><td class="c">CREATE TABLE … ) STRICT;</td><td>types imposés</td><td>db.mjs:29</td></tr>
+<tr><td class="c">PRIMARY KEY (a, b)</td><td>une clé sur deux colonnes</td><td>exemple autonome, page 4</td></tr>
+<tr><td class="c">PRAGMA foreign_keys = ON</td><td>activer les clés étrangères</td><td>schéma 1, page 2</td></tr>
+<tr><td class="c">json_extract(col, '$.Mode')</td><td>lire dans un JSON</td><td>schéma 3, page 4</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Modèle de données</dt><dd>Le découpage en tables, clés et liens.</dd>
+<dt>Clé naturelle</dt><dd>Une clé prise dans la donnée elle-même, comme un identifiant de fichier.</dd>
+<dt>Clé étrangère</dt><dd>Une colonne dont chaque valeur doit exister dans une autre table.</dd>
+<dt>Normalisation</dt><dd>Ranger chaque fait à un seul endroit.</dd>
+<dt>Table de liaison</dt><dd>Une table dont chaque ligne relie deux lignes d'autres tables.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 98</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 97 · Modéliser des données</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 97</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · C.</b> L'unicité, rien de plus.</div>
-    <div><b>02 · A.</b> db.mjs, lignes 39 et 40.</div>
-    <div><b>03 · A.</b> enableForeignKeyConstraints vaut vrai.</div>
-    <div><b>04 · B.</b> Conversion sans perte, mesurée.</div>
-    <div><b>05 · D.</b> Du côté « plusieurs ».</div>
-    <div><b>06 · B.</b> Une ligne par lien.</div>
-    <div><b>07 · C.</b> Un fait, un endroit.</div>
-    <div><b>08 · B et C.</b> Deux copies du même fait.</div>
-    <div><b>09 · B.</b> Seul sortOrder change.</div>
-    <div><b>10 · D.</b> Comme validationConfig.</div>
-    <div><b>11 · C et D.</b> Ni contrôle ni index simple.</div>
-    <div><b>12 · D.</b> Le réglage est par connexion.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 98, « Lire avec SQL ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">id TEXT PRIMARY KEY</td><td>une clé primaire</td><td>db.mjs:18, 33, 48</td></tr>
-      <tr><td class="c">col TEXT REFERENCES t(id)</td><td>une clé étrangère</td><td>db.mjs:49</td></tr>
-      <tr><td class="c">CREATE TABLE … ) STRICT;</td><td>types imposés</td><td>db.mjs:29</td></tr>
-      <tr><td class="c">PRIMARY KEY (a, b)</td><td>une clé sur deux colonnes</td><td>exemple autonome, page 4</td></tr>
-      <tr><td class="c">PRAGMA foreign_keys = ON</td><td>activer les clés étrangères</td><td>schéma 1, page 2</td></tr>
-      <tr><td class="c">json_extract(col, '$.Mode')</td><td>lire dans un JSON</td><td>schéma 3, page 4</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Modèle de données</dt><dd>Le découpage en tables, clés et liens.</dd>
-    <dt>Clé naturelle</dt><dd>Une clé prise dans la donnée elle-même, comme un identifiant de fichier.</dd>
-    <dt>Clé étrangère</dt><dd>Une colonne dont chaque valeur doit exister dans une autre table.</dd>
-    <dt>Normalisation</dt><dd>Ranger chaque fait à un seul endroit.</dd>
-    <dt>Table de liaison</dt><dd>Une table dont chaque ligne relie deux lignes d'autres tables.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 98</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 97 · Modéliser des données</div>
-</section>
-
 </body>
 </html>

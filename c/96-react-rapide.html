@@ -1,115 +1,105 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>96 · Une interface React rapide</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-8">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 96</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Une interface React rapide</h1>
-  <p class="chapeau">React rend une interface en rappelant des fonctions, les composants, chaque fois qu'un état change. Il compare ensuite le nouvel arbre à l'ancien et ne touche le DOM que là où ils diffèrent. Le temps se perd presque toujours avant, dans le JavaScript : trop de composants rappelés, ou un calcul trop cher à chaque rendu.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>31</b> et <b>91</b></span>
-    <span class="pastille">Exemples · <b>graphEditor.jsx</b>, <b>GenericNode.jsx</b>, <b>QuickSearch.jsx</b> (Magpie)</span>
-  </div>
-
-  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
-    <svg viewBox="0 0 600 196" width="100%">
-<rect x="10" y="24" width="132" height="76" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
-<text x="76" y="44" font-size="9" fill="#6B7378" text-anchor="middle" font-weight="700">un état change</text>
-<text x="76" y="64" font-size="7.6" fill="#2B2F33" text-anchor="middle">setState, une prop,</text>
-<text x="76" y="77" font-size="7.6" fill="#2B2F33" text-anchor="middle">un store</text>
-<line x1="144" y1="62" x2="156" y2="62" stroke="#6B7378" stroke-width="1.2"/><polygon points="156,62 149.6,64.7 149.6,59.3" fill="#6B7378"/>
-<rect x="158" y="24" width="132" height="76" rx="4" fill="#F4EEDF" stroke="#7A5A12" stroke-width="1.2"/>
-<text x="224" y="44" font-size="9" fill="#7A5A12" text-anchor="middle" font-weight="700">rendu</text>
-<text x="224" y="64" font-size="7.6" fill="#2B2F33" text-anchor="middle">React rappelle le composant</text>
-<text x="224" y="77" font-size="7.6" fill="#2B2F33" text-anchor="middle">et tous ses enfants</text>
-<line x1="292" y1="62" x2="304" y2="62" stroke="#6B7378" stroke-width="1.2"/><polygon points="304,62 297.6,64.7 297.6,59.3" fill="#6B7378"/>
-<rect x="306" y="24" width="132" height="76" rx="4" fill="#F4EEDF" stroke="#7A5A12" stroke-width="1.2"/>
-<text x="372" y="44" font-size="9" fill="#7A5A12" text-anchor="middle" font-weight="700">comparaison</text>
-<text x="372" y="64" font-size="7.6" fill="#2B2F33" text-anchor="middle">ancien arbre contre nouveau,</text>
-<text x="372" y="77" font-size="7.6" fill="#2B2F33" text-anchor="middle">élément par élément</text>
-<line x1="440" y1="62" x2="452" y2="62" stroke="#6B7378" stroke-width="1.2"/><polygon points="452,62 445.6,64.7 445.6,59.3" fill="#6B7378"/>
-<rect x="454" y="24" width="132" height="76" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="520" y="44" font-size="9" fill="#2E7D32" text-anchor="middle" font-weight="700">validation</text>
-<text x="520" y="64" font-size="7.6" fill="#2B2F33" text-anchor="middle">seules les différences</text>
-<text x="520" y="77" font-size="7.6" fill="#2B2F33" text-anchor="middle">touchent le DOM</text>
-<rect x="158" y="110" width="288" height="18" rx="3" fill="#F4EEDF"/>
-<text x="302" y="123" font-size="8" fill="#7A5A12" text-anchor="middle" font-weight="700">du JavaScript : c'est là que se perd le temps</text>
-<text x="300" y="154" font-size="8.6" fill="#2B2F33" text-anchor="middle" font-weight="700">Trois leviers : rendre moins de composants, rendre chacun moins cher,</text>
-<text x="300" y="170" font-size="8.6" fill="#2B2F33" text-anchor="middle" font-weight="700">et aider React à apparier les éléments d'une liste pour toucher moins le DOM.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 96</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Une interface React rapide</h1>
+<p class="chapeau">React rend une interface en rappelant des fonctions, les composants, chaque fois qu'un état change. Il compare ensuite le nouvel arbre à l'ancien et ne touche le DOM que là où ils diffèrent. Le temps se perd presque toujours avant, dans le JavaScript : trop de composants rappelés, ou un calcul trop cher à chaque rendu.</p>
+<div class="meta">
+<span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>31</b> et <b>91</b></span>
+<span class="pastille">Exemples · <b>graphEditor.jsx</b>, <b>GenericNode.jsx</b>, <b>QuickSearch.jsx</b> (Magpie)</span>
+</div>
+<div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+<svg viewbox="0 0 600 196" width="100%">
+<rect fill="#fff" height="76" rx="4" stroke="#6B7378" stroke-width="1.2" width="132" x="10" y="24"></rect>
+<text fill="#6B7378" font-size="9" font-weight="700" text-anchor="middle" x="76" y="44">un état change</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="middle" x="76" y="64">setState, une prop,</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="middle" x="76" y="77">un store</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="144" x2="156" y1="62" y2="62"></line><polygon fill="#6B7378" points="156,62 149.6,64.7 149.6,59.3"></polygon>
+<rect fill="#F4EEDF" height="76" rx="4" stroke="#7A5A12" stroke-width="1.2" width="132" x="158" y="24"></rect>
+<text fill="#7A5A12" font-size="9" font-weight="700" text-anchor="middle" x="224" y="44">rendu</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="middle" x="224" y="64">React rappelle le composant</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="middle" x="224" y="77">et tous ses enfants</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="292" x2="304" y1="62" y2="62"></line><polygon fill="#6B7378" points="304,62 297.6,64.7 297.6,59.3"></polygon>
+<rect fill="#F4EEDF" height="76" rx="4" stroke="#7A5A12" stroke-width="1.2" width="132" x="306" y="24"></rect>
+<text fill="#7A5A12" font-size="9" font-weight="700" text-anchor="middle" x="372" y="44">comparaison</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="middle" x="372" y="64">ancien arbre contre nouveau,</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="middle" x="372" y="77">élément par élément</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="440" x2="452" y1="62" y2="62"></line><polygon fill="#6B7378" points="452,62 445.6,64.7 445.6,59.3"></polygon>
+<rect fill="#fff" height="76" rx="4" stroke="#2E7D32" stroke-width="1.2" width="132" x="454" y="24"></rect>
+<text fill="#2E7D32" font-size="9" font-weight="700" text-anchor="middle" x="520" y="44">validation</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="middle" x="520" y="64">seules les différences</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="middle" x="520" y="77">touchent le DOM</text>
+<rect fill="#F4EEDF" height="18" rx="3" width="288" x="158" y="110"></rect>
+<text fill="#7A5A12" font-size="8" font-weight="700" text-anchor="middle" x="302" y="123">du JavaScript : c'est là que se perd le temps</text>
+<text fill="#2B2F33" font-size="8.6" font-weight="700" text-anchor="middle" x="300" y="154">Trois leviers : rendre moins de composants, rendre chacun moins cher,</text>
+<text fill="#2B2F33" font-size="8.6" font-weight="700" text-anchor="middle" x="300" y="170">et aider React à apparier les éléments d'une liste pour toucher moins le DOM.</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Un rendu évité est le plus rapide de tous ; un rendu inévitable doit être bon marché ; une liste doit dire à React quelle ligne est laquelle.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Un professeur qui relit tout le cahier dès qu'un élève corrige un mot. Il trouve bien la correction, mais il aurait pu ne relire que la page modifiée.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>pourquoi un parent rend tous ses enfants ;</li>
-        <li>quand memo et useCallback servent ;</li>
-        <li>choisir la clé d'une liste ;</li>
-        <li>estimer le coût d'un sélecteur de store.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Un rendu évité est le plus rapide de tous ; un rendu inévitable doit être bon marché ; une liste doit dire à React quelle ligne est laquelle.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Un professeur qui relit tout le cahier dès qu'un élève corrige un mot. Il trouve bien la correction, mais il aurait pu ne relire que la page modifiée.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>pourquoi un parent rend tous ses enfants ;</li>
+<li>quand memo et useCallback servent ;</li>
+<li>choisir la clé d'une liste ;</li>
+<li>estimer le coût d'un sélecteur de store.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À retenir</span>
     Les mesures de ce cours ont été faites avec React 18.3, la version de Magpie, dans Node avec jsdom, en <b>build de production</b>. Le build de développement ajoute des vérifications qui multiplient les durées et faussent les comparaisons.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 96 · Une interface React rapide</div>
+<div class="folio">1</div>
+<div class="pied">Cours 96 · Une interface React rapide</div>
 </section>
-
 <!-- ============ PAGE 2 · LA CASCADE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 96</b></div>
-  <p class="rubrique">Schéma 1 · La cascade des rendus</p>
-  <h2>Un parent rend tous ses enfants</h2>
-  <p style="max-width:165mm">Quand l'état d'un composant change, React le rappelle, puis rappelle chacun de ses enfants, sans regarder leurs props. <code>memo</code> ajoute une comparaison : si toutes les props sont identiques (même référence), l'enfant est sauté. Une fonction créée dans le rendu n'est jamais identique à la précédente.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#7A5A12" text-anchor="start" font-weight="700">Une liste de 2 000 lignes sous un champ de recherche : chaque frappe rend le parent (React 18.3, Node + jsdom, mesuré)</text>
-<text x="30" y="44" font-size="7.8" fill="#6B7378" text-anchor="start" font-weight="700">les lignes sont…</text>
-<text x="250" y="44" font-size="7.8" fill="#6B7378" text-anchor="start" font-weight="700">lignes rendues par frappe</text>
-<text x="400" y="44" font-size="7.8" fill="#6B7378" text-anchor="start" font-weight="700">durée d'une frappe (build de production)</text>
-<rect x="16" y="52" width="568" height="28" rx="3" fill="#F4EEDF"/>
-<text x="30" y="70" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">des composants simples</text>
-<text x="250" y="70" font-size="9" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">2 000</text>
-<rect x="400" y="59" width="104" height="14" fill="#E65100"/>
-<text x="509.5" y="70" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">3,45 ms</text>
-<rect x="16" y="84" width="568" height="28" rx="3" fill="#fff"/>
-<text x="30" y="102" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.2px">en memo, mais onPick={() =&gt; …}</text>
-<text x="250" y="102" font-size="9" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">2 000</text>
-<rect x="400" y="91" width="132" height="14" fill="#C62828"/>
-<text x="538.3" y="102" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">4,41 ms</text>
-<rect x="16" y="116" width="568" height="28" rx="3" fill="#F4EEDF"/>
-<text x="30" y="134" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.2px">en memo, onPick par useCallback</text>
-<text x="250" y="134" font-size="9" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">0</text>
-<rect x="400" y="123" width="41" height="14" fill="#2E7D32"/>
-<text x="447.4" y="134" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">1,38 ms</text>
-<text x="16" y="166" font-size="7.8" fill="#2B2F33" text-anchor="start">Une fonction écrite dans le rendu est neuve à chaque fois : memo compare, voit une prop différente, et rend quand même.</text>
-<text x="16" y="182" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700">Le memo inutile coûte plus cher que pas de memo du tout : il compare, puis il rend.</text>
-<text x="16" y="200" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">En build de développement, les mêmes cas prennent 22,5, 19,7 et 8,6 ms : ne jamais mesurer en dev.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 96</b></div>
+<p class="rubrique">Schéma 1 · La cascade des rendus</p>
+<h2>Un parent rend tous ses enfants</h2>
+<p style="max-width:165mm">Quand l'état d'un composant change, React le rappelle, puis rappelle chacun de ses enfants, sans regarder leurs props. <code>memo</code> ajoute une comparaison : si toutes les props sont identiques (même référence), l'enfant est sauté. Une fonction créée dans le rendu n'est jamais identique à la précédente.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#7A5A12" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">Une liste de 2 000 lignes sous un champ de recherche : chaque frappe rend le parent (React 18.3, Node + jsdom, mesuré)</text>
+<text fill="#6B7378" font-size="7.8" font-weight="700" text-anchor="start" x="30" y="44">les lignes sont…</text>
+<text fill="#6B7378" font-size="7.8" font-weight="700" text-anchor="start" x="250" y="44">lignes rendues par frappe</text>
+<text fill="#6B7378" font-size="7.8" font-weight="700" text-anchor="start" x="400" y="44">durée d'une frappe (build de production)</text>
+<rect fill="#F4EEDF" height="28" rx="3" width="568" x="16" y="52"></rect>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="30" y="70">des composants simples</text>
+<text class="mono" fill="#E65100" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="250" y="70">2 000</text>
+<rect fill="#E65100" height="14" width="104" x="400" y="59"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="509.5" y="70">3,45 ms</text>
+<rect fill="#fff" height="28" rx="3" width="568" x="16" y="84"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.2" font-weight="700" style="font-size:8.2px" text-anchor="start" x="30" y="102">en memo, mais onPick={() =&gt; …}</text>
+<text class="mono" fill="#C62828" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="250" y="102">2 000</text>
+<rect fill="#C62828" height="14" width="132" x="400" y="91"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="538.3" y="102">4,41 ms</text>
+<rect fill="#F4EEDF" height="28" rx="3" width="568" x="16" y="116"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.2" font-weight="700" style="font-size:8.2px" text-anchor="start" x="30" y="134">en memo, onPick par useCallback</text>
+<text class="mono" fill="#2E7D32" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="250" y="134">0</text>
+<rect fill="#2E7D32" height="14" width="41" x="400" y="123"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="447.4" y="134">1,38 ms</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="16" y="166">Une fonction écrite dans le rendu est neuve à chaque fois : memo compare, voit une prop différente, et rend quand même.</text>
+<text fill="#C62828" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="182">Le memo inutile coûte plus cher que pas de memo du tout : il compare, puis il rend.</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="16" y="200">En build de développement, les mêmes cas prennent 22,5, 19,7 et 8,6 ms : ne jamais mesurer en dev.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/src/graphEditor.jsx · lignes 131 à 139 (extrait)</span>onNodesChange: useCallback((changes) =&gt; setNodes((nds) =&gt; applyNodeChanges(changes, nds)), []),
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/src/graphEditor.jsx · lignes 131 à 139 (extrait)</span>onNodesChange: useCallback((changes) =&gt; setNodes((nds) =&gt; applyNodeChanges(changes, nds)), []),
 onEdgesChange: useCallback(
   (changes) =&gt; {
     setEdges((eds) =&gt; applyEdgeChanges(changes, eds));
@@ -117,160 +107,143 @@ onEdgesChange: useCallback(
   },
   [clearRuntime]
 ),</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Une référence stable</h3>
-      <p><code>useCallback</code> rend la même fonction tant que ses dépendances ne changent pas. Magpie passe ainsi ses gestionnaires à React Flow : le canvas, qui les reçoit en props, ne voit pas une prop neuve à chaque rendu de l'éditeur.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>La forme fonctionnelle</h3>
-      <p><code>setNodes((nds) =&gt; …)</code> reçoit l'état courant au lieu de le lire dans la fermeture. Le gestionnaire n'a donc pas besoin de <code>nodes</code> dans ses dépendances : <code>[]</code> suffit, et la fonction ne change jamais.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Une référence stable</h3>
+<p><code>useCallback</code> rend la même fonction tant que ses dépendances ne changent pas. Magpie passe ainsi ses gestionnaires à React Flow : le canvas, qui les reçoit en props, ne voit pas une prop neuve à chaque rendu de l'éditeur.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>La forme fonctionnelle</h3>
+<p><code>setNodes((nds) =&gt; …)</code> reçoit l'état courant au lieu de le lire dans la fermeture. Le gestionnaire n'a donc pas besoin de <code>nodes</code> dans ses dépendances : <code>[]</code> suffit, et la fonction ne change jamais.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Mettre <code>memo</code> partout sans stabiliser les props. La mesure le montre : 4,41 ms au lieu de 3,45, car memo compare, trouve une fonction neuve, puis rend quand même. Memo et useCallback vont ensemble.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 96 · Une interface React rapide</div>
+<div class="folio">2</div>
+<div class="pied">Cours 96 · Une interface React rapide</div>
 </section>
-
 <!-- ============ PAGE 3 · LES CLÉS ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 96</b></div>
-  <p class="rubrique">Schéma 2 · Les clés d'une liste</p>
-  <h2>Dire à React qui est qui</h2>
-  <p style="max-width:165mm">Pour une liste, React apparie l'ancienne et la nouvelle ligne qui portent la même <code>key</code>. Une clé stable, l'identifiant de la donnée, lui permet de déplacer ou d'insérer. L'index comme clé fait correspondre les lignes par position : après une insertion en tête, toutes semblent avoir changé.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#7A5A12" text-anchor="start" font-weight="700">Insérer une ligne en tête d'une liste de 1 000, dont chaque ligne garde un état (mesuré, mutations du DOM comptées)</text>
-<text x="20" y="46" font-size="9.4" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:9.4px">key={index}</text>
-<text x="20" y="64" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">1 000 textes réécrits + 1 insertion</text>
-<rect x="20" y="76" width="250" height="18" rx="3" fill="#fff" stroke="#CFC6B8"/>
-<text x="28" y="89" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">Nouveau</text>
-<text x="140" y="89" font-size="7.6" fill="#C62828" text-anchor="start" class="mono" style="font-size:7.6px">état : note de C0</text>
-<rect x="20" y="98" width="250" height="18" rx="3" fill="#fff" stroke="#CFC6B8"/>
-<text x="28" y="111" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">C0</text>
-<text x="140" y="111" font-size="7.6" fill="#C62828" text-anchor="start" class="mono" style="font-size:7.6px">état : note de C1</text>
-<rect x="20" y="120" width="250" height="18" rx="3" fill="#fff" stroke="#CFC6B8"/>
-<text x="28" y="133" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">C1</text>
-<text x="140" y="133" font-size="7.6" fill="#C62828" text-anchor="start" class="mono" style="font-size:7.6px">état : note de C2</text>
-<rect x="20" y="142" width="250" height="18" rx="3" fill="#fff" stroke="#CFC6B8"/>
-<text x="28" y="155" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">C2</text>
-<text x="140" y="155" font-size="7.6" fill="#C62828" text-anchor="start" class="mono" style="font-size:7.6px">état : note de C3</text>
-<text x="310" y="46" font-size="9.4" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:9.4px">key={item.id}</text>
-<text x="310" y="64" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">1 insertion</text>
-<rect x="310" y="76" width="250" height="18" rx="3" fill="#fff" stroke="#CFC6B8"/>
-<text x="318" y="89" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">Nouveau</text>
-<text x="430" y="89" font-size="7.6" fill="#6B7378" text-anchor="start" class="mono" style="font-size:7.6px">état : note de Nouveau</text>
-<rect x="310" y="98" width="250" height="18" rx="3" fill="#fff" stroke="#CFC6B8"/>
-<text x="318" y="111" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">C0</text>
-<text x="430" y="111" font-size="7.6" fill="#6B7378" text-anchor="start" class="mono" style="font-size:7.6px">état : note de C0</text>
-<rect x="310" y="120" width="250" height="18" rx="3" fill="#fff" stroke="#CFC6B8"/>
-<text x="318" y="133" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">C1</text>
-<text x="430" y="133" font-size="7.6" fill="#6B7378" text-anchor="start" class="mono" style="font-size:7.6px">état : note de C1</text>
-<rect x="310" y="142" width="250" height="18" rx="3" fill="#fff" stroke="#CFC6B8"/>
-<text x="318" y="155" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">C2</text>
-<text x="430" y="155" font-size="7.6" fill="#6B7378" text-anchor="start" class="mono" style="font-size:7.6px">état : note de C2</text>
-<text x="16" y="184" font-size="7.8" fill="#2B2F33" text-anchor="start">Avec l'index pour clé, React croit que la ligne 0 a changé de texte, puis la 1, puis toutes : il réécrit 1 000 textes,</text>
-<text x="16" y="198" font-size="7.8" fill="#2B2F33" text-anchor="start">et chaque état reste à sa position. La nouvelle ligne hérite de l'état de « C0 » : le bogue, mesuré, est là.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 96</b></div>
+<p class="rubrique">Schéma 2 · Les clés d'une liste</p>
+<h2>Dire à React qui est qui</h2>
+<p style="max-width:165mm">Pour une liste, React apparie l'ancienne et la nouvelle ligne qui portent la même <code>key</code>. Une clé stable, l'identifiant de la donnée, lui permet de déplacer ou d'insérer. L'index comme clé fait correspondre les lignes par position : après une insertion en tête, toutes semblent avoir changé.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#7A5A12" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">Insérer une ligne en tête d'une liste de 1 000, dont chaque ligne garde un état (mesuré, mutations du DOM comptées)</text>
+<text class="mono" fill="#C62828" font-size="9.4" font-weight="700" style="font-size:9.4px" text-anchor="start" x="20" y="46">key={index}</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="20" y="64">1 000 textes réécrits + 1 insertion</text>
+<rect fill="#fff" height="18" rx="3" stroke="#CFC6B8" width="250" x="20" y="76"></rect>
+<text fill="#2B2F33" font-size="8" font-weight="700" text-anchor="start" x="28" y="89">Nouveau</text>
+<text class="mono" fill="#C62828" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="140" y="89">état : note de C0</text>
+<rect fill="#fff" height="18" rx="3" stroke="#CFC6B8" width="250" x="20" y="98"></rect>
+<text fill="#2B2F33" font-size="8" font-weight="700" text-anchor="start" x="28" y="111">C0</text>
+<text class="mono" fill="#C62828" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="140" y="111">état : note de C1</text>
+<rect fill="#fff" height="18" rx="3" stroke="#CFC6B8" width="250" x="20" y="120"></rect>
+<text fill="#2B2F33" font-size="8" font-weight="700" text-anchor="start" x="28" y="133">C1</text>
+<text class="mono" fill="#C62828" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="140" y="133">état : note de C2</text>
+<rect fill="#fff" height="18" rx="3" stroke="#CFC6B8" width="250" x="20" y="142"></rect>
+<text fill="#2B2F33" font-size="8" font-weight="700" text-anchor="start" x="28" y="155">C2</text>
+<text class="mono" fill="#C62828" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="140" y="155">état : note de C3</text>
+<text class="mono" fill="#2E7D32" font-size="9.4" font-weight="700" style="font-size:9.4px" text-anchor="start" x="310" y="46">key={item.id}</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="310" y="64">1 insertion</text>
+<rect fill="#fff" height="18" rx="3" stroke="#CFC6B8" width="250" x="310" y="76"></rect>
+<text fill="#2B2F33" font-size="8" font-weight="700" text-anchor="start" x="318" y="89">Nouveau</text>
+<text class="mono" fill="#6B7378" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="430" y="89">état : note de Nouveau</text>
+<rect fill="#fff" height="18" rx="3" stroke="#CFC6B8" width="250" x="310" y="98"></rect>
+<text fill="#2B2F33" font-size="8" font-weight="700" text-anchor="start" x="318" y="111">C0</text>
+<text class="mono" fill="#6B7378" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="430" y="111">état : note de C0</text>
+<rect fill="#fff" height="18" rx="3" stroke="#CFC6B8" width="250" x="310" y="120"></rect>
+<text fill="#2B2F33" font-size="8" font-weight="700" text-anchor="start" x="318" y="133">C1</text>
+<text class="mono" fill="#6B7378" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="430" y="133">état : note de C1</text>
+<rect fill="#fff" height="18" rx="3" stroke="#CFC6B8" width="250" x="310" y="142"></rect>
+<text fill="#2B2F33" font-size="8" font-weight="700" text-anchor="start" x="318" y="155">C2</text>
+<text class="mono" fill="#6B7378" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="430" y="155">état : note de C2</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="16" y="184">Avec l'index pour clé, React croit que la ligne 0 a changé de texte, puis la 1, puis toutes : il réécrit 1 000 textes,</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="16" y="198">et chaque état reste à sa position. La nouvelle ligne hérite de l'état de « C0 » : le bogue, mesuré, est là.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/src/QuickSearch.jsx · lignes 19 à 25</span>const results = useMemo(() =&gt; {
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/src/QuickSearch.jsx · lignes 19 à 25</span>const results = useMemo(() =&gt; {
   const q = query.trim().toLowerCase();
   if (!q) return [];
   return catalog
     .filter((e) =&gt; e.name.toLowerCase().includes(q) || (e.displayName || "").toLowerCase().includes(q))
     .slice(0, 30);
 }, [catalog, query]);</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Le calcul mis de côté</h3>
-      <p><code>useMemo</code> ne refait le filtre que si <code>catalog</code> ou <code>query</code> changent. Et <code>slice(0, 30)</code> borne le nombre de lignes rendues, quelle que soit la taille du catalogue : le moyen le plus sûr de rendre une liste vite est d'en rendre peu.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Les clés de Magpie</h3>
-      <p>Le ruban rend ses icônes avec <code>key={entry.typeGuid}</code> (CategoryRibbon.jsx:154), un identifiant stable. La grille utilise <code>key={i}</code> (GridList.jsx:59) : acceptable ici, car le brouillon d'une ligne est relu depuis sa valeur au double-clic (ligne 36).</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Le calcul mis de côté</h3>
+<p><code>useMemo</code> ne refait le filtre que si <code>catalog</code> ou <code>query</code> changent. Et <code>slice(0, 30)</code> borne le nombre de lignes rendues, quelle que soit la taille du catalogue : le moyen le plus sûr de rendre une liste vite est d'en rendre peu.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Les clés de Magpie</h3>
+<p>Le ruban rend ses icônes avec <code>key={entry.typeGuid}</code> (CategoryRibbon.jsx:154), un identifiant stable. La grille utilise <code>key={i}</code> (GridList.jsx:59) : acceptable ici, car le brouillon d'une ligne est relu depuis sa valeur au double-clic (ligne 36).</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Prendre l'index pour clé dans une liste où l'on insère, supprime ou trie, et dont les lignes gardent un état. L'état reste à sa position : la nouvelle ligne hérite de l'état de l'ancienne première, sans erreur visible.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 96 · Une interface React rapide</div>
+<div class="folio">3</div>
+<div class="pied">Cours 96 · Une interface React rapide</div>
 </section>
-
 <!-- ============ PAGE 4 · LE STORE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 96</b></div>
-  <p class="rubrique">Schéma 3 · Le sélecteur de store</p>
-  <h2>S'abonner à une petite partie</h2>
-  <p style="max-width:165mm">React Flow garde nœuds et câbles dans un store. <code>useStore(sélecteur)</code> abonne un composant à ce que rend le sélecteur : à chaque mise à jour du store, React Flow rappelle tous les sélecteurs, et ne rend que les composants dont la valeur a changé.</p>
-
-  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#7A5A12" text-anchor="start" font-weight="700">Le sélecteur de GenericNode, recopié : coût de tous les sélecteurs pour une seule mise à jour du store (Node, mesuré)</text>
-<text x="16" y="54" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">20 nœuds, 25 câbles</text>
-<rect x="180" y="42" width="2.0" height="18" fill="#2E7D32"/>
-<text x="188" y="55" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">24 µs</text>
-<text x="16" y="82" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">50 nœuds, 60 câbles</text>
-<rect x="180" y="70" width="5.5" height="18" fill="#2E7D32"/>
-<text x="191.50835845437106" y="83" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">67 µs</text>
-<text x="16" y="110" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">200 nœuds, 300 câbles</text>
-<rect x="180" y="98" width="50.1" height="18" fill="#2E7D32"/>
-<text x="236.06851192107428" y="111" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">609 µs</text>
-<text x="16" y="138" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">500 nœuds, 700 câbles</text>
-<rect x="180" y="126" width="300.0" height="18" fill="#E65100"/>
-<text x="486.0" y="139" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">3,6 ms</text>
-<text x="16" y="166" font-size="7.8" fill="#2B2F33" text-anchor="start">Chaque nœud filtre tous les câbles, à chaque changement du store, même un simple déplacement :</text>
-<text x="16" y="180" font-size="7.8" fill="#2B2F33" text-anchor="start">le coût croît comme nœuds × câbles. Une image dispose de 16,7 ms à 60 images par seconde.</text>
-<text x="16" y="196" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Le rendu, lui, n'a lieu que si la chaîne rendue change : c'est le bon côté de ce sélecteur.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 96</b></div>
+<p class="rubrique">Schéma 3 · Le sélecteur de store</p>
+<h2>S'abonner à une petite partie</h2>
+<p style="max-width:165mm">React Flow garde nœuds et câbles dans un store. <code>useStore(sélecteur)</code> abonne un composant à ce que rend le sélecteur : à chaque mise à jour du store, React Flow rappelle tous les sélecteurs, et ne rend que les composants dont la valeur a changé.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 206" width="100%">
+<rect fill="#EFE9E1" height="206" width="600" x="0" y="0"></rect>
+<text fill="#7A5A12" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">Le sélecteur de GenericNode, recopié : coût de tous les sélecteurs pour une seule mise à jour du store (Node, mesuré)</text>
+<text fill="#2B2F33" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="54">20 nœuds, 25 câbles</text>
+<rect fill="#2E7D32" height="18" width="2.0" x="180" y="42"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="188" y="55">24 µs</text>
+<text fill="#2B2F33" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="82">50 nœuds, 60 câbles</text>
+<rect fill="#2E7D32" height="18" width="5.5" x="180" y="70"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="191.50835845437106" y="83">67 µs</text>
+<text fill="#2B2F33" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="110">200 nœuds, 300 câbles</text>
+<rect fill="#2E7D32" height="18" width="50.1" x="180" y="98"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="236.06851192107428" y="111">609 µs</text>
+<text fill="#2B2F33" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="138">500 nœuds, 700 câbles</text>
+<rect fill="#E65100" height="18" width="300.0" x="180" y="126"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="486.0" y="139">3,6 ms</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="16" y="166">Chaque nœud filtre tous les câbles, à chaque changement du store, même un simple déplacement :</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="16" y="180">le coût croît comme nœuds × câbles. Une image dispose de 16,7 ms à 60 images par seconde.</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="16" y="196">Le rendu, lui, n'a lieu que si la chaîne rendue change : c'est le bon côté de ce sélecteur.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/src/GenericNode.jsx · lignes 43 à 49</span>const connectedKey = useStore((st) =&gt;
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/src/GenericNode.jsx · lignes 43 à 49</span>const connectedKey = useStore((st) =&gt;
   st.edges
     .filter((e) =&gt; e.target === id)
     .map((e) =&gt; e.targetHandle)
     .sort()
     .join("|")
 );</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Pourquoi une chaîne</h3>
-      <p>Le store compare l'ancienne et la nouvelle valeur par <code>===</code>. Un tableau construit à chaque appel serait toujours différent et ferait rendre le nœud à chaque mise à jour. Une chaîne triée est égale tant que les câbles du nœud sont les mêmes : le rendu est évité.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Le coût qui reste</h3>
-      <p>Éviter le rendu n'évite pas l'appel : chaque nœud parcourt tous les câbles à chaque mise à jour, déplacement compris. Un index des câbles par nœud cible, calculé une fois par mise à jour, ramènerait chaque sélecteur à une simple lecture.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Pourquoi une chaîne</h3>
+<p>Le store compare l'ancienne et la nouvelle valeur par <code>===</code>. Un tableau construit à chaque appel serait toujours différent et ferait rendre le nœud à chaque mise à jour. Une chaîne triée est égale tant que les câbles du nœud sont les mêmes : le rendu est évité.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Le coût qui reste</h3>
+<p>Éviter le rendu n'évite pas l'appel : chaque nœud parcourt tous les câbles à chaque mise à jour, déplacement compris. Un index des câbles par nœud cible, calculé une fois par mise à jour, ramènerait chaque sélecteur à une simple lecture.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Écrire <code>nodeTypes</code> dans le corps du composant. Un objet neuf à chaque rendu fait recréer tous les nœuds par React Flow. Magpie le déclare hors du composant (graphEditor.jsx:33), une fois pour toutes.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 96 · Une interface React rapide</div>
+<div class="folio">4</div>
+<div class="pied">Cours 96 · Une interface React rapide</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 96</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>Les choix de l'éditeur de Magpie</h2>
-  <p style="max-width:165mm">L'éditeur web de Magpie applique déjà la plupart des leviers de ce cours : types de nœuds stables, gestionnaires en useCallback, recherche mise en cache et bornée, sélecteur qui rend une valeur comparable, sauvegarde différée.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 96</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>Les choix de l'éditeur de Magpie</h2>
+<p style="max-width:165mm">L'éditeur web de Magpie applique déjà la plupart des leviers de ce cours : types de nœuds stables, gestionnaires en useCallback, recherche mise en cache et bornée, sélecteur qui rend une valeur comparable, sauvegarde différée.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">magpie/web/src/graphEditor.jsx</span></div>
 <div class="l k1"><span class="n">33</span><span class="kw">const</span> nodeTypes = { magpieNode: GenericNode };<span class="rep r1">1</span></div>
@@ -285,137 +258,55 @@ onEdgesChange: useCallback(
 <div class="l"><span class="cm">magpie/web/src/App.jsx</span></div>
 <div class="l k5"><span class="n">54</span><span class="kw">const</span> timer = setTimeout(() =&gt; saveCurrentGraph(…), 500);<span class="rep r5">5</span></div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>Hors du composant</b>Jamais recréé.</li>
-      <li><span class="rep r2">2</span><b>Mis en cache</b>Et borné à 30.</li>
-      <li><span class="rep r3">3</span><b>Un sélecteur</b>Qui parcourt tout.</li>
-      <li><span class="rep r4">4</span><b>Clé d'index</b>Brouillon relu.</li>
-      <li><span class="rep r5">5</span><b>Sauvegarde</b>500 ms après.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À surveiller · le coût des sélecteurs croît comme nœuds × câbles</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>Hors du composant</b>Jamais recréé.</li>
+<li><span class="rep r2">2</span><b>Mis en cache</b>Et borné à 30.</li>
+<li><span class="rep r3">3</span><b>Un sélecteur</b>Qui parcourt tout.</li>
+<li><span class="rep r4">4</span><b>Clé d'index</b>Brouillon relu.</li>
+<li><span class="rep r5">5</span><b>Sauvegarde</b>500 ms après.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À surveiller · le coût des sélecteurs croît comme nœuds × câbles</span>
     Le sélecteur de la ligne 43 est appelé pour chaque nœud à chaque mise à jour du store, et chacun parcourt tous les câbles. Sur une reproduction du sélecteur, la mesure donne 24 µs pour 20 nœuds et 3,6 ms pour 500 nœuds et 700 câbles, à chaque image d'un glissement. Pour les petits exercices de Magpie, c'est sans effet ; sur un grand graphe, ce serait la première chose à indexer. Mesuré sur une reproduction, pas dans le navigateur.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 96 · Une interface React rapide</div>
+<div class="folio">5</div>
+<div class="pied">Cours 96 · Une interface React rapide</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 96</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 96</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">Quand l'état d'un parent change, React rappelle…</div><ul>
-      <li><span>A</span>toute l'application</li><li><span>B</span>seulement le parent</li><li><span>C</span>seulement les enfants dont les props changent</li><li><span>D</span>le parent et tous ses enfants, sauf ceux que memo saute</li></ul></div>
 
-    <div class="q"><div class="enonce">Le temps d'un rendu lent se perd surtout…</div><ul>
-      <li><span>A</span>dans le réseau</li><li><span>B</span>dans le CSS</li><li><span>C</span>dans le JavaScript des composants</li><li><span>D</span>dans le DOM, toujours</li></ul></div>
 
-    <div class="q"><div class="enonce">Un enfant en memo qui reçoit onPick={() =&gt; …} écrit dans le rendu…</div><ul>
-      <li><span>A</span>provoque une erreur</li><li><span>B</span>est rendu deux fois</li><li><span>C</span>n'est jamais rendu</li><li><span>D</span>rend quand même, après avoir comparé</li></ul></div>
 
-    <div class="q"><div class="enonce">Mesuré : memo plus useCallback sur 2 000 lignes donne…</div><ul>
-      <li><span>A</span>1 000 lignes</li><li><span>B</span>2 000 lignes, 4,41 ms</li><li><span>C</span>0 ligne rendue, 1,38 ms</li><li><span>D</span>2 000 lignes, 3,45 ms</li></ul></div>
-
-    <div class="q"><div class="enonce">On mesure les performances de React…</div><ul>
-      <li><span>A</span>peu importe</li><li><span>B</span>en build de développement</li><li><span>C</span>avec les outils ouverts</li><li><span>D</span>en build de production</li></ul></div>
-
-    <div class="q"><div class="enonce">setNodes((nds) =&gt; …) permet des dépendances [] parce que…</div><ul>
-      <li><span>A</span>l'état courant est passé en argument</li><li><span>B</span>React ignore les dépendances</li><li><span>C</span>useCallback copie l'état</li><li><span>D</span>nodes est global</li></ul></div>
-
-    <div class="q"><div class="enonce">Avec key={index}, insérer une ligne en tête… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>ne fait qu'une insertion</li><li><span>B</span>remet tous les états à zéro</li><li><span>C</span>laisse chaque état à sa position</li><li><span>D</span>réécrit le texte de toutes les lignes</li></ul></div>
-
-    <div class="q"><div class="enonce">GridList.jsx:59 peut garder key={i} parce que…</div><ul>
-      <li><span>A</span>la liste est toujours vide</li><li><span>B</span>le brouillon est relu depuis la valeur au double-clic</li><li><span>C</span>i est un identifiant</li><li><span>D</span>React l'interdit ailleurs</li></ul></div>
-
-    <div class="q"><div class="enonce">QuickSearch rend vite parce que… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>slice(0, 30) borne les lignes</li><li><span>B</span>il n'utilise pas React</li><li><span>C</span>le catalogue est vide</li><li><span>D</span>useMemo garde le filtre tant que rien ne change</li></ul></div>
-
-    <div class="q"><div class="enonce">Le sélecteur de GenericNode rend une chaîne pour que…</div><ul>
-      <li><span>A</span>=== reste vrai tant que les câbles du nœud sont les mêmes</li><li><span>B</span>le nœud soit toujours rendu</li><li><span>C</span>le store soit plus petit</li><li><span>D</span>les câbles soient triés à l'écran</li></ul></div>
-
-    <div class="q"><div class="enonce">Le coût de tous ces sélecteurs, à chaque mise à jour, croît comme…</div><ul>
-      <li><span>A</span>il est constant</li><li><span>B</span>nœuds × câbles</li><li><span>C</span>nœuds seulement</li><li><span>D</span>câbles seulement</li></ul></div>
-
-    <div class="q"><div class="enonce">nodeTypes est déclaré hors du composant pour…</div><ul>
-      <li><span>A</span>le style</li><li><span>B</span>que React Flow ne recrée pas les nœuds à chaque rendu</li><li><span>C</span>l'exporter</li><li><span>D</span>économiser de la mémoire</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 96 · Une interface React rapide</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">memo(Composant)</td><td>saute le rendu si les props sont identiques</td><td>schéma, page 2</td></tr>
+<tr><td class="c">useCallback(fn, deps)</td><td>une fonction stable</td><td>graphEditor.jsx:131</td></tr>
+<tr><td class="c">useMemo(() =&gt; calcul, deps)</td><td>un résultat mis en cache</td><td>QuickSearch.jsx:19</td></tr>
+<tr><td class="c">key={item.id}</td><td>apparier les lignes par identité</td><td>CategoryRibbon.jsx:154</td></tr>
+<tr><td class="c">useStore(st =&gt; valeur)</td><td>s'abonner à une partie du store</td><td>GenericNode.jsx:43</td></tr>
+<tr><td class="c">setX((ancien) =&gt; nouveau)</td><td>mise à jour fonctionnelle</td><td>graphEditor.jsx:131</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Rendu</dt><dd>L'appel d'un composant, qui renvoie l'arbre qu'il veut afficher.</dd>
+<dt>Réconciliation</dt><dd>La comparaison de l'ancien et du nouvel arbre.</dd>
+<dt>Validation (commit)</dt><dd>L'application des différences au DOM.</dd>
+<dt>Référence stable</dt><dd>Une valeur qui reste === d'un rendu à l'autre.</dd>
+<dt>Sélecteur</dt><dd>Une fonction qui extrait d'un store la partie qu'un composant affiche.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 121</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 96 · Une interface React rapide</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 96</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · D.</b> Sans regarder les props.</div>
-    <div><b>02 · C.</b> Le DOM ne voit que les différences.</div>
-    <div><b>03 · D.</b> Une fonction neuve à chaque rendu.</div>
-    <div><b>04 · C.</b> Les deux vont ensemble.</div>
-    <div><b>05 · D.</b> En dev : 22,5 ms au lieu de 3,45.</div>
-    <div><b>06 · A.</b> Pas besoin de lire nodes.</div>
-    <div><b>07 · C et D.</b> 1 000 textes, états décalés.</div>
-    <div><b>08 · B.</b> Ligne 36.</div>
-    <div><b>09 · A et D.</b> Moins de calcul, moins de lignes.</div>
-    <div><b>10 · A.</b> Un tableau neuf serait toujours différent.</div>
-    <div><b>11 · B.</b> Chaque nœud filtre tous les câbles.</div>
-    <div><b>12 · B.</b> graphEditor.jsx:33.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 121, « La boucle d'événements ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">memo(Composant)</td><td>saute le rendu si les props sont identiques</td><td>schéma, page 2</td></tr>
-      <tr><td class="c">useCallback(fn, deps)</td><td>une fonction stable</td><td>graphEditor.jsx:131</td></tr>
-      <tr><td class="c">useMemo(() =&gt; calcul, deps)</td><td>un résultat mis en cache</td><td>QuickSearch.jsx:19</td></tr>
-      <tr><td class="c">key={item.id}</td><td>apparier les lignes par identité</td><td>CategoryRibbon.jsx:154</td></tr>
-      <tr><td class="c">useStore(st =&gt; valeur)</td><td>s'abonner à une partie du store</td><td>GenericNode.jsx:43</td></tr>
-      <tr><td class="c">setX((ancien) =&gt; nouveau)</td><td>mise à jour fonctionnelle</td><td>graphEditor.jsx:131</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Rendu</dt><dd>L'appel d'un composant, qui renvoie l'arbre qu'il veut afficher.</dd>
-    <dt>Réconciliation</dt><dd>La comparaison de l'ancien et du nouvel arbre.</dd>
-    <dt>Validation (commit)</dt><dd>L'application des différences au DOM.</dd>
-    <dt>Référence stable</dt><dd>Une valeur qui reste === d'un rendu à l'autre.</dd>
-    <dt>Sélecteur</dt><dd>Une fonction qui extrait d'un store la partie qu'un composant affiche.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 121</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 96 · Une interface React rapide</div>
-</section>
-
 </body>
 </html>

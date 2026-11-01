@@ -1,263 +1,236 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>124 · Les workers</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-8">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 124</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Les workers</h1>
-  <p class="chapeau">Une page n'a qu'un fil principal : il traite les clics, fait tourner React, met en page et peint. Un calcul long l'occupe, et tout se fige. Un <b>worker</b> est un second fil, sans accès à la page, à qui l'on confie ce calcul par messages.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>121</b>, <b>122</b></span>
-    <span class="pastille">Exemples · <b>Magpie</b> web, aperçu 3D</span>
-  </div>
-
-  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
-    <svg viewBox="0 0 600 196" width="100%">
-<text x="10" y="24" font-size="9" fill="#7A5A12" text-anchor="start" font-weight="700">Fil principal</text>
-<text x="10" y="104" font-size="9" fill="#1565C0" text-anchor="start" font-weight="700">Worker</text>
-<rect x="100" y="10" width="90" height="24" rx="4" fill="#F4EEDF" stroke="#7A5A12" stroke-width="1.2"/>
-<text x="145.0" y="24.666666666666668" font-size="8" fill="#7A5A12" text-anchor="middle" font-weight="700">événements</text>
-<rect x="198" y="10" width="90" height="24" rx="4" fill="#F4EEDF" stroke="#7A5A12" stroke-width="1.2"/>
-<text x="243.0" y="24.666666666666668" font-size="8" fill="#7A5A12" text-anchor="middle" font-weight="700">React</text>
-<rect x="296" y="10" width="90" height="24" rx="4" fill="#F4EEDF" stroke="#7A5A12" stroke-width="1.2"/>
-<text x="341.0" y="24.666666666666668" font-size="8" fill="#7A5A12" text-anchor="middle" font-weight="700">mise en page</text>
-<rect x="394" y="10" width="90" height="24" rx="4" fill="#F4EEDF" stroke="#7A5A12" stroke-width="1.2"/>
-<text x="439.0" y="24.666666666666668" font-size="8" fill="#7A5A12" text-anchor="middle" font-weight="700">peinture</text>
-<rect x="492" y="10" width="90" height="24" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2" stroke-dasharray="4 3"/>
-<text x="537.0" y="24.666666666666668" font-size="8" fill="#2E7D32" text-anchor="middle" font-weight="700">libre</text>
-<rect x="198" y="90" width="90" height="24" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
-<text x="243.0" y="104.66666666666667" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700">décoder</text>
-<rect x="296" y="90" width="90" height="24" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
-<text x="341.0" y="104.66666666666667" font-size="8" fill="#1565C0" text-anchor="middle" font-weight="700">calculer</text>
-<line x1="150" y1="36" x2="230" y2="88" stroke="#1565C0" stroke-width="1.3"/><polygon points="230,88 223.1,86.8 226.1,82.2" fill="#1565C0"/>
-<text x="196" y="64" font-size="7.4" fill="#1565C0" text-anchor="start" class="mono" style="font-size:7.4px">postMessage(données)</text>
-<line x1="390" y1="92" x2="470" y2="38" stroke="#2E7D32" stroke-width="1.3"/><polygon points="470,38 466.2,43.9 463.1,39.3" fill="#2E7D32"/>
-<text x="436" y="76" font-size="7.4" fill="#2E7D32" text-anchor="start" class="mono" style="font-size:7.4px">onmessage(résultat)</text>
-<text x="10" y="148" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">Un worker n'a ni DOM ni window : il reçoit des messages, calcule, et répond. Le fil principal reste aux événements.</text>
-<text x="10" y="168" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Les données passent par copie (clonage structuré) ou par transfert, sans copie, pour les tampons binaires.</text>
-<text x="10" y="184" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Magpie web n'en utilise aucun : de la réponse de Compute au maillage 3D, tout passe par le fil principal.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 124</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Les workers</h1>
+<p class="chapeau">Une page n'a qu'un fil principal : il traite les clics, fait tourner React, met en page et peint. Un calcul long l'occupe, et tout se fige. Un <b>worker</b> est un second fil, sans accès à la page, à qui l'on confie ce calcul par messages.</p>
+<div class="meta">
+<span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>121</b>, <b>122</b></span>
+<span class="pastille">Exemples · <b>Magpie</b> web, aperçu 3D</span>
+</div>
+<div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+<svg viewbox="0 0 600 196" width="100%">
+<text fill="#7A5A12" font-size="9" font-weight="700" text-anchor="start" x="10" y="24">Fil principal</text>
+<text fill="#1565C0" font-size="9" font-weight="700" text-anchor="start" x="10" y="104">Worker</text>
+<rect fill="#F4EEDF" height="24" rx="4" stroke="#7A5A12" stroke-width="1.2" width="90" x="100" y="10"></rect>
+<text fill="#7A5A12" font-size="8" font-weight="700" text-anchor="middle" x="145.0" y="24.666666666666668">événements</text>
+<rect fill="#F4EEDF" height="24" rx="4" stroke="#7A5A12" stroke-width="1.2" width="90" x="198" y="10"></rect>
+<text fill="#7A5A12" font-size="8" font-weight="700" text-anchor="middle" x="243.0" y="24.666666666666668">React</text>
+<rect fill="#F4EEDF" height="24" rx="4" stroke="#7A5A12" stroke-width="1.2" width="90" x="296" y="10"></rect>
+<text fill="#7A5A12" font-size="8" font-weight="700" text-anchor="middle" x="341.0" y="24.666666666666668">mise en page</text>
+<rect fill="#F4EEDF" height="24" rx="4" stroke="#7A5A12" stroke-width="1.2" width="90" x="394" y="10"></rect>
+<text fill="#7A5A12" font-size="8" font-weight="700" text-anchor="middle" x="439.0" y="24.666666666666668">peinture</text>
+<rect fill="#fff" height="24" rx="4" stroke="#2E7D32" stroke-dasharray="4 3" stroke-width="1.2" width="90" x="492" y="10"></rect>
+<text fill="#2E7D32" font-size="8" font-weight="700" text-anchor="middle" x="537.0" y="24.666666666666668">libre</text>
+<rect fill="#fff" height="24" rx="4" stroke="#1565C0" stroke-width="1.2" width="90" x="198" y="90"></rect>
+<text fill="#1565C0" font-size="8" font-weight="700" text-anchor="middle" x="243.0" y="104.66666666666667">décoder</text>
+<rect fill="#fff" height="24" rx="4" stroke="#1565C0" stroke-width="1.2" width="90" x="296" y="90"></rect>
+<text fill="#1565C0" font-size="8" font-weight="700" text-anchor="middle" x="341.0" y="104.66666666666667">calculer</text>
+<line stroke="#1565C0" stroke-width="1.3" x1="150" x2="230" y1="36" y2="88"></line><polygon fill="#1565C0" points="230,88 223.1,86.8 226.1,82.2"></polygon>
+<text class="mono" fill="#1565C0" font-size="7.4" style="font-size:7.4px" text-anchor="start" x="196" y="64">postMessage(données)</text>
+<line stroke="#2E7D32" stroke-width="1.3" x1="390" x2="470" y1="92" y2="38"></line><polygon fill="#2E7D32" points="470,38 466.2,43.9 463.1,39.3"></polygon>
+<text class="mono" fill="#2E7D32" font-size="7.4" style="font-size:7.4px" text-anchor="start" x="436" y="76">onmessage(résultat)</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="10" y="148">Un worker n'a ni DOM ni window : il reçoit des messages, calcule, et répond. Le fil principal reste aux événements.</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="10" y="168">Les données passent par copie (clonage structuré) ou par transfert, sans copie, pour les tampons binaires.</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="10" y="184">Magpie web n'en utilise aucun : de la réponse de Compute au maillage 3D, tout passe par le fil principal.</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Ce qui calcule longtemps sans toucher la page peut partir dans un worker ; on lui envoie les données, il renvoie le résultat, et le fil principal reste disponible entre les deux.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Le comptoir d'un atelier. Le vendeur ne découpe pas les pièces pendant que les clients attendent : il transmet le bon de commande à l'atelier, et sert les suivants.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>mesurer ce qui fige le fil ;</li>
-        <li>créer un worker et lui parler ;</li>
-        <li>transférer plutôt que copier ;</li>
-        <li>savoir quand ça ne vaut pas la peine.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Ce qui calcule longtemps sans toucher la page peut partir dans un worker ; on lui envoie les données, il renvoie le résultat, et le fil principal reste disponible entre les deux.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Le comptoir d'un atelier. Le vendeur ne découpe pas les pièces pendant que les clients attendent : il transmet le bon de commande à l'atelier, et sert les suivants.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>mesurer ce qui fige le fil ;</li>
+<li>créer un worker et lui parler ;</li>
+<li>transférer plutôt que copier ;</li>
+<li>savoir quand ça ne vaut pas la peine.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À retenir</span>
     Un worker n'accélère pas un calcul : il le déplace. On y gagne un fil principal libre ; on y paie un démarrage et le passage des données.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 124 · Les workers</div>
+<div class="folio">1</div>
+<div class="pied">Cours 124 · Les workers</div>
 </section>
-
 <!-- ============ PAGE 2 · CE QUI FIGE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 124</b></div>
-  <p class="rubrique">Schéma 1 · Ce qui fige la page</p>
-  <h2>Mesurer avant de déplacer</h2>
-  <p style="max-width:165mm">Le serveur de Magpie plafonne un aperçu 3D à 200 000 triangles et 5 Mio. On a fabriqué un aperçu à ce plafond, et mesuré ce que la page doit en faire avant de l'afficher.</p>
-
-  <svg viewBox="0 0 600 222" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="222" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8" fill="#7A5A12" text-anchor="start" font-weight="700">Un aperçu au plafond de Magpie (5 Mio : 236 906 sommets, 200 000 triangles), Chromium 141 (mesuré)</text>
-<text x="16" y="47" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">JSON.parse de la réponse, 7 Mo de texte</text>
-<rect x="250" y="36" width="34.9" height="14" rx="2" fill="#7B1FA2" opacity=".35"/>
-<rect x="250" y="36" width="34.9" height="14" rx="2" fill="#7B1FA2"/>
-<text x="290.9142857142857" y="47" font-size="7.8" fill="#7B1FA2" text-anchor="start" font-weight="700">9,4 ms</text>
-<text x="16" y="71" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">décoder le base64, boucle de Viewer3D.jsx:19</text>
-<rect x="250" y="60" width="159.3" height="14" rx="2" fill="#C62828" opacity=".35"/>
-<rect x="250" y="60" width="82.5" height="14" rx="2" fill="#C62828"/>
-<text x="415.34285714285716" y="71" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700">22,2 à 42,9 ms</text>
-<text x="16" y="95" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">computeVertexNormals, Three.js 0.186.1</text>
-<rect x="250" y="84" width="243.7" height="14" rx="2" fill="#C62828" opacity=".35"/>
-<rect x="250" y="84" width="120.0" height="14" rx="2" fill="#C62828"/>
-<text x="499.65714285714284" y="95" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700">32,3 à 65,6 ms</text>
-<text x="16" y="119" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">le même décodage par Uint8Array.fromBase64</text>
-<rect x="250" y="108" width="30.5" height="14" rx="2" fill="#2E7D32" opacity=".35"/>
-<rect x="250" y="108" width="21.2" height="14" rx="2" fill="#2E7D32"/>
-<text x="286.45714285714286" y="119" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700">5,7 à 8,2 ms</text>
-<text x="16" y="148" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Barre pleine : le plus rapide des essais ; claire : le plus lent. Une minuterie de 10 ms, lancée juste avant</text>
-<text x="16" y="163" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">le décodage sur le fil principal, s'est déclenchée à 23,7 ms : rien d'autre ne passe tant qu'il dure.</text>
-<text x="16" y="186" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Maillage tiré au hasard, indices dispersés : un cas défavorable pour les normales. Mesuré hors de Magpie,</text>
-<text x="16" y="200" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">avec la fonction decode recopiée telle quelle ; 5 essais par ligne, 10 pour le décodage par la boucle.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 124</b></div>
+<p class="rubrique">Schéma 1 · Ce qui fige la page</p>
+<h2>Mesurer avant de déplacer</h2>
+<p style="max-width:165mm">Le serveur de Magpie plafonne un aperçu 3D à 200 000 triangles et 5 Mio. On a fabriqué un aperçu à ce plafond, et mesuré ce que la page doit en faire avant de l'afficher.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 222" width="100%">
+<rect fill="#EFE9E1" height="222" width="600" x="0" y="0"></rect>
+<text fill="#7A5A12" font-size="8" font-weight="700" text-anchor="start" x="16" y="22">Un aperçu au plafond de Magpie (5 Mio : 236 906 sommets, 200 000 triangles), Chromium 141 (mesuré)</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="47">JSON.parse de la réponse, 7 Mo de texte</text>
+<rect fill="#7B1FA2" height="14" opacity=".35" rx="2" width="34.9" x="250" y="36"></rect>
+<rect fill="#7B1FA2" height="14" rx="2" width="34.9" x="250" y="36"></rect>
+<text fill="#7B1FA2" font-size="7.8" font-weight="700" text-anchor="start" x="290.9142857142857" y="47">9,4 ms</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="71">décoder le base64, boucle de Viewer3D.jsx:19</text>
+<rect fill="#C62828" height="14" opacity=".35" rx="2" width="159.3" x="250" y="60"></rect>
+<rect fill="#C62828" height="14" rx="2" width="82.5" x="250" y="60"></rect>
+<text fill="#C62828" font-size="7.8" font-weight="700" text-anchor="start" x="415.34285714285716" y="71">22,2 à 42,9 ms</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="95">computeVertexNormals, Three.js 0.186.1</text>
+<rect fill="#C62828" height="14" opacity=".35" rx="2" width="243.7" x="250" y="84"></rect>
+<rect fill="#C62828" height="14" rx="2" width="120.0" x="250" y="84"></rect>
+<text fill="#C62828" font-size="7.8" font-weight="700" text-anchor="start" x="499.65714285714284" y="95">32,3 à 65,6 ms</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="119">le même décodage par Uint8Array.fromBase64</text>
+<rect fill="#2E7D32" height="14" opacity=".35" rx="2" width="30.5" x="250" y="108"></rect>
+<rect fill="#2E7D32" height="14" rx="2" width="21.2" x="250" y="108"></rect>
+<text fill="#2E7D32" font-size="7.8" font-weight="700" text-anchor="start" x="286.45714285714286" y="119">5,7 à 8,2 ms</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="148">Barre pleine : le plus rapide des essais ; claire : le plus lent. Une minuterie de 10 ms, lancée juste avant</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="163">le décodage sur le fil principal, s'est déclenchée à 23,7 ms : rien d'autre ne passe tant qu'il dure.</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="186">Maillage tiré au hasard, indices dispersés : un cas défavorable pour les normales. Mesuré hors de Magpie,</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="200">avec la fonction decode recopiée telle quelle ; 5 essais par ligne, 10 pour le décodage par la boucle.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript, un worker qui décode</span>// decode.worker.js
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript, un worker qui décode</span>// decode.worker.js
 onmessage = (e) =&gt; {
   const octets = Uint8Array.from(atob(e.data), (c) =&gt; c.charCodeAt(0));
   postMessage(octets.buffer, [octets.buffer]);   // transfert : aucune copie
 };</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Créer un worker</h3>
-      <p><code>new Worker(new URL("./decode.worker.js", import.meta.url), { type: "module" })</code> : écrit ainsi, Vite reconnaît le fichier et l'empaquette à part.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Ce qu'il n'a pas</h3>
-      <p>Ni document, ni window, ni état React. Il a fetch, atob, les minuteries, WebAssembly, et OffscreenCanvas pour dessiner hors de la page.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Créer un worker</h3>
+<p><code>new Worker(new URL("./decode.worker.js", import.meta.url), { type: "module" })</code> : écrit ainsi, Vite reconnaît le fichier et l'empaquette à part.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Ce qu'il n'a pas</h3>
+<p>Ni document, ni window, ni état React. Il a fetch, atob, les minuteries, WebAssembly, et OffscreenCanvas pour dessiner hors de la page.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Envoyer au worker un calcul d'une milliseconde. Rien que son démarrage a pris 14,4 ms (mesuré), et chaque message copie ses données : le worker coûte alors plus qu'il ne libère.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 124 · Les workers</div>
+<div class="folio">2</div>
+<div class="pied">Cours 124 · Les workers</div>
 </section>
-
 <!-- ============ PAGE 3 · COPIE OU TRANSFERT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 124</b></div>
-  <p class="rubrique">Schéma 2 · Le passage des données</p>
-  <h2>Copier ou transférer</h2>
-  <p style="max-width:165mm">Un message est copié par défaut. Pour un tampon binaire, on peut le donner au lieu de le copier : il change de fil, et l'émetteur le perd. On a mesuré les deux sur 5 Mio.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#7A5A12" text-anchor="start" font-weight="700">Renvoyer les 5 Mio décodés du worker vers la page : copie ou transfert (Chromium, 6 essais, mesuré)</text>
-<text x="16" y="44" font-size="8.6" fill="#C62828" text-anchor="start" font-weight="700">copie</text>
-<rect x="16" y="52" width="110" height="34" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
-<text x="71" y="66" font-size="7.6" fill="#1565C0" text-anchor="middle" font-weight="700">worker</text>
-<text x="71" y="79" font-size="7.6" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.6px">5 Mio</text>
-<line x1="128" y1="69" x2="172" y2="69" stroke="#C62828" stroke-width="1.4"/><polygon points="172,69 165.6,71.7 165.6,66.3" fill="#C62828"/>
-<rect x="174" y="52" width="110" height="34" rx="4" fill="#fff" stroke="#7A5A12" stroke-width="1.2"/>
-<text x="229" y="66" font-size="7.6" fill="#7A5A12" text-anchor="middle" font-weight="700">page</text>
-<text x="229" y="79" font-size="7.6" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.6px">5 Mio</text>
-<text x="306" y="44" font-size="8.6" fill="#2E7D32" text-anchor="start" font-weight="700">transfert</text>
-<rect x="306" y="52" width="110" height="34" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2" stroke-dasharray="4 3"/>
-<text x="361" y="66" font-size="7.6" fill="#1565C0" text-anchor="middle" font-weight="700">worker</text>
-<text x="361" y="79" font-size="7.6" fill="#6B7378" text-anchor="middle" class="mono" style="font-size:7.6px">0 octet</text>
-<line x1="418" y1="69" x2="462" y2="69" stroke="#2E7D32" stroke-width="1.4"/><polygon points="462,69 455.6,71.7 455.6,66.3" fill="#2E7D32"/>
-<rect x="464" y="52" width="110" height="34" rx="4" fill="#fff" stroke="#7A5A12" stroke-width="1.2"/>
-<text x="519" y="66" font-size="7.6" fill="#7A5A12" text-anchor="middle" font-weight="700">page</text>
-<text x="519" y="79" font-size="7.6" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.6px">5 Mio</text>
-<text x="230" y="110" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700">copie</text>
-<text x="420" y="110" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700">transfert</text>
-<text x="16" y="128" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">postMessage, côté émetteur</text>
-<text x="230" y="128" font-size="7.8" fill="#2B2F33" text-anchor="start">3,8 à 25,9 ms</text>
-<text x="420" y="128" font-size="7.8" fill="#2B2F33" text-anchor="start">0 à 0,1 ms</text>
-<text x="16" y="146" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">du départ à l'arrivée</text>
-<text x="230" y="146" font-size="7.8" fill="#2B2F33" text-anchor="start">6,4 à 7,2 ms (un essai à 28,3)</text>
-<text x="420" y="146" font-size="7.8" fill="#2B2F33" text-anchor="start">0,2 à 0,3 ms (un à 3,3)</text>
-<text x="16" y="164" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">le tampon d'origine ensuite</text>
-<text x="230" y="164" font-size="7.8" fill="#2B2F33" text-anchor="start">intact</text>
-<text x="420" y="164" font-size="7.8" fill="#2B2F33" text-anchor="start">vidé : byteLength 0</text>
-<text x="16" y="196" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Transférer, c'est donner : le tampon change de fil, rien n'est recopié, et l'émetteur ne l'a plus.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 124</b></div>
+<p class="rubrique">Schéma 2 · Le passage des données</p>
+<h2>Copier ou transférer</h2>
+<p style="max-width:165mm">Un message est copié par défaut. Pour un tampon binaire, on peut le donner au lieu de le copier : il change de fil, et l'émetteur le perd. On a mesuré les deux sur 5 Mio.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#7A5A12" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">Renvoyer les 5 Mio décodés du worker vers la page : copie ou transfert (Chromium, 6 essais, mesuré)</text>
+<text fill="#C62828" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="44">copie</text>
+<rect fill="#fff" height="34" rx="4" stroke="#1565C0" stroke-width="1.2" width="110" x="16" y="52"></rect>
+<text fill="#1565C0" font-size="7.6" font-weight="700" text-anchor="middle" x="71" y="66">worker</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="middle" x="71" y="79">5 Mio</text>
+<line stroke="#C62828" stroke-width="1.4" x1="128" x2="172" y1="69" y2="69"></line><polygon fill="#C62828" points="172,69 165.6,71.7 165.6,66.3"></polygon>
+<rect fill="#fff" height="34" rx="4" stroke="#7A5A12" stroke-width="1.2" width="110" x="174" y="52"></rect>
+<text fill="#7A5A12" font-size="7.6" font-weight="700" text-anchor="middle" x="229" y="66">page</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="middle" x="229" y="79">5 Mio</text>
+<text fill="#2E7D32" font-size="8.6" font-weight="700" text-anchor="start" x="306" y="44">transfert</text>
+<rect fill="#fff" height="34" rx="4" stroke="#1565C0" stroke-dasharray="4 3" stroke-width="1.2" width="110" x="306" y="52"></rect>
+<text fill="#1565C0" font-size="7.6" font-weight="700" text-anchor="middle" x="361" y="66">worker</text>
+<text class="mono" fill="#6B7378" font-size="7.6" style="font-size:7.6px" text-anchor="middle" x="361" y="79">0 octet</text>
+<line stroke="#2E7D32" stroke-width="1.4" x1="418" x2="462" y1="69" y2="69"></line><polygon fill="#2E7D32" points="462,69 455.6,71.7 455.6,66.3"></polygon>
+<rect fill="#fff" height="34" rx="4" stroke="#7A5A12" stroke-width="1.2" width="110" x="464" y="52"></rect>
+<text fill="#7A5A12" font-size="7.6" font-weight="700" text-anchor="middle" x="519" y="66">page</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="middle" x="519" y="79">5 Mio</text>
+<text fill="#C62828" font-size="7.8" font-weight="700" text-anchor="start" x="230" y="110">copie</text>
+<text fill="#2E7D32" font-size="7.8" font-weight="700" text-anchor="start" x="420" y="110">transfert</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="128">postMessage, côté émetteur</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="230" y="128">3,8 à 25,9 ms</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="420" y="128">0 à 0,1 ms</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="146">du départ à l'arrivée</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="230" y="146">6,4 à 7,2 ms (un essai à 28,3)</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="420" y="146">0,2 à 0,3 ms (un à 3,3)</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="164">le tampon d'origine ensuite</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="230" y="164">intact</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="420" y="164">vidé : byteLength 0</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="196">Transférer, c'est donner : le tampon change de fil, rien n'est recopié, et l'émetteur ne l'a plus.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript, transférer un tampon</span>const positions = new Float32Array(3 * nbSommets);
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript, transférer un tampon</span>const positions = new Float32Array(3 * nbSommets);
 worker.postMessage(positions.buffer, [positions.buffer]);   // la liste nomme ce qui est transféré
 console.log(positions.length);                              // 0 : le tableau est désormais vide</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Ce qui se transfère</h3>
-      <p>Les ArrayBuffer, les MessagePort, les ImageBitmap, les OffscreenCanvas. Les chaînes et les objets ordinaires se copient toujours : les 7 Mo de base64 envoyés au worker l'ont été.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Partager</h3>
-      <p>Un SharedArrayBuffer est lu par les deux fils à la fois. Il exige une page isolée, servie avec les en-têtes COOP et COEP ; sans eux, il n'existe pas (mesuré).</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Ce qui se transfère</h3>
+<p>Les ArrayBuffer, les MessagePort, les ImageBitmap, les OffscreenCanvas. Les chaînes et les objets ordinaires se copient toujours : les 7 Mo de base64 envoyés au worker l'ont été.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Partager</h3>
+<p>Un SharedArrayBuffer est lu par les deux fils à la fois. Il exige une page isolée, servie avec les en-têtes COOP et COEP ; sans eux, il n'existe pas (mesuré).</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Relire un tableau après avoir transféré son tampon. Il ne lève pas toujours d'erreur : sa longueur vaut 0, une boucle ne fait rien, et le dessin reste vide sans raison apparente.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 124 · Les workers</div>
+<div class="folio">3</div>
+<div class="pied">Cours 124 · Les workers</div>
 </section>
-
 <!-- ============ PAGE 4 · LIBÉRER ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 124</b></div>
-  <p class="rubrique">Schéma 3 · Libérer n'est pas accélérer</p>
-  <h2>Ce que voit le fil principal</h2>
-  <p style="max-width:165mm">Le même décodage, fait sur place puis dans un worker. Pendant ce temps, une minuterie de 10 ms mesure si le fil principal répond encore.</p>
-
-  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#7A5A12" text-anchor="start" font-weight="700">Le même décodage, sur place ou dans un worker : ce que voit le fil principal (Chromium, mesuré)</text>
-<text x="16" y="47" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">décoder sur place</text>
-<rect x="170" y="36" width="115.9" height="14" rx="2" fill="#C62828" opacity=".35"/>
-<rect x="170" y="36" width="85.4" height="14" rx="2" fill="#C62828"/>
-<text x="291.88571428571424" y="47" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700">24,9 à 33,8 ms, fil principal pris</text>
-<text x="16" y="73" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">aller-retour par un worker</text>
-<rect x="170" y="62" width="232.8" height="14" rx="2" fill="#1565C0" opacity=".35"/>
-<rect x="170" y="62" width="165.9" height="14" rx="2" fill="#1565C0"/>
-<text x="408.8" y="73" font-size="7.8" fill="#1565C0" text-anchor="start" font-weight="700">48,4 à 67,9 ms, fil principal libre</text>
-<text x="16" y="108" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Pendant le décodage dans le worker, une minuterie de 10 ms n'a jamais pris plus de 10,3 ms entre deux appels.</text>
-<text x="16" y="124" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Sur place, elle attendait 23,7 ms. Le worker ne rend pas le calcul plus rapide : il le sort du chemin.</text>
-<text x="16" y="150" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Démarrer le worker : 14,4 ms. L'aller-retour comprend la copie de 7 Mo de texte vers le worker.</text>
-<text x="16" y="166" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Machine de mesure : 4 cœurs (navigator.hardwareConcurrency). 4 essais pour le worker, 5 sur place.</text>
-<text x="16" y="182" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">SharedArrayBuffer : absent ici (crossOriginIsolated vaut false sans les en-têtes COOP et COEP).</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 124</b></div>
+<p class="rubrique">Schéma 3 · Libérer n'est pas accélérer</p>
+<h2>Ce que voit le fil principal</h2>
+<p style="max-width:165mm">Le même décodage, fait sur place puis dans un worker. Pendant ce temps, une minuterie de 10 ms mesure si le fil principal répond encore.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 206" width="100%">
+<rect fill="#EFE9E1" height="206" width="600" x="0" y="0"></rect>
+<text fill="#7A5A12" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">Le même décodage, sur place ou dans un worker : ce que voit le fil principal (Chromium, mesuré)</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="47">décoder sur place</text>
+<rect fill="#C62828" height="14" opacity=".35" rx="2" width="115.9" x="170" y="36"></rect>
+<rect fill="#C62828" height="14" rx="2" width="85.4" x="170" y="36"></rect>
+<text fill="#C62828" font-size="7.8" font-weight="700" text-anchor="start" x="291.88571428571424" y="47">24,9 à 33,8 ms, fil principal pris</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="73">aller-retour par un worker</text>
+<rect fill="#1565C0" height="14" opacity=".35" rx="2" width="232.8" x="170" y="62"></rect>
+<rect fill="#1565C0" height="14" rx="2" width="165.9" x="170" y="62"></rect>
+<text fill="#1565C0" font-size="7.8" font-weight="700" text-anchor="start" x="408.8" y="73">48,4 à 67,9 ms, fil principal libre</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="108">Pendant le décodage dans le worker, une minuterie de 10 ms n'a jamais pris plus de 10,3 ms entre deux appels.</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="124">Sur place, elle attendait 23,7 ms. Le worker ne rend pas le calcul plus rapide : il le sort du chemin.</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="150">Démarrer le worker : 14,4 ms. L'aller-retour comprend la copie de 7 Mo de texte vers le worker.</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="166">Machine de mesure : 4 cœurs (navigator.hardwareConcurrency). 4 essais pour le worker, 5 sur place.</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="182">SharedArrayBuffer : absent ici (crossOriginIsolated vaut false sans les en-têtes COOP et COEP).</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript, une promesse autour du worker</span>function decoderAilleurs(worker, texte) {
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript, une promesse autour du worker</span>function decoderAilleurs(worker, texte) {
   return new Promise((ok) =&gt; {
     worker.onmessage = (e) =&gt; ok(new Float32Array(e.data));
     worker.postMessage(texte);
   });
 }</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Combien de workers</h3>
-      <p>Pas plus que de cœurs : <code>navigator.hardwareConcurrency</code> en donne le nombre. Un worker gardé ouvert sert plusieurs fois ; <code>terminate()</code> le libère.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Le service worker</h3>
-      <p>Malgré le nom, ce n'est pas un fil de calcul : il s'interpose entre la page et le réseau, pour le cache et le hors-ligne. C'est un sujet du cours 125.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Combien de workers</h3>
+<p>Pas plus que de cœurs : <code>navigator.hardwareConcurrency</code> en donne le nombre. Un worker gardé ouvert sert plusieurs fois ; <code>terminate()</code> le libère.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Le service worker</h3>
+<p>Malgré le nom, ce n'est pas un fil de calcul : il s'interpose entre la page et le réseau, pour le cache et le hors-ligne. C'est un sujet du cours 125.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Mesurer le worker au chronomètre global. L'aller-retour a pris plus longtemps que le calcul sur place ; le gain se lit ailleurs, dans les clics et les images qui passent pendant ce temps.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 124 · Les workers</div>
+<div class="folio">4</div>
+<div class="pied">Cours 124 · Les workers</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 124</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>L'aperçu 3D de Magpie web</h2>
-  <p style="max-width:165mm">Le serveur plafonne, la page décode et calcule les normales, sur le fil principal.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 124</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>L'aperçu 3D de Magpie web</h2>
+<p style="max-width:165mm">Le serveur plafonne, la page décode et calcule les normales, sur le fil principal.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">magpie/web/src/Viewer3D.jsx</span></div>
 <div class="l k1"><span class="n">19</span>function decode(Typed, b64) {<span class="rep r1">1</span></div>
@@ -267,137 +240,55 @@ console.log(positions.length);                              // 0 : le tableau es
 <div class="l k4"><span class="n">22</span>export const MAX_TRIANGLES = 200_000;<span class="rep r4">4</span></div>
 <div class="l k5"><span class="n">23</span>export const MAX_BYTES = 5 * 1024 * 1024;<span class="rep r5">5</span></div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>Décoder</b>Du base64.</li>
-      <li><span class="rep r2">2</span><b>Octet par octet</b>Sur place.</li>
-      <li><span class="rep r3">3</span><b>Les normales</b>Le plus cher.</li>
-      <li><span class="rep r4">4</span><b>Plafond</b>Des triangles.</li>
-      <li><span class="rep r5">5</span><b>Plafond</b>Des octets bruts.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À surveiller · un gros aperçu fige le canvas</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>Décoder</b>Du base64.</li>
+<li><span class="rep r2">2</span><b>Octet par octet</b>Sur place.</li>
+<li><span class="rep r3">3</span><b>Les normales</b>Le plus cher.</li>
+<li><span class="rep r4">4</span><b>Plafond</b>Des triangles.</li>
+<li><span class="rep r5">5</span><b>Plafond</b>Des octets bruts.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À surveiller · un gros aperçu fige le canvas</span>
     Mesuré hors de Magpie, sur un maillage aléatoire au plafond d'apercu.mjs:22–23 : 22 à 43 ms pour décoder, 32 à 66 ms pour les normales (Three.js 0.186.1), sur le fil principal. Déduit : à l'arrivée d'un aperçu de cette taille, le canvas peut sauter trois à six images. Uint8Array.fromBase64 (5,7 à 8,2 ms ici ; prise en charge par Safari et Firefox à vérifier) ou un worker réduiraient la pause. Relevé sans rien modifier.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 124 · Les workers</div>
+<div class="folio">5</div>
+<div class="pied">Cours 124 · Les workers</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 124</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 124</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">Un worker…</div><ul>
-      <li><span>A</span>partage les variables de la page</li><li><span>B</span>tourne sur un autre fil, sans DOM</li><li><span>C</span>peut modifier le DOM</li><li><span>D</span>bloque le fil principal</li></ul></div>
 
-    <div class="q"><div class="enonce">Décoder un aperçu au plafond, sur le fil principal, a pris…</div><ul>
-      <li><span>A</span>1 s</li><li><span>B</span>22 à 43 ms</li><li><span>C</span>2 ms</li><li><span>D</span>0,2 ms</li></ul></div>
 
-    <div class="q"><div class="enonce">Pendant le décodage dans un worker, une minuterie de 10 ms…</div><ul>
-      <li><span>A</span>part deux fois</li><li><span>B</span>ne part jamais</li><li><span>C</span>attend 23,7 ms</li><li><span>D</span>reste à l'heure, 10,3 ms au plus</li></ul></div>
 
-    <div class="q"><div class="enonce">L'aller-retour par le worker, comparé au décodage sur place…</div><ul>
-      <li><span>A</span>est impossible</li><li><span>B</span>est plus long</li><li><span>C</span>est identique</li><li><span>D</span>est dix fois plus court</li></ul></div>
-
-    <div class="q"><div class="enonce">Se transfèrent sans copie… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>un objet ordinaire</li><li><span>B</span>une chaîne</li><li><span>C</span>un ArrayBuffer</li><li><span>D</span>un OffscreenCanvas</li></ul></div>
-
-    <div class="q"><div class="enonce">Après postMessage(tampon, [tampon]), tampon.byteLength vaut…</div><ul>
-      <li><span>A</span>le double</li><li><span>B</span>undefined</li><li><span>C</span>sa taille d'avant</li><li><span>D</span>0</li></ul></div>
-
-    <div class="q"><div class="enonce">5 Mio renvoyés par copie mettent à arriver…</div><ul>
-      <li><span>A</span>environ 7 ms, contre 0,2 ms transférés</li><li><span>B</span>autant que transférés</li><li><span>C</span>0 ms</li><li><span>D</span>1 s</li></ul></div>
-
-    <div class="q"><div class="enonce">SharedArrayBuffer est disponible…</div><ul>
-      <li><span>A</span>toujours</li><li><span>B</span>dans Firefox seulement</li><li><span>C</span>jamais</li><li><span>D</span>sur une page isolée, avec COOP et COEP</li></ul></div>
-
-    <div class="q"><div class="enonce">Démarrer un worker a pris…</div><ul>
-      <li><span>A</span>0 ms</li><li><span>B</span>140 ms</li><li><span>C</span>14,4 ms</li><li><span>D</span>1 s</li></ul></div>
-
-    <div class="q"><div class="enonce">Uint8Array.fromBase64, pour le même décodage…</div><ul>
-      <li><span>A</span>100 ms</li><li><span>B</span>n'existe pas dans Chromium</li><li><span>C</span>5,7 à 8,2 ms</li><li><span>D</span>plus lent que la boucle</li></ul></div>
-
-    <div class="q"><div class="enonce">Magpie web, aujourd'hui, utilise…</div><ul>
-      <li><span>A</span>un service worker</li><li><span>B</span>un groupe de workers</li><li><span>C</span>aucun worker</li><li><span>D</span>un worker par nœud</li></ul></div>
-
-    <div class="q"><div class="enonce">Le plafond d'un aperçu Magpie est…</div><ul>
-      <li><span>A</span>200 000 triangles et 5 Mio</li><li><span>B</span>5 Go</li><li><span>C</span>illimité</li><li><span>D</span>1 000 triangles</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 124 · Les workers</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">new Worker(url, { type: "module" })</td><td>lancer un worker</td><td>page 2</td></tr>
+<tr><td class="c">postMessage(v, [tampon])</td><td>envoyer, en transférant le tampon</td><td>page 3</td></tr>
+<tr><td class="c">onmessage = (e) =&gt; …</td><td>recevoir, des deux côtés</td><td>page 2</td></tr>
+<tr><td class="c">worker.terminate()</td><td>arrêter le worker</td><td>page 4</td></tr>
+<tr><td class="c">Uint8Array.fromBase64(s)</td><td>décoder le base64 sans boucle</td><td>page 2</td></tr>
+<tr><td class="c">computeVertexNormals()</td><td>calculer les normales d'un maillage</td><td>Viewer3D.jsx:41</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Fil</dt><dd>Une suite d'instructions exécutée à son rythme ; la page en a un principal.</dd>
+<dt>Worker</dt><dd>Un fil de calcul sans accès à la page, qui parle par messages.</dd>
+<dt>Clonage structuré</dt><dd>La copie que fait postMessage d'un objet envoyé.</dd>
+<dt>Transfert</dt><dd>Le passage d'un tampon à l'autre fil, sans copie ; l'émetteur le perd.</dd>
+<dt>Isolation d'origine</dt><dd>Un mode de page, obtenu par en-têtes, qui ouvre SharedArrayBuffer.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 125</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 124 · Les workers</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 124</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · B.</b> Il ne parle que par messages.</div>
-    <div><b>02 · B.</b> Dix essais, page 2.</div>
-    <div><b>03 · D.</b> Le fil reste libre.</div>
-    <div><b>04 · B.</b> 48 à 68 ms contre 25 à 34.</div>
-    <div><b>05 · C et D.</b> Les chaînes se copient.</div>
-    <div><b>06 · D.</b> Le tampon est parti.</div>
-    <div><b>07 · A.</b> 6,4 à 7,2 ms contre 0,2 à 0,3.</div>
-    <div><b>08 · D.</b> crossOriginIsolated.</div>
-    <div><b>09 · C.</b> Mesuré, page 2.</div>
-    <div><b>10 · C.</b> Quatre fois plus vite.</div>
-    <div><b>11 · C.</b> Tout sur le fil principal.</div>
-    <div><b>12 · A.</b> apercu.mjs:22–23.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 125, « Charger une application ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">new Worker(url, { type: "module" })</td><td>lancer un worker</td><td>page 2</td></tr>
-      <tr><td class="c">postMessage(v, [tampon])</td><td>envoyer, en transférant le tampon</td><td>page 3</td></tr>
-      <tr><td class="c">onmessage = (e) =&gt; …</td><td>recevoir, des deux côtés</td><td>page 2</td></tr>
-      <tr><td class="c">worker.terminate()</td><td>arrêter le worker</td><td>page 4</td></tr>
-      <tr><td class="c">Uint8Array.fromBase64(s)</td><td>décoder le base64 sans boucle</td><td>page 2</td></tr>
-      <tr><td class="c">computeVertexNormals()</td><td>calculer les normales d'un maillage</td><td>Viewer3D.jsx:41</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Fil</dt><dd>Une suite d'instructions exécutée à son rythme ; la page en a un principal.</dd>
-    <dt>Worker</dt><dd>Un fil de calcul sans accès à la page, qui parle par messages.</dd>
-    <dt>Clonage structuré</dt><dd>La copie que fait postMessage d'un objet envoyé.</dd>
-    <dt>Transfert</dt><dd>Le passage d'un tampon à l'autre fil, sans copie ; l'émetteur le perd.</dd>
-    <dt>Isolation d'origine</dt><dd>Un mode de page, obtenu par en-têtes, qui ouvre SharedArrayBuffer.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 125</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 124 · Les workers</div>
-</section>
-
 </body>
 </html>

@@ -1,131 +1,120 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>29 · JavaScript pour un développeur C#</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-8">
-
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 29</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>JavaScript pour un<br>développeur C#</h1>
-  <p class="chapeau">Le volet web de Magpie est écrit en JavaScript. La syntaxe te semblera familière : accolades, <code>if</code>, <code>for</code>, <code>return</code>. La grande différence est ailleurs : en JavaScript, ce sont les <b>valeurs</b> qui ont un type, pas les variables.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>55 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>01</b> C# moderne · <b>03</b> collections</span>
-    <span class="pastille">Exemples · <b>web/validation.mjs</b> (Magpie)</span>
-  </div>
-
-  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
-    <svg viewBox="0 0 600 206" width="100%">
-<rect x="16" y="10" width="278" height="132" rx="5" fill="#fff" stroke="#7B1FA2" stroke-width="1.4"/>
-<rect x="16" y="10" width="278" height="22" rx="5" fill="#7B1FA2"/>
-<text x="26" y="25" font-size="9.6" fill="#fff" text-anchor="start" font-weight="700">C# · le type est sur la variable</text>
-<text x="26" y="50" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px;white-space:pre">int n = 3;</text>
-<text x="26" y="65" font-size="9" fill="#C62828" text-anchor="start" class="mono" style="font-size:9px;white-space:pre">n = "trois";</text>
-<text x="26" y="80" font-size="9" fill="#6B7378" text-anchor="start" class="mono" style="font-size:9px;white-space:pre">// CS0029 : refusé</text>
-<text x="26" y="95" font-size="9" fill="#6B7378" text-anchor="start" class="mono" style="font-size:9px;white-space:pre">//   à la compilation</text>
-<text x="26" y="110" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px;white-space:pre"></text>
-<text x="26" y="125" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px;white-space:pre">if (n &gt; 2) { … }</text>
-<rect x="306" y="10" width="278" height="132" rx="5" fill="#fff" stroke="#7A5A12" stroke-width="1.4"/>
-<rect x="306" y="10" width="278" height="22" rx="5" fill="#7A5A12"/>
-<text x="316" y="25" font-size="9.6" fill="#fff" text-anchor="start" font-weight="700">JavaScript · le type est sur la valeur</text>
-<text x="316" y="50" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px;white-space:pre">let n = 3;</text>
-<text x="316" y="65" font-size="9" fill="#2E7D32" text-anchor="start" class="mono" style="font-size:9px;white-space:pre">n = "trois";</text>
-<text x="316" y="80" font-size="9" fill="#6B7378" text-anchor="start" class="mono" style="font-size:9px;white-space:pre">// permis : n contient</text>
-<text x="316" y="95" font-size="9" fill="#6B7378" text-anchor="start" class="mono" style="font-size:9px;white-space:pre">//   maintenant une chaîne</text>
-<text x="316" y="110" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px;white-space:pre">typeof n   // "string"</text>
-<text x="316" y="125" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px;white-space:pre">if (n &gt; 2) { … }</text>
-<text x="300" y="166" font-size="9.4" fill="#7A5A12" text-anchor="middle" font-weight="700">Mêmes accolades, mêmes if, for, return. Ce qui change : quand l'erreur se découvre.</text>
-<text x="300" y="186" font-size="8.8" fill="#2B2F33" text-anchor="middle">C# : à la compilation, avant de lancer quoi que ce soit.   JavaScript : à l'exécution, sur la ligne fautive.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 29</b></div>
+<p class="rubrique">Le concept</p>
+<h1>JavaScript pour un<br/>développeur C#</h1>
+<p class="chapeau">Le volet web de Magpie est écrit en JavaScript. La syntaxe te semblera familière : accolades, <code>if</code>, <code>for</code>, <code>return</code>. La grande différence est ailleurs : en JavaScript, ce sont les <b>valeurs</b> qui ont un type, pas les variables.</p>
+<div class="meta">
+<span class="pastille"><b>55 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>01</b> C# moderne · <b>03</b> collections</span>
+<span class="pastille">Exemples · <b>web/validation.mjs</b> (Magpie)</span>
+</div>
+<div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+<svg viewbox="0 0 600 206" width="100%">
+<rect fill="#fff" height="132" rx="5" stroke="#7B1FA2" stroke-width="1.4" width="278" x="16" y="10"></rect>
+<rect fill="#7B1FA2" height="22" rx="5" width="278" x="16" y="10"></rect>
+<text fill="#fff" font-size="9.6" font-weight="700" text-anchor="start" x="26" y="25">C# · le type est sur la variable</text>
+<text class="mono" fill="#2B2F33" font-size="9" style="font-size:9px;white-space:pre" text-anchor="start" x="26" y="50">int n = 3;</text>
+<text class="mono" fill="#C62828" font-size="9" style="font-size:9px;white-space:pre" text-anchor="start" x="26" y="65">n = "trois";</text>
+<text class="mono" fill="#6B7378" font-size="9" style="font-size:9px;white-space:pre" text-anchor="start" x="26" y="80">// CS0029 : refusé</text>
+<text class="mono" fill="#6B7378" font-size="9" style="font-size:9px;white-space:pre" text-anchor="start" x="26" y="95">//   à la compilation</text>
+<text class="mono" fill="#2B2F33" font-size="9" style="font-size:9px;white-space:pre" text-anchor="start" x="26" y="110"></text>
+<text class="mono" fill="#2B2F33" font-size="9" style="font-size:9px;white-space:pre" text-anchor="start" x="26" y="125">if (n &gt; 2) { … }</text>
+<rect fill="#fff" height="132" rx="5" stroke="#7A5A12" stroke-width="1.4" width="278" x="306" y="10"></rect>
+<rect fill="#7A5A12" height="22" rx="5" width="278" x="306" y="10"></rect>
+<text fill="#fff" font-size="9.6" font-weight="700" text-anchor="start" x="316" y="25">JavaScript · le type est sur la valeur</text>
+<text class="mono" fill="#2B2F33" font-size="9" style="font-size:9px;white-space:pre" text-anchor="start" x="316" y="50">let n = 3;</text>
+<text class="mono" fill="#2E7D32" font-size="9" style="font-size:9px;white-space:pre" text-anchor="start" x="316" y="65">n = "trois";</text>
+<text class="mono" fill="#6B7378" font-size="9" style="font-size:9px;white-space:pre" text-anchor="start" x="316" y="80">// permis : n contient</text>
+<text class="mono" fill="#6B7378" font-size="9" style="font-size:9px;white-space:pre" text-anchor="start" x="316" y="95">//   maintenant une chaîne</text>
+<text class="mono" fill="#2B2F33" font-size="9" style="font-size:9px;white-space:pre" text-anchor="start" x="316" y="110">typeof n   // "string"</text>
+<text class="mono" fill="#2B2F33" font-size="9" style="font-size:9px;white-space:pre" text-anchor="start" x="316" y="125">if (n &gt; 2) { … }</text>
+<text fill="#7A5A12" font-size="9.4" font-weight="700" text-anchor="middle" x="300" y="166">Mêmes accolades, mêmes if, for, return. Ce qui change : quand l'erreur se découvre.</text>
+<text fill="#2B2F33" font-size="8.8" text-anchor="middle" x="300" y="186">C# : à la compilation, avant de lancer quoi que ce soit.   JavaScript : à l'exécution, sur la ligne fautive.</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>JavaScript est un langage à <b>typage dynamique</b> : une variable peut recevoir n'importe quelle valeur, et rien n'est vérifié avant l'exécution. Il tourne dans le navigateur, et sur un serveur grâce à <b>Node.js</b>.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>En C#, chaque boîte porte une étiquette (« chaussures ») et le compilateur refuse d'y ranger autre chose. En JavaScript, les boîtes n'ont pas d'étiquette : c'est l'objet rangé dedans qui dit ce qu'il est. Plus souple, mais personne ne vérifie à ta place.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>traduire les types de C# en valeurs JavaScript ;</li>
-        <li>lire objets et tableaux littéraux ;</li>
-        <li>écrire une fonction fléchée et la passer en argument ;</li>
-        <li>éviter les trois pièges : ==, undefined, for…in.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:5mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>JavaScript est un langage à <b>typage dynamique</b> : une variable peut recevoir n'importe quelle valeur, et rien n'est vérifié avant l'exécution. Il tourne dans le navigateur, et sur un serveur grâce à <b>Node.js</b>.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>En C#, chaque boîte porte une étiquette (« chaussures ») et le compilateur refuse d'y ranger autre chose. En JavaScript, les boîtes n'ont pas d'étiquette : c'est l'objet rangé dedans qui dit ce qu'il est. Plus souple, mais personne ne vérifie à ta place.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>traduire les types de C# en valeurs JavaScript ;</li>
+<li>lire objets et tableaux littéraux ;</li>
+<li>écrire une fonction fléchée et la passer en argument ;</li>
+<li>éviter les trois pièges : ==, undefined, for…in.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:5mm">
+<span class="titre">À retenir</span>
     Sans compilateur pour attraper les fautes de frappe, une erreur de JavaScript se révèle à l'exécution, souvent loin de sa cause. D'où, dans Magpie, des tests (<code>web/test/</code>, cours 26) et des contrôles explicites en tête de chaque fonction.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 29 · JavaScript pour un développeur C#</div>
+<div class="folio">1</div>
+<div class="pied">Cours 29 · JavaScript pour un développeur C#</div>
 </section>
-
 <!-- ============ PAGE 2 · VALEURS ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 29</b></div>
-  <p class="rubrique">Schéma 1 · Les valeurs et leurs types</p>
-  <h2>Moins de types, et deux façons de dire « rien »</h2>
-  <p style="max-width:165mm">JavaScript n'a qu'un type de nombre (un <code>double</code>), des chaînes, des booléens, des objets. Et il distingue <code>null</code> (« vide, exprès ») de <code>undefined</code> (« jamais renseigné »).</p>
-
-  <svg viewBox="0 0 600 226" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="226" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="12" fill="#7A5A12" text-anchor="start" font-weight="700">De C# à JavaScript</text>
-<text x="26" y="44" font-size="9" fill="#7B1FA2" text-anchor="start" font-weight="700">C#</text>
-<text x="258" y="44" font-size="9" fill="#7A5A12" text-anchor="start" font-weight="700">JavaScript</text>
-<text x="416" y="44" font-size="9" fill="#6B7378" text-anchor="start" font-weight="700">exemples</text>
-<rect x="16" y="52" width="568" height="20" rx="3" fill="#fff" stroke="#E2DCD2"/>
-<text x="26" y="66" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px">int, long, double, float</text>
-<line x1="222" y1="62" x2="250" y2="62" stroke="#6B7378" stroke-width="1"/><polygon points="250,62 243.6,64.7 243.6,59.3" fill="#6B7378"/>
-<text x="258" y="66" font-size="9" fill="#7A5A12" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">number</text>
-<text x="416" y="66" font-size="8.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.6px">3, 3.5, NaN</text>
-<rect x="16" y="75" width="568" height="20" rx="3" fill="#fff" stroke="#E2DCD2"/>
-<text x="26" y="89" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px">string, char</text>
-<line x1="222" y1="85" x2="250" y2="85" stroke="#6B7378" stroke-width="1"/><polygon points="250,85 243.6,87.7 243.6,82.3" fill="#6B7378"/>
-<text x="258" y="89" font-size="9" fill="#7A5A12" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">string</text>
-<text x="416" y="89" font-size="8.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.6px">"abc", 'a'</text>
-<rect x="16" y="98" width="568" height="20" rx="3" fill="#fff" stroke="#E2DCD2"/>
-<text x="26" y="112" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px">bool</text>
-<line x1="222" y1="108" x2="250" y2="108" stroke="#6B7378" stroke-width="1"/><polygon points="250,108 243.6,110.7 243.6,105.3" fill="#6B7378"/>
-<text x="258" y="112" font-size="9" fill="#7A5A12" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">boolean</text>
-<text x="416" y="112" font-size="8.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.6px">true, false</text>
-<rect x="16" y="121" width="568" height="20" rx="3" fill="#fff" stroke="#E2DCD2"/>
-<text x="26" y="135" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px">null</text>
-<line x1="222" y1="131" x2="250" y2="131" stroke="#6B7378" stroke-width="1"/><polygon points="250,131 243.6,133.7 243.6,128.3" fill="#6B7378"/>
-<text x="258" y="135" font-size="9" fill="#7A5A12" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">null  et  undefined</text>
-<text x="416" y="135" font-size="8.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.6px">vide exprès / jamais renseigné</text>
-<rect x="16" y="144" width="568" height="20" rx="3" fill="#fff" stroke="#E2DCD2"/>
-<text x="26" y="158" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px">une instance de classe, Dictionary</text>
-<line x1="222" y1="154" x2="250" y2="154" stroke="#6B7378" stroke-width="1"/><polygon points="250,154 243.6,156.7 243.6,151.3" fill="#6B7378"/>
-<text x="258" y="158" font-size="9" fill="#7A5A12" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">object</text>
-<text x="416" y="158" font-size="8.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.6px">{ pass: true }</text>
-<rect x="16" y="167" width="568" height="20" rx="3" fill="#fff" stroke="#E2DCD2"/>
-<text x="26" y="181" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px">List&lt;T&gt;, T[]</text>
-<line x1="222" y1="177" x2="250" y2="177" stroke="#6B7378" stroke-width="1"/><polygon points="250,177 243.6,179.7 243.6,174.3" fill="#6B7378"/>
-<text x="258" y="181" font-size="9" fill="#7A5A12" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">Array (un object)</text>
-<text x="416" y="181" font-size="8.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.6px">[1, 2, 3]</text>
-<rect x="16" y="190" width="568" height="20" rx="3" fill="#fff" stroke="#E2DCD2"/>
-<text x="26" y="204" font-size="8.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.8px">Func&lt;…&gt;, une lambda</text>
-<line x1="222" y1="200" x2="250" y2="200" stroke="#6B7378" stroke-width="1"/><polygon points="250,200 243.6,202.7 243.6,197.3" fill="#6B7378"/>
-<text x="258" y="204" font-size="9" fill="#7A5A12" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">function</text>
-<text x="416" y="204" font-size="8.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.6px">(x) =&gt; x * 2</text>
-<text x="16" y="218" font-size="8.4" fill="#6B7378" text-anchor="start" font-style="italic">typeof 3 → "number", typeof undefined → "undefined", typeof null → "object" (une erreur historique du langage).</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 29</b></div>
+<p class="rubrique">Schéma 1 · Les valeurs et leurs types</p>
+<h2>Moins de types, et deux façons de dire « rien »</h2>
+<p style="max-width:165mm">JavaScript n'a qu'un type de nombre (un <code>double</code>), des chaînes, des booléens, des objets. Et il distingue <code>null</code> (« vide, exprès ») de <code>undefined</code> (« jamais renseigné »).</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 226" width="100%">
+<rect fill="#EFE9E1" height="226" width="600" x="0" y="0"></rect>
+<text fill="#7A5A12" font-size="12" font-weight="700" text-anchor="start" x="16" y="22">De C# à JavaScript</text>
+<text fill="#7B1FA2" font-size="9" font-weight="700" text-anchor="start" x="26" y="44">C#</text>
+<text fill="#7A5A12" font-size="9" font-weight="700" text-anchor="start" x="258" y="44">JavaScript</text>
+<text fill="#6B7378" font-size="9" font-weight="700" text-anchor="start" x="416" y="44">exemples</text>
+<rect fill="#fff" height="20" rx="3" stroke="#E2DCD2" width="568" x="16" y="52"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.8" style="font-size:8.8px" text-anchor="start" x="26" y="66">int, long, double, float</text>
+<line stroke="#6B7378" stroke-width="1" x1="222" x2="250" y1="62" y2="62"></line><polygon fill="#6B7378" points="250,62 243.6,64.7 243.6,59.3"></polygon>
+<text class="mono" fill="#7A5A12" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="258" y="66">number</text>
+<text class="mono" fill="#2B2F33" font-size="8.6" style="font-size:8.6px" text-anchor="start" x="416" y="66">3, 3.5, NaN</text>
+<rect fill="#fff" height="20" rx="3" stroke="#E2DCD2" width="568" x="16" y="75"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.8" style="font-size:8.8px" text-anchor="start" x="26" y="89">string, char</text>
+<line stroke="#6B7378" stroke-width="1" x1="222" x2="250" y1="85" y2="85"></line><polygon fill="#6B7378" points="250,85 243.6,87.7 243.6,82.3"></polygon>
+<text class="mono" fill="#7A5A12" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="258" y="89">string</text>
+<text class="mono" fill="#2B2F33" font-size="8.6" style="font-size:8.6px" text-anchor="start" x="416" y="89">"abc", 'a'</text>
+<rect fill="#fff" height="20" rx="3" stroke="#E2DCD2" width="568" x="16" y="98"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.8" style="font-size:8.8px" text-anchor="start" x="26" y="112">bool</text>
+<line stroke="#6B7378" stroke-width="1" x1="222" x2="250" y1="108" y2="108"></line><polygon fill="#6B7378" points="250,108 243.6,110.7 243.6,105.3"></polygon>
+<text class="mono" fill="#7A5A12" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="258" y="112">boolean</text>
+<text class="mono" fill="#2B2F33" font-size="8.6" style="font-size:8.6px" text-anchor="start" x="416" y="112">true, false</text>
+<rect fill="#fff" height="20" rx="3" stroke="#E2DCD2" width="568" x="16" y="121"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.8" style="font-size:8.8px" text-anchor="start" x="26" y="135">null</text>
+<line stroke="#6B7378" stroke-width="1" x1="222" x2="250" y1="131" y2="131"></line><polygon fill="#6B7378" points="250,131 243.6,133.7 243.6,128.3"></polygon>
+<text class="mono" fill="#7A5A12" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="258" y="135">null  et  undefined</text>
+<text class="mono" fill="#2B2F33" font-size="8.6" style="font-size:8.6px" text-anchor="start" x="416" y="135">vide exprès / jamais renseigné</text>
+<rect fill="#fff" height="20" rx="3" stroke="#E2DCD2" width="568" x="16" y="144"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.8" style="font-size:8.8px" text-anchor="start" x="26" y="158">une instance de classe, Dictionary</text>
+<line stroke="#6B7378" stroke-width="1" x1="222" x2="250" y1="154" y2="154"></line><polygon fill="#6B7378" points="250,154 243.6,156.7 243.6,151.3"></polygon>
+<text class="mono" fill="#7A5A12" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="258" y="158">object</text>
+<text class="mono" fill="#2B2F33" font-size="8.6" style="font-size:8.6px" text-anchor="start" x="416" y="158">{ pass: true }</text>
+<rect fill="#fff" height="20" rx="3" stroke="#E2DCD2" width="568" x="16" y="167"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.8" style="font-size:8.8px" text-anchor="start" x="26" y="181">List&lt;T&gt;, T[]</text>
+<line stroke="#6B7378" stroke-width="1" x1="222" x2="250" y1="177" y2="177"></line><polygon fill="#6B7378" points="250,177 243.6,179.7 243.6,174.3"></polygon>
+<text class="mono" fill="#7A5A12" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="258" y="181">Array (un object)</text>
+<text class="mono" fill="#2B2F33" font-size="8.6" style="font-size:8.6px" text-anchor="start" x="416" y="181">[1, 2, 3]</text>
+<rect fill="#fff" height="20" rx="3" stroke="#E2DCD2" width="568" x="16" y="190"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.8" style="font-size:8.8px" text-anchor="start" x="26" y="204">Func&lt;…&gt;, une lambda</text>
+<line stroke="#6B7378" stroke-width="1" x1="222" x2="250" y1="200" y2="200"></line><polygon fill="#6B7378" points="250,200 243.6,202.7 243.6,197.3"></polygon>
+<text class="mono" fill="#7A5A12" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="258" y="204">function</text>
+<text class="mono" fill="#2B2F33" font-size="8.6" style="font-size:8.6px" text-anchor="start" x="416" y="204">(x) =&gt; x * 2</text>
+<text fill="#6B7378" font-size="8.4" font-style="italic" text-anchor="start" x="16" y="218">typeof 3 → "number", typeof undefined → "undefined", typeof null → "object" (une erreur historique du langage).</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">web/validation.mjs · 6–17</span>function toNumberArray(value) {
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">web/validation.mjs · 6–17</span>function toNumberArray(value) {
   if (!Array.isArray(value)) return null;
   const nums = value.map(Number);
   return nums.some(Number.isNaN) ? null : nums;
@@ -135,52 +124,46 @@ function toTextArray(value) {
   return (Array.isArray(value) ? value : [value])
     .map((v) =&gt; (v === null || v === undefined ? "" : String(v)));
 }</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Vérifier soi-même</h3>
-      <p>Rien ne garantit que <code>value</code> soit un tableau : <code>Array.isArray</code> le teste. <code>Number("abc")</code> ne lève pas d'erreur, il rend <code>NaN</code> (« pas un nombre ») ; <code>Number.isNaN</code> le repère.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Comme LINQ, en d'autres mots</h3>
-      <p><code>map</code> est le <code>Select</code> de LINQ (cours 03), <code>some</code> son <code>Any</code>, <code>filter</code> son <code>Where</code>. <code>value.map(Number)</code> passe la fonction <code>Number</code> elle-même, sans parenthèses.</p>
-    </div>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Vérifier soi-même</h3>
+<p>Rien ne garantit que <code>value</code> soit un tableau : <code>Array.isArray</code> le teste. <code>Number("abc")</code> ne lève pas d'erreur, il rend <code>NaN</code> (« pas un nombre ») ; <code>Number.isNaN</code> le repère.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Comme LINQ, en d'autres mots</h3>
+<p><code>map</code> est le <code>Select</code> de LINQ (cours 03), <code>some</code> son <code>Any</code>, <code>filter</code> son <code>Where</code>. <code>value.map(Number)</code> passe la fonction <code>Number</code> elle-même, sans parenthèses.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
+<code>==</code> convertit avant de comparer : <code>"1" == 1</code> est vrai, <code>0 == ""</code> aussi. <code>===</code> compare sans conversion, comme le <code>==</code> de C#. Règle simple : toujours <code>===</code> et <code>!==</code>, comme partout dans <code>validation.mjs</code>.
   </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
-    <code>==</code> convertit avant de comparer : <code>"1" == 1</code> est vrai, <code>0 == ""</code> aussi. <code>===</code> compare sans conversion, comme le <code>==</code> de C#. Règle simple : toujours <code>===</code> et <code>!==</code>, comme partout dans <code>validation.mjs</code>.
-  </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 29 · JavaScript pour un développeur C#</div>
+<div class="folio">2</div>
+<div class="pied">Cours 29 · JavaScript pour un développeur C#</div>
 </section>
-
 <!-- ============ PAGE 3 · OBJETS ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 29</b></div>
-  <p class="rubrique">Schéma 2 · Objets et tableaux littéraux</p>
-  <h2>Un objet sans classe</h2>
-  <p style="max-width:165mm">En C#, il faut une classe pour créer un objet. En JavaScript, on l'écrit directement entre accolades : <code>{ pass: false, reason: "…" }</code>. C'est la forme même du JSON (cours 24).</p>
-
-  <svg viewBox="0 0 600 196" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="196" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="12" fill="#7A5A12" text-anchor="start" font-weight="700">Des accolades, des paires clé : valeur, des virgules</text>
-<rect x="16" y="36" width="568" height="40" rx="5" fill="#fff" stroke="#7A5A12"/>
-<text x="30" y="62" font-size="12" class="mono" style="font-size:12px;white-space:pre"><tspan fill="#2B2F33">{ </tspan><tspan fill="#1565C0" font-weight="700">pass</tspan><tspan fill="#2B2F33">: </tspan><tspan fill="#E65100" font-weight="700">false</tspan><tspan fill="#2B2F33">, </tspan><tspan fill="#1565C0" font-weight="700">reason</tspan><tspan fill="#2B2F33">: </tspan><tspan fill="#2E7D32" font-weight="700">&quot;Valeur correcte.&quot;</tspan><tspan fill="#2B2F33"> }</tspan></text>
-<text x="30" y="96" font-size="9" fill="#1565C0" text-anchor="start" font-weight="700">en bleu, les clés : des noms, sans guillemets ;</text>
-<text x="300" y="96" font-size="9" fill="#E65100" text-anchor="start" font-weight="700">en orange et vert, les valeurs : ici un booléen et une chaîne.</text>
-<line x1="16" y1="110" x2="584" y2="110" stroke="#CFC6BA"/>
-<text x="16" y="130" font-size="9.6" fill="#7A5A12" text-anchor="start" font-weight="700">Lire une clé :</text>
-<text x="130" y="130" font-size="9.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9.6px">config.Mode</text>
-<text x="260" y="130" font-size="8.8" fill="#2B2F33" text-anchor="start">le nom est écrit dans le code</text>
-<text x="130" y="150" font-size="9.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9.6px">config["Mode"]</text>
-<text x="260" y="150" font-size="8.8" fill="#2B2F33" text-anchor="start">le nom est une chaîne, donc peut venir d'une variable :</text>
-<text x="130" y="170" font-size="9.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9.6px">VALIDATORS[config.Mode]</text>
-<text x="330" y="170" font-size="8.8" fill="#2B2F33" text-anchor="start">la clé dont le nom est la valeur de config.Mode</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 29</b></div>
+<p class="rubrique">Schéma 2 · Objets et tableaux littéraux</p>
+<h2>Un objet sans classe</h2>
+<p style="max-width:165mm">En C#, il faut une classe pour créer un objet. En JavaScript, on l'écrit directement entre accolades : <code>{ pass: false, reason: "…" }</code>. C'est la forme même du JSON (cours 24).</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 196" width="100%">
+<rect fill="#EFE9E1" height="196" width="600" x="0" y="0"></rect>
+<text fill="#7A5A12" font-size="12" font-weight="700" text-anchor="start" x="16" y="22">Des accolades, des paires clé : valeur, des virgules</text>
+<rect fill="#fff" height="40" rx="5" stroke="#7A5A12" width="568" x="16" y="36"></rect>
+<text class="mono" font-size="12" style="font-size:12px;white-space:pre" x="30" y="62"><tspan fill="#2B2F33">{ </tspan><tspan fill="#1565C0" font-weight="700">pass</tspan><tspan fill="#2B2F33">: </tspan><tspan fill="#E65100" font-weight="700">false</tspan><tspan fill="#2B2F33">, </tspan><tspan fill="#1565C0" font-weight="700">reason</tspan><tspan fill="#2B2F33">: </tspan><tspan fill="#2E7D32" font-weight="700">"Valeur correcte."</tspan><tspan fill="#2B2F33"> }</tspan></text>
+<text fill="#1565C0" font-size="9" font-weight="700" text-anchor="start" x="30" y="96">en bleu, les clés : des noms, sans guillemets ;</text>
+<text fill="#E65100" font-size="9" font-weight="700" text-anchor="start" x="300" y="96">en orange et vert, les valeurs : ici un booléen et une chaîne.</text>
+<line stroke="#CFC6BA" x1="16" x2="584" y1="110" y2="110"></line>
+<text fill="#7A5A12" font-size="9.6" font-weight="700" text-anchor="start" x="16" y="130">Lire une clé :</text>
+<text class="mono" fill="#2B2F33" font-size="9.6" style="font-size:9.6px" text-anchor="start" x="130" y="130">config.Mode</text>
+<text fill="#2B2F33" font-size="8.8" text-anchor="start" x="260" y="130">le nom est écrit dans le code</text>
+<text class="mono" fill="#2B2F33" font-size="9.6" style="font-size:9.6px" text-anchor="start" x="130" y="150">config["Mode"]</text>
+<text fill="#2B2F33" font-size="8.8" text-anchor="start" x="260" y="150">le nom est une chaîne, donc peut venir d'une variable :</text>
+<text class="mono" fill="#2B2F33" font-size="9.6" style="font-size:9.6px" text-anchor="start" x="130" y="170">VALIDATORS[config.Mode]</text>
+<text fill="#2B2F33" font-size="8.8" text-anchor="start" x="330" y="170">la clé dont le nom est la valeur de config.Mode</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">web/validation.mjs · 129–146, condensé</span>const VALIDATORS = {
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">web/validation.mjs · 129–146, condensé</span>const VALIDATORS = {
   ExactOrderedList: validateExactOrderedList,
   SetEquality: validateSetEquality,
   NumericTolerance: validateSingleValue,
@@ -193,56 +176,50 @@ export function validateSubmission(submitted, config) {
     return { pass: false, reason: `Mode de validation inconnu : "${config.Mode}".` };
   }
   …</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Un dictionnaire de fonctions</h3>
-      <p><code>VALIDATORS</code> associe un nom de mode à une fonction, comme un <code>Dictionary&lt;string, Func&lt;…&gt;&gt;</code>. <code>VALIDATORS[config.Mode]</code> lit la clé dont le nom est dans <code>config.Mode</code>. Deux noms peuvent pointer la même fonction.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Les mêmes raccourcis qu'en C#</h3>
-      <p><code>config.Tolerance ?? 0</code> : 0 si la clé manque. <code>config.ExpectedNumbers?.[0]</code> : <code>undefined</code> au lieu d'une erreur si la liste manque. <code>[...expected]</code> copie un tableau (la décomposition).</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Un dictionnaire de fonctions</h3>
+<p><code>VALIDATORS</code> associe un nom de mode à une fonction, comme un <code>Dictionary&lt;string, Func&lt;…&gt;&gt;</code>. <code>VALIDATORS[config.Mode]</code> lit la clé dont le nom est dans <code>config.Mode</code>. Deux noms peuvent pointer la même fonction.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Les mêmes raccourcis qu'en C#</h3>
+<p><code>config.Tolerance ?? 0</code> : 0 si la clé manque. <code>config.ExpectedNumbers?.[0]</code> : <code>undefined</code> au lieu d'une erreur si la liste manque. <code>[...expected]</code> copie un tableau (la décomposition).</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     La faute de frappe silencieuse. <code>config.mode</code> au lieu de <code>config.Mode</code> ne provoque aucune erreur : la clé n'existe pas, la valeur est <code>undefined</code>. D'où le test <code>if (!validator)</code>, qui transforme ce silence en un message clair.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 29 · JavaScript pour un développeur C#</div>
+<div class="folio">3</div>
+<div class="pied">Cours 29 · JavaScript pour un développeur C#</div>
 </section>
-
 <!-- ============ PAGE 4 · FONCTIONS ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 29</b></div>
-  <p class="rubrique">Schéma 3 · Fonctions et variables</p>
-  <h2>Des fonctions qui sont des valeurs</h2>
-  <p style="max-width:165mm">Une fonction se range dans une variable, se passe en argument, se renvoie. La forme <b>fléchée</b> <code>(e) =&gt; Number(e) === value</code> est l'équivalent exact d'une lambda C#.</p>
-
-  <svg viewBox="0 0 600 200" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="200" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="12" fill="#7A5A12" text-anchor="start" font-weight="700">La même fonction, trois écritures, puis passée en argument</text>
-<rect x="16" y="36" width="568" height="24" rx="4" fill="#fff" stroke="#7A5A12"/>
-<text x="26" y="52" font-size="9" fill="#7A5A12" text-anchor="start" font-weight="700">JS · déclaration</text>
-<text x="150" y="52" font-size="9.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9.4px;white-space:pre">function doubler(x) { return x * 2; }</text>
-<rect x="16" y="66" width="568" height="24" rx="4" fill="#fff" stroke="#7A5A12"/>
-<text x="26" y="82" font-size="9" fill="#7A5A12" text-anchor="start" font-weight="700">JS · fléchée</text>
-<text x="150" y="82" font-size="9.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9.4px;white-space:pre">const doubler = (x) =&gt; x * 2;</text>
-<rect x="16" y="96" width="568" height="24" rx="4" fill="#fff" stroke="#7B1FA2"/>
-<text x="26" y="112" font-size="9" fill="#7B1FA2" text-anchor="start" font-weight="700">C# · lambda</text>
-<text x="150" y="112" font-size="9.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9.4px;white-space:pre">Func&lt;double, double&gt; doubler = x =&gt; x * 2;</text>
-<line x1="16" y1="132" x2="584" y2="132" stroke="#CFC6BA"/>
-<text x="26" y="154" font-size="9.6" fill="#7A5A12" text-anchor="start" font-weight="700" class="mono" style="font-size:9.6px">[1, 2, 3].map(doubler)</text>
-<text x="260" y="154" font-size="9.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9.6px">→ [2, 4, 6]</text>
-<text x="26" y="176" font-size="9.6" fill="#7B1FA2" text-anchor="start" font-weight="700" class="mono" style="font-size:9.6px">new[] { 1.0, 2, 3 }.Select(doubler)</text>
-<text x="300" y="176" font-size="9.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9.6px">→ 2, 4, 6</text>
-<text x="420" y="165" font-size="8.8" fill="#6B7378" text-anchor="start" font-style="italic">La fonction est passée,</text>
-<text x="420" y="178" font-size="8.8" fill="#6B7378" text-anchor="start" font-style="italic">pas appelée : pas de ().</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 29</b></div>
+<p class="rubrique">Schéma 3 · Fonctions et variables</p>
+<h2>Des fonctions qui sont des valeurs</h2>
+<p style="max-width:165mm">Une fonction se range dans une variable, se passe en argument, se renvoie. La forme <b>fléchée</b> <code>(e) =&gt; Number(e) === value</code> est l'équivalent exact d'une lambda C#.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 200" width="100%">
+<rect fill="#EFE9E1" height="200" width="600" x="0" y="0"></rect>
+<text fill="#7A5A12" font-size="12" font-weight="700" text-anchor="start" x="16" y="22">La même fonction, trois écritures, puis passée en argument</text>
+<rect fill="#fff" height="24" rx="4" stroke="#7A5A12" width="568" x="16" y="36"></rect>
+<text fill="#7A5A12" font-size="9" font-weight="700" text-anchor="start" x="26" y="52">JS · déclaration</text>
+<text class="mono" fill="#2B2F33" font-size="9.4" style="font-size:9.4px;white-space:pre" text-anchor="start" x="150" y="52">function doubler(x) { return x * 2; }</text>
+<rect fill="#fff" height="24" rx="4" stroke="#7A5A12" width="568" x="16" y="66"></rect>
+<text fill="#7A5A12" font-size="9" font-weight="700" text-anchor="start" x="26" y="82">JS · fléchée</text>
+<text class="mono" fill="#2B2F33" font-size="9.4" style="font-size:9.4px;white-space:pre" text-anchor="start" x="150" y="82">const doubler = (x) =&gt; x * 2;</text>
+<rect fill="#fff" height="24" rx="4" stroke="#7B1FA2" width="568" x="16" y="96"></rect>
+<text fill="#7B1FA2" font-size="9" font-weight="700" text-anchor="start" x="26" y="112">C# · lambda</text>
+<text class="mono" fill="#2B2F33" font-size="9.4" style="font-size:9.4px;white-space:pre" text-anchor="start" x="150" y="112">Func&lt;double, double&gt; doubler = x =&gt; x * 2;</text>
+<line stroke="#CFC6BA" x1="16" x2="584" y1="132" y2="132"></line>
+<text class="mono" fill="#7A5A12" font-size="9.6" font-weight="700" style="font-size:9.6px" text-anchor="start" x="26" y="154">[1, 2, 3].map(doubler)</text>
+<text class="mono" fill="#2B2F33" font-size="9.6" style="font-size:9.6px" text-anchor="start" x="260" y="154">→ [2, 4, 6]</text>
+<text class="mono" fill="#7B1FA2" font-size="9.6" font-weight="700" style="font-size:9.6px" text-anchor="start" x="26" y="176">new[] { 1.0, 2, 3 }.Select(doubler)</text>
+<text class="mono" fill="#2B2F33" font-size="9.6" style="font-size:9.6px" text-anchor="start" x="300" y="176">→ 2, 4, 6</text>
+<text fill="#6B7378" font-size="8.8" font-style="italic" text-anchor="start" x="420" y="165">La fonction est passée,</text>
+<text fill="#6B7378" font-size="8.8" font-style="italic" text-anchor="start" x="420" y="178">pas appelée : pas de ().</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">web/validation.mjs · 62–79, condensé</span>function validateSetEqualityText(submitted, config) {
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">web/validation.mjs · 62–79, condensé</span>function validateSetEqualityText(submitted, config) {
   const expected = config.ExpectedTexts ?? [];
   const values = toTextArray(submitted);
   const remaining = [...expected];
@@ -253,192 +230,105 @@ export function validateSubmission(submitted, config) {
   }
   return { pass: true, reason: "L'ensemble des valeurs correspond." };
 }</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>const, let, et plus jamais var</h3>
-      <p><code>const</code> : la variable ne sera pas réaffectée (le tableau, lui, peut changer). <code>let</code> : elle le sera, comme le <code>i</code> d'une boucle. <code>var</code> est l'ancienne forme, à la portée surprenante ; Magpie ne l'emploie pas.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Les gabarits de texte</h3>
-      <p>Entre accents graves, <code>`${a} au lieu de ${b}`</code> insère des valeurs, comme <code>$"{a} au lieu de {b}"</code> en C#. Les guillemets simples ou doubles, eux, n'insèrent rien.</p>
-    </div>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>const, let, et plus jamais var</h3>
+<p><code>const</code> : la variable ne sera pas réaffectée (le tableau, lui, peut changer). <code>let</code> : elle le sera, comme le <code>i</code> d'une boucle. <code>var</code> est l'ancienne forme, à la portée surprenante ; Magpie ne l'emploie pas.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Les gabarits de texte</h3>
+<p>Entre accents graves, <code>`${a} au lieu de ${b}`</code> insère des valeurs, comme <code>$"{a} au lieu de {b}"</code> en C#. Les guillemets simples ou doubles, eux, n'insèrent rien.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
+<code>for…in</code> au lieu de <code>for…of</code>. Sur un tableau, <code>for (const v in ["a","b"])</code> parcourt les <b>indices</b>, sous forme de chaînes (« 0 », « 1 »). C'est <code>for…of</code> qui parcourt les valeurs, comme le <code>foreach</code> de C#.
   </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
-    <code>for…in</code> au lieu de <code>for…of</code>. Sur un tableau, <code>for (const v in ["a","b"])</code> parcourt les <b>indices</b>, sous forme de chaînes (« 0 », « 1 »). C'est <code>for…of</code> qui parcourt les valeurs, comme le <code>foreach</code> de C#.
-  </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 29 · JavaScript pour un développeur C#</div>
+<div class="folio">4</div>
+<div class="pied">Cours 29 · JavaScript pour un développeur C#</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 29</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>validateExactOrderedList, ligne à ligne</h2>
-  <p style="max-width:165mm">Le mode « liste de nombres dans l'ordre », écrit en C# dans le <code>GenericChecker</code> du plugin, et réécrit ici pour le web. Tout ce cours tient dans ces dix-huit lignes.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 29</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>validateExactOrderedList, ligne à ligne</h2>
+<p style="max-width:165mm">Le mode « liste de nombres dans l'ordre », écrit en C# dans le <code>GenericChecker</code> du plugin, et réécrit ici pour le web. Tout ce cours tient dans ces dix-huit lignes.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l k1"><span class="n">21</span><span class="kw">function</span> validateExactOrderedList(submitted, config) {<span class="rep r1">1</span></div>
-<div class="l k2"><span class="n">22</span>  <span class="kw">const</span> expected = config.ExpectedNumbers;<span class="rep r2">2</span></div>
-<div class="l k3"><span class="n">23</span>  <span class="kw">const</span> tolerance = config.Tolerance ?? <span class="st">0</span>;<span class="rep r3">3</span></div>
+<div class="l k2"><span class="n">22</span> <span class="kw">const</span> expected = config.ExpectedNumbers;<span class="rep r2">2</span></div>
+<div class="l k3"><span class="n">23</span> <span class="kw">const</span> tolerance = config.Tolerance ?? <span class="st">0</span>;<span class="rep r3">3</span></div>
 <div class="l"><span class="n">24</span></div>
-<div class="l k4"><span class="n">25</span>  <span class="kw">const</span> submittedNums = toNumberArray(submitted);<span class="rep r4">4</span></div>
-<div class="l k4"><span class="n">26</span>  <span class="kw">if</span> (submittedNums === <span class="kw">null</span>) {</div>
-<div class="l k4"><span class="n">27</span>    <span class="kw">return</span> { pass: <span class="kw">false</span>,</div>
+<div class="l k4"><span class="n">25</span> <span class="kw">const</span> submittedNums = toNumberArray(submitted);<span class="rep r4">4</span></div>
+<div class="l k4"><span class="n">26</span> <span class="kw">if</span> (submittedNums === <span class="kw">null</span>) {</div>
+<div class="l k4"><span class="n">27</span> <span class="kw">return</span> { pass: <span class="kw">false</span>,</div>
 <div class="l k4"><span class="n"> </span>      reason: <span class="st">"La réponse n'est pas une liste de nombres."</span> };</div>
 <div class="l k4"><span class="n">28</span>  }</div>
-<div class="l k5"><span class="n">29</span>  <span class="kw">if</span> (submittedNums.length !== expected.length) {<span class="rep r5">5</span></div>
-<div class="l k5"><span class="n">30</span>    <span class="kw">return</span> { pass: <span class="kw">false</span>, reason:</div>
-<div class="l k5"><span class="n"> </span>      <span class="st">`Nombre d'éléments incorrect (${submittedNums.length}`</span> …</div>
+<div class="l k5"><span class="n">29</span> <span class="kw">if</span> (submittedNums.length !== expected.length) {<span class="rep r5">5</span></div>
+<div class="l k5"><span class="n">30</span> <span class="kw">return</span> { pass: <span class="kw">false</span>, reason:</div>
+<div class="l k5"><span class="n"> </span> <span class="st">`Nombre d'éléments incorrect (${submittedNums.length}`</span> …</div>
 <div class="l k5"><span class="n">31</span>  }</div>
-<div class="l k6"><span class="n">32</span>  <span class="kw">for</span> (<span class="kw">let</span> i = <span class="st">0</span>; i &lt; expected.length; i++) {<span class="rep r6">6</span></div>
-<div class="l k6"><span class="n">33</span>    <span class="kw">if</span> (Math.abs(submittedNums[i] - expected[i]) &gt; tolerance) {</div>
-<div class="l k6"><span class="n">34</span>      <span class="kw">return</span> { pass: <span class="kw">false</span>,</div>
+<div class="l k6"><span class="n">32</span> <span class="kw">for</span> (<span class="kw">let</span> i = <span class="st">0</span>; i &lt; expected.length; i++) {<span class="rep r6">6</span></div>
+<div class="l k6"><span class="n">33</span> <span class="kw">if</span> (Math.abs(submittedNums[i] - expected[i]) &gt; tolerance) {</div>
+<div class="l k6"><span class="n">34</span> <span class="kw">return</span> { pass: <span class="kw">false</span>,</div>
 <div class="l k6"><span class="n"> </span>        reason: <span class="st">`Élément incorrect à la position ${i}.`</span> };</div>
 <div class="l k6"><span class="n">35</span>    }</div>
 <div class="l k6"><span class="n">36</span>  }</div>
-<div class="l k7"><span class="n">37</span>  <span class="kw">return</span> { pass: <span class="kw">true</span>,<span class="rep r7">7</span></div>
+<div class="l k7"><span class="n">37</span> <span class="kw">return</span> { pass: <span class="kw">true</span>,<span class="rep r7">7</span></div>
 <div class="l k7"><span class="n"> </span>    reason: <span class="st">"Tous les éléments correspondent, dans l'ordre."</span> };</div>
 <div class="l"><span class="n">38</span>}</div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>Aucun type</b>Ni pour les paramètres, ni pour le retour.</li>
-      <li><span class="rep r2">2</span><b>const</b>Jamais réaffectée dans la fonction.</li>
-      <li><span class="rep r3">3</span><b>?? 0</b>Tolérance absente du JSON : 0.</li>
-      <li><span class="rep r4">4</span><b>Le contrôle d'entrée</b>Ce qu'un compilateur aurait fait à ta place.</li>
-      <li><span class="rep r5">5</span><b>!== et gabarit</b>Comparaison stricte, message composé.</li>
-      <li><span class="rep r6">6</span><b>La boucle classique</b>Identique à C#, avec let.</li>
-      <li><span class="rep r7">7</span><b>Un objet littéral</b>Le résultat, sans classe déclarée.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">Ne jamais révéler la réponse</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>Aucun type</b>Ni pour les paramètres, ni pour le retour.</li>
+<li><span class="rep r2">2</span><b>const</b>Jamais réaffectée dans la fonction.</li>
+<li><span class="rep r3">3</span><b>?? 0</b>Tolérance absente du JSON : 0.</li>
+<li><span class="rep r4">4</span><b>Le contrôle d'entrée</b>Ce qu'un compilateur aurait fait à ta place.</li>
+<li><span class="rep r5">5</span><b>!== et gabarit</b>Comparaison stricte, message composé.</li>
+<li><span class="rep r6">6</span><b>La boucle classique</b>Identique à C#, avec let.</li>
+<li><span class="rep r7">7</span><b>Un objet littéral</b>Le résultat, sans classe déclarée.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">Ne jamais révéler la réponse</span>
     Le message cite la <b>position</b> fautive, jamais la valeur attendue (en-tête du fichier, lignes 3–4). Un test de <code>validation.test.mjs</code> le vérifie. L'apprenant qui lit la réponse du serveur dans les outils du navigateur n'y trouve pas la solution.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 29 · JavaScript pour un développeur C#</div>
+<div class="folio">5</div>
+<div class="pied">Cours 29 · JavaScript pour un développeur C#</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 29</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 29</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">En JavaScript, le type est porté par…</div><ul>
-      <li><span>A</span>la variable</li><li><span>B</span>la valeur</li><li><span>C</span>le fichier</li><li><span>D</span>le compilateur</li></ul></div>
 
-    <div class="q"><div class="enonce">Combien de types de nombres ordinaires ?</div><ul>
-      <li><span>A</span>un seul, équivalent à double</li><li><span>B</span>deux, int et double</li><li><span>C</span>quatre</li><li><span>D</span>aucun</li></ul></div>
 
-    <div class="q"><div class="enonce">"1" == 1 vaut…</div><ul>
-      <li><span>A</span>false</li><li><span>B</span>une erreur</li><li><span>C</span>true</li><li><span>D</span>undefined</li></ul></div>
 
-    <div class="q"><div class="enonce">Number("abc") rend…</div><ul>
-      <li><span>A</span>0</li><li><span>B</span>null</li><li><span>C</span>une exception</li><li><span>D</span>NaN</li></ul></div>
-
-    <div class="q"><div class="enonce">config.mode quand seule la clé « Mode » existe…</div><ul>
-      <li><span>A</span>undefined</li><li><span>B</span>une erreur</li><li><span>C</span>la valeur de Mode</li><li><span>D</span>null</li></ul></div>
-
-    <div class="q"><div class="enonce">L'équivalent de Select en LINQ est…</div><ul>
-      <li><span>A</span>filter</li><li><span>B</span>map</li><li><span>C</span>some</li><li><span>D</span>splice</li></ul></div>
-
-    <div class="q"><div class="enonce">const tableau = [1, 2] ; tableau.push(3) est…</div><ul>
-      <li><span>A</span>interdit</li><li><span>B</span>une erreur à l'exécution</li><li><span>C</span>permis : const interdit la réaffectation, pas la modification</li><li><span>D</span>ignoré</li></ul></div>
-
-    <div class="q"><div class="enonce">for (const v of ["a", "b"]) parcourt…</div><ul>
-      <li><span>A</span>"0" et "1"</li><li><span>B</span>les longueurs</li><li><span>C</span>rien</li><li><span>D</span>"a" et "b"</li></ul></div>
-
-    <div class="q"><div class="enonce">`${n} éléments` s'écrit en C#…</div><ul>
-      <li><span>A</span>$"{n} éléments"</li><li><span>B</span>"{n} éléments"</li><li><span>C</span>@"{n} éléments"</li><li><span>D</span>String.Join(n)</li></ul></div>
-
-    <div class="q"><div class="enonce">Écrire un objet littéral { pass: true } demande… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>aucune classe déclarée</li><li><span>B</span>des accolades et des paires clé : valeur</li><li><span>C</span>le mot-clé new</li><li><span>D</span>un constructeur</li></ul></div>
-
-    <div class="q"><div class="enonce">NumericTolerance et SingleValue partagent…</div><ul>
-      <li><span>A</span>rien</li><li><span>B</span>la même fonction, validateSingleValue</li><li><span>C</span>la même tolérance</li><li><span>D</span>le même test</li></ul></div>
-
-    <div class="q"><div class="enonce">remaining.splice(idx, 1)…</div><ul>
-      <li><span>A</span>copie le tableau</li><li><span>B</span>trie le tableau</li><li><span>C</span>coupe le tableau en deux</li><li><span>D</span>retire un élément à la position idx</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 29 · JavaScript pour un développeur C#</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">a === b, a !== b</td><td>comparer sans conversion</td><td>validation.mjs:26</td></tr>
+<tr><td class="c">x ?? 0, x?.[0]</td><td>valeur par défaut, accès prudent</td><td>validation.mjs:23, 109</td></tr>
+<tr><td class="c">value.map(Number)</td><td>transformer chaque élément</td><td>validation.mjs:8</td></tr>
+<tr><td class="c">(e) =&gt; Number(e) === value</td><td>une fonction fléchée</td><td>validation.mjs:97</td></tr>
+<tr><td class="c">`… ${i} …`</td><td>insérer une valeur dans un texte</td><td>validation.mjs:34</td></tr>
+<tr><td class="c">for (const v of tableau)</td><td>parcourir les valeurs</td><td>validation.mjs:71</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Typage dynamique</dt><dd>Les types sont vérifiés à l'exécution, sur les valeurs.</dd>
+<dt>undefined</dt><dd>La valeur de ce qui n'a jamais été renseigné.</dd>
+<dt>NaN</dt><dd>« Not a Number » : le résultat d'un calcul numérique impossible.</dd>
+<dt>Objet littéral</dt><dd>Un objet écrit directement entre accolades, sans classe.</dd>
+<dt>Fonction fléchée</dt><dd>La forme courte d'une fonction : (x) =&gt; …, la lambda de JavaScript.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 30</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 29 · JavaScript pour un développeur C#</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 29</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · B.</b> Une variable peut changer de type de valeur.</div>
-    <div><b>02 · A.</b> 1 et 1.0 sont le même nombre.</div>
-    <div><b>03 · C.</b> == convertit ; === aurait rendu false.</div>
-    <div><b>04 · D.</b> Pas d'exception : à tester avec Number.isNaN.</div>
-    <div><b>05 · A.</b> Les clés sont sensibles à la casse, sans erreur.</div>
-    <div><b>06 · B.</b> map transforme chaque élément.</div>
-    <div><b>07 · C.</b> Comme une référence readonly en C#.</div>
-    <div><b>08 · D.</b> for…of donne les valeurs.</div>
-    <div><b>09 · A.</b> Un gabarit de texte, des deux côtés.</div>
-    <div><b>10 · A et B.</b> Pas de classe, pas de new.</div>
-    <div><b>11 · B.</b> Deux clés, une fonction (lignes 134–135).</div>
-    <div><b>12 · D.</b> Le deuxième argument est le nombre à retirer.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis la page 4 et le code de la page 5. <b>10 à 12</b> : passe au cours 30, « L'asynchrone, les modules et Node ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">a === b, a !== b</td><td>comparer sans conversion</td><td>validation.mjs:26</td></tr>
-      <tr><td class="c">x ?? 0, x?.[0]</td><td>valeur par défaut, accès prudent</td><td>validation.mjs:23, 109</td></tr>
-      <tr><td class="c">value.map(Number)</td><td>transformer chaque élément</td><td>validation.mjs:8</td></tr>
-      <tr><td class="c">(e) =&gt; Number(e) === value</td><td>une fonction fléchée</td><td>validation.mjs:97</td></tr>
-      <tr><td class="c">`… ${i} …`</td><td>insérer une valeur dans un texte</td><td>validation.mjs:34</td></tr>
-      <tr><td class="c">for (const v of tableau)</td><td>parcourir les valeurs</td><td>validation.mjs:71</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Typage dynamique</dt><dd>Les types sont vérifiés à l'exécution, sur les valeurs.</dd>
-    <dt>undefined</dt><dd>La valeur de ce qui n'a jamais été renseigné.</dd>
-    <dt>NaN</dt><dd>« Not a Number » : le résultat d'un calcul numérique impossible.</dd>
-    <dt>Objet littéral</dt><dd>Un objet écrit directement entre accolades, sans classe.</dd>
-    <dt>Fonction fléchée</dt><dd>La forme courte d'une fonction : (x) =&gt; …, la lambda de JavaScript.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 30</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 29 · JavaScript pour un développeur C#</div>
-</section>
-
 </body>
 </html>

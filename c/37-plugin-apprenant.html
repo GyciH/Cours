@@ -1,122 +1,112 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>37 · Le plugin Magpie côté apprenant</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-12">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Cours 37</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Le plugin Magpie côté apprenant</h1>
-  <p class="chapeau">Dans Grasshopper, l'apprenant ne voit qu'un composant : le lanceur. Un clic sur Démarrer, et le canvas devient une salle d'exercice, reconstruite à chaque exercice par un chef d'orchestre unique, <code>TrainingManager</code>. À la fin, un écran de bilan, un fichier de résultats et, si le seuil est atteint, un certificat.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>07</b>, <b>11</b>, <b>20</b> et <b>27</b></span>
-    <span class="pastille">Exemples · <b>Student/MagpieParcoursLauncher.cs</b>, <b>Core/TrainingManager.cs</b>, <b>Core/GenericChecker.cs</b> (Magpie)</span>
-  </div>
-
-  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
-    <svg viewBox="0 0 600 196" width="100%">
-<rect x="6" y="70" width="110" height="50" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.3"/>
-<text x="61.0" y="92.0" font-size="9.4" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:9.4px">Lanceur</text>
-<text x="61.0" y="106.0" font-size="8.2" fill="#2B2F33" text-anchor="middle">Démarrer</text>
-<line x1="117" y1="95" x2="140" y2="95" stroke="#6B7378" stroke-width="1.4"/><polygon points="140,95 133.6,97.7 133.6,92.3" fill="#6B7378"/>
-<rect x="142" y="8" width="300" height="176" rx="6" fill="#FCEDE5" stroke="#C2410C" stroke-width="1.4"/>
-<rect x="154" y="20" width="276" height="40" rx="4" fill="#fff" stroke="#C2410C" stroke-width="1.3"/>
-<text x="292.0" y="37.0" font-size="9" fill="#C2410C" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">TrainingManager.Instance</text>
-<text x="292.0" y="51.0" font-size="8.2" fill="#2B2F33" text-anchor="middle">exercice courant, tentatives, réussites</text>
-<text x="292" y="82" font-size="8.2" fill="#6B7378" text-anchor="middle" font-style="italic">à chaque exercice, le canvas est vidé puis reposé :</text>
-<rect x="154" y="92" width="88" height="30" rx="4" fill="#fff" stroke="#6D4C41" stroke-width="1.3"/>
-<text x="198.0" y="110.5" font-size="8.2" fill="#6D4C41" text-anchor="middle" font-weight="700">consigne</text>
-<rect x="248" y="92" width="88" height="30" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.3"/>
-<text x="292.0" y="110.5" font-size="8.2" fill="#1565C0" text-anchor="middle" font-weight="700">graphe de départ</text>
-<rect x="342" y="92" width="88" height="30" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.3"/>
-<text x="386.0" y="110.5" font-size="8.2" fill="#2E7D32" text-anchor="middle" font-weight="700">vérificateur</text>
-<text x="292" y="148" font-size="9" fill="#C2410C" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">Recharger · &lt; · &gt;</text>
-<text x="292" y="164" font-size="8" fill="#6B7378" text-anchor="middle">la barre, hors du document</text>
-<line x1="443" y1="95" x2="466" y2="95" stroke="#6B7378" stroke-width="1.4"/><polygon points="466,95 459.6,97.7 459.6,92.3" fill="#6B7378"/>
-<rect x="468" y="40" width="124" height="112" rx="5" fill="#fff" stroke="#7B1FA2" stroke-width="1.3"/>
-<text x="530" y="58" font-size="9.2" fill="#7B1FA2" text-anchor="middle" font-weight="700">Fin du parcours</text>
-<text x="530" y="82" font-size="8.2" fill="#2B2F33" text-anchor="middle">bilan à l'écran</text>
-<text x="530" y="102" font-size="8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8px">resultats_….json</text>
-<text x="530" y="122" font-size="8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:8px">certificat_….pdf</text>
-<text x="530" y="138" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">si le seuil est atteint</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Cours 37</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Le plugin Magpie côté apprenant</h1>
+<p class="chapeau">Dans Grasshopper, l'apprenant ne voit qu'un composant : le lanceur. Un clic sur Démarrer, et le canvas devient une salle d'exercice, reconstruite à chaque exercice par un chef d'orchestre unique, <code>TrainingManager</code>. À la fin, un écran de bilan, un fichier de résultats et, si le seuil est atteint, un certificat.</p>
+<div class="meta">
+<span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>07</b>, <b>11</b>, <b>20</b> et <b>27</b></span>
+<span class="pastille">Exemples · <b>Student/MagpieParcoursLauncher.cs</b>, <b>Core/TrainingManager.cs</b>, <b>Core/GenericChecker.cs</b> (Magpie)</span>
+</div>
+<div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+<svg viewbox="0 0 600 196" width="100%">
+<rect fill="#fff" height="50" rx="4" stroke="#1565C0" stroke-width="1.3" width="110" x="6" y="70"></rect>
+<text class="mono" fill="#1565C0" font-size="9.4" font-weight="700" style="font-size:9.4px" text-anchor="middle" x="61.0" y="92.0">Lanceur</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="middle" x="61.0" y="106.0">Démarrer</text>
+<line stroke="#6B7378" stroke-width="1.4" x1="117" x2="140" y1="95" y2="95"></line><polygon fill="#6B7378" points="140,95 133.6,97.7 133.6,92.3"></polygon>
+<rect fill="#FCEDE5" height="176" rx="6" stroke="#C2410C" stroke-width="1.4" width="300" x="142" y="8"></rect>
+<rect fill="#fff" height="40" rx="4" stroke="#C2410C" stroke-width="1.3" width="276" x="154" y="20"></rect>
+<text class="mono" fill="#C2410C" font-size="9" font-weight="700" style="font-size:9px" text-anchor="middle" x="292.0" y="37.0">TrainingManager.Instance</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="middle" x="292.0" y="51.0">exercice courant, tentatives, réussites</text>
+<text fill="#6B7378" font-size="8.2" font-style="italic" text-anchor="middle" x="292" y="82">à chaque exercice, le canvas est vidé puis reposé :</text>
+<rect fill="#fff" height="30" rx="4" stroke="#6D4C41" stroke-width="1.3" width="88" x="154" y="92"></rect>
+<text fill="#6D4C41" font-size="8.2" font-weight="700" text-anchor="middle" x="198.0" y="110.5">consigne</text>
+<rect fill="#fff" height="30" rx="4" stroke="#1565C0" stroke-width="1.3" width="88" x="248" y="92"></rect>
+<text fill="#1565C0" font-size="8.2" font-weight="700" text-anchor="middle" x="292.0" y="110.5">graphe de départ</text>
+<rect fill="#fff" height="30" rx="4" stroke="#2E7D32" stroke-width="1.3" width="88" x="342" y="92"></rect>
+<text fill="#2E7D32" font-size="8.2" font-weight="700" text-anchor="middle" x="386.0" y="110.5">vérificateur</text>
+<text class="mono" fill="#C2410C" font-size="9" font-weight="700" style="font-size:9px" text-anchor="middle" x="292" y="148">Recharger · &lt; · &gt;</text>
+<text fill="#6B7378" font-size="8" text-anchor="middle" x="292" y="164">la barre, hors du document</text>
+<line stroke="#6B7378" stroke-width="1.4" x1="443" x2="466" y1="95" y2="95"></line><polygon fill="#6B7378" points="466,95 459.6,97.7 459.6,92.3"></polygon>
+<rect fill="#fff" height="112" rx="5" stroke="#7B1FA2" stroke-width="1.3" width="124" x="468" y="40"></rect>
+<text fill="#7B1FA2" font-size="9.2" font-weight="700" text-anchor="middle" x="530" y="58">Fin du parcours</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="middle" x="530" y="82">bilan à l'écran</text>
+<text class="mono" fill="#2B2F33" font-size="8" style="font-size:8px" text-anchor="middle" x="530" y="102">resultats_….json</text>
+<text class="mono" fill="#2B2F33" font-size="8" style="font-size:8px" text-anchor="middle" x="530" y="122">certificat_….pdf</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="middle" x="530" y="138">si le seuil est atteint</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Une session d'apprentissage est un état unique (quel exercice, combien de tentatives, quelles réussites) que <code>TrainingManager</code> garde hors du document, pendant que le canvas, lui, est vidé et reposé à chaque exercice.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Un examinateur et une salle. La salle est rangée puis remeublée entre deux épreuves ; l'examinateur, lui, ne quitte pas la pièce et garde le carnet de notes sur lui.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>dire d'où viennent les parcours et lequel l'emporte ;</li>
-        <li>décrire ce que pose chaque exercice sur le canvas ;</li>
-        <li>distinguer vérification en direct et soumission ;</li>
-        <li>dire quand un certificat est produit, et où.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:5mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Une session d'apprentissage est un état unique (quel exercice, combien de tentatives, quelles réussites) que <code>TrainingManager</code> garde hors du document, pendant que le canvas, lui, est vidé et reposé à chaque exercice.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Un examinateur et une salle. La salle est rangée puis remeublée entre deux épreuves ; l'examinateur, lui, ne quitte pas la pièce et garde le carnet de notes sur lui.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>dire d'où viennent les parcours et lequel l'emporte ;</li>
+<li>décrire ce que pose chaque exercice sur le canvas ;</li>
+<li>distinguer vérification en direct et soumission ;</li>
+<li>dire quand un certificat est produit, et où.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:5mm">
+<span class="titre">À retenir</span>
     Le verdict du vérificateur ne sort jamais sur le canvas : le composant n'a aucune sortie et transmet son résultat à <code>TrainingManager</code> seulement (ExerciseCheckerComponent.cs, lignes 19–21). Un apprenant ne peut donc pas brancher un panneau pour lire la réponse attendue.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 37 · Le plugin Magpie côté apprenant</div>
+<div class="folio">1</div>
+<div class="pied">Cours 37 · Le plugin Magpie côté apprenant</div>
 </section>
-
 <!-- ============ PAGE 2 · LES PARCOURS ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Cours 37</b></div>
-  <p class="rubrique">Schéma 1 · D'où viennent les parcours</p>
-  <h2>Trois sources, la première gagne</h2>
-  <p style="max-width:165mm">Le lanceur relit les parcours à chaque calcul et après chaque import, jamais pendant le dessin. Il interroge trois sources dans un ordre fixe ; un parcours dont l'Id a déjà été vu est ignoré.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="12" fill="#C2410C" text-anchor="start" font-weight="700">La première source qui fournit un Id l'emporte</text>
-<rect x="16" y="38" width="250" height="48" rx="5" fill="#fff" stroke="#6D4C41" stroke-width="1.3"/>
-<circle cx="36" cy="62" r="10" fill="#6D4C41"/><text x="36" y="66" font-size="9.4" fill="#fff" text-anchor="middle" font-weight="700">1</text>
-<text x="56" y="58" font-size="9.4" fill="#6D4C41" text-anchor="start" font-weight="700">Local</text>
-<text x="120" y="58" font-size="8.4" fill="#2B2F33" text-anchor="start">le dossier de travail</text>
-<text x="56" y="75" font-size="8.2" fill="#6B7378" text-anchor="start" class="mono" style="font-size:8.2px">%AppData%\Magpie</text>
-<rect x="16" y="94" width="250" height="48" rx="5" fill="#fff" stroke="#1565C0" stroke-width="1.3"/>
-<circle cx="36" cy="118" r="10" fill="#1565C0"/><text x="36" y="122" font-size="9.4" fill="#fff" text-anchor="middle" font-weight="700">2</text>
-<text x="56" y="114" font-size="9.4" fill="#1565C0" text-anchor="start" font-weight="700">Importé</text>
-<text x="120" y="114" font-size="8.4" fill="#2B2F33" text-anchor="start">le cache des paquets</text>
-<text x="56" y="131" font-size="8.2" fill="#6B7378" text-anchor="start" class="mono" style="font-size:8.2px">Cache\ (.mgp, .json)</text>
-<rect x="16" y="150" width="250" height="48" rx="5" fill="#fff" stroke="#2E7D32" stroke-width="1.3"/>
-<circle cx="36" cy="174" r="10" fill="#2E7D32"/><text x="36" y="178" font-size="9.4" fill="#fff" text-anchor="middle" font-weight="700">3</text>
-<text x="56" y="170" font-size="9.4" fill="#2E7D32" text-anchor="start" font-weight="700">Intégré</text>
-<text x="120" y="170" font-size="8.4" fill="#2B2F33" text-anchor="start">les ressources du .gha</text>
-<text x="56" y="187" font-size="8.2" fill="#6B7378" text-anchor="start" class="mono" style="font-size:8.2px">Magpie.Resources.…</text>
-<line x1="268" y1="118" x2="300" y2="118" stroke="#6B7378" stroke-width="1.4"/><polygon points="300,118 293.6,120.7 293.6,115.3" fill="#6B7378"/>
-<rect x="302" y="36" width="282" height="168" rx="6" fill="#fff" stroke="#C2410C" stroke-width="1.4"/>
-<text x="314" y="54" font-size="9" fill="#C2410C" text-anchor="start" font-weight="700">Magpie - Démarrer un parcours</text>
-<rect x="314" y="62" width="258" height="20" rx="3" fill="#EFE9E1" stroke="#6B7378" stroke-width=".8"/>
-<text x="322" y="76" font-size="8.2" fill="#6B7378" text-anchor="start" font-style="italic">Nom (vide : login Windows)</text>
-<rect x="314" y="88" width="258" height="24" rx="4" fill="#2E7D32"/><text x="443" y="104" font-size="9" fill="#fff" text-anchor="middle" font-weight="700">Parcours intégré</text>
-<rect x="314" y="120" width="258" height="18" fill="#FCEDE5"/>
-<text x="322" y="133" font-size="8.4" fill="#2B2F33" text-anchor="start">Parcours importé A</text>
-<text x="322" y="153" font-size="8.4" fill="#2B2F33" text-anchor="start">Parcours local B</text>
-<text x="322" y="173" font-size="8.4" fill="#B0B4B7" text-anchor="start" font-style="italic">Parcours C (incomplet)</text>
-<rect x="452" y="182" width="120" height="16" rx="3" fill="#C2410C"/><text x="512" y="193.5" font-size="7.8" fill="#fff" text-anchor="middle" font-weight="700">Démarrer la sélection</text>
-<text x="314" y="194" font-size="7.8" fill="#B0B4B7" text-anchor="start" font-style="italic">C : grisé</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Cours 37</b></div>
+<p class="rubrique">Schéma 1 · D'où viennent les parcours</p>
+<h2>Trois sources, la première gagne</h2>
+<p style="max-width:165mm">Le lanceur relit les parcours à chaque calcul et après chaque import, jamais pendant le dessin. Il interroge trois sources dans un ordre fixe ; un parcours dont l'Id a déjà été vu est ignoré.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#C2410C" font-size="12" font-weight="700" text-anchor="start" x="16" y="22">La première source qui fournit un Id l'emporte</text>
+<rect fill="#fff" height="48" rx="5" stroke="#6D4C41" stroke-width="1.3" width="250" x="16" y="38"></rect>
+<circle cx="36" cy="62" fill="#6D4C41" r="10"></circle><text fill="#fff" font-size="9.4" font-weight="700" text-anchor="middle" x="36" y="66">1</text>
+<text fill="#6D4C41" font-size="9.4" font-weight="700" text-anchor="start" x="56" y="58">Local</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="start" x="120" y="58">le dossier de travail</text>
+<text class="mono" fill="#6B7378" font-size="8.2" style="font-size:8.2px" text-anchor="start" x="56" y="75">%AppData%\Magpie</text>
+<rect fill="#fff" height="48" rx="5" stroke="#1565C0" stroke-width="1.3" width="250" x="16" y="94"></rect>
+<circle cx="36" cy="118" fill="#1565C0" r="10"></circle><text fill="#fff" font-size="9.4" font-weight="700" text-anchor="middle" x="36" y="122">2</text>
+<text fill="#1565C0" font-size="9.4" font-weight="700" text-anchor="start" x="56" y="114">Importé</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="start" x="120" y="114">le cache des paquets</text>
+<text class="mono" fill="#6B7378" font-size="8.2" style="font-size:8.2px" text-anchor="start" x="56" y="131">Cache\ (.mgp, .json)</text>
+<rect fill="#fff" height="48" rx="5" stroke="#2E7D32" stroke-width="1.3" width="250" x="16" y="150"></rect>
+<circle cx="36" cy="174" fill="#2E7D32" r="10"></circle><text fill="#fff" font-size="9.4" font-weight="700" text-anchor="middle" x="36" y="178">3</text>
+<text fill="#2E7D32" font-size="9.4" font-weight="700" text-anchor="start" x="56" y="170">Intégré</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="start" x="120" y="170">les ressources du .gha</text>
+<text class="mono" fill="#6B7378" font-size="8.2" style="font-size:8.2px" text-anchor="start" x="56" y="187">Magpie.Resources.…</text>
+<line stroke="#6B7378" stroke-width="1.4" x1="268" x2="300" y1="118" y2="118"></line><polygon fill="#6B7378" points="300,118 293.6,120.7 293.6,115.3"></polygon>
+<rect fill="#fff" height="168" rx="6" stroke="#C2410C" stroke-width="1.4" width="282" x="302" y="36"></rect>
+<text fill="#C2410C" font-size="9" font-weight="700" text-anchor="start" x="314" y="54">Magpie - Démarrer un parcours</text>
+<rect fill="#EFE9E1" height="20" rx="3" stroke="#6B7378" stroke-width=".8" width="258" x="314" y="62"></rect>
+<text fill="#6B7378" font-size="8.2" font-style="italic" text-anchor="start" x="322" y="76">Nom (vide : login Windows)</text>
+<rect fill="#2E7D32" height="24" rx="4" width="258" x="314" y="88"></rect><text fill="#fff" font-size="9" font-weight="700" text-anchor="middle" x="443" y="104">Parcours intégré</text>
+<rect fill="#FCEDE5" height="18" width="258" x="314" y="120"></rect>
+<text fill="#2B2F33" font-size="8.4" text-anchor="start" x="322" y="133">Parcours importé A</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="start" x="322" y="153">Parcours local B</text>
+<text fill="#B0B4B7" font-size="8.4" font-style="italic" text-anchor="start" x="322" y="173">Parcours C (incomplet)</text>
+<rect fill="#C2410C" height="16" rx="3" width="120" x="452" y="182"></rect><text fill="#fff" font-size="7.8" font-weight="700" text-anchor="middle" x="512" y="193.5">Démarrer la sélection</text>
+<text fill="#B0B4B7" font-size="7.8" font-style="italic" text-anchor="start" x="314" y="194">C : grisé</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Core/MagpieRepository.cs · 133–138, mis en forme</span>foreach (var (source, provenance) in new (IMagpieSource, ProvenanceParcours)[]
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Core/MagpieRepository.cs · 133–138, mis en forme</span>foreach (var (source, provenance) in new (IMagpieSource, ProvenanceParcours)[]
 {
   (new SourceDossier("dossier local", BaseFolder, parPaquets: false),
                                               ProvenanceParcours.Local),
@@ -124,83 +114,77 @@
                                               ProvenanceParcours.Importe),
   (new SourceEmbarquee(),                     ProvenanceParcours.Integre),
 })</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Jouable ou grisé</h3>
-      <p>Pour chaque parcours, le lanceur cherche chacun de ses exercices. S'il en manque un, le parcours est grisé (<code>Jouable</code>, ligne 74) : démarrer en sautant des exercices fausserait le certificat. Un fichier <code>.mgp</code> ou <code>.json</code> s'importe par le bouton Importer, dans le cache.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Retenir un Id, pas un rang</h3>
-      <p>La sélection est gardée par son Id (ligne 57), et le nom de l'apprenant avec elle, dans le <code>.gh</code> (<code>Write</code>, lignes 230–235). La liste est relue et peut changer d'ordre ; un rang désignerait un autre parcours. Nom vide : c'est le login Windows qui ira sur le certificat.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Jouable ou grisé</h3>
+<p>Pour chaque parcours, le lanceur cherche chacun de ses exercices. S'il en manque un, le parcours est grisé (<code>Jouable</code>, ligne 74) : démarrer en sautant des exercices fausserait le certificat. Un fichier <code>.mgp</code> ou <code>.json</code> s'importe par le bouton Importer, dans le cache.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Retenir un Id, pas un rang</h3>
+<p>La sélection est gardée par son Id (ligne 57), et le nom de l'apprenant avec elle, dans le <code>.gh</code> (<code>Write</code>, lignes 230–235). La liste est relue et peut changer d'ordre ; un rang désignerait un autre parcours. Nom vide : c'est le login Windows qui ira sur le certificat.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Tester chez soi un parcours qui porte le même Id que le parcours intégré. Le dossier local passe en premier : c'est ta version de travail qui démarre, pas celle du <code>.gha</code>. Pour voir ce que voit l'apprenant, retire ou renomme ta copie locale.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 37 · Le plugin Magpie côté apprenant</div>
+<div class="folio">2</div>
+<div class="pied">Cours 37 · Le plugin Magpie côté apprenant</div>
 </section>
-
 <!-- ============ PAGE 3 · UN EXERCICE SUR LE CANVAS ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Cours 37</b></div>
-  <p class="rubrique">Schéma 2 · Un exercice sur le canvas</p>
-  <h2>Vider, poser, compter</h2>
-  <p style="max-width:165mm">Charger un exercice, c'est retirer tous les objets du document, poser la consigne, le graphe de départ et le vérificateur, puis noter combien d'objets il y a. Tout ce qui s'ajoutera ensuite vient de l'apprenant.</p>
-
-  <svg viewBox="0 0 600 222" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="222" fill="#EFE9E1"/>
-<rect x="12" y="10" width="576" height="202" rx="4" fill="#fff" stroke="#6B7378"/>
-<line x1="12" y1="10" x2="12" y2="212" stroke="#F0EEEA" stroke-width=".6"/>
-<line x1="36" y1="10" x2="36" y2="212" stroke="#F0EEEA" stroke-width=".6"/>
-<line x1="60" y1="10" x2="60" y2="212" stroke="#F0EEEA" stroke-width=".6"/>
-<line x1="84" y1="10" x2="84" y2="212" stroke="#F0EEEA" stroke-width=".6"/>
-<line x1="108" y1="10" x2="108" y2="212" stroke="#F0EEEA" stroke-width=".6"/>
-<line x1="132" y1="10" x2="132" y2="212" stroke="#F0EEEA" stroke-width=".6"/>
-<line x1="156" y1="10" x2="156" y2="212" stroke="#F0EEEA" stroke-width=".6"/>
-<line x1="180" y1="10" x2="180" y2="212" stroke="#F0EEEA" stroke-width=".6"/>
-<line x1="204" y1="10" x2="204" y2="212" stroke="#F0EEEA" stroke-width=".6"/>
-<line x1="228" y1="10" x2="228" y2="212" stroke="#F0EEEA" stroke-width=".6"/>
-<line x1="252" y1="10" x2="252" y2="212" stroke="#F0EEEA" stroke-width=".6"/>
-<line x1="276" y1="10" x2="276" y2="212" stroke="#F0EEEA" stroke-width=".6"/>
-<line x1="300" y1="10" x2="300" y2="212" stroke="#F0EEEA" stroke-width=".6"/>
-<line x1="324" y1="10" x2="324" y2="212" stroke="#F0EEEA" stroke-width=".6"/>
-<line x1="348" y1="10" x2="348" y2="212" stroke="#F0EEEA" stroke-width=".6"/>
-<line x1="372" y1="10" x2="372" y2="212" stroke="#F0EEEA" stroke-width=".6"/>
-<line x1="396" y1="10" x2="396" y2="212" stroke="#F0EEEA" stroke-width=".6"/>
-<line x1="420" y1="10" x2="420" y2="212" stroke="#F0EEEA" stroke-width=".6"/>
-<line x1="444" y1="10" x2="444" y2="212" stroke="#F0EEEA" stroke-width=".6"/>
-<line x1="468" y1="10" x2="468" y2="212" stroke="#F0EEEA" stroke-width=".6"/>
-<line x1="492" y1="10" x2="492" y2="212" stroke="#F0EEEA" stroke-width=".6"/>
-<line x1="516" y1="10" x2="516" y2="212" stroke="#F0EEEA" stroke-width=".6"/>
-<line x1="540" y1="10" x2="540" y2="212" stroke="#F0EEEA" stroke-width=".6"/>
-<line x1="564" y1="10" x2="564" y2="212" stroke="#F0EEEA" stroke-width=".6"/>
-<rect x="20" y="18" width="150" height="20" rx="3" fill="#C2410C"/>
-<text x="60" y="32" font-size="8.2" fill="#fff" text-anchor="middle" font-weight="700">Recharger</text><text x="118" y="32" font-size="9" fill="#fff" text-anchor="middle" font-weight="700">&lt;</text><text x="150" y="32" font-size="9" fill="#fff" text-anchor="middle" font-weight="700">&gt;</text>
-<text x="178" y="32" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">widget de la fenêtre, hors du document</text>
-<text x="36" y="62" font-size="10" fill="#2B2F33" text-anchor="start" font-weight="700">Consigne :</text>
-<text x="36" y="78" font-size="9" fill="#2B2F33" text-anchor="start">Construis la liste des carrés de 1 à 5…</text>
-<text x="330" y="70" font-size="7.8" fill="#6D4C41" text-anchor="start" font-style="italic">scribble (ExerciseModule.cs:34)</text>
-<rect x="30" y="100" width="210" height="68" rx="4" fill="none" stroke="#1565C0" stroke-dasharray="4 3"/>
-<text x="36" y="112" font-size="7.8" fill="#1565C0" text-anchor="start" font-weight="700">Composants de départ</text>
-<rect x="44" y="122" width="74" height="30" rx="5" fill="#EFE9E1" stroke="#2B2F33"/><text x="81" y="141" font-size="8.4" fill="#2B2F33" text-anchor="middle" font-weight="700">Series</text>
-<rect x="262" y="174" width="70" height="26" rx="5" fill="#fff" stroke="#E65100" stroke-width="1.3"/><text x="297" y="191" font-size="8.4" fill="#E65100" text-anchor="middle" font-weight="700">Square</text>
-<text x="297" y="210" font-size="7.6" fill="#E65100" text-anchor="middle" font-style="italic">ajouté par l'apprenant</text>
-<path d="M118 137 C 190 137, 200 187, 262 187" fill="none" stroke="#E65100" stroke-width="1.4"/>
-<path d="M332 187 C 380 187, 380 137, 420 137" fill="none" stroke="#E65100" stroke-width="1.4"/>
-<rect x="420" y="114" width="140" height="48" rx="6" fill="#fff" stroke="#2E7D32" stroke-width="1.5"/>
-<text x="490" y="130" font-size="8.8" fill="#2E7D32" text-anchor="middle" font-weight="700">Vérificateur</text>
-<rect x="440" y="138" width="100" height="18" rx="3" fill="#2E7D32"/><text x="490" y="151" font-size="8.2" fill="#fff" text-anchor="middle" font-weight="700">Soumettre</text>
-<text x="490" y="106" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">centré colonne 6, à hauteur</text>
-<text x="490" y="176" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">du premier composant de départ</text>
-<text x="420" y="202" font-size="8" fill="#C2410C" text-anchor="start" font-weight="700">base = ObjectCount après la pose</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Cours 37</b></div>
+<p class="rubrique">Schéma 2 · Un exercice sur le canvas</p>
+<h2>Vider, poser, compter</h2>
+<p style="max-width:165mm">Charger un exercice, c'est retirer tous les objets du document, poser la consigne, le graphe de départ et le vérificateur, puis noter combien d'objets il y a. Tout ce qui s'ajoutera ensuite vient de l'apprenant.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 222" width="100%">
+<rect fill="#EFE9E1" height="222" width="600" x="0" y="0"></rect>
+<rect fill="#fff" height="202" rx="4" stroke="#6B7378" width="576" x="12" y="10"></rect>
+<line stroke="#F0EEEA" stroke-width=".6" x1="12" x2="12" y1="10" y2="212"></line>
+<line stroke="#F0EEEA" stroke-width=".6" x1="36" x2="36" y1="10" y2="212"></line>
+<line stroke="#F0EEEA" stroke-width=".6" x1="60" x2="60" y1="10" y2="212"></line>
+<line stroke="#F0EEEA" stroke-width=".6" x1="84" x2="84" y1="10" y2="212"></line>
+<line stroke="#F0EEEA" stroke-width=".6" x1="108" x2="108" y1="10" y2="212"></line>
+<line stroke="#F0EEEA" stroke-width=".6" x1="132" x2="132" y1="10" y2="212"></line>
+<line stroke="#F0EEEA" stroke-width=".6" x1="156" x2="156" y1="10" y2="212"></line>
+<line stroke="#F0EEEA" stroke-width=".6" x1="180" x2="180" y1="10" y2="212"></line>
+<line stroke="#F0EEEA" stroke-width=".6" x1="204" x2="204" y1="10" y2="212"></line>
+<line stroke="#F0EEEA" stroke-width=".6" x1="228" x2="228" y1="10" y2="212"></line>
+<line stroke="#F0EEEA" stroke-width=".6" x1="252" x2="252" y1="10" y2="212"></line>
+<line stroke="#F0EEEA" stroke-width=".6" x1="276" x2="276" y1="10" y2="212"></line>
+<line stroke="#F0EEEA" stroke-width=".6" x1="300" x2="300" y1="10" y2="212"></line>
+<line stroke="#F0EEEA" stroke-width=".6" x1="324" x2="324" y1="10" y2="212"></line>
+<line stroke="#F0EEEA" stroke-width=".6" x1="348" x2="348" y1="10" y2="212"></line>
+<line stroke="#F0EEEA" stroke-width=".6" x1="372" x2="372" y1="10" y2="212"></line>
+<line stroke="#F0EEEA" stroke-width=".6" x1="396" x2="396" y1="10" y2="212"></line>
+<line stroke="#F0EEEA" stroke-width=".6" x1="420" x2="420" y1="10" y2="212"></line>
+<line stroke="#F0EEEA" stroke-width=".6" x1="444" x2="444" y1="10" y2="212"></line>
+<line stroke="#F0EEEA" stroke-width=".6" x1="468" x2="468" y1="10" y2="212"></line>
+<line stroke="#F0EEEA" stroke-width=".6" x1="492" x2="492" y1="10" y2="212"></line>
+<line stroke="#F0EEEA" stroke-width=".6" x1="516" x2="516" y1="10" y2="212"></line>
+<line stroke="#F0EEEA" stroke-width=".6" x1="540" x2="540" y1="10" y2="212"></line>
+<line stroke="#F0EEEA" stroke-width=".6" x1="564" x2="564" y1="10" y2="212"></line>
+<rect fill="#C2410C" height="20" rx="3" width="150" x="20" y="18"></rect>
+<text fill="#fff" font-size="8.2" font-weight="700" text-anchor="middle" x="60" y="32">Recharger</text><text fill="#fff" font-size="9" font-weight="700" text-anchor="middle" x="118" y="32">&lt;</text><text fill="#fff" font-size="9" font-weight="700" text-anchor="middle" x="150" y="32">&gt;</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="start" x="178" y="32">widget de la fenêtre, hors du document</text>
+<text fill="#2B2F33" font-size="10" font-weight="700" text-anchor="start" x="36" y="62">Consigne :</text>
+<text fill="#2B2F33" font-size="9" text-anchor="start" x="36" y="78">Construis la liste des carrés de 1 à 5…</text>
+<text fill="#6D4C41" font-size="7.8" font-style="italic" text-anchor="start" x="330" y="70">scribble (ExerciseModule.cs:34)</text>
+<rect fill="none" height="68" rx="4" stroke="#1565C0" stroke-dasharray="4 3" width="210" x="30" y="100"></rect>
+<text fill="#1565C0" font-size="7.8" font-weight="700" text-anchor="start" x="36" y="112">Composants de départ</text>
+<rect fill="#EFE9E1" height="30" rx="5" stroke="#2B2F33" width="74" x="44" y="122"></rect><text fill="#2B2F33" font-size="8.4" font-weight="700" text-anchor="middle" x="81" y="141">Series</text>
+<rect fill="#fff" height="26" rx="5" stroke="#E65100" stroke-width="1.3" width="70" x="262" y="174"></rect><text fill="#E65100" font-size="8.4" font-weight="700" text-anchor="middle" x="297" y="191">Square</text>
+<text fill="#E65100" font-size="7.6" font-style="italic" text-anchor="middle" x="297" y="210">ajouté par l'apprenant</text>
+<path d="M118 137 C 190 137, 200 187, 262 187" fill="none" stroke="#E65100" stroke-width="1.4"></path>
+<path d="M332 187 C 380 187, 380 137, 420 137" fill="none" stroke="#E65100" stroke-width="1.4"></path>
+<rect fill="#fff" height="48" rx="6" stroke="#2E7D32" stroke-width="1.5" width="140" x="420" y="114"></rect>
+<text fill="#2E7D32" font-size="8.8" font-weight="700" text-anchor="middle" x="490" y="130">Vérificateur</text>
+<rect fill="#2E7D32" height="18" rx="3" width="100" x="440" y="138"></rect><text fill="#fff" font-size="8.2" font-weight="700" text-anchor="middle" x="490" y="151">Soumettre</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="middle" x="490" y="106">centré colonne 6, à hauteur</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="middle" x="490" y="176">du premier composant de départ</text>
+<text fill="#C2410C" font-size="8" font-weight="700" text-anchor="start" x="420" y="202">base = ObjectCount après la pose</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Core/TrainingManager.cs · 113–138, extraits</span>doc.ScheduleSolution(5, d =>
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Core/TrainingManager.cs · 113–138, extraits</span>doc.ScheduleSolution(5, d =&gt;
 {
     ClearCanvas(d);
     _parcours[i].BuildStarterLayout(d);
@@ -212,117 +196,106 @@
     }
     …
     _baselineObjectCount = d.ObjectCount;</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Après le calcul, pas pendant</h3>
-      <p>Un clic sur Suivant arrive souvent pendant un calcul. <code>ScheduleSolution(5, …)</code> reporte la reconstruction juste après la fin du calcul en cours : vider le document en plein calcul risquerait de corrompre le solveur (cours 11).</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Une consigne qu'on ne câble pas</h3>
-      <p>La consigne est un <code>GH_Scribble</code> (ExerciseModule.cs, ligne 34), pas un panneau : un panneau se câble et s'édite, un scribble est du décor. La barre Recharger, &lt;, &gt; est un widget de la fenêtre : elle n'est pas dans le document, donc jamais comptée ni sauvegardée.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Après le calcul, pas pendant</h3>
+<p>Un clic sur Suivant arrive souvent pendant un calcul. <code>ScheduleSolution(5, …)</code> reporte la reconstruction juste après la fin du calcul en cours : vider le document en plein calcul risquerait de corrompre le solveur (cours 11).</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Une consigne qu'on ne câble pas</h3>
+<p>La consigne est un <code>GH_Scribble</code> (ExerciseModule.cs, ligne 34), pas un panneau : un panneau se câble et s'édite, un scribble est du décor. La barre Recharger, &lt;, &gt; est un widget de la fenêtre : elle n'est pas dans le document, donc jamais comptée ni sauvegardée.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Brancher un arbre sur le vérificateur d'un exercice qui attend une liste. Le vérificateur refuse et le dit : « Votre réponse doit être une liste simple, pas un arbre » (GenericChecker.cs, ligne 110). Il faut aplatir (Flatten) avant de brancher.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 37 · Le plugin Magpie côté apprenant</div>
+<div class="folio">3</div>
+<div class="pied">Cours 37 · Le plugin Magpie côté apprenant</div>
 </section>
-
 <!-- ============ PAGE 4 · VÉRIFIER, SOUMETTRE, AVANCER ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Cours 37</b></div>
-  <p class="rubrique">Schéma 3 · Vérifier, soumettre, avancer</p>
-  <h2>L'aperçu ne compte pas, le clic compte</h2>
-  <p style="max-width:165mm">Le vérificateur recalcule son verdict à chaque changement du graphe, mais ce n'est qu'un aperçu. Seul le bouton Soumettre fait une tentative, et seules les réussites entrent dans le taux du parcours.</p>
-
-  <svg viewBox="0 0 600 204" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="204" fill="#EFE9E1"/>
-<rect x="12" y="18" width="140" height="44" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.3"/>
-<text x="82.0" y="37.0" font-size="9" fill="#6B7378" text-anchor="middle" font-weight="700">graphe modifié</text>
-<text x="82.0" y="51.0" font-size="8.2" fill="#2B2F33" text-anchor="middle">recalcul du vérificateur</text>
-<line x1="153" y1="40" x2="180" y2="40" stroke="#6B7378" stroke-width="1.4"/><polygon points="180,40 173.6,42.7 173.6,37.3" fill="#6B7378"/>
-<rect x="182" y="18" width="176" height="44" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.3"/>
-<text x="270.0" y="37.0" font-size="8.8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.8px">UpdateLiveCheck</text>
-<text x="270.0" y="51.0" font-size="8.2" fill="#2B2F33" text-anchor="middle">aperçu : ne compte jamais</text>
-<line x1="359" y1="40" x2="386" y2="40" stroke="#6B7378" stroke-width="1.4"/><polygon points="386,40 379.6,42.7 379.6,37.3" fill="#6B7378"/>
-<rect x="388" y="18" width="200" height="44" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.3" stroke-dasharray="4 3"/>
-<text x="488" y="36" font-size="8.8" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.8px">_liveCheckOk</text>
-<text x="488" y="51" font-size="8.2" fill="#2B2F33" text-anchor="middle">le dernier verdict, gardé</text>
-<rect x="12" y="96" width="140" height="44" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.3"/>
-<text x="82.0" y="115.0" font-size="9" fill="#2E7D32" text-anchor="middle" font-weight="700">clic Soumettre</text>
-<text x="82.0" y="129.0" font-size="8.2" fill="#2B2F33" text-anchor="middle">réponse branchée ?</text>
-<line x1="82" y1="141" x2="82" y2="164" stroke="#C62828" stroke-width="1.4"/><polygon points="82,164 79.3,157.6 84.7,157.6" fill="#C62828"/>
-<text x="90" y="156" font-size="8" fill="#C62828" text-anchor="start" font-weight="700">non</text>
-<rect x="12" y="166" width="140" height="30" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.3"/>
-<text x="82.0" y="184.5" font-size="8.2" fill="#C62828" text-anchor="middle" font-weight="700">message, rien d'autre</text>
-<line x1="153" y1="118" x2="180" y2="118" stroke="#2E7D32" stroke-width="1.4"/><polygon points="180,118 173.6,120.7 173.6,115.3" fill="#2E7D32"/>
-<text x="166" y="112" font-size="8" fill="#2E7D32" text-anchor="middle" font-weight="700">oui</text>
-<rect x="182" y="96" width="176" height="44" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.3"/>
-<text x="270.0" y="115.0" font-size="8.8" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.8px">Attempts++</text>
-<text x="270.0" y="129.0" font-size="8.2" fill="#2B2F33" text-anchor="middle">le bouton &gt; se débloque</text>
-<line x1="359" y1="118" x2="386" y2="118" stroke="#2E7D32" stroke-width="1.4"/><polygon points="386,118 379.6,120.7 379.6,115.3" fill="#2E7D32"/>
-<rect x="388" y="96" width="200" height="44" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.3"/>
-<text x="488.0" y="115.0" font-size="8.8" fill="#7B1FA2" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.8px">_results[id] = réussite</text>
-<text x="488.0" y="129.0" font-size="8.2" fill="#2B2F33" text-anchor="middle">seulement si le verdict est juste</text>
-<path d="M488 62 L488 94" stroke="#6B7378" stroke-width="1.2" stroke-dasharray="3 3"/>
-<text x="494" y="82" font-size="8" fill="#6B7378" text-anchor="start" font-style="italic">relu</text>
-<text x="200" y="172" font-size="9" fill="#2B2F33" text-anchor="start" font-weight="700">taux = réussites / exercices</text>
-<rect x="200" y="180" width="300" height="12" fill="#EFE9E1" stroke="#6B7378" stroke-width=".6"/>
-<rect x="200" y="180" width="240" height="12" fill="#2E7D32"/>
-<line x1="440" y1="174" x2="440" y2="198" stroke="#C62828" stroke-width="1.6"/>
-<text x="446" y="172" font-size="8" fill="#C62828" text-anchor="start" font-weight="700">seuil 0,8</text>
-<text x="506" y="190" font-size="8.2" fill="#2E7D32" text-anchor="start" font-weight="700">4 / 5 : validé</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Cours 37</b></div>
+<p class="rubrique">Schéma 3 · Vérifier, soumettre, avancer</p>
+<h2>L'aperçu ne compte pas, le clic compte</h2>
+<p style="max-width:165mm">Le vérificateur recalcule son verdict à chaque changement du graphe, mais ce n'est qu'un aperçu. Seul le bouton Soumettre fait une tentative, et seules les réussites entrent dans le taux du parcours.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 204" width="100%">
+<rect fill="#EFE9E1" height="204" width="600" x="0" y="0"></rect>
+<rect fill="#fff" height="44" rx="4" stroke="#6B7378" stroke-width="1.3" width="140" x="12" y="18"></rect>
+<text fill="#6B7378" font-size="9" font-weight="700" text-anchor="middle" x="82.0" y="37.0">graphe modifié</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="middle" x="82.0" y="51.0">recalcul du vérificateur</text>
+<line stroke="#6B7378" stroke-width="1.4" x1="153" x2="180" y1="40" y2="40"></line><polygon fill="#6B7378" points="180,40 173.6,42.7 173.6,37.3"></polygon>
+<rect fill="#fff" height="44" rx="4" stroke="#1565C0" stroke-width="1.3" width="176" x="182" y="18"></rect>
+<text class="mono" fill="#1565C0" font-size="8.8" font-weight="700" style="font-size:8.8px" text-anchor="middle" x="270.0" y="37.0">UpdateLiveCheck</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="middle" x="270.0" y="51.0">aperçu : ne compte jamais</text>
+<line stroke="#6B7378" stroke-width="1.4" x1="359" x2="386" y1="40" y2="40"></line><polygon fill="#6B7378" points="386,40 379.6,42.7 379.6,37.3"></polygon>
+<rect fill="#fff" height="44" rx="4" stroke="#6B7378" stroke-dasharray="4 3" stroke-width="1.3" width="200" x="388" y="18"></rect>
+<text class="mono" fill="#6B7378" font-size="8.8" font-weight="700" style="font-size:8.8px" text-anchor="middle" x="488" y="36">_liveCheckOk</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="middle" x="488" y="51">le dernier verdict, gardé</text>
+<rect fill="#fff" height="44" rx="4" stroke="#2E7D32" stroke-width="1.3" width="140" x="12" y="96"></rect>
+<text fill="#2E7D32" font-size="9" font-weight="700" text-anchor="middle" x="82.0" y="115.0">clic Soumettre</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="middle" x="82.0" y="129.0">réponse branchée ?</text>
+<line stroke="#C62828" stroke-width="1.4" x1="82" x2="82" y1="141" y2="164"></line><polygon fill="#C62828" points="82,164 79.3,157.6 84.7,157.6"></polygon>
+<text fill="#C62828" font-size="8" font-weight="700" text-anchor="start" x="90" y="156">non</text>
+<rect fill="#fff" height="30" rx="4" stroke="#C62828" stroke-width="1.3" width="140" x="12" y="166"></rect>
+<text fill="#C62828" font-size="8.2" font-weight="700" text-anchor="middle" x="82.0" y="184.5">message, rien d'autre</text>
+<line stroke="#2E7D32" stroke-width="1.4" x1="153" x2="180" y1="118" y2="118"></line><polygon fill="#2E7D32" points="180,118 173.6,120.7 173.6,115.3"></polygon>
+<text fill="#2E7D32" font-size="8" font-weight="700" text-anchor="middle" x="166" y="112">oui</text>
+<rect fill="#fff" height="44" rx="4" stroke="#2E7D32" stroke-width="1.3" width="176" x="182" y="96"></rect>
+<text class="mono" fill="#2E7D32" font-size="8.8" font-weight="700" style="font-size:8.8px" text-anchor="middle" x="270.0" y="115.0">Attempts++</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="middle" x="270.0" y="129.0">le bouton &gt; se débloque</text>
+<line stroke="#2E7D32" stroke-width="1.4" x1="359" x2="386" y1="118" y2="118"></line><polygon fill="#2E7D32" points="386,118 379.6,120.7 379.6,115.3"></polygon>
+<rect fill="#fff" height="44" rx="4" stroke="#7B1FA2" stroke-width="1.3" width="200" x="388" y="96"></rect>
+<text class="mono" fill="#7B1FA2" font-size="8.8" font-weight="700" style="font-size:8.8px" text-anchor="middle" x="488.0" y="115.0">_results[id] = réussite</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="middle" x="488.0" y="129.0">seulement si le verdict est juste</text>
+<path d="M488 62 L488 94" stroke="#6B7378" stroke-dasharray="3 3" stroke-width="1.2"></path>
+<text fill="#6B7378" font-size="8" font-style="italic" text-anchor="start" x="494" y="82">relu</text>
+<text fill="#2B2F33" font-size="9" font-weight="700" text-anchor="start" x="200" y="172">taux = réussites / exercices</text>
+<rect fill="#EFE9E1" height="12" stroke="#6B7378" stroke-width=".6" width="300" x="200" y="180"></rect>
+<rect fill="#2E7D32" height="12" width="240" x="200" y="180"></rect>
+<line stroke="#C62828" stroke-width="1.6" x1="440" x2="440" y1="174" y2="198"></line>
+<text fill="#C62828" font-size="8" font-weight="700" text-anchor="start" x="446" y="172">seuil 0,8</text>
+<text fill="#2E7D32" font-size="8.2" font-weight="700" text-anchor="start" x="506" y="190">4 / 5 : validé</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Core/TrainingManager.cs · 369–372</span>public double SuccessRate => (_parcours != null &amp;&amp; _parcours.Count > 0)
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Core/TrainingManager.cs · 369–372</span>public double SuccessRate =&gt; (_parcours != null &amp;&amp; _parcours.Count &gt; 0)
     ? (double)_results.Count / _parcours.Count : 0;
 
-public bool IsParcoursValidated => SuccessRate >= _successThreshold;
-public string ValidationLabel => IsParcoursValidated ? "Validé" : "Non validé";</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Avancer après un échec</h3>
-      <p>Le bouton &gt; se débloque dès qu'une tentative a eu lieu, juste ou non (<code>CanAdvance</code>, ligne 344). L'apprenant n'est jamais bloqué ; l'exercice raté compte simplement comme non réussi. Revenir en arrière reprend la progression déjà notée.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Un certificat seulement si validé</h3>
-      <p>En fin de parcours, les résultats partent dans <code>resultats_&lt;nom&gt;_&lt;date&gt;.json</code> (ligne 382). Sous le seuil (0,8 par défaut), pas de certificat (lignes 205–208) : le gabarit atteste « a suivi avec succès ». Au-dessus, un PDF dans <code>Certificats</code>.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+public bool IsParcoursValidated =&gt; SuccessRate &gt;= _successThreshold;
+public string ValidationLabel =&gt; IsParcoursValidated ? "Validé" : "Non validé";</div>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Avancer après un échec</h3>
+<p>Le bouton &gt; se débloque dès qu'une tentative a eu lieu, juste ou non (<code>CanAdvance</code>, ligne 344). L'apprenant n'est jamais bloqué ; l'exercice raté compte simplement comme non réussi. Revenir en arrière reprend la progression déjà notée.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Un certificat seulement si validé</h3>
+<p>En fin de parcours, les résultats partent dans <code>resultats_&lt;nom&gt;_&lt;date&gt;.json</code> (ligne 382). Sous le seuil (0,8 par défaut), pas de certificat (lignes 205–208) : le gabarit atteste « a suivi avec succès ». Au-dessus, un PDF dans <code>Certificats</code>.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Cliquer sur Soumettre sans rien brancher. Le vérificateur affiche « Réponse manquante » et n'appelle pas <code>SubmitAnswer</code> (GenericChecker.cs, lignes 55–62) : ce clic ne compte pas comme une tentative et ne débloque pas le bouton &gt;.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 37 · Le plugin Magpie côté apprenant</div>
+<div class="folio">4</div>
+<div class="pied">Cours 37 · Le plugin Magpie côté apprenant</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Cours 37</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>SubmitAnswer : la seule tentative qui compte</h2>
-  <p style="max-width:165mm">Appelée par le bouton Soumettre du vérificateur. Elle ne recalcule rien : elle relit le dernier verdict en direct, le note, et garde une réussite par exercice.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Cours 37</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>SubmitAnswer : la seule tentative qui compte</h2>
+<p style="max-width:165mm">Appelée par le bouton Soumettre du vérificateur. Elle ne recalcule rien : elle relit le dernier verdict en direct, le note, et garde une réussite par exercice.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="n">304</span><span class="kw">public bool</span> SubmitAnswer()</div>
-<div class="l"><span class="n">306</span>  <span class="kw">if</span> (_current == <span class="kw">null</span>) <span class="kw">return false</span>;</div>
+<div class="l"><span class="n">306</span> <span class="kw">if</span> (_current == <span class="kw">null</span>) <span class="kw">return false</span>;</div>
 <div class="l k1"><span class="n">308</span>  _current.Attempts++;<span class="rep r1">1</span></div>
-<div class="l k2"><span class="n">309</span>  <span class="kw">bool</span> ok = _liveCheckOk ?? <span class="kw">false</span>;<span class="rep r2">2</span></div>
+<div class="l k2"><span class="n">309</span> <span class="kw">bool</span> ok = _liveCheckOk ?? <span class="kw">false</span>;<span class="rep r2">2</span></div>
 <div class="l k2"><span class="n">310</span>  _current.Validated = ok;</div>
-<div class="l"><span class="n">312</span>  <span class="kw">if</span> (ok)</div>
-<div class="l k3"><span class="n">315</span>    <span class="kw">int</span> used = <span class="ty">Math</span>.Max(0,<span class="rep r3">3</span></div>
+<div class="l"><span class="n">312</span> <span class="kw">if</span> (ok)</div>
+<div class="l k3"><span class="n">315</span> <span class="kw">int</span> used = <span class="ty">Math</span>.Max(0,<span class="rep r3">3</span></div>
 <div class="l k3"><span class="n"> </span>      doc.ObjectCount - _baselineObjectCount);</div>
-<div class="l"><span class="n">316</span>    <span class="kw">string</span> exerciseId = _parcours[_index].Id;</div>
+<div class="l"><span class="n">316</span> <span class="kw">string</span> exerciseId = _parcours[_index].Id;</div>
 <div class="l k4"><span class="n">322</span>    _results[exerciseId] = <span class="kw">new</span> <span class="ty">ExerciseResult</span><span class="rep r4">4</span></div>
 <div class="l k4"><span class="n">325</span>      Success = <span class="kw">true</span>,</div>
 <div class="l k4"><span class="n">326</span>      ComponentsUsed = used,</div>
@@ -330,144 +303,62 @@ public string ValidationLabel => IsParcoursValidated ? "Validé" : "Non validé"
 <div class="l k5"><span class="n">328</span>      DurationSeconds = (<span class="ty">DateTime</span>.Now</div>
 <div class="l k5"><span class="n"> </span>        - _current.StartedAt).TotalSeconds,</div>
 <div class="l k6"><span class="n">333</span>  StateChanged?.Invoke();<span class="rep r6">6</span></div>
-<div class="l"><span class="n">334</span>  <span class="kw">return</span> ok;</div>
+<div class="l"><span class="n">334</span> <span class="kw">return</span> ok;</div>
 <div class="l"><span class="n"> </span></div>
 <div class="l k7"><span class="n">344</span><span class="kw">public bool</span> CanAdvance =&gt; _current != <span class="kw">null</span><span class="rep r7">7</span></div>
 <div class="l k7"><span class="n"> </span>  &amp;&amp; _current.Attempts &gt; 0;</div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>Toujours compter</b>Juste ou faux, chaque clic est une tentative.</li>
-      <li><span class="rep r2">2</span><b>Relire l'aperçu</b>Le verdict vient du dernier calcul du vérificateur.</li>
-      <li><span class="rep r3">3</span><b>Mesurer l'effort</b>Les objets ajoutés depuis la pose de l'exercice.</li>
-      <li><span class="rep r4">4</span><b>Remplacer</b>Une seule réussite par exercice, la plus récente.</li>
-      <li><span class="rep r5">5</span><b>Cumuler</b>Tentatives et durée depuis la première visite.</li>
-      <li><span class="rep r6">6</span><b>Prévenir</b>Le volet de debug et les boutons se mettent à jour.</li>
-      <li><span class="rep r7">7</span><b>Débloquer &gt;</b>Après une tentative, quel qu'en soit le résultat.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">Où tout s'écrit</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>Toujours compter</b>Juste ou faux, chaque clic est une tentative.</li>
+<li><span class="rep r2">2</span><b>Relire l'aperçu</b>Le verdict vient du dernier calcul du vérificateur.</li>
+<li><span class="rep r3">3</span><b>Mesurer l'effort</b>Les objets ajoutés depuis la pose de l'exercice.</li>
+<li><span class="rep r4">4</span><b>Remplacer</b>Une seule réussite par exercice, la plus récente.</li>
+<li><span class="rep r5">5</span><b>Cumuler</b>Tentatives et durée depuis la première visite.</li>
+<li><span class="rep r6">6</span><b>Prévenir</b>Le volet de debug et les boutons se mettent à jour.</li>
+<li><span class="rep r7">7</span><b>Débloquer &gt;</b>Après une tentative, quel qu'en soit le résultat.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">Où tout s'écrit</span>
     Résultats et certificats partent du dossier de travail : <code>%AppData%\Magpie</code> par défaut, réglable dans le menu Magpie de Grasshopper (MagpieReglages.cs, lignes 26–40). Un dossier en lecture seule n'empêche jamais l'écran de fin : les deux écritures sont protégées par un <code>try</code>.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 37 · Le plugin Magpie côté apprenant</div>
+<div class="folio">5</div>
+<div class="pied">Cours 37 · Le plugin Magpie côté apprenant</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Cours 37</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Cours 37</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">Un parcours existe en local et dans le .gha, avec le même Id. Qui démarre ?</div><ul>
-      <li><span>A</span>celui du .gha</li><li><span>B</span>le plus récent</li><li><span>C</span>la copie locale</li><li><span>D</span>aucun : conflit</li></ul></div>
 
-    <div class="q"><div class="enonce">Un parcours est grisé dans le lanceur quand…</div><ul>
-      <li><span>A</span>un de ses exercices est introuvable</li><li><span>B</span>il est importé</li><li><span>C</span>il est déjà réussi</li><li><span>D</span>le nom est vide</li></ul></div>
 
-    <div class="q"><div class="enonce">Le lanceur retient la sélection par…</div><ul>
-      <li><span>A</span>son rang dans la liste</li><li><span>B</span>son titre</li><li><span>C</span>son fichier</li><li><span>D</span>son Id</li></ul></div>
 
-    <div class="q"><div class="enonce">Pourquoi ScheduleSolution pour reconstruire le canvas&nbsp;?</div><ul>
-      <li><span>A</span>pour animer</li><li><span>B</span>pour ne pas modifier le document en plein calcul</li><li><span>C</span>pour économiser la mémoire</li><li><span>D</span>pour sauvegarder</li></ul></div>
-
-    <div class="q"><div class="enonce">La consigne est posée comme…</div><ul>
-      <li><span>A</span>un panneau</li><li><span>B</span>une info-bulle</li><li><span>C</span>un scribble, qu'on ne peut pas câbler</li><li><span>D</span>un groupe</li></ul></div>
-
-    <div class="q"><div class="enonce">ComponentsUsed compte…</div><ul>
-      <li><span>A</span>les objets ajoutés depuis la pose de l'exercice</li><li><span>B</span>tous les objets du document</li><li><span>C</span>les fils</li><li><span>D</span>les tentatives</li></ul></div>
-
-    <div class="q"><div class="enonce">Le vérificateur recalcule à chaque changement. Ce calcul…</div><ul>
-      <li><span>A</span>compte une tentative</li><li><span>B</span>ne compte jamais comme une tentative</li><li><span>C</span>valide l'exercice</li><li><span>D</span>débloque &gt;</li></ul></div>
-
-    <div class="q"><div class="enonce">Après une soumission ratée, le bouton &gt;…</div><ul>
-      <li><span>A</span>reste grisé jusqu'à la réussite</li><li><span>B</span>disparaît</li><li><span>C</span>relance l'exercice</li><li><span>D</span>est débloqué</li></ul></div>
-
-    <div class="q"><div class="enonce">Parcours de 5 exercices, seuil 0,8, 4 réussis :</div><ul>
-      <li><span>A</span>validé, certificat produit</li><li><span>B</span>non validé</li><li><span>C</span>validé sans certificat</li><li><span>D</span>il faut les 5</li></ul></div>
-
-    <div class="q"><div class="enonce">Le verdict du vérificateur est lisible… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>sur une sortie du composant</li><li><span>B</span>par TrainingManager</li><li><span>C</span>dans le volet de debug de l'auteur</li><li><span>D</span>dans un panneau branché par l'apprenant</li></ul></div>
-
-    <div class="q"><div class="enonce">Réussir deux fois le même exercice donne…</div><ul>
-      <li><span>A</span>deux résultats</li><li><span>B</span>un bonus</li><li><span>C</span>une erreur</li><li><span>D</span>un seul résultat, le plus récent</li></ul></div>
-
-    <div class="q"><div class="enonce">Sans nom saisi dans le lanceur, le certificat porte…</div><ul>
-      <li><span>A</span>« Apprenant »</li><li><span>B</span>le login Windows</li><li><span>C</span>rien</li><li><span>D</span>l'Id du parcours</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 37 · Le plugin Magpie côté apprenant</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">MagpieRepository.ListerParcours(out erreurs)</td><td>parcours et provenance</td><td>MagpieRepository.cs:127</td></tr>
+<tr><td class="c">TrainingManager.Instance.StartParcours(…)</td><td>démarrer une session</td><td>MagpieParcoursLauncher.cs:186</td></tr>
+<tr><td class="c">doc.ScheduleSolution(5, d =&gt; …)</td><td>reconstruire après le calcul</td><td>TrainingManager.cs:113</td></tr>
+<tr><td class="c">UpdateLiveCheck(ok, feedback, hasAnswer)</td><td>aperçu du verdict</td><td>ExerciseCheckerComponent.cs:21</td></tr>
+<tr><td class="c">TrainingManager.Instance.SubmitAnswer()</td><td>une tentative</td><td>GenericChecker.cs:65</td></tr>
+<tr><td class="c">SuccessRate &gt;= _successThreshold</td><td>parcours validé</td><td>TrainingManager.cs:371</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Singleton</dt><dd>Une classe qui n'a qu'une instance, partagée par tous ; ici TrainingManager.Instance.</dd>
+<dt>Provenance</dt><dd>D'où vient un parcours : local, importé ou intégré au .gha.</dd>
+<dt>Scribble</dt><dd>Un texte posé sur le canvas, sans entrée ni sortie.</dd>
+<dt>Tentative</dt><dd>Un clic sur Soumettre avec une réponse branchée.</dd>
+<dt>Seuil de réussite</dt><dd>La part d'exercices réussis exigée pour valider, 0,8 par défaut.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 40</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 37 · Le plugin Magpie côté apprenant</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Cours 37</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · C.</b> Le dossier local est lu en premier.</div>
-    <div><b>02 · A.</b> Sauter un exercice fausserait le certificat.</div>
-    <div><b>03 · D.</b> La liste peut changer d'ordre.</div>
-    <div><b>04 · B.</b> Reporté après le calcul en cours.</div>
-    <div><b>05 · C.</b> Un scribble est du décor.</div>
-    <div><b>06 · A.</b> ObjectCount moins la ligne de base.</div>
-    <div><b>07 · B.</b> Un aperçu, rien de plus.</div>
-    <div><b>08 · D.</b> CanAdvance : au moins une tentative.</div>
-    <div><b>09 · A.</b> 4 / 5 = 0,8, et 0,8 ≥ 0,8.</div>
-    <div><b>10 · B et C.</b> Aucune sortie sur le canvas.</div>
-    <div><b>11 · D.</b> Même clé dans _results.</div>
-    <div><b>12 · B.</b> Environment.UserName par défaut.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis la page 4 et <code>SubmitAnswer</code> page 5. <b>10 à 12</b> : passe au cours 40, « L'éditeur d'exercices ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">MagpieRepository.ListerParcours(out erreurs)</td><td>parcours et provenance</td><td>MagpieRepository.cs:127</td></tr>
-      <tr><td class="c">TrainingManager.Instance.StartParcours(…)</td><td>démarrer une session</td><td>MagpieParcoursLauncher.cs:186</td></tr>
-      <tr><td class="c">doc.ScheduleSolution(5, d =&gt; …)</td><td>reconstruire après le calcul</td><td>TrainingManager.cs:113</td></tr>
-      <tr><td class="c">UpdateLiveCheck(ok, feedback, hasAnswer)</td><td>aperçu du verdict</td><td>ExerciseCheckerComponent.cs:21</td></tr>
-      <tr><td class="c">TrainingManager.Instance.SubmitAnswer()</td><td>une tentative</td><td>GenericChecker.cs:65</td></tr>
-      <tr><td class="c">SuccessRate &gt;= _successThreshold</td><td>parcours validé</td><td>TrainingManager.cs:371</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Singleton</dt><dd>Une classe qui n'a qu'une instance, partagée par tous ; ici TrainingManager.Instance.</dd>
-    <dt>Provenance</dt><dd>D'où vient un parcours : local, importé ou intégré au .gha.</dd>
-    <dt>Scribble</dt><dd>Un texte posé sur le canvas, sans entrée ni sortie.</dd>
-    <dt>Tentative</dt><dd>Un clic sur Soumettre avec une réponse branchée.</dd>
-    <dt>Seuil de réussite</dt><dd>La part d'exercices réussis exigée pour valider, 0,8 par défaut.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 40</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 37 · Le plugin Magpie côté apprenant</div>
-</section>
-
 </body>
 </html>

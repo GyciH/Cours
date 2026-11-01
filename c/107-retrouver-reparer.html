@@ -1,275 +1,248 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>107 · Retrouver et réparer</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-11">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 107</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Retrouver et réparer</h1>
-  <p class="chapeau">Git perd très peu de chose. Un commit qu'on croit effacé reste dans le dépôt des semaines, et un journal local note chaque déplacement de HEAD. Ce cours trie les commandes de réparation selon ce qu'elles touchent : un fichier, l'index, la branche, ou l'histoire partagée.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>103</b> à <b>106</b></span>
-    <span class="pastille">Exemples · <b>Magpie</b>, un dépôt d'essai</span>
-  </div>
-
-  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
-    <svg viewBox="0 0 600 206" width="100%">
-<rect x="20" y="22" width="160" height="52" rx="4" fill="#ECEBFA" stroke="#4F46B8" stroke-width="1.2"/>
-<text x="100" y="44" font-size="9.4" fill="#4F46B8" text-anchor="middle" font-weight="700">le disque</text>
-<text x="100" y="62" font-size="7.4" fill="#2B2F33" text-anchor="middle">les fichiers que tu édites</text>
-<rect x="220" y="22" width="160" height="52" rx="4" fill="#ECEBFA" stroke="#4F46B8" stroke-width="1.2"/>
-<text x="300" y="44" font-size="9.4" fill="#4F46B8" text-anchor="middle" font-weight="700">l'index</text>
-<text x="300" y="62" font-size="7.4" fill="#2B2F33" text-anchor="middle">ce que le prochain commit contiendra</text>
-<rect x="420" y="22" width="160" height="52" rx="4" fill="#ECEBFA" stroke="#4F46B8" stroke-width="1.2"/>
-<text x="500" y="44" font-size="9.4" fill="#4F46B8" text-anchor="middle" font-weight="700">l'histoire</text>
-<text x="500" y="62" font-size="7.4" fill="#2B2F33" text-anchor="middle">les commits, et la branche qui pointe</text>
-<line x1="182" y1="48" x2="218" y2="48" stroke="#6B7378" stroke-width="1.2"/><polygon points="218,48 211.6,50.7 211.6,45.3" fill="#6B7378"/>
-<text x="200" y="40" font-size="7.4" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.4px">add</text>
-<line x1="382" y1="48" x2="418" y2="48" stroke="#6B7378" stroke-width="1.2"/><polygon points="418,48 411.6,50.7 411.6,45.3" fill="#6B7378"/>
-<text x="400" y="40" font-size="7.4" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.4px">commit</text>
-<rect x="20" y="92" width="160" height="14" rx="3" fill="#2E7D32" opacity=".18"/>
-<text x="26" y="102.5" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">git restore f</text>
-<text x="26" y="102.5" font-size="7.4" fill="#2B2F33" text-anchor="start"></text>
-<rect x="220" y="112" width="160" height="14" rx="3" fill="#2E7D32" opacity=".18"/>
-<text x="226" y="122.5" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">git restore --staged f</text>
-<text x="226" y="122.5" font-size="7.4" fill="#2B2F33" text-anchor="start"></text>
-<rect x="420" y="132" width="160" height="14" rx="3" fill="#E65100" opacity=".18"/>
-<text x="426" y="142.5" font-size="7.8" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">git reset --soft X</text>
-<text x="426" y="142.5" font-size="7.4" fill="#2B2F33" text-anchor="start"></text>
-<rect x="220" y="152" width="360" height="14" rx="3" fill="#E65100" opacity=".18"/>
-<text x="226" y="162.5" font-size="7.8" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">git reset X  (mixed)</text>
-<text x="370" y="162.5" font-size="7.4" fill="#2B2F33" text-anchor="start">recule la branche et l'index</text>
-<rect x="20" y="172" width="560" height="14" rx="3" fill="#C62828" opacity=".18"/>
-<text x="26" y="182.5" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">git reset --hard X</text>
-<text x="170" y="182.5" font-size="7.4" fill="#2B2F33" text-anchor="start">recule les trois : le disque est écrasé</text>
-<text x="20" y="202" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">restore agit sur un fichier ; reset déplace la branche. Une barre couvre les zones que la commande réécrit.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 107</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Retrouver et réparer</h1>
+<p class="chapeau">Git perd très peu de chose. Un commit qu'on croit effacé reste dans le dépôt des semaines, et un journal local note chaque déplacement de HEAD. Ce cours trie les commandes de réparation selon ce qu'elles touchent : un fichier, l'index, la branche, ou l'histoire partagée.</p>
+<div class="meta">
+<span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>103</b> à <b>106</b></span>
+<span class="pastille">Exemples · <b>Magpie</b>, un dépôt d'essai</span>
+</div>
+<div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+<svg viewbox="0 0 600 206" width="100%">
+<rect fill="#ECEBFA" height="52" rx="4" stroke="#4F46B8" stroke-width="1.2" width="160" x="20" y="22"></rect>
+<text fill="#4F46B8" font-size="9.4" font-weight="700" text-anchor="middle" x="100" y="44">le disque</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="middle" x="100" y="62">les fichiers que tu édites</text>
+<rect fill="#ECEBFA" height="52" rx="4" stroke="#4F46B8" stroke-width="1.2" width="160" x="220" y="22"></rect>
+<text fill="#4F46B8" font-size="9.4" font-weight="700" text-anchor="middle" x="300" y="44">l'index</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="middle" x="300" y="62">ce que le prochain commit contiendra</text>
+<rect fill="#ECEBFA" height="52" rx="4" stroke="#4F46B8" stroke-width="1.2" width="160" x="420" y="22"></rect>
+<text fill="#4F46B8" font-size="9.4" font-weight="700" text-anchor="middle" x="500" y="44">l'histoire</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="middle" x="500" y="62">les commits, et la branche qui pointe</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="182" x2="218" y1="48" y2="48"></line><polygon fill="#6B7378" points="218,48 211.6,50.7 211.6,45.3"></polygon>
+<text class="mono" fill="#6B7378" font-size="7.4" font-weight="700" style="font-size:7.4px" text-anchor="middle" x="200" y="40">add</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="382" x2="418" y1="48" y2="48"></line><polygon fill="#6B7378" points="418,48 411.6,50.7 411.6,45.3"></polygon>
+<text class="mono" fill="#6B7378" font-size="7.4" font-weight="700" style="font-size:7.4px" text-anchor="middle" x="400" y="40">commit</text>
+<rect fill="#2E7D32" height="14" opacity=".18" rx="3" width="160" x="20" y="92"></rect>
+<text class="mono" fill="#2E7D32" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="26" y="102.5">git restore f</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="start" x="26" y="102.5"></text>
+<rect fill="#2E7D32" height="14" opacity=".18" rx="3" width="160" x="220" y="112"></rect>
+<text class="mono" fill="#2E7D32" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="226" y="122.5">git restore --staged f</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="start" x="226" y="122.5"></text>
+<rect fill="#E65100" height="14" opacity=".18" rx="3" width="160" x="420" y="132"></rect>
+<text class="mono" fill="#E65100" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="426" y="142.5">git reset --soft X</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="start" x="426" y="142.5"></text>
+<rect fill="#E65100" height="14" opacity=".18" rx="3" width="360" x="220" y="152"></rect>
+<text class="mono" fill="#E65100" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="226" y="162.5">git reset X  (mixed)</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="start" x="370" y="162.5">recule la branche et l'index</text>
+<rect fill="#C62828" height="14" opacity=".18" rx="3" width="560" x="20" y="172"></rect>
+<text class="mono" fill="#C62828" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="26" y="182.5">git reset --hard X</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="start" x="170" y="182.5">recule les trois : le disque est écrasé</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="20" y="202">restore agit sur un fichier ; reset déplace la branche. Une barre couvre les zones que la commande réécrit.</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Avant de réparer, se demander deux choses : quelle zone est fausse (disque, index, branche), et l'erreur a-t-elle déjà été partagée.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Un classeur de plans. On peut gommer un brouillon sur la table (restore), retirer une feuille de la pile à classer (restore --staged), arracher les dernières pages du classeur (reset), ou, si des copies circulent déjà, ajouter une page « annule la page 12 » (revert).</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>choisir entre restore, reset et revert ;</li>
-        <li>prévoir l'effet de --soft, --mixed, --hard ;</li>
-        <li>retrouver un commit par le reflog ;</li>
-        <li>savoir ce qui est vraiment perdu.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Avant de réparer, se demander deux choses : quelle zone est fausse (disque, index, branche), et l'erreur a-t-elle déjà été partagée.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Un classeur de plans. On peut gommer un brouillon sur la table (restore), retirer une feuille de la pile à classer (restore --staged), arracher les dernières pages du classeur (reset), ou, si des copies circulent déjà, ajouter une page « annule la page 12 » (revert).</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>choisir entre restore, reset et revert ;</li>
+<li>prévoir l'effet de --soft, --mixed, --hard ;</li>
+<li>retrouver un commit par le reflog ;</li>
+<li>savoir ce qui est vraiment perdu.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À retenir</span>
     Ce qui a été commité se retrouve presque toujours. Ce qui n'a jamais été ajouté par <code>git add</code> ne se retrouve jamais : avant une commande destructrice, un commit provisoire ou <code>git stash</code> coûte une seconde.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 107 · Retrouver et réparer</div>
+<div class="folio">1</div>
+<div class="pied">Cours 107 · Retrouver et réparer</div>
 </section>
-
 <!-- ============ PAGE 2 · RESET ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 107</b></div>
-  <p class="rubrique">Schéma 1 · Reculer une branche</p>
-  <h2>reset, en trois profondeurs</h2>
-  <p style="max-width:165mm"><code>git reset X</code> déplace la branche courante sur le commit X. Le mode décide jusqu'où descend le recul : la branche seule, la branche et l'index, ou les trois zones. Les commits quittés ne sont pas détruits ; ils ne sont plus pointés par aucune branche.</p>
-
-  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#4F46B8" text-anchor="start" font-weight="700">Quatre commits c1 à c4 (Marge = 1 à 4), puis on recule de deux : git reset … HEAD~2 (dépôt d'essai, mesuré)</text>
-<text x="30" y="44" font-size="7.8" fill="#6B7378" text-anchor="start" font-weight="700">mode</text>
-<text x="180" y="44" font-size="7.8" fill="#6B7378" text-anchor="start" font-weight="700">branche</text>
-<text x="300" y="44" font-size="7.8" fill="#6B7378" text-anchor="start" font-weight="700">git status</text>
-<text x="420" y="44" font-size="7.8" fill="#6B7378" text-anchor="start" font-weight="700">M.cs sur le disque</text>
-<rect x="16" y="52" width="568" height="24" rx="3" fill="#ECEBFA"/>
-<text x="30" y="68" font-size="8.8" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:8.8px">--soft</text>
-<text x="180" y="68" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px">3ea0b92 c2</text>
-<text x="300" y="68" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px">M  M.cs  (prêt)</text>
-<text x="420" y="68" font-size="8.4" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">Marge = 4</text>
-<rect x="16" y="80" width="568" height="24" rx="3" fill="#fff"/>
-<text x="30" y="96" font-size="8.8" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:8.8px">--mixed</text>
-<text x="180" y="96" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px">3ea0b92 c2</text>
-<text x="300" y="96" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px"> M M.cs  (non ajouté)</text>
-<text x="420" y="96" font-size="8.4" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">Marge = 4</text>
-<rect x="16" y="108" width="568" height="24" rx="3" fill="#ECEBFA"/>
-<text x="30" y="124" font-size="8.8" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:8.8px">--hard</text>
-<text x="180" y="124" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px">3ea0b92 c2</text>
-<text x="300" y="124" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px">propre</text>
-<text x="420" y="124" font-size="8.4" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">Marge = 2</text>
-<text x="16" y="160" font-size="7.8" fill="#2B2F33" text-anchor="start">Les trois reculent la branche sur c2. --soft et --mixed gardent le travail de c3 et c4 dans les fichiers : rien n'est perdu.</text>
-<text x="16" y="176" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">--hard remet aussi le disque : c3 et c4 ne sont plus visibles nulle part, sauf dans le journal (schéma 2).</text>
-<text x="16" y="194" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">--soft sert à refaire les derniers commits en un seul : on recule, puis on recommite tout l'index.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 107</b></div>
+<p class="rubrique">Schéma 1 · Reculer une branche</p>
+<h2>reset, en trois profondeurs</h2>
+<p style="max-width:165mm"><code>git reset X</code> déplace la branche courante sur le commit X. Le mode décide jusqu'où descend le recul : la branche seule, la branche et l'index, ou les trois zones. Les commits quittés ne sont pas détruits ; ils ne sont plus pointés par aucune branche.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 206" width="100%">
+<rect fill="#EFE9E1" height="206" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">Quatre commits c1 à c4 (Marge = 1 à 4), puis on recule de deux : git reset … HEAD~2 (dépôt d'essai, mesuré)</text>
+<text fill="#6B7378" font-size="7.8" font-weight="700" text-anchor="start" x="30" y="44">mode</text>
+<text fill="#6B7378" font-size="7.8" font-weight="700" text-anchor="start" x="180" y="44">branche</text>
+<text fill="#6B7378" font-size="7.8" font-weight="700" text-anchor="start" x="300" y="44">git status</text>
+<text fill="#6B7378" font-size="7.8" font-weight="700" text-anchor="start" x="420" y="44">M.cs sur le disque</text>
+<rect fill="#ECEBFA" height="24" rx="3" width="568" x="16" y="52"></rect>
+<text class="mono" fill="#E65100" font-size="8.8" font-weight="700" style="font-size:8.8px" text-anchor="start" x="30" y="68">--soft</text>
+<text class="mono" fill="#2B2F33" font-size="8.2" style="font-size:8.2px" text-anchor="start" x="180" y="68">3ea0b92 c2</text>
+<text class="mono" fill="#2B2F33" font-size="8.2" style="font-size:8.2px" text-anchor="start" x="300" y="68">M  M.cs  (prêt)</text>
+<text class="mono" fill="#E65100" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="420" y="68">Marge = 4</text>
+<rect fill="#fff" height="24" rx="3" width="568" x="16" y="80"></rect>
+<text class="mono" fill="#E65100" font-size="8.8" font-weight="700" style="font-size:8.8px" text-anchor="start" x="30" y="96">--mixed</text>
+<text class="mono" fill="#2B2F33" font-size="8.2" style="font-size:8.2px" text-anchor="start" x="180" y="96">3ea0b92 c2</text>
+<text class="mono" fill="#2B2F33" font-size="8.2" style="font-size:8.2px" text-anchor="start" x="300" y="96"> M M.cs  (non ajouté)</text>
+<text class="mono" fill="#E65100" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="420" y="96">Marge = 4</text>
+<rect fill="#ECEBFA" height="24" rx="3" width="568" x="16" y="108"></rect>
+<text class="mono" fill="#C62828" font-size="8.8" font-weight="700" style="font-size:8.8px" text-anchor="start" x="30" y="124">--hard</text>
+<text class="mono" fill="#2B2F33" font-size="8.2" style="font-size:8.2px" text-anchor="start" x="180" y="124">3ea0b92 c2</text>
+<text class="mono" fill="#2B2F33" font-size="8.2" style="font-size:8.2px" text-anchor="start" x="300" y="124">propre</text>
+<text class="mono" fill="#C62828" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="420" y="124">Marge = 2</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="16" y="160">Les trois reculent la branche sur c2. --soft et --mixed gardent le travail de c3 et c4 dans les fichiers : rien n'est perdu.</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="176">--hard remet aussi le disque : c3 et c4 ne sont plus visibles nulle part, sauf dans le journal (schéma 2).</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="16" y="194">--soft sert à refaire les derniers commits en un seul : on recule, puis on recommite tout l'index.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Git, les usages courants</span>git reset --soft HEAD~3    # refaire les trois derniers commits en un seul
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Git, les usages courants</span>git reset --soft HEAD~3    # refaire les trois derniers commits en un seul
 git reset HEAD~1           # défaire le dernier commit, garder les fichiers
 git reset --hard origin/main   # jeter tout le local, repartir du distant
 git restore --staged f.cs  # retirer f.cs du prochain commit</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>restore, pour un fichier</h3>
-      <p><code>git restore f</code> recopie l'index sur le disque (mesuré : la modification Marge = 55 a disparu). <code>--staged</code> recopie HEAD dans l'index, le disque garde la modification (mesuré : <code> M M.cs</code>, Marge = 56).</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>L'ancien nom</h3>
-      <p>Avant Git 2.23, tout passait par <code>git checkout</code> et <code>git reset</code> : <code>checkout -- f</code> pour un fichier, <code>reset HEAD f</code> pour l'index. Ils marchent encore ; <code>restore</code> et <code>switch</code> séparent les deux métiers.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>restore, pour un fichier</h3>
+<p><code>git restore f</code> recopie l'index sur le disque (mesuré : la modification Marge = 55 a disparu). <code>--staged</code> recopie HEAD dans l'index, le disque garde la modification (mesuré : <code> M M.cs</code>, Marge = 56).</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>L'ancien nom</h3>
+<p>Avant Git 2.23, tout passait par <code>git checkout</code> et <code>git reset</code> : <code>checkout -- f</code> pour un fichier, <code>reset HEAD f</code> pour l'index. Ils marchent encore ; <code>restore</code> et <code>switch</code> séparent les deux métiers.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Utiliser <code>reset --hard</code> pour « annuler mes modifications » alors qu'on voulait garder un fichier. Il remet tout le disque, sans demander. <code>git restore f</code> limite le dégât au fichier nommé.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 107 · Retrouver et réparer</div>
+<div class="folio">2</div>
+<div class="pied">Cours 107 · Retrouver et réparer</div>
 </section>
-
 <!-- ============ PAGE 3 · LE REFLOG ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 107</b></div>
-  <p class="rubrique">Schéma 2 · Le journal</p>
-  <h2>Retrouver ce qu'on croit perdu</h2>
-  <p style="max-width:165mm">Le <b>reflog</b> est un journal local : à chaque fois que HEAD ou une branche bouge (commit, reset, rebase, switch), Git note l'ancienne et la nouvelle position. Un commit sorti d'une branche reste donc accessible par son rang dans ce journal.</p>
-
-  <svg viewBox="0 0 600 222" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="222" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">git reflog après le reset --hard : chaque position de HEAD, la plus récente en haut (mesuré)</text>
-<rect x="16" y="34" width="330" height="15" rx="2" fill="#fff" stroke="#E6DED2"/>
-<text x="24" y="45" font-size="7.8" fill="#6B7378" text-anchor="start" class="mono" style="font-size:7.8px">3ea0b92 HEAD@{0}: reset: moving to HEAD</text>
-<rect x="16" y="52" width="330" height="15" rx="2" fill="#fff" stroke="#E6DED2"/>
-<text x="24" y="63" font-size="7.8" fill="#6B7378" text-anchor="start" class="mono" style="font-size:7.8px">3ea0b92 HEAD@{1}: reset: moving to HEAD</text>
-<rect x="16" y="70" width="330" height="15" rx="2" fill="#fff" stroke="#E6DED2"/>
-<text x="24" y="81" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">3ea0b92 HEAD@{2}: reset: moving to HEAD~2</text>
-<rect x="16" y="88" width="330" height="15" rx="2" fill="#ECEBFA" stroke="#E6DED2"/>
-<text x="24" y="99" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">2a60745 HEAD@{3}: commit: c4</text>
-<rect x="16" y="106" width="330" height="15" rx="2" fill="#fff" stroke="#E6DED2"/>
-<text x="24" y="117" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">e7bdc17 HEAD@{4}: commit: c3</text>
-<text x="362" y="50" font-size="8" fill="#2B2F33" text-anchor="start">c4 n'est plus sur la branche,</text>
-<text x="362" y="64" font-size="8" fill="#2B2F33" text-anchor="start">mais son commit existe encore :</text>
-<text x="362" y="84" font-size="8.2" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8.2px">git reset --hard HEAD@{3}</text>
-<text x="362" y="100" font-size="8" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">→ 2a60745 c4, Marge = 4</text>
-<text x="362" y="118" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">HEAD@{2} aurait redonné c2 :</text>
-<text x="362" y="130" font-size="7.6" fill="#C62828" text-anchor="start">chaque reset ajoute une ligne.</text>
-<line x1="16" y1="146" x2="584" y2="146" stroke="#CFC6B8"/>
-<text x="16" y="164" font-size="8.2" fill="#4F46B8" text-anchor="start" font-weight="700">Et le travail jamais commité ? Mesuré après un reset --hard :</text>
-<text x="30" y="182" font-size="8" fill="#C62828" text-anchor="start" font-weight="700">jamais ajouté (Marge = 99) : perdu, aucune trace.</text>
-<text x="30" y="198" font-size="8" fill="#2E7D32" text-anchor="start" font-weight="700">ajouté par git add (Marge = 77) : git fsck --lost-found retrouve un « dangling blob » 032015d, qui contient Marge = 77.</text>
-<text x="16" y="216" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Le journal ne suit que les commits et les positions de HEAD ; l'index garde aussi une copie de ce qui a été ajouté.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 107</b></div>
+<p class="rubrique">Schéma 2 · Le journal</p>
+<h2>Retrouver ce qu'on croit perdu</h2>
+<p style="max-width:165mm">Le <b>reflog</b> est un journal local : à chaque fois que HEAD ou une branche bouge (commit, reset, rebase, switch), Git note l'ancienne et la nouvelle position. Un commit sorti d'une branche reste donc accessible par son rang dans ce journal.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 222" width="100%">
+<rect fill="#EFE9E1" height="222" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">git reflog après le reset --hard : chaque position de HEAD, la plus récente en haut (mesuré)</text>
+<rect fill="#fff" height="15" rx="2" stroke="#E6DED2" width="330" x="16" y="34"></rect>
+<text class="mono" fill="#6B7378" font-size="7.8" style="font-size:7.8px" text-anchor="start" x="24" y="45">3ea0b92 HEAD@{0}: reset: moving to HEAD</text>
+<rect fill="#fff" height="15" rx="2" stroke="#E6DED2" width="330" x="16" y="52"></rect>
+<text class="mono" fill="#6B7378" font-size="7.8" style="font-size:7.8px" text-anchor="start" x="24" y="63">3ea0b92 HEAD@{1}: reset: moving to HEAD</text>
+<rect fill="#fff" height="15" rx="2" stroke="#E6DED2" width="330" x="16" y="70"></rect>
+<text class="mono" fill="#C62828" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="24" y="81">3ea0b92 HEAD@{2}: reset: moving to HEAD~2</text>
+<rect fill="#ECEBFA" height="15" rx="2" stroke="#E6DED2" width="330" x="16" y="88"></rect>
+<text class="mono" fill="#2E7D32" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="24" y="99">2a60745 HEAD@{3}: commit: c4</text>
+<rect fill="#fff" height="15" rx="2" stroke="#E6DED2" width="330" x="16" y="106"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="24" y="117">e7bdc17 HEAD@{4}: commit: c3</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="362" y="50">c4 n'est plus sur la branche,</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="362" y="64">mais son commit existe encore :</text>
+<text class="mono" fill="#2E7D32" font-size="8.2" font-weight="700" style="font-size:8.2px" text-anchor="start" x="362" y="84">git reset --hard HEAD@{3}</text>
+<text class="mono" fill="#2E7D32" font-size="8" font-weight="700" style="font-size:8px" text-anchor="start" x="362" y="100">→ 2a60745 c4, Marge = 4</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="362" y="118">HEAD@{2} aurait redonné c2 :</text>
+<text fill="#C62828" font-size="7.6" text-anchor="start" x="362" y="130">chaque reset ajoute une ligne.</text>
+<line stroke="#CFC6B8" x1="16" x2="584" y1="146" y2="146"></line>
+<text fill="#4F46B8" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="164">Et le travail jamais commité ? Mesuré après un reset --hard :</text>
+<text fill="#C62828" font-size="8" font-weight="700" text-anchor="start" x="30" y="182">jamais ajouté (Marge = 99) : perdu, aucune trace.</text>
+<text fill="#2E7D32" font-size="8" font-weight="700" text-anchor="start" x="30" y="198">ajouté par git add (Marge = 77) : git fsck --lost-found retrouve un « dangling blob » 032015d, qui contient Marge = 77.</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="16" y="216">Le journal ne suit que les commits et les positions de HEAD ; l'index garde aussi une copie de ce qui a été ajouté.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Git, récupérer</span>git reflog                     # trouver la ligne d'avant l'erreur
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Git, récupérer</span>git reflog                     # trouver la ligne d'avant l'erreur
 git branch sauvetage HEAD@{3}  # poser une branche dessus, sans rien écraser
 git reflog show f              # le journal d'une branche précise
 git fsck --lost-found          # les blobs ajoutés puis abandonnés</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Local, et à durée limitée</h3>
-      <p>Le reflog ne se pousse pas et ne se clone pas (mesuré : un clone neuf de SnapSet en a 3 lignes). Selon la documentation, Git efface par défaut les entrées après 90 jours, 30 pour les commits plus atteignables.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Poser une branche d'abord</h3>
-      <p>Plutôt que <code>reset --hard</code> sur une entrée du journal, <code>git branch sauvetage &lt;id&gt;</code> : le commit retrouvé est protégé, et on peut comparer avant de choisir.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Local, et à durée limitée</h3>
+<p>Le reflog ne se pousse pas et ne se clone pas (mesuré : un clone neuf de SnapSet en a 3 lignes). Selon la documentation, Git efface par défaut les entrées après 90 jours, 30 pour les commits plus atteignables.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Poser une branche d'abord</h3>
+<p>Plutôt que <code>reset --hard</code> sur une entrée du journal, <code>git branch sauvetage &lt;id&gt;</code> : le commit retrouvé est protégé, et on peut comparer avant de choisir.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Compter les rangs du reflog avant d'avoir relu la liste. Chaque reset, y compris un essai raté, ajoute une ligne en tête et décale tous les numéros : HEAD@{2} n'est plus ce qu'il était une commande plus tôt.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 107 · Retrouver et réparer</div>
+<div class="folio">3</div>
+<div class="pied">Cours 107 · Retrouver et réparer</div>
 </section>
-
 <!-- ============ PAGE 4 · REVERT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 107</b></div>
-  <p class="rubrique">Schéma 3 · Défaire en public</p>
-  <h2>revert : un commit qui en annule un autre</h2>
-  <p style="max-width:165mm">Une fois un commit poussé, d'autres l'ont peut-être déjà. Le retirer par reset réécrit l'histoire sous leurs pieds (cours 105). <code>git revert</code> calcule l'inverse du commit et l'enregistre comme un nouveau commit : l'histoire s'allonge, elle n'est jamais réécrite.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">git revert : défaire par un nouveau commit, sans réécrire l'histoire (dépôt d'essai, mesuré)</text>
-<rect x="30" y="36" width="130" height="36" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
-<text x="95" y="52" font-size="8.4" fill="#6B7378" text-anchor="middle" font-weight="700">c3</text>
-<text x="95" y="65" font-size="7.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.4px">e7bdc17</text>
-<rect x="180" y="36" width="130" height="36" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
-<text x="245" y="52" font-size="8.4" fill="#6B7378" text-anchor="middle" font-weight="700">c4</text>
-<text x="245" y="65" font-size="7.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.4px">2a60745</text>
-<line x1="178" y1="54" x2="162" y2="54" stroke="#6B7378" stroke-width="1.1"/><polygon points="162,54 168.4,51.3 168.4,56.7" fill="#6B7378"/>
-<rect x="330" y="36" width="130" height="36" rx="4" fill="#E8F5E9" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="395" y="52" font-size="8.4" fill="#2E7D32" text-anchor="middle" font-weight="700">Revert "c4"</text>
-<text x="395" y="65" font-size="7.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.4px">11aeb34</text>
-<line x1="328" y1="54" x2="312" y2="54" stroke="#6B7378" stroke-width="1.1"/><polygon points="312,54 318.4,51.3 318.4,56.7" fill="#6B7378"/>
-<text x="490" y="52" font-size="8.2" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8.2px">M.cs : Marge = 3</text>
-<text x="490" y="66" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">c4 reste dans l'histoire</text>
-<rect x="16" y="86" width="568" height="22" rx="3" fill="#ECEBFA"/>
-<text x="26" y="101" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">git revert HEAD</text>
-<text x="236" y="101" font-size="7.8" fill="#2B2F33" text-anchor="start">un commit inverse ; message « This reverts commit 2a60745… »</text>
-<rect x="16" y="112" width="568" height="22" rx="3" fill="#fff"/>
-<text x="26" y="127" font-size="7.8" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">git revert fd062b2  (c1, ancien)</text>
-<text x="236" y="127" font-size="7.8" fill="#2B2F33" text-anchor="start">conflit UD : c1 créait M.cs, que c2 à c4 ont changé ensuite</text>
-<rect x="16" y="138" width="568" height="22" rx="3" fill="#ECEBFA"/>
-<text x="26" y="153" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">git revert d'une fusion</text>
-<text x="236" y="153" font-size="7.8" fill="#2B2F33" text-anchor="start">refusé : « is a merge but no -m option was given »</text>
-<rect x="16" y="164" width="568" height="22" rx="3" fill="#fff"/>
-<text x="26" y="179" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">git revert -m 1 75372b2</text>
-<text x="236" y="179" font-size="7.8" fill="#2B2F33" text-anchor="start">accepté : défait ce que la branche a apporté (F.cs supprimé)</text>
-<text x="16" y="204" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">reset réécrit la branche (à garder pour ce qui n'est pas poussé) ; revert ajoute un commit (sûr sur une branche partagée).</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 107</b></div>
+<p class="rubrique">Schéma 3 · Défaire en public</p>
+<h2>revert : un commit qui en annule un autre</h2>
+<p style="max-width:165mm">Une fois un commit poussé, d'autres l'ont peut-être déjà. Le retirer par reset réécrit l'histoire sous leurs pieds (cours 105). <code>git revert</code> calcule l'inverse du commit et l'enregistre comme un nouveau commit : l'histoire s'allonge, elle n'est jamais réécrite.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">git revert : défaire par un nouveau commit, sans réécrire l'histoire (dépôt d'essai, mesuré)</text>
+<rect fill="#fff" height="36" rx="4" stroke="#6B7378" stroke-width="1.2" width="130" x="30" y="36"></rect>
+<text fill="#6B7378" font-size="8.4" font-weight="700" text-anchor="middle" x="95" y="52">c3</text>
+<text class="mono" fill="#2B2F33" font-size="7.4" style="font-size:7.4px" text-anchor="middle" x="95" y="65">e7bdc17</text>
+<rect fill="#fff" height="36" rx="4" stroke="#6B7378" stroke-width="1.2" width="130" x="180" y="36"></rect>
+<text fill="#6B7378" font-size="8.4" font-weight="700" text-anchor="middle" x="245" y="52">c4</text>
+<text class="mono" fill="#2B2F33" font-size="7.4" style="font-size:7.4px" text-anchor="middle" x="245" y="65">2a60745</text>
+<line stroke="#6B7378" stroke-width="1.1" x1="178" x2="162" y1="54" y2="54"></line><polygon fill="#6B7378" points="162,54 168.4,51.3 168.4,56.7"></polygon>
+<rect fill="#E8F5E9" height="36" rx="4" stroke="#2E7D32" stroke-width="1.2" width="130" x="330" y="36"></rect>
+<text fill="#2E7D32" font-size="8.4" font-weight="700" text-anchor="middle" x="395" y="52">Revert "c4"</text>
+<text class="mono" fill="#2B2F33" font-size="7.4" style="font-size:7.4px" text-anchor="middle" x="395" y="65">11aeb34</text>
+<line stroke="#6B7378" stroke-width="1.1" x1="328" x2="312" y1="54" y2="54"></line><polygon fill="#6B7378" points="312,54 318.4,51.3 318.4,56.7"></polygon>
+<text class="mono" fill="#2E7D32" font-size="8.2" font-weight="700" style="font-size:8.2px" text-anchor="start" x="490" y="52">M.cs : Marge = 3</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="490" y="66">c4 reste dans l'histoire</text>
+<rect fill="#ECEBFA" height="22" rx="3" width="568" x="16" y="86"></rect>
+<text class="mono" fill="#2E7D32" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="26" y="101">git revert HEAD</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="236" y="101">un commit inverse ; message « This reverts commit 2a60745… »</text>
+<rect fill="#fff" height="22" rx="3" width="568" x="16" y="112"></rect>
+<text class="mono" fill="#E65100" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="26" y="127">git revert fd062b2  (c1, ancien)</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="236" y="127">conflit UD : c1 créait M.cs, que c2 à c4 ont changé ensuite</text>
+<rect fill="#ECEBFA" height="22" rx="3" width="568" x="16" y="138"></rect>
+<text class="mono" fill="#C62828" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="26" y="153">git revert d'une fusion</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="236" y="153">refusé : « is a merge but no -m option was given »</text>
+<rect fill="#fff" height="22" rx="3" width="568" x="16" y="164"></rect>
+<text class="mono" fill="#2E7D32" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="26" y="179">git revert -m 1 75372b2</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="236" y="179">accepté : défait ce que la branche a apporté (F.cs supprimé)</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="204">reset réécrit la branche (à garder pour ce qui n'est pas poussé) ; revert ajoute un commit (sûr sur une branche partagée).</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Git, annuler en public</span>git revert 2a60745          # un commit inverse, message prérempli
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Git, annuler en public</span>git revert 2a60745          # un commit inverse, message prérempli
 git revert -m 1 75372b2     # une fusion : garder le côté du parent 1
 git revert --no-commit A B  # plusieurs, en un seul commit
 git revert --abort          # en cas de conflit, tout annuler</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Plus le commit est vieux…</h3>
-      <p>…plus son inverse a de chances de buter sur ce qui a suivi. Mesuré : annuler c1, qui créait M.cs, donne un conflit, puisque c2 à c4 ont changé ce fichier ensuite. Le conflit se résout comme au cours 106.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Revert ou correction ?</h3>
-      <p>Un revert retire tout le commit. S'il apportait aussi du bon, mieux vaut un commit correctif qui ne touche que le défaut : c'est ce qu'a fait Magpie le 7 septembre (page 5).</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Plus le commit est vieux…</h3>
+<p>…plus son inverse a de chances de buter sur ce qui a suivi. Mesuré : annuler c1, qui créait M.cs, donne un conflit, puisque c2 à c4 ont changé ce fichier ensuite. Le conflit se résout comme au cours 106.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Revert ou correction ?</h3>
+<p>Un revert retire tout le commit. S'il apportait aussi du bon, mieux vaut un commit correctif qui ne touche que le défaut : c'est ce qu'a fait Magpie le 7 septembre (page 5).</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Annuler une fusion par revert, puis refusionner la même branche plus tard. Git voit ses commits comme déjà intégrés et ne les rejoue pas : il faut d'abord annuler le revert lui-même (<code>git revert</code> du commit « Revert … »).
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 107 · Retrouver et réparer</div>
+<div class="folio">4</div>
+<div class="pied">Cours 107 · Retrouver et réparer</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 107</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>Une réparation en avant, dans Magpie</h2>
-  <p style="max-width:165mm">Le 7 septembre, un commit direct sur master a laissé le plugin sans compiler. Il a été réparé par un commit correctif quelques heures plus tard, sans revert : le commit fautif apportait aussi un checker neuf.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 107</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>Une réparation en avant, dans Magpie</h2>
+<p style="max-width:165mm">Le 7 septembre, un commit direct sur master a laissé le plugin sans compiler. Il a été réparé par un commit correctif quelques heures plus tard, sans revert : le commit fautif apportait aussi un checker neuf.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">git log --first-parent --format="%h %ad %s" --date=iso   (magpie)</span></div>
 <div class="l k1"><span class="n">—</span>6fbb234 2026-09-07 10:07 Implémentation du checker…<span class="rep r1">1</span></div>
@@ -281,137 +254,55 @@ git revert --abort          # en cas de conflit, tout annuler</div>
 <div class="l"><span class="cm">ls .github/workflows   (magpie)</span></div>
 <div class="l k5"><span class="n">—</span>No such file or directory<span class="rep r5">5</span></div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>Le fautif</b>13 fichiers, +2 235.</li>
-      <li><span class="rep r2">2</span><b>Le correctif</b>3 h 44 après.</li>
-      <li><span class="rep r3">3</span><b>La cause</b>Dite dans le message.</li>
-      <li><span class="rep r4">4</span><b>Jamais de revert</b>On répare en avant.</li>
-      <li><span class="rep r5">5</span><b>Pas de CI</b>Rien ne compile.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À surveiller · master peut cesser de compiler sans que rien ne le signale</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>Le fautif</b>13 fichiers, +2 235.</li>
+<li><span class="rep r2">2</span><b>Le correctif</b>3 h 44 après.</li>
+<li><span class="rep r3">3</span><b>La cause</b>Dite dans le message.</li>
+<li><span class="rep r4">4</span><b>Jamais de revert</b>On répare en avant.</li>
+<li><span class="rep r5">5</span><b>Pas de CI</b>Rien ne compile.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À surveiller · master peut cesser de compiler sans que rien ne le signale</span>
     6fbb234 et ac278b5 sont deux commits directs sur master, sans pull request (un seul parent chacun) ; Magpie n'a pas de dossier .github/workflows. Pendant 3 h 44, un collaborateur qui tirait master récupérait un plugin qui ne compilait pas. Le correctif est exemplaire (il nomme le commit fautif), mais la détection reposait sur la vigilance. Déduit : une compilation automatique à chaque push, ou au moins avant de pousser, aurait arrêté 6fbb234. Relevé sans rien modifier.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 107 · Retrouver et réparer</div>
+<div class="folio">5</div>
+<div class="pied">Cours 107 · Retrouver et réparer</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 107</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 107</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">git reset --soft HEAD~2…</div><ul>
-      <li><span>A</span>crée un commit</li><li><span>B</span>recule la branche, garde index et disque</li><li><span>C</span>supprime les deux commits du dépôt</li><li><span>D</span>efface le disque</li></ul></div>
 
-    <div class="q"><div class="enonce">Après reset --hard HEAD~2 dans l'essai, M.cs contient…</div><ul>
-      <li><span>A</span>Marge = 4</li><li><span>B</span>des marqueurs de conflit</li><li><span>C</span>Marge = 2</li><li><span>D</span>Marge = 3</li></ul></div>
 
-    <div class="q"><div class="enonce">git restore f…</div><ul>
-      <li><span>A</span>remet le fichier du disque comme dans l'index</li><li><span>B</span>recule la branche</li><li><span>C</span>pousse le fichier</li><li><span>D</span>crée un commit inverse</li></ul></div>
 
-    <div class="q"><div class="enonce">git restore --staged f…</div><ul>
-      <li><span>A</span>commite f</li><li><span>B</span>efface f du disque</li><li><span>C</span>retire f de l'index, garde le disque</li><li><span>D</span>supprime f de l'histoire</li></ul></div>
-
-    <div class="q"><div class="enonce">Le reflog…</div><ul>
-      <li><span>A</span>est local, jamais poussé</li><li><span>B</span>est copié par git clone</li><li><span>C</span>ne garde que les fusions</li><li><span>D</span>est partagé par le distant</li></ul></div>
-
-    <div class="q"><div class="enonce">Dans l'essai, c4 se retrouve par…</div><ul>
-      <li><span>A</span>HEAD@{3}</li><li><span>B</span>HEAD~2</li><li><span>C</span>HEAD@{2}</li><li><span>D</span>HEAD@{0}</li></ul></div>
-
-    <div class="q"><div class="enonce">Après reset --hard, un changement jamais ajouté…</div><ul>
-      <li><span>A</span>est dans le reflog</li><li><span>B</span>est dans git fsck</li><li><span>C</span>est perdu</li><li><span>D</span>est dans le distant</li></ul></div>
-
-    <div class="q"><div class="enonce">Un changement ajouté par git add puis écrasé… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>laisse un blob orphelin</li><li><span>B</span>se retrouve par git fsck --lost-found</li><li><span>C</span>est dans le reflog</li><li><span>D</span>est perdu à coup sûr</li></ul></div>
-
-    <div class="q"><div class="enonce">Pour annuler un commit déjà poussé et partagé…</div><ul>
-      <li><span>A</span>git restore</li><li><span>B</span>git revert</li><li><span>C</span>git reflog</li><li><span>D</span>git reset --hard</li></ul></div>
-
-    <div class="q"><div class="enonce">git revert d'une fusion sans option…</div><ul>
-      <li><span>A</span>réussit toujours</li><li><span>B</span>est refusé : il faut -m</li><li><span>C</span>annule les deux branches</li><li><span>D</span>supprime la fusion</li></ul></div>
-
-    <div class="q"><div class="enonce">Magpie a réparé 6fbb234…</div><ul>
-      <li><span>A</span>par git revert</li><li><span>B</span>le lendemain</li><li><span>C</span>par reset et push forcé</li><li><span>D</span>par un commit correctif, 3 h 44 après</li></ul></div>
-
-    <div class="q"><div class="enonce">Ce qui aurait arrêté 6fbb234 avant master…</div><ul>
-      <li><span>A</span>git fsck</li><li><span>B</span>le reflog</li><li><span>C</span>un .gitattributes</li><li><span>D</span>une compilation automatique avant ou au push</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 107 · Retrouver et réparer</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">git restore f</td><td>jeter la modification d'un fichier</td><td>page 2</td></tr>
+<tr><td class="c">git restore --staged f</td><td>retirer f du prochain commit</td><td>page 2</td></tr>
+<tr><td class="c">git reset --soft / --hard X</td><td>reculer la branche, plus ou moins loin</td><td>schéma 1, page 2</td></tr>
+<tr><td class="c">git reflog</td><td>le journal des positions de HEAD</td><td>schéma 2, page 3</td></tr>
+<tr><td class="c">git fsck --lost-found</td><td>retrouver un ajout abandonné</td><td>page 3</td></tr>
+<tr><td class="c">git revert X</td><td>annuler par un nouveau commit</td><td>schéma 3, page 4</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Reflog</dt><dd>Le journal local des positions successives de HEAD et des branches.</dd>
+<dt>Reset</dt><dd>Le déplacement d'une branche, avec ou sans l'index et le disque.</dd>
+<dt>Revert</dt><dd>Un commit qui applique l'inverse d'un autre.</dd>
+<dt>Blob orphelin</dt><dd>Un contenu stocké que plus rien ne désigne (« dangling »).</dd>
+<dt>Réparer en avant</dt><dd>Corriger par un nouveau commit plutôt que d'effacer.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 108</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 107 · Retrouver et réparer</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 107</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · B.</b> La branche seule.</div>
-    <div><b>02 · C.</b> Le disque suit c2.</div>
-    <div><b>03 · A.</b> L'index fait foi.</div>
-    <div><b>04 · C.</b> Le disque reste.</div>
-    <div><b>05 · A.</b> 3 lignes au clone.</div>
-    <div><b>06 · A.</b> La ligne « commit: c4 ».</div>
-    <div><b>07 · C.</b> Aucune trace.</div>
-    <div><b>08 · A et B.</b> Blob 032015d.</div>
-    <div><b>09 · B.</b> L'histoire s'allonge.</div>
-    <div><b>10 · B.</b> Quel parent garder.</div>
-    <div><b>11 · D.</b> ac278b5, sans revert.</div>
-    <div><b>12 · D.</b> Pas de CI dans Magpie.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 108, « Chercher dans l'histoire ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">git restore f</td><td>jeter la modification d'un fichier</td><td>page 2</td></tr>
-      <tr><td class="c">git restore --staged f</td><td>retirer f du prochain commit</td><td>page 2</td></tr>
-      <tr><td class="c">git reset --soft / --hard X</td><td>reculer la branche, plus ou moins loin</td><td>schéma 1, page 2</td></tr>
-      <tr><td class="c">git reflog</td><td>le journal des positions de HEAD</td><td>schéma 2, page 3</td></tr>
-      <tr><td class="c">git fsck --lost-found</td><td>retrouver un ajout abandonné</td><td>page 3</td></tr>
-      <tr><td class="c">git revert X</td><td>annuler par un nouveau commit</td><td>schéma 3, page 4</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Reflog</dt><dd>Le journal local des positions successives de HEAD et des branches.</dd>
-    <dt>Reset</dt><dd>Le déplacement d'une branche, avec ou sans l'index et le disque.</dd>
-    <dt>Revert</dt><dd>Un commit qui applique l'inverse d'un autre.</dd>
-    <dt>Blob orphelin</dt><dd>Un contenu stocké que plus rien ne désigne (« dangling »).</dd>
-    <dt>Réparer en avant</dt><dd>Corriger par un nouveau commit plutôt que d'effacer.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 108</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 107 · Retrouver et réparer</div>
-</section>
-
 </body>
 </html>

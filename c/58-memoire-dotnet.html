@@ -1,273 +1,246 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>58 · La mémoire en .NET</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-1">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 58</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>La mémoire en .NET</h1>
-  <p class="chapeau">En C#, on ne libère presque jamais la mémoire à la main : le <b>ramasse-miettes</b> (GC) s'en charge. Mais il ne s'occupe que de la mémoire. Les pinceaux GDI, les polices, les fichiers ouverts se rendent avec <b>Dispose</b>, et un objet qu'on désigne encore par erreur ne part jamais.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>55 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>01</b> et <b>19</b></span>
-    <span class="pastille">Exemples · <b>PeintreFeuilles</b>, <b>MesureurGdi</b>, <b>SaisieMultiligne</b>, <b>ServiceGeste</b></span>
-  </div>
-
-  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
-    <svg viewBox="0 0 600 190" width="100%">
-<text x="80" y="16" font-size="9.4" fill="#6B2C7A" text-anchor="middle" font-weight="700">La pile</text>
-<text x="80" y="28" font-size="7.4" fill="#6B7378" text-anchor="middle">une case par appel, vidée au retour</text>
-<rect x="10" y="36" width="140" height="130" rx="4" fill="#fff" stroke="#6B2C7A" stroke-width="1.2"/>
-<rect x="20" y="46" width="120" height="22" rx="3" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="80.0" y="59.86666666666667" font-size="8.6" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">int n = 3</text>
-<rect x="20" y="74" width="120" height="22" rx="3" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="80.0" y="87.86666666666666" font-size="8.6" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">Espacement e</text>
-<rect x="20" y="102" width="120" height="22" rx="3" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
-<text x="80.0" y="115.86666666666666" font-size="8.6" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">pinceau  ●</text>
-<rect x="20" y="130" width="120" height="22" rx="3" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
-<text x="80.0" y="143.86666666666667" font-size="8.6" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">texte  ●</text>
-<text x="400" y="16" font-size="9.4" fill="#6B2C7A" text-anchor="middle" font-weight="700">Le tas</text>
-<text x="400" y="28" font-size="7.4" fill="#6B7378" text-anchor="middle">les objets, rangés par le ramasse-miettes</text>
-<rect x="230" y="36" width="340" height="130" rx="4" fill="#fff" stroke="#6B2C7A" stroke-width="1.2"/>
-<rect x="300" y="56" width="120" height="26" rx="3" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
-<text x="360.0" y="71.86666666666666" font-size="8.6" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">SolidBrush</text>
-<rect x="300" y="112" width="120" height="26" rx="3" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
-<text x="360.0" y="127.86666666666666" font-size="8.6" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">"Bonjour"</text>
-<rect x="450" y="84" width="100" height="26" rx="3" fill="#F4F1EC" stroke="#6B7378" stroke-width="1.2" stroke-dasharray="4 3"/>
-<text x="500.0" y="99.86666666666666" font-size="8.6" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">orphelin</text>
-<path d="M132 113 C 210 113, 230 69, 298 69" fill="none" stroke="#1565C0" stroke-width="1.3" marker-end="url(#fl)"/>
-<path d="M126 141 C 210 141, 230 125, 298 125" fill="none" stroke="#1565C0" stroke-width="1.3" marker-end="url(#fl)"/>
-<defs><marker id="fl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#1565C0"/></marker></defs>
-<text x="500" y="128" font-size="7.4" fill="#6B7378" text-anchor="middle" font-style="italic">plus rien ne le désigne :</text>
-<text x="500" y="140" font-size="7.4" fill="#6B7378" text-anchor="middle" font-style="italic">il sera récupéré</text>
-<text x="290" y="182" font-size="8" fill="#6B7378" text-anchor="middle" font-style="italic">Vert : la valeur est dans la case. Bleu : la case contient une flèche vers un objet du tas.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 58</b></div>
+<p class="rubrique">Le concept</p>
+<h1>La mémoire en .NET</h1>
+<p class="chapeau">En C#, on ne libère presque jamais la mémoire à la main : le <b>ramasse-miettes</b> (GC) s'en charge. Mais il ne s'occupe que de la mémoire. Les pinceaux GDI, les polices, les fichiers ouverts se rendent avec <b>Dispose</b>, et un objet qu'on désigne encore par erreur ne part jamais.</p>
+<div class="meta">
+<span class="pastille"><b>55 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>01</b> et <b>19</b></span>
+<span class="pastille">Exemples · <b>PeintreFeuilles</b>, <b>MesureurGdi</b>, <b>SaisieMultiligne</b>, <b>ServiceGeste</b></span>
+</div>
+<div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+<svg viewbox="0 0 600 190" width="100%">
+<text fill="#6B2C7A" font-size="9.4" font-weight="700" text-anchor="middle" x="80" y="16">La pile</text>
+<text fill="#6B7378" font-size="7.4" text-anchor="middle" x="80" y="28">une case par appel, vidée au retour</text>
+<rect fill="#fff" height="130" rx="4" stroke="#6B2C7A" stroke-width="1.2" width="140" x="10" y="36"></rect>
+<rect fill="#fff" height="22" rx="3" stroke="#2E7D32" stroke-width="1.2" width="120" x="20" y="46"></rect>
+<text class="mono" fill="#2E7D32" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="80.0" y="59.86666666666667">int n = 3</text>
+<rect fill="#fff" height="22" rx="3" stroke="#2E7D32" stroke-width="1.2" width="120" x="20" y="74"></rect>
+<text class="mono" fill="#2E7D32" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="80.0" y="87.86666666666666">Espacement e</text>
+<rect fill="#fff" height="22" rx="3" stroke="#1565C0" stroke-width="1.2" width="120" x="20" y="102"></rect>
+<text class="mono" fill="#1565C0" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="80.0" y="115.86666666666666">pinceau  ●</text>
+<rect fill="#fff" height="22" rx="3" stroke="#1565C0" stroke-width="1.2" width="120" x="20" y="130"></rect>
+<text class="mono" fill="#1565C0" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="80.0" y="143.86666666666667">texte  ●</text>
+<text fill="#6B2C7A" font-size="9.4" font-weight="700" text-anchor="middle" x="400" y="16">Le tas</text>
+<text fill="#6B7378" font-size="7.4" text-anchor="middle" x="400" y="28">les objets, rangés par le ramasse-miettes</text>
+<rect fill="#fff" height="130" rx="4" stroke="#6B2C7A" stroke-width="1.2" width="340" x="230" y="36"></rect>
+<rect fill="#fff" height="26" rx="3" stroke="#1565C0" stroke-width="1.2" width="120" x="300" y="56"></rect>
+<text class="mono" fill="#1565C0" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="360.0" y="71.86666666666666">SolidBrush</text>
+<rect fill="#fff" height="26" rx="3" stroke="#1565C0" stroke-width="1.2" width="120" x="300" y="112"></rect>
+<text class="mono" fill="#1565C0" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="360.0" y="127.86666666666666">"Bonjour"</text>
+<rect fill="#F4F1EC" height="26" rx="3" stroke="#6B7378" stroke-dasharray="4 3" stroke-width="1.2" width="100" x="450" y="84"></rect>
+<text class="mono" fill="#6B7378" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="500.0" y="99.86666666666666">orphelin</text>
+<path d="M132 113 C 210 113, 230 69, 298 69" fill="none" marker-end="url(#fl)" stroke="#1565C0" stroke-width="1.3"></path>
+<path d="M126 141 C 210 141, 230 125, 298 125" fill="none" marker-end="url(#fl)" stroke="#1565C0" stroke-width="1.3"></path>
+<defs><marker id="fl" markerheight="7" markerwidth="7" orient="auto" refx="9" refy="5" viewbox="0 0 10 10"><path d="M0 0 L10 5 L0 10 z" fill="#1565C0"></path></marker></defs>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="middle" x="500" y="128">plus rien ne le désigne :</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="middle" x="500" y="140">il sera récupéré</text>
+<text fill="#6B7378" font-size="8" font-style="italic" text-anchor="middle" x="290" y="182">Vert : la valeur est dans la case. Bleu : la case contient une flèche vers un objet du tas.</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Une variable contient soit une <b>valeur</b> (un <code>int</code>, une <code>struct</code>), soit une <b>référence</b> vers un objet du tas ; le GC récupère les objets que plus aucune référence vivante ne désigne, et <code>Dispose</code> rend tout de suite ce que le GC ne gère pas.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Une consigne de gare. Ton ticket (la référence) mène au casier (l'objet). Quand plus personne n'a de ticket, l'agent vide le casier à sa prochaine ronde. Une clé de voiture de location rangée dedans, en revanche, il faut la rendre soi-même au comptoir.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>prévoir ce que copie une affectation ;</li>
-        <li>dire quand un objet devient récupérable ;</li>
-        <li>placer un <code>using</code> autour de ce qui est jetable ;</li>
-        <li>repérer les deux fuites classiques : static et événement.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:5mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Une variable contient soit une <b>valeur</b> (un <code>int</code>, une <code>struct</code>), soit une <b>référence</b> vers un objet du tas ; le GC récupère les objets que plus aucune référence vivante ne désigne, et <code>Dispose</code> rend tout de suite ce que le GC ne gère pas.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Une consigne de gare. Ton ticket (la référence) mène au casier (l'objet). Quand plus personne n'a de ticket, l'agent vide le casier à sa prochaine ronde. Une clé de voiture de location rangée dedans, en revanche, il faut la rendre soi-même au comptoir.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>prévoir ce que copie une affectation ;</li>
+<li>dire quand un objet devient récupérable ;</li>
+<li>placer un <code>using</code> autour de ce qui est jetable ;</li>
+<li>repérer les deux fuites classiques : static et événement.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:5mm">
+<span class="titre">À retenir</span>
     Deux questions devant chaque objet : <b>qui le désigne encore ?</b> (sinon le GC le récupère) et <b>qui le possède ?</b> (le propriétaire, et lui seul, appelle <code>Dispose</code>). Les fuites viennent d'une réponse floue à l'une des deux.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 58 · La mémoire en .NET</div>
+<div class="folio">1</div>
+<div class="pied">Cours 58 · La mémoire en .NET</div>
 </section>
-
 <!-- ============ PAGE 2 · VALEUR ET RÉFÉRENCE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 58</b></div>
-  <p class="rubrique">Schéma 1 · Valeur ou référence</p>
-  <h2>Ce que copie le signe égal</h2>
-  <p style="max-width:165mm">Affecter une <code>struct</code> copie tout son contenu : deux boîtes, deux vies. Affecter une <code>class</code> copie seulement la référence : deux noms pour un même objet. Le choix entre les deux se fait à la déclaration du type, pas à l'usage.</p>
-
-  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
-<text x="150" y="26" font-size="9" fill="#2E7D32" text-anchor="middle" font-weight="700">struct : on copie la valeur</text>
-<text x="450" y="26" font-size="9" fill="#1565C0" text-anchor="middle" font-weight="700">class : on copie la flèche</text>
-<line x1="300" y1="14" x2="300" y2="196" stroke="#CFC6B8" stroke-dasharray="3 3"/>
-<text x="150" y="50" font-size="7.8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.8px;white-space:pre">var b = a;  b.Haut = 9;  (si c'était modifiable)</text>
-<text x="48" y="92" font-size="11" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:11px">a</text>
-<rect x="66" y="70" width="170" height="34" rx="3" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="151.0" y="90.13333333333334" font-size="9.4" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:9.4px">Haut = 4</text>
-<text x="48" y="142" font-size="11" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:11px">b</text>
-<rect x="66" y="120" width="170" height="34" rx="3" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="151.0" y="140.13333333333333" font-size="9.4" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:9.4px">Haut = 9</text>
-<text x="150" y="186" font-size="8" fill="#2E7D32" text-anchor="middle" font-style="italic">deux boîtes indépendantes : a ne bouge pas</text>
-<text x="450" y="50" font-size="7.8" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.8px;white-space:pre">var y = x;  y.Haut = 9;</text>
-<text x="338" y="92" font-size="11" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:11px">x</text>
-<rect x="352" y="70" width="44" height="34" rx="3" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
-<text x="374.0" y="90.33333333333333" font-size="10" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:10px">●</text>
-<text x="338" y="142" font-size="11" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:11px">y</text>
-<rect x="352" y="120" width="44" height="34" rx="3" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
-<text x="374.0" y="140.33333333333334" font-size="10" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:10px">●</text>
-<rect x="470" y="88" width="100" height="50" rx="3" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
-<text x="520.0" y="116.13333333333334" font-size="9.4" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:9.4px">Haut = 9</text>
-<line x1="398" y1="87" x2="466" y2="104" stroke="#1565C0" stroke-width="1.3"/><polygon points="466,104 459.1,105.1 460.4,99.8" fill="#1565C0"/>
-<line x1="398" y1="137" x2="466" y2="122" stroke="#1565C0" stroke-width="1.3"/><polygon points="466,122 460.3,126.1 459.1,120.7" fill="#1565C0"/>
-<text x="450" y="186" font-size="8" fill="#1565C0" text-anchor="middle" font-style="italic">un seul objet : x voit aussi le 9</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 58</b></div>
+<p class="rubrique">Schéma 1 · Valeur ou référence</p>
+<h2>Ce que copie le signe égal</h2>
+<p style="max-width:165mm">Affecter une <code>struct</code> copie tout son contenu : deux boîtes, deux vies. Affecter une <code>class</code> copie seulement la référence : deux noms pour un même objet. Le choix entre les deux se fait à la déclaration du type, pas à l'usage.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 206" width="100%">
+<rect fill="#EFE9E1" height="206" width="600" x="0" y="0"></rect>
+<text fill="#2E7D32" font-size="9" font-weight="700" text-anchor="middle" x="150" y="26">struct : on copie la valeur</text>
+<text fill="#1565C0" font-size="9" font-weight="700" text-anchor="middle" x="450" y="26">class : on copie la flèche</text>
+<line stroke="#CFC6B8" stroke-dasharray="3 3" x1="300" x2="300" y1="14" y2="196"></line>
+<text class="mono" fill="#2B2F33" font-size="7.8" style="font-size:7.8px;white-space:pre" text-anchor="middle" x="150" y="50">var b = a;  b.Haut = 9;  (si c'était modifiable)</text>
+<text class="mono" fill="#2B2F33" font-size="11" font-weight="700" style="font-size:11px" text-anchor="middle" x="48" y="92">a</text>
+<rect fill="#fff" height="34" rx="3" stroke="#2E7D32" stroke-width="1.2" width="170" x="66" y="70"></rect>
+<text class="mono" fill="#2E7D32" font-size="9.4" font-weight="700" style="font-size:9.4px" text-anchor="middle" x="151.0" y="90.13333333333334">Haut = 4</text>
+<text class="mono" fill="#2B2F33" font-size="11" font-weight="700" style="font-size:11px" text-anchor="middle" x="48" y="142">b</text>
+<rect fill="#fff" height="34" rx="3" stroke="#2E7D32" stroke-width="1.2" width="170" x="66" y="120"></rect>
+<text class="mono" fill="#2E7D32" font-size="9.4" font-weight="700" style="font-size:9.4px" text-anchor="middle" x="151.0" y="140.13333333333333">Haut = 9</text>
+<text fill="#2E7D32" font-size="8" font-style="italic" text-anchor="middle" x="150" y="186">deux boîtes indépendantes : a ne bouge pas</text>
+<text class="mono" fill="#2B2F33" font-size="7.8" style="font-size:7.8px;white-space:pre" text-anchor="middle" x="450" y="50">var y = x;  y.Haut = 9;</text>
+<text class="mono" fill="#2B2F33" font-size="11" font-weight="700" style="font-size:11px" text-anchor="middle" x="338" y="92">x</text>
+<rect fill="#fff" height="34" rx="3" stroke="#1565C0" stroke-width="1.2" width="44" x="352" y="70"></rect>
+<text class="mono" fill="#1565C0" font-size="10" font-weight="700" style="font-size:10px" text-anchor="middle" x="374.0" y="90.33333333333333">●</text>
+<text class="mono" fill="#2B2F33" font-size="11" font-weight="700" style="font-size:11px" text-anchor="middle" x="338" y="142">y</text>
+<rect fill="#fff" height="34" rx="3" stroke="#1565C0" stroke-width="1.2" width="44" x="352" y="120"></rect>
+<text class="mono" fill="#1565C0" font-size="10" font-weight="700" style="font-size:10px" text-anchor="middle" x="374.0" y="140.33333333333334">●</text>
+<rect fill="#fff" height="50" rx="3" stroke="#1565C0" stroke-width="1.2" width="100" x="470" y="88"></rect>
+<text class="mono" fill="#1565C0" font-size="9.4" font-weight="700" style="font-size:9.4px" text-anchor="middle" x="520.0" y="116.13333333333334">Haut = 9</text>
+<line stroke="#1565C0" stroke-width="1.3" x1="398" x2="466" y1="87" y2="104"></line><polygon fill="#1565C0" points="466,104 459.1,105.1 460.4,99.8"></polygon>
+<line stroke="#1565C0" stroke-width="1.3" x1="398" x2="466" y1="137" y2="122"></line><polygon fill="#1565C0" points="466,122 460.3,126.1 459.1,120.7"></polygon>
+<text fill="#1565C0" font-size="8" font-style="italic" text-anchor="middle" x="450" y="186">un seul objet : x voit aussi le 9</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#</span>struct Point2 { public float X; }        class Boite { public float X; }
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#</span>struct Point2 { public float X; }        class Boite { public float X; }
 var p = new Point2 { X = 1 };  var q = p;   q.X = 5;   // p.X vaut toujours 1
 var a = new Boite { X = 1 };   var b = a;   b.X = 5;   // a.X vaut 5
 object o = p;                               // « boxing » : une copie de p part sur le tas
 var liste = new List&lt;Point2&gt; { p };  // liste[0].X = 2;  → erreur CS1612</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Quand choisir une struct</h3>
-      <p>Pour une petite valeur sans identité, comparée par son contenu : un point, une marge, une couleur. Idéalement <code>readonly</code>, pour qu'aucune copie ne puisse surprendre. <code>Point3d</code> de RhinoCommon est une struct, <code>Curve</code> une classe.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>La valeur par défaut</h3>
-      <p>Une struct n'est jamais <code>null</code> : sa valeur par défaut a tous les champs à zéro. Une classe vaut <code>null</code> tant qu'on ne l'a pas créée, d'où les tests de nullité et les <code>NullReferenceException</code>.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Quand choisir une struct</h3>
+<p>Pour une petite valeur sans identité, comparée par son contenu : un point, une marge, une couleur. Idéalement <code>readonly</code>, pour qu'aucune copie ne puisse surprendre. <code>Point3d</code> de RhinoCommon est une struct, <code>Curve</code> une classe.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>La valeur par défaut</h3>
+<p>Une struct n'est jamais <code>null</code> : sa valeur par défaut a tous les champs à zéro. Une classe vaut <code>null</code> tant qu'on ne l'a pas créée, d'où les tests de nullité et les <code>NullReferenceException</code>.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Modifier une struct obtenue par une propriété ou une liste. <code>liste[0]</code> rend une <b>copie</b> : le compilateur refuse de la modifier (CS1612), et une méthode qui la modifie travaillerait sur la copie. On remplace l'élément entier : <code>liste[0] = nouveauPoint;</code>.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 58 · La mémoire en .NET</div>
+<div class="folio">2</div>
+<div class="pied">Cours 58 · La mémoire en .NET</div>
 </section>
-
 <!-- ============ PAGE 3 · LE RAMASSE-MIETTES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 58</b></div>
-  <p class="rubrique">Schéma 2 · Le ramasse-miettes</p>
-  <h2>Est vivant ce qu'on peut atteindre</h2>
-  <p style="max-width:165mm">Le GC part des <b>racines</b> (champs <code>static</code>, variables locales en cours, handles épinglés) et suit toutes les références. Ce qu'il atteint est vivant ; le reste est récupéré, même si ces objets se désignent entre eux. On ne choisit pas le moment du passage.</p>
-
-  <svg viewBox="0 0 600 232" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="232" fill="#EFE9E1"/>
-<text x="16" y="24" font-size="9" fill="#6B2C7A" text-anchor="start" font-weight="700">Racines</text>
-<rect x="16" y="44" width="116" height="30" rx="3" fill="#fff" stroke="#6B2C7A" stroke-width="1.2"/>
-<text x="74.0" y="61.666666666666664" font-size="8" fill="#6B2C7A" text-anchor="middle" font-weight="700">champ static</text>
-<rect x="16" y="92" width="116" height="30" rx="3" fill="#fff" stroke="#6B2C7A" stroke-width="1.2"/>
-<text x="74.0" y="109.66666666666667" font-size="8" fill="#6B2C7A" text-anchor="middle" font-weight="700">variable locale</text>
-<rect x="16" y="140" width="116" height="30" rx="3" fill="#fff" stroke="#6B2C7A" stroke-width="1.2"/>
-<text x="74.0" y="157.66666666666666" font-size="8" fill="#6B2C7A" text-anchor="middle" font-weight="700">handle GCHandle</text>
-<rect x="200" y="40" width="70" height="34" rx="3" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="235.0" y="60.666666666666664" font-size="11" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:11px">A</text>
-<rect x="330" y="40" width="70" height="34" rx="3" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="365.0" y="60.666666666666664" font-size="11" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:11px">B</text>
-<rect x="200" y="112" width="70" height="34" rx="3" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="235.0" y="132.66666666666666" font-size="11" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:11px">C</text>
-<rect x="330" y="112" width="70" height="34" rx="3" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="365.0" y="132.66666666666666" font-size="11" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:11px">D</text>
-<rect x="470" y="60" width="70" height="34" rx="3" fill="#F4F1EC" stroke="#6B7378" stroke-width="1.2" stroke-dasharray="4 3"/>
-<text x="505.0" y="80.66666666666667" font-size="11" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:11px">E</text>
-<rect x="470" y="140" width="70" height="34" rx="3" fill="#F4F1EC" stroke="#6B7378" stroke-width="1.2" stroke-dasharray="4 3"/>
-<text x="505.0" y="160.66666666666666" font-size="11" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:11px">F</text>
-<line x1="132" y1="59" x2="198" y2="57" stroke="#2E7D32" stroke-width="1.3"/><polygon points="198,57 191.6,59.9 191.5,54.5" fill="#2E7D32"/>
-<line x1="270" y1="57" x2="328" y2="57" stroke="#2E7D32" stroke-width="1.3"/><polygon points="328,57 321.6,59.7 321.6,54.3" fill="#2E7D32"/>
-<line x1="132" y1="107" x2="198" y2="125" stroke="#2E7D32" stroke-width="1.3"/><polygon points="198,125 191.1,125.9 192.5,120.7" fill="#2E7D32"/>
-<line x1="235" y1="76" x2="235" y2="110" stroke="#2E7D32" stroke-width="1.3"/><polygon points="235,110 232.3,103.6 237.7,103.6" fill="#2E7D32"/>
-<line x1="270" y1="129" x2="328" y2="129" stroke="#2E7D32" stroke-width="1.3"/><polygon points="328,129 321.6,131.7 321.6,126.3" fill="#2E7D32"/>
-<line x1="505" y1="96" x2="505" y2="138" stroke="#6B7378" stroke-width="1.3"/><polygon points="505,138 502.3,131.6 507.7,131.6" fill="#6B7378"/>
-<text x="505" y="192" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">E et F se désignent</text>
-<text x="505" y="204" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">mais aucune racine ne mène à eux</text>
-<text x="16" y="200" font-size="8.6" fill="#E65100" text-anchor="start" font-weight="700">Génération 0 → 1 → 2</text>
-<text x="16" y="214" font-size="7.6" fill="#6B7378" text-anchor="start">un objet qui survit à un passage monte d'un étage, visité plus rarement</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 58</b></div>
+<p class="rubrique">Schéma 2 · Le ramasse-miettes</p>
+<h2>Est vivant ce qu'on peut atteindre</h2>
+<p style="max-width:165mm">Le GC part des <b>racines</b> (champs <code>static</code>, variables locales en cours, handles épinglés) et suit toutes les références. Ce qu'il atteint est vivant ; le reste est récupéré, même si ces objets se désignent entre eux. On ne choisit pas le moment du passage.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 232" width="100%">
+<rect fill="#EFE9E1" height="232" width="600" x="0" y="0"></rect>
+<text fill="#6B2C7A" font-size="9" font-weight="700" text-anchor="start" x="16" y="24">Racines</text>
+<rect fill="#fff" height="30" rx="3" stroke="#6B2C7A" stroke-width="1.2" width="116" x="16" y="44"></rect>
+<text fill="#6B2C7A" font-size="8" font-weight="700" text-anchor="middle" x="74.0" y="61.666666666666664">champ static</text>
+<rect fill="#fff" height="30" rx="3" stroke="#6B2C7A" stroke-width="1.2" width="116" x="16" y="92"></rect>
+<text fill="#6B2C7A" font-size="8" font-weight="700" text-anchor="middle" x="74.0" y="109.66666666666667">variable locale</text>
+<rect fill="#fff" height="30" rx="3" stroke="#6B2C7A" stroke-width="1.2" width="116" x="16" y="140"></rect>
+<text fill="#6B2C7A" font-size="8" font-weight="700" text-anchor="middle" x="74.0" y="157.66666666666666">handle GCHandle</text>
+<rect fill="#fff" height="34" rx="3" stroke="#2E7D32" stroke-width="1.2" width="70" x="200" y="40"></rect>
+<text class="mono" fill="#2E7D32" font-size="11" font-weight="700" style="font-size:11px" text-anchor="middle" x="235.0" y="60.666666666666664">A</text>
+<rect fill="#fff" height="34" rx="3" stroke="#2E7D32" stroke-width="1.2" width="70" x="330" y="40"></rect>
+<text class="mono" fill="#2E7D32" font-size="11" font-weight="700" style="font-size:11px" text-anchor="middle" x="365.0" y="60.666666666666664">B</text>
+<rect fill="#fff" height="34" rx="3" stroke="#2E7D32" stroke-width="1.2" width="70" x="200" y="112"></rect>
+<text class="mono" fill="#2E7D32" font-size="11" font-weight="700" style="font-size:11px" text-anchor="middle" x="235.0" y="132.66666666666666">C</text>
+<rect fill="#fff" height="34" rx="3" stroke="#2E7D32" stroke-width="1.2" width="70" x="330" y="112"></rect>
+<text class="mono" fill="#2E7D32" font-size="11" font-weight="700" style="font-size:11px" text-anchor="middle" x="365.0" y="132.66666666666666">D</text>
+<rect fill="#F4F1EC" height="34" rx="3" stroke="#6B7378" stroke-dasharray="4 3" stroke-width="1.2" width="70" x="470" y="60"></rect>
+<text class="mono" fill="#6B7378" font-size="11" font-weight="700" style="font-size:11px" text-anchor="middle" x="505.0" y="80.66666666666667">E</text>
+<rect fill="#F4F1EC" height="34" rx="3" stroke="#6B7378" stroke-dasharray="4 3" stroke-width="1.2" width="70" x="470" y="140"></rect>
+<text class="mono" fill="#6B7378" font-size="11" font-weight="700" style="font-size:11px" text-anchor="middle" x="505.0" y="160.66666666666666">F</text>
+<line stroke="#2E7D32" stroke-width="1.3" x1="132" x2="198" y1="59" y2="57"></line><polygon fill="#2E7D32" points="198,57 191.6,59.9 191.5,54.5"></polygon>
+<line stroke="#2E7D32" stroke-width="1.3" x1="270" x2="328" y1="57" y2="57"></line><polygon fill="#2E7D32" points="328,57 321.6,59.7 321.6,54.3"></polygon>
+<line stroke="#2E7D32" stroke-width="1.3" x1="132" x2="198" y1="107" y2="125"></line><polygon fill="#2E7D32" points="198,125 191.1,125.9 192.5,120.7"></polygon>
+<line stroke="#2E7D32" stroke-width="1.3" x1="235" x2="235" y1="76" y2="110"></line><polygon fill="#2E7D32" points="235,110 232.3,103.6 237.7,103.6"></polygon>
+<line stroke="#2E7D32" stroke-width="1.3" x1="270" x2="328" y1="129" y2="129"></line><polygon fill="#2E7D32" points="328,129 321.6,131.7 321.6,126.3"></polygon>
+<line stroke="#6B7378" stroke-width="1.3" x1="505" x2="505" y1="96" y2="138"></line><polygon fill="#6B7378" points="505,138 502.3,131.6 507.7,131.6"></polygon>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="middle" x="505" y="192">E et F se désignent</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="middle" x="505" y="204">mais aucune racine ne mène à eux</text>
+<text fill="#E65100" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="200">Génération 0 → 1 → 2</text>
+<text fill="#6B7378" font-size="7.6" text-anchor="start" x="16" y="214">un objet qui survit à un passage monte d'un étage, visité plus rarement</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#</span>static readonly List&lt;Forme&gt; Historique = new List&lt;Forme&gt;();   // racine pour toute la session
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#</span>static readonly List&lt;Forme&gt; Historique = new List&lt;Forme&gt;();   // racine pour toute la session
 void Calculer() {
     var tampon = new double[1_000_000];   // vivant pendant l'appel
 }                                          // ensuite récupérable
 bouton.Click += vue.SurClic;               // bouton désigne vue tant qu'on ne fait pas -=</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Pourquoi des générations</h3>
-      <p>La plupart des objets meurent jeunes (une chaîne temporaire, un tableau de calcul). Le GC visite souvent la génération 0, rapide et petite, et rarement la 2, où vivent les objets anciens. Un objet de plus de 85 000 octets va directement dans un tas à part.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Un événement est une référence</h3>
-      <p><code>source.Evt += cible.Methode</code> range dans la source un délégué qui désigne la cible. Tant que la source vit, la cible vit. Une source qui dure (le canvas, le document) garde donc en vie tous ses abonnés.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Pourquoi des générations</h3>
+<p>La plupart des objets meurent jeunes (une chaîne temporaire, un tableau de calcul). Le GC visite souvent la génération 0, rapide et petite, et rarement la 2, où vivent les objets anciens. Un objet de plus de 85 000 octets va directement dans un tas à part.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Un événement est une référence</h3>
+<p><code>source.Evt += cible.Methode</code> range dans la source un délégué qui désigne la cible. Tant que la source vit, la cible vit. Une source qui dure (le canvas, le document) garde donc en vie tous ses abonnés.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Les deux fuites de .NET ne sont pas des oublis de libération mais des références oubliées : une <b>collection static</b> qui ne se vide jamais, et un <b>abonnement</b> à un objet durable sans <code>-=</code> correspondant. Le GC fait bien son travail : l'objet est encore atteignable.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 58 · La mémoire en .NET</div>
+<div class="folio">3</div>
+<div class="pied">Cours 58 · La mémoire en .NET</div>
 </section>
-
 <!-- ============ PAGE 4 · IDISPOSABLE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 58</b></div>
-  <p class="rubrique">Schéma 3 · Les ressources jetables</p>
-  <h2>Dispose rend ce que le GC ne voit pas</h2>
-  <p style="max-width:165mm">Un <code>SolidBrush</code> occupe quelques octets côté .NET, mais aussi un <b>handle GDI</b> côté Windows, en nombre limité. Le GC ne connaît que les octets. <code>IDisposable</code> signale « appelle-moi <code>Dispose</code> quand tu as fini », et <code>using</code> le fait à coup sûr.</p>
-
-  <svg viewBox="0 0 600 196" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="196" fill="#EFE9E1"/>
-<line x1="40" y1="70" x2="560" y2="70" stroke="#2B2F33" stroke-width="1.2"/>
-<circle cx="70" cy="70" r="5" fill="#1565C0"/>
-<text x="70" y="54" font-size="8.6" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">new SolidBrush(c)</text>
-<text x="70" y="92" font-size="7.8" fill="#2B2F33" text-anchor="middle">le handle GDI est pris</text>
-<circle cx="230" cy="70" r="5" fill="#1565C0"/>
-<text x="230" y="54" font-size="8.6" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">g.FillRectangle(…)</text>
-<text x="230" y="92" font-size="7.8" fill="#2B2F33" text-anchor="middle">on s'en sert</text>
-<circle cx="390" cy="70" r="5" fill="#2E7D32"/>
-<text x="390" y="54" font-size="8.6" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">}</text>
-<text x="390" y="92" font-size="7.8" fill="#2B2F33" text-anchor="middle">Dispose() : handle rendu</text>
-<circle cx="530" cy="70" r="5" fill="#6B7378"/>
-<text x="530" y="54" font-size="8.6" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">plus tard</text>
-<text x="530" y="92" font-size="7.8" fill="#2B2F33" text-anchor="middle">le GC récupère la mémoire</text>
-<rect x="66" y="110" width="328" height="16" rx="3" fill="#1565C0" fill-opacity=".18" stroke="#1565C0"/>
-<text x="230" y="122" font-size="7.8" fill="#1565C0" text-anchor="middle" font-weight="700">portée du using : même une exception passe par Dispose</text>
-<rect x="66" y="140" width="468" height="16" rx="3" fill="#C62828" fill-opacity=".12" stroke="#C62828" stroke-dasharray="4 3"/>
-<text x="300" y="152" font-size="7.8" fill="#C62828" text-anchor="middle" font-weight="700">sans using : le handle reste pris jusqu'au passage du GC, peut-être jamais</text>
-<text x="300" y="182" font-size="8" fill="#6B7378" text-anchor="middle" font-style="italic">Un processus Windows a par défaut 10 000 objets GDI au plus : au-delà, plus rien ne se peint.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 58</b></div>
+<p class="rubrique">Schéma 3 · Les ressources jetables</p>
+<h2>Dispose rend ce que le GC ne voit pas</h2>
+<p style="max-width:165mm">Un <code>SolidBrush</code> occupe quelques octets côté .NET, mais aussi un <b>handle GDI</b> côté Windows, en nombre limité. Le GC ne connaît que les octets. <code>IDisposable</code> signale « appelle-moi <code>Dispose</code> quand tu as fini », et <code>using</code> le fait à coup sûr.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 196" width="100%">
+<rect fill="#EFE9E1" height="196" width="600" x="0" y="0"></rect>
+<line stroke="#2B2F33" stroke-width="1.2" x1="40" x2="560" y1="70" y2="70"></line>
+<circle cx="70" cy="70" fill="#1565C0" r="5"></circle>
+<text class="mono" fill="#1565C0" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="70" y="54">new SolidBrush(c)</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="middle" x="70" y="92">le handle GDI est pris</text>
+<circle cx="230" cy="70" fill="#1565C0" r="5"></circle>
+<text class="mono" fill="#1565C0" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="230" y="54">g.FillRectangle(…)</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="middle" x="230" y="92">on s'en sert</text>
+<circle cx="390" cy="70" fill="#2E7D32" r="5"></circle>
+<text class="mono" fill="#2E7D32" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="390" y="54">}</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="middle" x="390" y="92">Dispose() : handle rendu</text>
+<circle cx="530" cy="70" fill="#6B7378" r="5"></circle>
+<text class="mono" fill="#6B7378" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="530" y="54">plus tard</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="middle" x="530" y="92">le GC récupère la mémoire</text>
+<rect fill="#1565C0" fill-opacity=".18" height="16" rx="3" stroke="#1565C0" width="328" x="66" y="110"></rect>
+<text fill="#1565C0" font-size="7.8" font-weight="700" text-anchor="middle" x="230" y="122">portée du using : même une exception passe par Dispose</text>
+<rect fill="#C62828" fill-opacity=".12" height="16" rx="3" stroke="#C62828" stroke-dasharray="4 3" width="468" x="66" y="140"></rect>
+<text fill="#C62828" font-size="7.8" font-weight="700" text-anchor="middle" x="300" y="152">sans using : le handle reste pris jusqu'au passage du GC, peut-être jamais</text>
+<text fill="#6B7378" font-size="8" font-style="italic" text-anchor="middle" x="300" y="182">Un processus Windows a par défaut 10 000 objets GDI au plus : au-delà, plus rien ne se peint.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#</span>using (var pinceau = new SolidBrush(couleur))   // forme classique, un bloc
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · C#</span>using (var pinceau = new SolidBrush(couleur))   // forme classique, un bloc
 {
     g.FillRectangle(pinceau, boite);
 }                                                // Dispose ici, exception ou pas
 using var trait = new Pen(couleur, 1f);          // C# 8 : Dispose à la fin de la méthode</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Ce qui est jetable</h3>
-      <p>Tout ce qui tient une ressource du système : <code>Pen</code>, <code>Brush</code>, <code>Font</code>, <code>Bitmap</code>, <code>Graphics</code>, flux de fichier, connexion SQLite, contrôle WinForms. Les géométries RhinoCommon aussi : elles tiennent de la mémoire native.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Créer ou emprunter</h3>
-      <p>Un objet qu'on crée avec <code>new</code> nous appartient. Un objet qu'on reçoit d'une API (une police d'un cache, la matrice d'un viewport) est <b>emprunté</b> : le libérer casserait le propriétaire, qui s'en sert encore.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Ce qui est jetable</h3>
+<p>Tout ce qui tient une ressource du système : <code>Pen</code>, <code>Brush</code>, <code>Font</code>, <code>Bitmap</code>, <code>Graphics</code>, flux de fichier, connexion SQLite, contrôle WinForms. Les géométries RhinoCommon aussi : elles tiennent de la mémoire native.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Créer ou emprunter</h3>
+<p>Un objet qu'on crée avec <code>new</code> nous appartient. Un objet qu'on reçoit d'une API (une police d'un cache, la matrice d'un viewport) est <b>emprunté</b> : le libérer casserait le propriétaire, qui s'en sert encore.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Créer un <code>Pen</code> à chaque peinture sans <code>using</code>. Rien ne se voit au début ; après quelques milliers de rafraîchissements, la limite d'objets GDI est atteinte et l'application entière cesse de se dessiner. L'inverse est aussi grave : <code>Dispose</code> sur un objet emprunté.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 58 · La mémoire en .NET</div>
+<div class="folio">4</div>
+<div class="pied">Cours 58 · La mémoire en .NET</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 58</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>Une struct, des using, un cache, des désabonnements</h2>
-  <p style="max-width:165mm">SnapSet peint en GDI+ et ouvre des contrôles WinForms sur le canvas : chaque règle de la page précédente y a son exemple, y compris les deux cas où il ne faut surtout pas libérer.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 58</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>Une struct, des using, un cache, des désabonnements</h2>
+<p style="max-width:165mm">SnapSet peint en GDI+ et ouvre des contrôles WinForms sur le canvas : chaque règle de la page précédente y a son exemple, y compris les deux cas où il ne faut surtout pas libérer.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">SnapSet/schema/Metrique.cs</span></div>
 <div class="l k1"><span class="n">1172</span><span class="kw">public readonly struct</span> <span class="ty">Espacement</span><span class="rep r1">1</span></div>
@@ -288,137 +261,55 @@ using var trait = new Pen(couleur, 1f);          // C# 8 : Dispose à la fin de 
 <div class="l k5"><span class="n">266</span>_canvas.MouseDown -= SurEnfoncement;  <span class="cm">// … 7 de plus</span></div>
 <div class="l k5"><span class="n">274</span><span class="kw">lock</span> (_services) _services.Remove(_canvas);</div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>Une valeur</b>Quatre marges, jamais null : le commentaire au-dessus le revendique.</li>
-      <li><span class="rep r2">2</span><b>Créé, donc libéré</b>Pinceau et trait vivent le temps d'un glyphe.</li>
-      <li><span class="rep r3">3</span><b>Emprunté, donc gardé</b>La police appartient au cache, la matrice au viewport.</li>
-      <li><span class="rep r4">4</span><b>Désabonner, puis libérer</b>Plus tard, hors du gestionnaire en cours.</li>
-      <li><span class="rep r5">5</span><b>Une racine maîtrisée</b>Le dictionnaire static se vide quand le canvas disparaît.</li>
-    </ul>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>Une valeur</b>Quatre marges, jamais null : le commentaire au-dessus le revendique.</li>
+<li><span class="rep r2">2</span><b>Créé, donc libéré</b>Pinceau et trait vivent le temps d'un glyphe.</li>
+<li><span class="rep r3">3</span><b>Emprunté, donc gardé</b>La police appartient au cache, la matrice au viewport.</li>
+<li><span class="rep r4">4</span><b>Désabonner, puis libérer</b>Plus tard, hors du gestionnaire en cours.</li>
+<li><span class="rep r5">5</span><b>Une racine maîtrisée</b>Le dictionnaire static se vide quand le canvas disparaît.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">Pourquoi BeginInvoke (SaisieMultiligne.cs:157)</span>
+<code>Fermer</code> peut être appelé depuis le <code>KeyDown</code> ou le <code>LostFocus</code> du TextBox lui-même. Le libérer tout de suite détruirait l'objet dont le code est en train de s'exécuter. <code>BeginInvoke</code> place la libération dans la file des messages : elle aura lieu juste après, une fois le gestionnaire terminé.
   </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">Pourquoi BeginInvoke (SaisieMultiligne.cs:157)</span>
-    <code>Fermer</code> peut être appelé depuis le <code>KeyDown</code> ou le <code>LostFocus</code> du TextBox lui-même. Le libérer tout de suite détruirait l'objet dont le code est en train de s'exécuter. <code>BeginInvoke</code> place la libération dans la file des messages : elle aura lieu juste après, une fois le gestionnaire terminé.
-  </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 58 · La mémoire en .NET</div>
+<div class="folio">5</div>
+<div class="pied">Cours 58 · La mémoire en .NET</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 58</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 58</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce"><code>var b = a;</code> avec <code>a</code> une struct…</div><ul>
-      <li><span>A</span>copie seulement les références</li><li><span>B</span>copie tout le contenu</li><li><span>C</span>ne compile pas</li><li><span>D</span>partage le même objet</li></ul></div>
 
-    <div class="q"><div class="enonce">La valeur par défaut d'<code>Espacement</code>…</div><ul>
-      <li><span>A</span>quatre zéros</li><li><span>B</span>une exception</li><li><span>C</span>dépend du schéma</li><li><span>D</span>null</li></ul></div>
 
-    <div class="q"><div class="enonce">Un objet devient récupérable quand…</div><ul>
-      <li><span>A</span>la méthode qui l'a créé se termine</li><li><span>B</span>aucune racine ne mène plus à lui</li><li><span>C</span>on le met à null</li><li><span>D</span>on appelle Dispose</li></ul></div>
 
-    <div class="q"><div class="enonce">Sont des racines : <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>un objet du tas seul</li><li><span>B</span>un champ static</li><li><span>C</span>un handle épinglé</li><li><span>D</span>une variable locale en cours</li></ul></div>
-
-    <div class="q"><div class="enonce"><code>a.Evt += b.Methode</code> fait que…</div><ul>
-      <li><span>A</span>les deux sont libérés</li><li><span>B</span>b garde a en vie</li><li><span>C</span>rien ne change</li><li><span>D</span>a garde b en vie</li></ul></div>
-
-    <div class="q"><div class="enonce">La génération 0 contient…</div><ul>
-      <li><span>A</span>les gros tableaux</li><li><span>B</span>les objets static</li><li><span>C</span>les objets libérés</li><li><span>D</span>les objets récents</li></ul></div>
-
-    <div class="q"><div class="enonce">Dispose sert à…</div><ul>
-      <li><span>A</span>copier l'objet</li><li><span>B</span>forcer le GC</li><li><span>C</span>rendre une ressource du système tout de suite</li><li><span>D</span>mettre la variable à null</li></ul></div>
-
-    <div class="q"><div class="enonce">Un <code>Pen</code> sans using à chaque peinture…</div><ul>
-      <li><span>A</span>épuise les handles GDI</li><li><span>B</span>ralentit seulement le GC</li><li><span>C</span>ne compile pas</li><li><span>D</span>ne pose aucun problème</li></ul></div>
-
-    <div class="q"><div class="enonce">La police rendue par <code>MesureurGdi.Police</code>…</div><ul>
-      <li><span>A</span>doit être libérée par l'appelant</li><li><span>B</span>est une struct</li><li><span>C</span>est recréée à chaque appel</li><li><span>D</span>appartient au cache</li></ul></div>
-
-    <div class="q"><div class="enonce">Libérer <code>XFormMatrix(…)</code> dans SaisieEnPlace…</div><ul>
-      <li><span>A</span>est obligatoire</li><li><span>B</span>est sans effet</li><li><span>C</span>casserait la projection du canvas</li><li><span>D</span>accélère le zoom</li></ul></div>
-
-    <div class="q"><div class="enonce">Pourquoi <code>BeginInvoke</code> avant Dispose ?</div><ul>
-      <li><span>A</span>changer de processus</li><li><span>B</span>attendre la fin du gestionnaire en cours</li><li><span>C</span>pour aller plus vite</li><li><span>D</span>éviter le GC</li></ul></div>
-
-    <div class="q"><div class="enonce">Sans SurDisparition, un canvas fermé…</div><ul>
-      <li><span>A</span>resterait atteignable par _services</li><li><span>B</span>lèverait une exception</li><li><span>C</span>serait copié</li><li><span>D</span>serait libéré quand même</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 58 · La mémoire en .NET</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">readonly struct</td><td>une valeur copiée, jamais null</td><td>Metrique.cs:1172</td></tr>
+<tr><td class="c">using (var x = new …)</td><td>Dispose garanti en fin de bloc</td><td>PeintreFeuilles.cs:371–372</td></tr>
+<tr><td class="c">cache d'objets jetables</td><td>le cache possède, l'appelant emprunte</td><td>MesureurGdi.cs:123–126</td></tr>
+<tr><td class="c">evt -= gestionnaire</td><td>la source lâche l'abonné</td><td>SaisieMultiligne.cs:151–153</td></tr>
+<tr><td class="c">BeginInvoke(() =&gt; x.Dispose())</td><td>libérer après le gestionnaire</td><td>SaisieMultiligne.cs:163–166</td></tr>
+<tr><td class="c">Disposed += … Remove</td><td>vider une racine static</td><td>ServiceGeste.cs:47, 274</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Tas</dt><dd>La zone où vivent les objets des classes, rangée par le ramasse-miettes.</dd>
+<dt>Racine</dt><dd>Un point de départ du GC : champ static, variable locale en cours, handle épinglé.</dd>
+<dt>Boxing</dt><dd>La copie d'une valeur dans un objet du tas, quand on la range dans un object.</dd>
+<dt>Handle GDI</dt><dd>Le numéro qu'attribue Windows à un pinceau, une police ou une image ; en nombre limité.</dd>
+<dt>IDisposable</dt><dd>L'interface des objets qui tiennent une ressource à rendre par Dispose.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 71</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 58 · La mémoire en .NET</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 1C</b> · Ce que fait .NET</span><b>Cours 58</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · B.</b> Deux boîtes indépendantes.</div>
-    <div><b>02 · A.</b> Metrique.cs, commentaire de 1168.</div>
-    <div><b>03 · B.</b> null n'aide que si c'était le dernier lien.</div>
-    <div><b>04 · B, C et D.</b> A n'est atteint que par un lien.</div>
-    <div><b>05 · D.</b> La source range un délégué vers b.</div>
-    <div><b>06 · D.</b> Les objets jeunes.</div>
-    <div><b>07 · C.</b> Le GC reste maître de la mémoire.</div>
-    <div><b>08 · A.</b> Limite par défaut : 10 000.</div>
-    <div><b>09 · D.</b> MesureurGdi.cs:114.</div>
-    <div><b>10 · C.</b> SaisieEnPlace.cs:105–106.</div>
-    <div><b>11 · B.</b> Le TextBox exécute encore son code.</div>
-    <div><b>12 · A.</b> Une racine static la retient.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 71, « Du C# au code machine ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">readonly struct</td><td>une valeur copiée, jamais null</td><td>Metrique.cs:1172</td></tr>
-      <tr><td class="c">using (var x = new …)</td><td>Dispose garanti en fin de bloc</td><td>PeintreFeuilles.cs:371–372</td></tr>
-      <tr><td class="c">cache d'objets jetables</td><td>le cache possède, l'appelant emprunte</td><td>MesureurGdi.cs:123–126</td></tr>
-      <tr><td class="c">evt -= gestionnaire</td><td>la source lâche l'abonné</td><td>SaisieMultiligne.cs:151–153</td></tr>
-      <tr><td class="c">BeginInvoke(() =&gt; x.Dispose())</td><td>libérer après le gestionnaire</td><td>SaisieMultiligne.cs:163–166</td></tr>
-      <tr><td class="c">Disposed += … Remove</td><td>vider une racine static</td><td>ServiceGeste.cs:47, 274</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Tas</dt><dd>La zone où vivent les objets des classes, rangée par le ramasse-miettes.</dd>
-    <dt>Racine</dt><dd>Un point de départ du GC : champ static, variable locale en cours, handle épinglé.</dd>
-    <dt>Boxing</dt><dd>La copie d'une valeur dans un objet du tas, quand on la range dans un object.</dd>
-    <dt>Handle GDI</dt><dd>Le numéro qu'attribue Windows à un pinceau, une police ou une image ; en nombre limité.</dd>
-    <dt>IDisposable</dt><dd>L'interface des objets qui tiennent une ressource à rendre par Dispose.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 71</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 58 · La mémoire en .NET</div>
-</section>
-
 </body>
 </html>

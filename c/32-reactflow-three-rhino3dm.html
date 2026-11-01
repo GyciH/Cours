@@ -1,142 +1,132 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>32 · React Flow, three.js et rhino3dm</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-8">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 32</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>React Flow, three.js<br>et rhino3dm</h1>
-  <p class="chapeau">Trois bibliothèques, trois métiers. <b>React Flow</b> dessine le canvas de nœuds et de câbles, <b>three.js</b> dessine l'aperçu 3D dans le navigateur, et <b>rhino3dm</b> lit, sur le serveur, la géométrie Rhino que renvoie Compute. Entre elles circulent des tableaux de nombres, rien de plus.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>60 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>31</b> React et Vite</span>
-    <span class="pastille">Exemples · <b>graphEditor.jsx</b>, <b>GenericNode.jsx</b>, <b>Viewer3D.jsx</b>, <b>apercu.mjs</b></span>
-  </div>
-
-  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
-    <svg viewBox="0 0 600 214" width="100%">
-<rect x="16" y="8" width="176" height="170" rx="6" fill="none" stroke="#CFC6BA" stroke-dasharray="4 3"/>
-<text x="26" y="24" font-size="9" fill="#6B7378" text-anchor="start" font-weight="700">navigateur</text>
-<rect x="212" y="8" width="188" height="170" rx="6" fill="none" stroke="#CFC6BA" stroke-dasharray="4 3"/>
-<text x="222" y="24" font-size="9" fill="#6B7378" text-anchor="start" font-weight="700">serveur Node</text>
-<rect x="420" y="8" width="164" height="170" rx="6" fill="none" stroke="#CFC6BA" stroke-dasharray="4 3"/>
-<text x="430" y="24" font-size="9" fill="#6B7378" text-anchor="start" font-weight="700">Rhino Compute</text>
-<rect x="30" y="36" width="148" height="40" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.3"/>
-<text x="104.0" y="53.0" font-size="9" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">React Flow</text>
-<text x="104.0" y="67.0" font-size="8.2" fill="#2B2F33" text-anchor="middle">le graphe à éditer</text>
-<rect x="30" y="124" width="148" height="40" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.3"/>
-<text x="104.0" y="141.0" font-size="9" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">three.js</text>
-<text x="104.0" y="155.0" font-size="8.2" fill="#2B2F33" text-anchor="middle">l'aperçu 3D (WebGL)</text>
-<rect x="226" y="36" width="160" height="40" rx="4" fill="#fff" stroke="#7A5A12" stroke-width="1.3"/>
-<text x="306.0" y="53.0" font-size="9" fill="#7A5A12" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">compute-proxy.mjs</text>
-<text x="306.0" y="67.0" font-size="8.2" fill="#2B2F33" text-anchor="middle">/api/solve</text>
-<rect x="226" y="124" width="160" height="40" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.3"/>
-<text x="306.0" y="141.0" font-size="9" fill="#7B1FA2" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">apercu.mjs</text>
-<text x="306.0" y="155.0" font-size="8.2" fill="#2B2F33" text-anchor="middle">rhino3dm (WebAssembly)</text>
-<rect x="434" y="80" width="136" height="40" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.3"/>
-<text x="502.0" y="97.0" font-size="9" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">Grasshopper</text>
-<text x="502.0" y="111.0" font-size="8.2" fill="#2B2F33" text-anchor="middle">calcule la définition</text>
-<line x1="179" y1="56" x2="224" y2="56" stroke="#1565C0" stroke-width="1.4"/><polygon points="224,56 217.6,58.7 217.6,53.3" fill="#1565C0"/>
-<text x="201" y="50" font-size="8" fill="#1565C0" text-anchor="middle">graphe</text>
-<line x1="387" y1="56" x2="470" y2="78" stroke="#7A5A12" stroke-width="1.4"/><polygon points="470,78 463.1,79.0 464.5,73.7" fill="#7A5A12"/>
-<text x="432" y="56" font-size="8.4" fill="#7A5A12" text-anchor="middle" class="mono" style="font-size:8.4px">.ghx</text>
-<line x1="470" y1="121" x2="388" y2="140" stroke="#C62828" stroke-width="1.4"/><polygon points="388,140 393.7,135.9 394.9,141.2" fill="#C62828"/>
-<text x="452" y="146" font-size="8.4" fill="#C62828" text-anchor="middle" class="mono" style="font-size:8.4px">openNURBS</text>
-<line x1="225" y1="144" x2="180" y2="144" stroke="#7B1FA2" stroke-width="1.4"/><polygon points="180,144 186.4,141.3 186.4,146.7" fill="#7B1FA2"/>
-<text x="202" y="138" font-size="8" fill="#7B1FA2" text-anchor="middle" class="mono" style="font-size:8px">base64</text>
-<text x="300" y="198" font-size="9" fill="#2B2F33" text-anchor="middle">Le navigateur ne voit jamais un Brep : seulement des sommets, des indices et des polylignes.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 32</b></div>
+<p class="rubrique">Le concept</p>
+<h1>React Flow, three.js<br/>et rhino3dm</h1>
+<p class="chapeau">Trois bibliothèques, trois métiers. <b>React Flow</b> dessine le canvas de nœuds et de câbles, <b>three.js</b> dessine l'aperçu 3D dans le navigateur, et <b>rhino3dm</b> lit, sur le serveur, la géométrie Rhino que renvoie Compute. Entre elles circulent des tableaux de nombres, rien de plus.</p>
+<div class="meta">
+<span class="pastille"><b>60 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>31</b> React et Vite</span>
+<span class="pastille">Exemples · <b>graphEditor.jsx</b>, <b>GenericNode.jsx</b>, <b>Viewer3D.jsx</b>, <b>apercu.mjs</b></span>
+</div>
+<div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+<svg viewbox="0 0 600 214" width="100%">
+<rect fill="none" height="170" rx="6" stroke="#CFC6BA" stroke-dasharray="4 3" width="176" x="16" y="8"></rect>
+<text fill="#6B7378" font-size="9" font-weight="700" text-anchor="start" x="26" y="24">navigateur</text>
+<rect fill="none" height="170" rx="6" stroke="#CFC6BA" stroke-dasharray="4 3" width="188" x="212" y="8"></rect>
+<text fill="#6B7378" font-size="9" font-weight="700" text-anchor="start" x="222" y="24">serveur Node</text>
+<rect fill="none" height="170" rx="6" stroke="#CFC6BA" stroke-dasharray="4 3" width="164" x="420" y="8"></rect>
+<text fill="#6B7378" font-size="9" font-weight="700" text-anchor="start" x="430" y="24">Rhino Compute</text>
+<rect fill="#fff" height="40" rx="4" stroke="#1565C0" stroke-width="1.3" width="148" x="30" y="36"></rect>
+<text class="mono" fill="#1565C0" font-size="9" font-weight="700" style="font-size:9px" text-anchor="middle" x="104.0" y="53.0">React Flow</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="middle" x="104.0" y="67.0">le graphe à éditer</text>
+<rect fill="#fff" height="40" rx="4" stroke="#2E7D32" stroke-width="1.3" width="148" x="30" y="124"></rect>
+<text class="mono" fill="#2E7D32" font-size="9" font-weight="700" style="font-size:9px" text-anchor="middle" x="104.0" y="141.0">three.js</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="middle" x="104.0" y="155.0">l'aperçu 3D (WebGL)</text>
+<rect fill="#fff" height="40" rx="4" stroke="#7A5A12" stroke-width="1.3" width="160" x="226" y="36"></rect>
+<text class="mono" fill="#7A5A12" font-size="9" font-weight="700" style="font-size:9px" text-anchor="middle" x="306.0" y="53.0">compute-proxy.mjs</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="middle" x="306.0" y="67.0">/api/solve</text>
+<rect fill="#fff" height="40" rx="4" stroke="#7B1FA2" stroke-width="1.3" width="160" x="226" y="124"></rect>
+<text class="mono" fill="#7B1FA2" font-size="9" font-weight="700" style="font-size:9px" text-anchor="middle" x="306.0" y="141.0">apercu.mjs</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="middle" x="306.0" y="155.0">rhino3dm (WebAssembly)</text>
+<rect fill="#fff" height="40" rx="4" stroke="#C62828" stroke-width="1.3" width="136" x="434" y="80"></rect>
+<text class="mono" fill="#C62828" font-size="9" font-weight="700" style="font-size:9px" text-anchor="middle" x="502.0" y="97.0">Grasshopper</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="middle" x="502.0" y="111.0">calcule la définition</text>
+<line stroke="#1565C0" stroke-width="1.4" x1="179" x2="224" y1="56" y2="56"></line><polygon fill="#1565C0" points="224,56 217.6,58.7 217.6,53.3"></polygon>
+<text fill="#1565C0" font-size="8" text-anchor="middle" x="201" y="50">graphe</text>
+<line stroke="#7A5A12" stroke-width="1.4" x1="387" x2="470" y1="56" y2="78"></line><polygon fill="#7A5A12" points="470,78 463.1,79.0 464.5,73.7"></polygon>
+<text class="mono" fill="#7A5A12" font-size="8.4" style="font-size:8.4px" text-anchor="middle" x="432" y="56">.ghx</text>
+<line stroke="#C62828" stroke-width="1.4" x1="470" x2="388" y1="121" y2="140"></line><polygon fill="#C62828" points="388,140 393.7,135.9 394.9,141.2"></polygon>
+<text class="mono" fill="#C62828" font-size="8.4" style="font-size:8.4px" text-anchor="middle" x="452" y="146">openNURBS</text>
+<line stroke="#7B1FA2" stroke-width="1.4" x1="225" x2="180" y1="144" y2="144"></line><polygon fill="#7B1FA2" points="180,144 186.4,141.3 186.4,146.7"></polygon>
+<text class="mono" fill="#7B1FA2" font-size="8" style="font-size:8px" text-anchor="middle" x="202" y="138">base64</text>
+<text fill="#2B2F33" font-size="9" text-anchor="middle" x="300" y="198">Le navigateur ne voit jamais un Brep : seulement des sommets, des indices et des polylignes.</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Chaque bibliothèque fait ce qu'elle sait faire, à l'endroit où elle doit le faire : le graphe et la vue 3D dans le navigateur, la géométrie Rhino sur le serveur, à côté de Compute.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Rhino et Grasshopper sur ton poste : le canvas de Grasshopper édite le graphe, la vue de Rhino affiche le résultat, et openNURBS sait ce qu'est un Brep. Magpie rejoue ce partage, réparti entre un serveur et une page web.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>lire le graphe de React Flow : nodes, edges, Handle ;</li>
-        <li>monter une scène three.js : scène, caméra, rendu ;</li>
-        <li>dire pourquoi rhino3dm reste sur le serveur ;</li>
-        <li>suivre un maillage de Compute jusqu'à l'écran.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:5mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Chaque bibliothèque fait ce qu'elle sait faire, à l'endroit où elle doit le faire : le graphe et la vue 3D dans le navigateur, la géométrie Rhino sur le serveur, à côté de Compute.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Rhino et Grasshopper sur ton poste : le canvas de Grasshopper édite le graphe, la vue de Rhino affiche le résultat, et openNURBS sait ce qu'est un Brep. Magpie rejoue ce partage, réparti entre un serveur et une page web.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>lire le graphe de React Flow : nodes, edges, Handle ;</li>
+<li>monter une scène three.js : scène, caméra, rendu ;</li>
+<li>dire pourquoi rhino3dm reste sur le serveur ;</li>
+<li>suivre un maillage de Compute jusqu'à l'écran.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:5mm">
+<span class="titre">À retenir</span>
     Le navigateur ne reçoit jamais de géométrie Rhino. Le serveur la réduit en <b>points</b>, <b>polylignes</b> et <b>maillages</b>, codés en tableaux binaires (<code>Float32Array</code>, <code>Uint32Array</code>), et three.js les envoie tels quels à la carte graphique.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 32 · React Flow, three.js et rhino3dm</div>
+<div class="folio">1</div>
+<div class="pied">Cours 32 · React Flow, three.js et rhino3dm</div>
 </section>
-
 <!-- ============ PAGE 2 · REACT FLOW ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 32</b></div>
-  <p class="rubrique">Schéma 1 · React Flow</p>
-  <h2>Le canvas est un état</h2>
-  <p style="max-width:165mm">React Flow ne garde rien pour lui : le graphe, ce sont deux tableaux d'état, <code>nodes</code> et <code>edges</code>, rangés dans <code>useGraphEditor</code>. Chaque geste de l'apprenant devient un changement proposé, que Magpie applique.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="12" fill="#7A5A12" text-anchor="start" font-weight="700">Ce que l'apprenant voit, ce que React Flow retient</text>
-<rect x="16" y="34" width="232" height="164" rx="5" fill="#F7F5EF" stroke="#CFC6BA"/>
-<line x1="36" y1="34" x2="36" y2="198" stroke="#E6E2D8" stroke-width=".5"/>
-<line x1="56" y1="34" x2="56" y2="198" stroke="#E6E2D8" stroke-width=".5"/>
-<line x1="76" y1="34" x2="76" y2="198" stroke="#E6E2D8" stroke-width=".5"/>
-<line x1="96" y1="34" x2="96" y2="198" stroke="#E6E2D8" stroke-width=".5"/>
-<line x1="116" y1="34" x2="116" y2="198" stroke="#E6E2D8" stroke-width=".5"/>
-<line x1="136" y1="34" x2="136" y2="198" stroke="#E6E2D8" stroke-width=".5"/>
-<line x1="156" y1="34" x2="156" y2="198" stroke="#E6E2D8" stroke-width=".5"/>
-<line x1="176" y1="34" x2="176" y2="198" stroke="#E6E2D8" stroke-width=".5"/>
-<line x1="196" y1="34" x2="196" y2="198" stroke="#E6E2D8" stroke-width=".5"/>
-<line x1="216" y1="34" x2="216" y2="198" stroke="#E6E2D8" stroke-width=".5"/>
-<line x1="236" y1="34" x2="236" y2="198" stroke="#E6E2D8" stroke-width=".5"/>
-<line x1="16" y1="54" x2="248" y2="54" stroke="#E6E2D8" stroke-width=".5"/>
-<line x1="16" y1="74" x2="248" y2="74" stroke="#E6E2D8" stroke-width=".5"/>
-<line x1="16" y1="94" x2="248" y2="94" stroke="#E6E2D8" stroke-width=".5"/>
-<line x1="16" y1="114" x2="248" y2="114" stroke="#E6E2D8" stroke-width=".5"/>
-<line x1="16" y1="134" x2="248" y2="134" stroke="#E6E2D8" stroke-width=".5"/>
-<line x1="16" y1="154" x2="248" y2="154" stroke="#E6E2D8" stroke-width=".5"/>
-<line x1="16" y1="174" x2="248" y2="174" stroke="#E6E2D8" stroke-width=".5"/>
-<line x1="16" y1="194" x2="248" y2="194" stroke="#E6E2D8" stroke-width=".5"/>
-<rect x="34" y="70" width="76" height="40" rx="5" fill="#fff" stroke="#1565C0" stroke-width="1.4"/>
-<text x="72" y="94" font-size="9" fill="#1565C0" text-anchor="middle" font-weight="700">nœud a</text>
-<circle cx="110" cy="90" r="4.5" fill="#fff" stroke="#E65100" stroke-width="1.6"/>
-<rect x="150" y="128" width="80" height="40" rx="5" fill="#fff" stroke="#1565C0" stroke-width="1.4"/>
-<text x="190" y="152" font-size="9" fill="#1565C0" text-anchor="middle" font-weight="700">nœud b</text>
-<circle cx="150" cy="148" r="4.5" fill="#fff" stroke="#E65100" stroke-width="1.6"/>
-<path d="M114 90 C 135 90, 125 148, 146 148" fill="none" stroke="#2E7D32" stroke-width="2"/>
-<text x="100" y="128" font-size="8.4" fill="#2E7D32" text-anchor="middle" font-style="italic">câble</text>
-<text x="110" y="66" font-size="8" fill="#E65100" text-anchor="middle">source</text>
-<text x="150" y="182" font-size="8" fill="#E65100" text-anchor="middle">target</text>
-<rect x="264" y="34" width="320" height="164" rx="5" fill="#fff" stroke="#CFC6BA"/>
-<text x="276" y="56" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px;white-space:pre">nodes = [</text>
-<text x="276" y="72" font-size="9" fill="#1565C0" text-anchor="start" class="mono" style="font-size:9px;white-space:pre">  { id: "a", type: "magpieNode",</text>
-<text x="276" y="88" font-size="9" fill="#1565C0" text-anchor="start" class="mono" style="font-size:9px;white-space:pre">    position: { x: 40, y: 60 },</text>
-<text x="276" y="104" font-size="9" fill="#1565C0" text-anchor="start" class="mono" style="font-size:9px;white-space:pre">    data: { catalogEntry } },</text>
-<text x="276" y="120" font-size="9" fill="#1565C0" text-anchor="start" class="mono" style="font-size:9px;white-space:pre">  { id: "b", … } ]</text>
-<text x="276" y="136" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px;white-space:pre"></text>
-<text x="276" y="152" font-size="9" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:9px;white-space:pre">edges = [</text>
-<text x="276" y="168" font-size="9" fill="#2E7D32" text-anchor="start" class="mono" style="font-size:9px;white-space:pre">  { source: "a", sourceHandle: "Pt",</text>
-<text x="276" y="184" font-size="9" fill="#2E7D32" text-anchor="start" class="mono" style="font-size:9px;white-space:pre">    target: "b", targetHandle: "P" } ]</text>
-<line x1="250" y1="90" x2="268" y2="90" stroke="#6B7378" stroke-width="1"/><polygon points="268,90 261.6,92.7 261.6,87.3" fill="#6B7378"/>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 32</b></div>
+<p class="rubrique">Schéma 1 · React Flow</p>
+<h2>Le canvas est un état</h2>
+<p style="max-width:165mm">React Flow ne garde rien pour lui : le graphe, ce sont deux tableaux d'état, <code>nodes</code> et <code>edges</code>, rangés dans <code>useGraphEditor</code>. Chaque geste de l'apprenant devient un changement proposé, que Magpie applique.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#7A5A12" font-size="12" font-weight="700" text-anchor="start" x="16" y="22">Ce que l'apprenant voit, ce que React Flow retient</text>
+<rect fill="#F7F5EF" height="164" rx="5" stroke="#CFC6BA" width="232" x="16" y="34"></rect>
+<line stroke="#E6E2D8" stroke-width=".5" x1="36" x2="36" y1="34" y2="198"></line>
+<line stroke="#E6E2D8" stroke-width=".5" x1="56" x2="56" y1="34" y2="198"></line>
+<line stroke="#E6E2D8" stroke-width=".5" x1="76" x2="76" y1="34" y2="198"></line>
+<line stroke="#E6E2D8" stroke-width=".5" x1="96" x2="96" y1="34" y2="198"></line>
+<line stroke="#E6E2D8" stroke-width=".5" x1="116" x2="116" y1="34" y2="198"></line>
+<line stroke="#E6E2D8" stroke-width=".5" x1="136" x2="136" y1="34" y2="198"></line>
+<line stroke="#E6E2D8" stroke-width=".5" x1="156" x2="156" y1="34" y2="198"></line>
+<line stroke="#E6E2D8" stroke-width=".5" x1="176" x2="176" y1="34" y2="198"></line>
+<line stroke="#E6E2D8" stroke-width=".5" x1="196" x2="196" y1="34" y2="198"></line>
+<line stroke="#E6E2D8" stroke-width=".5" x1="216" x2="216" y1="34" y2="198"></line>
+<line stroke="#E6E2D8" stroke-width=".5" x1="236" x2="236" y1="34" y2="198"></line>
+<line stroke="#E6E2D8" stroke-width=".5" x1="16" x2="248" y1="54" y2="54"></line>
+<line stroke="#E6E2D8" stroke-width=".5" x1="16" x2="248" y1="74" y2="74"></line>
+<line stroke="#E6E2D8" stroke-width=".5" x1="16" x2="248" y1="94" y2="94"></line>
+<line stroke="#E6E2D8" stroke-width=".5" x1="16" x2="248" y1="114" y2="114"></line>
+<line stroke="#E6E2D8" stroke-width=".5" x1="16" x2="248" y1="134" y2="134"></line>
+<line stroke="#E6E2D8" stroke-width=".5" x1="16" x2="248" y1="154" y2="154"></line>
+<line stroke="#E6E2D8" stroke-width=".5" x1="16" x2="248" y1="174" y2="174"></line>
+<line stroke="#E6E2D8" stroke-width=".5" x1="16" x2="248" y1="194" y2="194"></line>
+<rect fill="#fff" height="40" rx="5" stroke="#1565C0" stroke-width="1.4" width="76" x="34" y="70"></rect>
+<text fill="#1565C0" font-size="9" font-weight="700" text-anchor="middle" x="72" y="94">nœud a</text>
+<circle cx="110" cy="90" fill="#fff" r="4.5" stroke="#E65100" stroke-width="1.6"></circle>
+<rect fill="#fff" height="40" rx="5" stroke="#1565C0" stroke-width="1.4" width="80" x="150" y="128"></rect>
+<text fill="#1565C0" font-size="9" font-weight="700" text-anchor="middle" x="190" y="152">nœud b</text>
+<circle cx="150" cy="148" fill="#fff" r="4.5" stroke="#E65100" stroke-width="1.6"></circle>
+<path d="M114 90 C 135 90, 125 148, 146 148" fill="none" stroke="#2E7D32" stroke-width="2"></path>
+<text fill="#2E7D32" font-size="8.4" font-style="italic" text-anchor="middle" x="100" y="128">câble</text>
+<text fill="#E65100" font-size="8" text-anchor="middle" x="110" y="66">source</text>
+<text fill="#E65100" font-size="8" text-anchor="middle" x="150" y="182">target</text>
+<rect fill="#fff" height="164" rx="5" stroke="#CFC6BA" width="320" x="264" y="34"></rect>
+<text class="mono" fill="#2B2F33" font-size="9" style="font-size:9px;white-space:pre" text-anchor="start" x="276" y="56">nodes = [</text>
+<text class="mono" fill="#1565C0" font-size="9" style="font-size:9px;white-space:pre" text-anchor="start" x="276" y="72">  { id: "a", type: "magpieNode",</text>
+<text class="mono" fill="#1565C0" font-size="9" style="font-size:9px;white-space:pre" text-anchor="start" x="276" y="88">    position: { x: 40, y: 60 },</text>
+<text class="mono" fill="#1565C0" font-size="9" style="font-size:9px;white-space:pre" text-anchor="start" x="276" y="104">    data: { catalogEntry } },</text>
+<text class="mono" fill="#1565C0" font-size="9" style="font-size:9px;white-space:pre" text-anchor="start" x="276" y="120">  { id: "b", … } ]</text>
+<text class="mono" fill="#2B2F33" font-size="9" style="font-size:9px;white-space:pre" text-anchor="start" x="276" y="136"></text>
+<text class="mono" fill="#2B2F33" font-size="9" style="font-size:9px;white-space:pre" text-anchor="start" x="276" y="152">edges = [</text>
+<text class="mono" fill="#2E7D32" font-size="9" style="font-size:9px;white-space:pre" text-anchor="start" x="276" y="168">  { source: "a", sourceHandle: "Pt",</text>
+<text class="mono" fill="#2E7D32" font-size="9" style="font-size:9px;white-space:pre" text-anchor="start" x="276" y="184">    target: "b", targetHandle: "P" } ]</text>
+<line stroke="#6B7378" stroke-width="1" x1="250" x2="268" y1="90" y2="90"></line><polygon fill="#6B7378" points="268,90 261.6,92.7 261.6,87.3"></polygon>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">graphEditor.jsx · 100–101 et 131–143, condensé</span>const [nodes, setNodes] = useState([]);
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">graphEditor.jsx · 100–101 et 131–143, condensé</span>const [nodes, setNodes] = useState([]);
 const [edges, setEdges] = useState([]);
 …
 onNodesChange: useCallback((changes) =&gt;
@@ -145,74 +135,68 @@ onConnect: useCallback((connection) =&gt; {
   setEdges((eds) =&gt; addEdge(connection, eds));
   clearRuntime();
 }, [clearRuntime]),</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Proposer, puis appliquer</h3>
-      <p>Glisser un nœud produit des <b>changements</b> (« position de tel id »). <code>applyNodeChanges</code> en tire un nouveau tableau. Un câble posé arrive dans <code>onConnect</code> ; Magpie l'ajoute et efface les teintes du dernier « Tester », qui ne disent plus rien de vrai.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Ton composant pour chaque nœud</h3>
-      <p><code>nodeTypes = {&nbsp;magpieNode: GenericNode&nbsp;}</code> (ligne 33) : React Flow dessine chaque nœud avec <code>GenericNode</code>. Les poignées sont des <code>&lt;Handle&gt;</code> : <code>type="target"</code> pour une entrée, <code>"source"</code> pour une sortie, <code>id</code> = le nom du port.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Proposer, puis appliquer</h3>
+<p>Glisser un nœud produit des <b>changements</b> (« position de tel id »). <code>applyNodeChanges</code> en tire un nouveau tableau. Un câble posé arrive dans <code>onConnect</code> ; Magpie l'ajoute et efface les teintes du dernier « Tester », qui ne disent plus rien de vrai.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Ton composant pour chaque nœud</h3>
+<p><code>nodeTypes = { magpieNode: GenericNode }</code> (ligne 33) : React Flow dessine chaque nœud avec <code>GenericNode</code>. Les poignées sont des <code>&lt;Handle&gt;</code> : <code>type="target"</code> pour une entrée, <code>"source"</code> pour une sortie, <code>id</code> = le nom du port.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Écrire <code>nodeTypes</code> à l'intérieur du composant. L'objet serait recréé à chaque rendu, et React Flow croirait à de nouveaux types : nœuds démontés, remontés, état perdu. Magpie le pose une fois, au niveau du module, hors de toute fonction.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 32 · React Flow, three.js et rhino3dm</div>
+<div class="folio">2</div>
+<div class="pied">Cours 32 · React Flow, three.js et rhino3dm</div>
 </section>
-
 <!-- ============ PAGE 3 · THREE.JS ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 32</b></div>
-  <p class="rubrique">Schéma 2 · three.js</p>
-  <h2>Une scène, une caméra, un rendu</h2>
-  <p style="max-width:165mm">three.js dessine avec WebGL, la carte graphique du navigateur. On range des objets dans une <b>scène</b>, on les regarde par une <b>caméra</b>, et le <b>renderer</b> produit l'image dans une balise canvas. <code>Viewer3D</code> monte tout cela une fois, dans un effet.</p>
-
-  <svg viewBox="0 0 600 226" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="226" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="12" fill="#7A5A12" text-anchor="start" font-weight="700">Ce que Viewer3D range dans sa scène</text>
-<rect x="16" y="36" width="120" height="26" rx="4" fill="#F4EEDF" stroke="#7A5A12" stroke-width="1.3"/>
-<text x="76.0" y="52.5" font-size="9" fill="#7A5A12" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">Scene</text>
-<path d="M40 62 L40 75 L56 75" fill="none" stroke="#6B7378"/>
-<rect x="58" y="64" width="196" height="22" rx="3" fill="#fff" stroke="#6B7378"/>
-<text x="66" y="79" font-size="8.6" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">AmbientLight + DirectionalLight</text>
-<text x="262" y="79" font-size="8.2" fill="#2B2F33" text-anchor="start">deux lumières</text>
-<path d="M40 62 L40 103 L56 103" fill="none" stroke="#6B7378"/>
-<rect x="58" y="92" width="196" height="22" rx="3" fill="#fff" stroke="#6B7378"/>
-<text x="66" y="107" font-size="8.6" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">GridHelper × 2</text>
-<text x="262" y="107" font-size="8.2" fill="#2B2F33" text-anchor="start">grille XY : pas de 1, trait fort tous les 10</text>
-<path d="M40 62 L40 131 L56 131" fill="none" stroke="#6B7378"/>
-<rect x="58" y="120" width="196" height="22" rx="3" fill="#fff" stroke="#6B7378"/>
-<text x="66" y="135" font-size="8.6" fill="#6B7378" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">Line × 2</text>
-<text x="262" y="135" font-size="8.2" fill="#2B2F33" text-anchor="start">axes X rouge, Y vert</text>
-<path d="M40 62 L40 159 L56 159" fill="none" stroke="#6B7378"/>
-<rect x="58" y="148" width="196" height="22" rx="3" fill="#fff" stroke="#2E7D32"/>
-<text x="66" y="163" font-size="8.6" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">content : Group</text>
-<text x="262" y="163" font-size="8.2" fill="#2B2F33" text-anchor="start">tout l'aperçu de Compute</text>
-<path d="M80 170 L80 192 L96 192" fill="none" stroke="#2E7D32"/>
-<rect x="98" y="181" width="240" height="22" rx="3" fill="#fff" stroke="#2E7D32"/>
-<text x="106" y="196" font-size="8.6" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">Group par composant › Mesh, Line, Points</text>
-<text x="346" y="196" font-size="8.2" fill="#2B2F33" text-anchor="start">teint en vert si sélectionné</text>
-<rect x="452" y="36" width="132" height="36" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.3"/>
-<text x="518.0" y="51.0" font-size="8.6" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">PerspectiveCamera</text>
-<text x="518.0" y="65.0" font-size="8.2" fill="#2B2F33" text-anchor="middle">40°, Z vers le haut</text>
-<rect x="452" y="92" width="132" height="36" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.3"/>
-<text x="518.0" y="107.0" font-size="8.6" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">OrbitControls</text>
-<text x="518.0" y="121.0" font-size="8.2" fill="#2B2F33" text-anchor="middle">souris et doigts</text>
-<rect x="452" y="148" width="132" height="36" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.3"/>
-<text x="518.0" y="163.0" font-size="8.6" fill="#7B1FA2" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">WebGLRenderer</text>
-<text x="518.0" y="177.0" font-size="8.2" fill="#2B2F33" text-anchor="middle">dessine dans un canvas</text>
-<line x1="518" y1="91" x2="518" y2="74" stroke="#1565C0" stroke-width="1.4"/><polygon points="518,74 520.7,80.4 515.3,80.4" fill="#1565C0"/>
-<line x1="518" y1="129" x2="518" y2="146" stroke="#1565C0" stroke-width="1.4"/><polygon points="518,146 515.3,139.6 520.7,139.6" fill="#1565C0"/>
-<text x="524" y="141" font-size="8" fill="#1565C0" text-anchor="start" class="mono" style="font-size:8px">"change"</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 32</b></div>
+<p class="rubrique">Schéma 2 · three.js</p>
+<h2>Une scène, une caméra, un rendu</h2>
+<p style="max-width:165mm">three.js dessine avec WebGL, la carte graphique du navigateur. On range des objets dans une <b>scène</b>, on les regarde par une <b>caméra</b>, et le <b>renderer</b> produit l'image dans une balise canvas. <code>Viewer3D</code> monte tout cela une fois, dans un effet.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 226" width="100%">
+<rect fill="#EFE9E1" height="226" width="600" x="0" y="0"></rect>
+<text fill="#7A5A12" font-size="12" font-weight="700" text-anchor="start" x="16" y="22">Ce que Viewer3D range dans sa scène</text>
+<rect fill="#F4EEDF" height="26" rx="4" stroke="#7A5A12" stroke-width="1.3" width="120" x="16" y="36"></rect>
+<text class="mono" fill="#7A5A12" font-size="9" font-weight="700" style="font-size:9px" text-anchor="middle" x="76.0" y="52.5">Scene</text>
+<path d="M40 62 L40 75 L56 75" fill="none" stroke="#6B7378"></path>
+<rect fill="#fff" height="22" rx="3" stroke="#6B7378" width="196" x="58" y="64"></rect>
+<text class="mono" fill="#6B7378" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="66" y="79">AmbientLight + DirectionalLight</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="start" x="262" y="79">deux lumières</text>
+<path d="M40 62 L40 103 L56 103" fill="none" stroke="#6B7378"></path>
+<rect fill="#fff" height="22" rx="3" stroke="#6B7378" width="196" x="58" y="92"></rect>
+<text class="mono" fill="#6B7378" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="66" y="107">GridHelper × 2</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="start" x="262" y="107">grille XY : pas de 1, trait fort tous les 10</text>
+<path d="M40 62 L40 131 L56 131" fill="none" stroke="#6B7378"></path>
+<rect fill="#fff" height="22" rx="3" stroke="#6B7378" width="196" x="58" y="120"></rect>
+<text class="mono" fill="#6B7378" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="66" y="135">Line × 2</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="start" x="262" y="135">axes X rouge, Y vert</text>
+<path d="M40 62 L40 159 L56 159" fill="none" stroke="#6B7378"></path>
+<rect fill="#fff" height="22" rx="3" stroke="#2E7D32" width="196" x="58" y="148"></rect>
+<text class="mono" fill="#2E7D32" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="66" y="163">content : Group</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="start" x="262" y="163">tout l'aperçu de Compute</text>
+<path d="M80 170 L80 192 L96 192" fill="none" stroke="#2E7D32"></path>
+<rect fill="#fff" height="22" rx="3" stroke="#2E7D32" width="240" x="98" y="181"></rect>
+<text class="mono" fill="#2E7D32" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="106" y="196">Group par composant › Mesh, Line, Points</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="start" x="346" y="196">teint en vert si sélectionné</text>
+<rect fill="#fff" height="36" rx="4" stroke="#1565C0" stroke-width="1.3" width="132" x="452" y="36"></rect>
+<text class="mono" fill="#1565C0" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="518.0" y="51.0">PerspectiveCamera</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="middle" x="518.0" y="65.0">40°, Z vers le haut</text>
+<rect fill="#fff" height="36" rx="4" stroke="#1565C0" stroke-width="1.3" width="132" x="452" y="92"></rect>
+<text class="mono" fill="#1565C0" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="518.0" y="107.0">OrbitControls</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="middle" x="518.0" y="121.0">souris et doigts</text>
+<rect fill="#fff" height="36" rx="4" stroke="#7B1FA2" stroke-width="1.3" width="132" x="452" y="148"></rect>
+<text class="mono" fill="#7B1FA2" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="518.0" y="163.0">WebGLRenderer</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="middle" x="518.0" y="177.0">dessine dans un canvas</text>
+<line stroke="#1565C0" stroke-width="1.4" x1="518" x2="518" y1="91" y2="74"></line><polygon fill="#1565C0" points="518,74 520.7,80.4 515.3,80.4"></polygon>
+<line stroke="#1565C0" stroke-width="1.4" x1="518" x2="518" y1="129" y2="146"></line><polygon fill="#1565C0" points="518,146 515.3,139.6 520.7,139.6"></polygon>
+<text class="mono" fill="#1565C0" font-size="8" style="font-size:8px" text-anchor="start" x="524" y="141">"change"</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Viewer3D.jsx · 96–107</span>const camera = new THREE.PerspectiveCamera(40, 1, 0.01, 10000);
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Viewer3D.jsx · 96–107</span>const camera = new THREE.PerspectiveCamera(40, 1, 0.01, 10000);
 camera.up.set(0, 0, 1);
 camera.position.set(12, -18, 12);
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -223,65 +207,59 @@ scene.add(content);
 
 const render = () =&gt; renderer.render(scene, camera);
 controls.addEventListener("change", render);</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Z vers le haut, comme Rhino</h3>
-      <p>three.js tient Y pour la verticale. Magpie redresse la caméra (<code>camera.up.set(0, 0, 1)</code>) et couche la grille dans le plan XY (ligne 88). Axe X rouge, axe Y vert : l'apprenant retrouve les repères de Rhino.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Dessiner sur demande</h3>
-      <p>Pas de boucle à 60 images par seconde : une image est produite quand la caméra bouge, quand le volet change de taille ou quand une réponse arrive. Une vue immobile ne coûte rien, sur un téléphone non plus.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Z vers le haut, comme Rhino</h3>
+<p>three.js tient Y pour la verticale. Magpie redresse la caméra (<code>camera.up.set(0, 0, 1)</code>) et couche la grille dans le plan XY (ligne 88). Axe X rouge, axe Y vert : l'apprenant retrouve les repères de Rhino.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Dessiner sur demande</h3>
+<p>Pas de boucle à 60 images par seconde : une image est produite quand la caméra bouge, quand le volet change de taille ou quand une réponse arrive. Une vue immobile ne coûte rien, sur un téléphone non plus.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Croire que le ramasse-miettes libère la carte graphique. Une géométrie three.js garde ses tampons sur le GPU jusqu'à <code>dispose()</code>. Viewer3D l'appelle sur chaque groupe remplacé (<code>disposeGroup</code>, lignes 63–65) et sur tout le reste quand l'aperçu se ferme (lignes 128–136).
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 32 · React Flow, three.js et rhino3dm</div>
+<div class="folio">3</div>
+<div class="pied">Cours 32 · React Flow, three.js et rhino3dm</div>
 </section>
-
 <!-- ============ PAGE 4 · RHINO3DM ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 32</b></div>
-  <p class="rubrique">Schéma 3 · rhino3dm</p>
-  <h2>openNURBS dans Node</h2>
-  <p style="max-width:165mm">Compute rend chaque objet Rhino sous forme de texte openNURBS. Pour en tirer des sommets, il faut la bibliothèque de McNeel : rhino3dm, openNURBS compilé en <b>WebAssembly</b>. Magpie ne la charge que sur le serveur, dans <code>apercu.mjs</code>.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="12" fill="#7A5A12" text-anchor="start" font-weight="700">Une sortie de Compute, trois façons de la lire</text>
-<text x="26" y="44" font-size="8.6" fill="#6B7378" text-anchor="start" font-weight="700">donnée</text>
-<text x="136" y="44" font-size="8.6" fill="#6B7378" text-anchor="start" font-weight="700">format</text>
-<text x="226" y="44" font-size="8.6" fill="#6B7378" text-anchor="start" font-weight="700">lecture</text>
-<text x="390" y="44" font-size="8.6" fill="#6B7378" text-anchor="start" font-weight="700">réduction</text>
-<rect x="16" y="52" width="568" height="28" rx="4" fill="#fff" stroke="#2E7D32"/>
-<text x="26" y="70" font-size="8.8" fill="#2E7D32" text-anchor="start" font-weight="700">Mesh caché</text>
-<text x="136" y="70" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px">openNURBS</text>
-<text x="226" y="70" font-size="8.4" fill="#2E7D32" text-anchor="start" class="mono" style="font-size:8.4px">CommonObject.decode</text>
-<text x="390" y="70" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px">toThreejsJSON()</text>
-<text x="574" y="70" font-size="8.4" fill="#2E7D32" text-anchor="end" font-weight="700">positions + indices</text>
-<rect x="16" y="86" width="568" height="28" rx="4" fill="#fff" stroke="#1565C0"/>
-<text x="26" y="104" font-size="8.8" fill="#1565C0" text-anchor="start" font-weight="700">Brep, courbe</text>
-<text x="136" y="104" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px">openNURBS</text>
-<text x="226" y="104" font-size="8.4" fill="#1565C0" text-anchor="start" class="mono" style="font-size:8.4px">CommonObject.decode</text>
-<text x="390" y="104" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px">edges() › sampleCurve</text>
-<text x="574" y="104" font-size="8.4" fill="#1565C0" text-anchor="end" font-weight="700">polylignes</text>
-<rect x="16" y="120" width="568" height="28" rx="4" fill="#fff" stroke="#E65100"/>
-<text x="26" y="138" font-size="8.8" fill="#E65100" text-anchor="start" font-weight="700">point, ligne, cercle</text>
-<text x="136" y="138" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px">JSON lisible</text>
-<text x="226" y="138" font-size="8.4" fill="#E65100" text-anchor="start" class="mono" style="font-size:8.4px">readPlain (sans rhino3dm)</text>
-<text x="390" y="138" font-size="8.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.4px">calcul direct</text>
-<text x="574" y="138" font-size="8.4" fill="#E65100" text-anchor="end" font-weight="700">points, polylignes</text>
-<line x1="300" y1="156" x2="300" y2="172" stroke="#7A5A12" stroke-width="1.4"/><polygon points="300,172 297.3,165.6 302.7,165.6" fill="#7A5A12"/>
-<rect x="150" y="174" width="300" height="26" rx="4" fill="#7A5A12"/>
-<text x="300" y="191" font-size="9" fill="#fff" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">b64(Float32Array, …) › preview.nodes[id]</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 32</b></div>
+<p class="rubrique">Schéma 3 · rhino3dm</p>
+<h2>openNURBS dans Node</h2>
+<p style="max-width:165mm">Compute rend chaque objet Rhino sous forme de texte openNURBS. Pour en tirer des sommets, il faut la bibliothèque de McNeel : rhino3dm, openNURBS compilé en <b>WebAssembly</b>. Magpie ne la charge que sur le serveur, dans <code>apercu.mjs</code>.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#7A5A12" font-size="12" font-weight="700" text-anchor="start" x="16" y="22">Une sortie de Compute, trois façons de la lire</text>
+<text fill="#6B7378" font-size="8.6" font-weight="700" text-anchor="start" x="26" y="44">donnée</text>
+<text fill="#6B7378" font-size="8.6" font-weight="700" text-anchor="start" x="136" y="44">format</text>
+<text fill="#6B7378" font-size="8.6" font-weight="700" text-anchor="start" x="226" y="44">lecture</text>
+<text fill="#6B7378" font-size="8.6" font-weight="700" text-anchor="start" x="390" y="44">réduction</text>
+<rect fill="#fff" height="28" rx="4" stroke="#2E7D32" width="568" x="16" y="52"></rect>
+<text fill="#2E7D32" font-size="8.8" font-weight="700" text-anchor="start" x="26" y="70">Mesh caché</text>
+<text class="mono" fill="#2B2F33" font-size="8.4" style="font-size:8.4px" text-anchor="start" x="136" y="70">openNURBS</text>
+<text class="mono" fill="#2E7D32" font-size="8.4" style="font-size:8.4px" text-anchor="start" x="226" y="70">CommonObject.decode</text>
+<text class="mono" fill="#2B2F33" font-size="8.4" style="font-size:8.4px" text-anchor="start" x="390" y="70">toThreejsJSON()</text>
+<text fill="#2E7D32" font-size="8.4" font-weight="700" text-anchor="end" x="574" y="70">positions + indices</text>
+<rect fill="#fff" height="28" rx="4" stroke="#1565C0" width="568" x="16" y="86"></rect>
+<text fill="#1565C0" font-size="8.8" font-weight="700" text-anchor="start" x="26" y="104">Brep, courbe</text>
+<text class="mono" fill="#2B2F33" font-size="8.4" style="font-size:8.4px" text-anchor="start" x="136" y="104">openNURBS</text>
+<text class="mono" fill="#1565C0" font-size="8.4" style="font-size:8.4px" text-anchor="start" x="226" y="104">CommonObject.decode</text>
+<text class="mono" fill="#2B2F33" font-size="8.4" style="font-size:8.4px" text-anchor="start" x="390" y="104">edges() › sampleCurve</text>
+<text fill="#1565C0" font-size="8.4" font-weight="700" text-anchor="end" x="574" y="104">polylignes</text>
+<rect fill="#fff" height="28" rx="4" stroke="#E65100" width="568" x="16" y="120"></rect>
+<text fill="#E65100" font-size="8.8" font-weight="700" text-anchor="start" x="26" y="138">point, ligne, cercle</text>
+<text class="mono" fill="#2B2F33" font-size="8.4" style="font-size:8.4px" text-anchor="start" x="136" y="138">JSON lisible</text>
+<text class="mono" fill="#E65100" font-size="8.4" style="font-size:8.4px" text-anchor="start" x="226" y="138">readPlain (sans rhino3dm)</text>
+<text class="mono" fill="#2B2F33" font-size="8.4" style="font-size:8.4px" text-anchor="start" x="390" y="138">calcul direct</text>
+<text fill="#E65100" font-size="8.4" font-weight="700" text-anchor="end" x="574" y="138">points, polylignes</text>
+<line stroke="#7A5A12" stroke-width="1.4" x1="300" x2="300" y1="156" y2="172"></line><polygon fill="#7A5A12" points="300,172 297.3,165.6 302.7,165.6"></polygon>
+<rect fill="#7A5A12" height="26" rx="4" width="300" x="150" y="174"></rect>
+<text class="mono" fill="#fff" font-size="9" font-weight="700" style="font-size:9px" text-anchor="middle" x="300" y="191">b64(Float32Array, …) › preview.nodes[id]</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">apercu.mjs · 187–199</span>function readMesh(rhino, d) {
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">apercu.mjs · 187–199</span>function readMesh(rhino, d) {
   const mesh = rhino.CommonObject.decode(d);
   if (!(mesh instanceof rhino.Mesh)) {
     mesh?.delete?.();
@@ -294,193 +272,106 @@ controls.addEventListener("change", render);</div>
     mesh.delete();
   }
 }</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Chargé une fois, à la demande</h3>
-      <p><code>rhinoPromise ||= import("rhino3dm").then((m) =&gt; m.default())</code> (ligne 72). Le premier aperçu lance le chargement ; les suivants reçoivent la même promesse. On garde la promesse, pas le module : deux appels simultanés n'en chargent qu'un.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Des tableaux, pas des objets</h3>
-      <p>Chaque nombre part en 4 octets (<code>Float32Array</code>), codé en base64 dans le JSON. Au-delà de 200 000 triangles ou 5 Mo, le serveur arrête d'ajouter et marque l'aperçu <code>truncated</code> : le volet affiche « Aperçu tronqué ».</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Chargé une fois, à la demande</h3>
+<p><code>rhinoPromise ||= import("rhino3dm").then((m) =&gt; m.default())</code> (ligne 72). Le premier aperçu lance le chargement ; les suivants reçoivent la même promesse. On garde la promesse, pas le module : deux appels simultanés n'en chargent qu'un.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Des tableaux, pas des objets</h3>
+<p>Chaque nombre part en 4 octets (<code>Float32Array</code>), codé en base64 dans le JSON. Au-delà de 200 000 triangles ou 5 Mo, le serveur arrête d'ajouter et marque l'aperçu <code>truncated</code> : le volet affiche « Aperçu tronqué ».</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Oublier <code>delete()</code>. Un objet rhino3dm vit dans la mémoire du module WebAssembly, que le ramasse-miettes de JavaScript ne voit pas. Chaque <code>decode</code> de <code>apercu.mjs</code> est suivi d'un <code>delete</code> dans un <code>finally</code>, comme un <code>using</code> en C#.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 32 · React Flow, three.js et rhino3dm</div>
+<div class="folio">4</div>
+<div class="pied">Cours 32 · React Flow, three.js et rhino3dm</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 32</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>buildNodeObject : des octets à l'écran</h2>
-  <p style="max-width:165mm">Côté navigateur, l'arrivée de l'aperçu. Un groupe three.js par composant de l'apprenant, reconstruit à chaque réponse de Compute : c'est lui qu'on teint en vert quand le composant est sélectionné.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 32</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>buildNodeObject : des octets à l'écran</h2>
+<p style="max-width:165mm">Côté navigateur, l'arrivée de l'aperçu. Un groupe three.js par composant de l'apprenant, reconstruit à chaque réponse de Compute : c'est lui qu'on teint en vert quand le composant est sélectionné.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l k1"><span class="n">19</span><span class="kw">function</span> decode(Typed, b64) {<span class="rep r1">1</span></div>
-<div class="l k1"><span class="n">20</span>  <span class="kw">const</span> bin = atob(b64);</div>
-<div class="l k1"><span class="n">21</span>  <span class="kw">const</span> bytes = <span class="kw">new</span> <span class="ty">Uint8Array</span>(bin.length);</div>
-<div class="l k1"><span class="n">22</span>  <span class="kw">for</span> (<span class="kw">let</span> i = <span class="st">0</span>; i &lt; bin.length; i++)</div>
+<div class="l k1"><span class="n">20</span> <span class="kw">const</span> bin = atob(b64);</div>
+<div class="l k1"><span class="n">21</span> <span class="kw">const</span> bytes = <span class="kw">new</span> <span class="ty">Uint8Array</span>(bin.length);</div>
+<div class="l k1"><span class="n">22</span> <span class="kw">for</span> (<span class="kw">let</span> i = <span class="st">0</span>; i &lt; bin.length; i++)</div>
 <div class="l k1"><span class="n"> </span>    bytes[i] = bin.charCodeAt(i);</div>
-<div class="l k2"><span class="n">23</span>  <span class="kw">return new</span> Typed(bytes.buffer);<span class="rep r2">2</span></div>
+<div class="l k2"><span class="n">23</span> <span class="kw">return new</span> Typed(bytes.buffer);<span class="rep r2">2</span></div>
 <div class="l"><span class="n">24</span>}</div>
 <div class="l k3"><span class="n">35</span><span class="kw">function</span> buildNodeObject(entry, materials) {<span class="rep r3">3</span></div>
-<div class="l k3"><span class="n">36</span>  <span class="kw">const</span> group = <span class="kw">new</span> <span class="ty">THREE.Group</span>();</div>
-<div class="l"><span class="n">37</span>  <span class="kw">for</span> (<span class="kw">const</span> m <span class="kw">of</span> entry.meshes) {</div>
-<div class="l k4"><span class="n">38</span>    <span class="kw">const</span> geometry = <span class="kw">new</span> <span class="ty">THREE.BufferGeometry</span>();<span class="rep r4">4</span></div>
+<div class="l k3"><span class="n">36</span> <span class="kw">const</span> group = <span class="kw">new</span> <span class="ty">THREE.Group</span>();</div>
+<div class="l"><span class="n">37</span> <span class="kw">for</span> (<span class="kw">const</span> m <span class="kw">of</span> entry.meshes) {</div>
+<div class="l k4"><span class="n">38</span> <span class="kw">const</span> geometry = <span class="kw">new</span> <span class="ty">THREE.BufferGeometry</span>();<span class="rep r4">4</span></div>
 <div class="l k4"><span class="n">39</span>    geometry.setAttribute(<span class="st">"position"</span>,</div>
-<div class="l k4"><span class="n"> </span>      <span class="kw">new</span> <span class="ty">THREE.BufferAttribute</span>(</div>
+<div class="l k4"><span class="n"> </span> <span class="kw">new</span> <span class="ty">THREE.BufferAttribute</span>(</div>
 <div class="l k4"><span class="n"> </span>        decode(Float32Array, m.positions), <span class="st">3</span>));</div>
 <div class="l k5"><span class="n">40</span>    geometry.setIndex(<span class="kw">new</span> <span class="ty">THREE.BufferAttribute</span>(<span class="rep r5">5</span></div>
 <div class="l k5"><span class="n"> </span>      decode(Uint32Array, m.indices), <span class="st">1</span>));</div>
 <div class="l k6"><span class="n">41</span>    geometry.computeVertexNormals();<span class="rep r6">6</span></div>
 <div class="l k6"><span class="n">42</span>    group.add(<span class="kw">new</span> <span class="ty">THREE.Mesh</span>(geometry, materials.mesh) …);</div>
 <div class="l"><span class="n">43</span>  }</div>
-<div class="l k7"><span class="n">44</span>  <span class="kw">for</span> (<span class="kw">const</span> c <span class="kw">of</span> entry.curves) { … <span class="ty">THREE.Line</span> … }<span class="rep r7">7</span></div>
-<div class="l k7"><span class="n">49</span>  <span class="kw">if</span> (entry.points) { … <span class="ty">THREE.Points</span> … }</div>
-<div class="l"><span class="n">54</span>  <span class="kw">return</span> group;</div>
+<div class="l k7"><span class="n">44</span> <span class="kw">for</span> (<span class="kw">const</span> c <span class="kw">of</span> entry.curves) { … <span class="ty">THREE.Line</span> … }<span class="rep r7">7</span></div>
+<div class="l k7"><span class="n">49</span> <span class="kw">if</span> (entry.points) { … <span class="ty">THREE.Points</span> … }</div>
+<div class="l"><span class="n">54</span> <span class="kw">return</span> group;</div>
 <div class="l"><span class="n">55</span>}</div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>Du base64 aux octets</b>atob rend une chaîne binaire, recopiée octet par octet.</li>
-      <li><span class="rep r2">2</span><b>Une vue typée</b>Les mêmes octets, lus en float ou en entiers 32 bits.</li>
-      <li><span class="rep r3">3</span><b>Un groupe par composant</b>Pour le masquer ou le teindre d'un coup.</li>
-      <li><span class="rep r4">4</span><b>Les sommets</b>Trois nombres par sommet : x, y, z.</li>
-      <li><span class="rep r5">5</span><b>Les triangles</b>Trois indices par triangle, qui renvoient aux sommets.</li>
-      <li><span class="rep r6">6</span><b>Les normales</b>Calculées ici, pour que la lumière modèle la surface.</li>
-      <li><span class="rep r7">7</span><b>Courbes et points</b>Même motif : un tableau, un objet three.js.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">Le même tableau, de bout en bout</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>Du base64 aux octets</b>atob rend une chaîne binaire, recopiée octet par octet.</li>
+<li><span class="rep r2">2</span><b>Une vue typée</b>Les mêmes octets, lus en float ou en entiers 32 bits.</li>
+<li><span class="rep r3">3</span><b>Un groupe par composant</b>Pour le masquer ou le teindre d'un coup.</li>
+<li><span class="rep r4">4</span><b>Les sommets</b>Trois nombres par sommet : x, y, z.</li>
+<li><span class="rep r5">5</span><b>Les triangles</b>Trois indices par triangle, qui renvoient aux sommets.</li>
+<li><span class="rep r6">6</span><b>Les normales</b>Calculées ici, pour que la lumière modèle la surface.</li>
+<li><span class="rep r7">7</span><b>Courbes et points</b>Même motif : un tableau, un objet three.js.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">Le même tableau, de bout en bout</span>
     Sur le serveur, <code>b64(Float32Array, …)</code> (apercu.mjs, ligne 201) ; dans le navigateur, <code>decode(Float32Array, …)</code>. Entre les deux, aucun objet intermédiaire : les octets écrits par le serveur sont ceux que la carte graphique lit.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 32 · React Flow, three.js et rhino3dm</div>
+<div class="folio">5</div>
+<div class="pied">Cours 32 · React Flow, three.js et rhino3dm</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 32</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 32</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">Pour React Flow, le graphe de l'apprenant est…</div><ul>
-      <li><span>A</span>un canvas dessiné à la main</li><li><span>B</span>deux tableaux d'état, nodes et edges</li><li><span>C</span>un fichier .ghx</li><li><span>D</span>une scène three.js</li></ul></div>
 
-    <div class="q"><div class="enonce">Quand l'apprenant pose un câble, onConnect…</div><ul>
-      <li><span>A</span>reçoit la connexion, que addEdge ajoute</li><li><span>B</span>appelle Compute</li><li><span>C</span>recharge la page</li><li><span>D</span>ne fait rien</li></ul></div>
 
-    <div class="q"><div class="enonce">nodeTypes est déclaré hors de tout composant car…</div><ul>
-      <li><span>A</span>c'est plus lisible</li><li><span>B</span>Vite l'exige</li><li><span>C</span>React Flow le lit au build</li><li><span>D</span>recréé à chaque rendu, il ferait remonter les nœuds</li></ul></div>
 
-    <div class="q"><div class="enonce">Un &lt;Handle type="target"&gt; est…</div><ul>
-      <li><span>A</span>une sortie</li><li><span>B</span>une entrée</li><li><span>C</span>un câble</li><li><span>D</span>un groupe</li></ul></div>
-
-    <div class="q"><div class="enonce">Par défaut, l'axe vertical de three.js est…</div><ul>
-      <li><span>A</span>Z</li><li><span>B</span>X</li><li><span>C</span>Y</li><li><span>D</span>aucun</li></ul></div>
-
-    <div class="q"><div class="enonce">Viewer3D produit une image…</div><ul>
-      <li><span>A</span>60 fois par seconde</li><li><span>B</span>seulement quand quelque chose change</li><li><span>C</span>une fois, à l'ouverture</li><li><span>D</span>chaque seconde</li></ul></div>
-
-    <div class="q"><div class="enonce">geometry.dispose() sert à…</div><ul>
-      <li><span>A</span>fermer l'aperçu</li><li><span>B</span>effacer l'écran</li><li><span>C</span>libérer la mémoire de la carte graphique</li><li><span>D</span>supprimer le composant du canvas</li></ul></div>
-
-    <div class="q"><div class="enonce">Dans Magpie, rhino3dm s'exécute…</div><ul>
-      <li><span>A</span>dans le navigateur</li><li><span>B</span>sur le serveur Node</li><li><span>C</span>dans Rhino</li><li><span>D</span>dans Compute</li></ul></div>
-
-    <div class="q"><div class="enonce">Pourquoi delete() après chaque decode ?</div><ul>
-      <li><span>A</span>le ramasse-miettes ne voit pas la mémoire WebAssembly</li><li><span>B</span>Rhino le demande</li><li><span>C</span>pour aller plus vite</li><li><span>D</span>le JSON l'impose</li></ul></div>
-
-    <div class="q"><div class="enonce">L'aperçu arrive au navigateur sous forme de… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>objets Brep</li><li><span>B</span>Float32Array en base64</li><li><span>C</span>fichiers .3dm</li><li><span>D</span>Uint32Array en base64, pour les indices</li></ul></div>
-
-    <div class="q"><div class="enonce">Un Brep apparaît dans l'aperçu…</div><ul>
-      <li><span>A</span>par ses seules arêtes</li><li><span>B</span>point par point</li><li><span>C</span>pas du tout</li><li><span>D</span>maillé par Compute, arêtes par-dessus</li></ul></div>
-
-    <div class="q"><div class="enonce">Au-delà de 200 000 triangles…</div><ul>
-      <li><span>A</span>le serveur plante</li><li><span>B</span>Compute refuse le calcul</li><li><span>C</span>l'aperçu est tronqué, et le dit</li><li><span>D</span>le navigateur ralentit</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 32 · React Flow, three.js et rhino3dm</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">applyNodeChanges(changes, nds)</td><td>appliquer un geste au graphe</td><td>graphEditor:131</td></tr>
+<tr><td class="c">addEdge(connection, eds)</td><td>ajouter un câble</td><td>graphEditor:141</td></tr>
+<tr><td class="c">&lt;Handle type="target" id={port.name} /&gt;</td><td>une poignée d'entrée</td><td>GenericNode:156</td></tr>
+<tr><td class="c">geometry.setAttribute("position", …)</td><td>donner les sommets</td><td>Viewer3D:39</td></tr>
+<tr><td class="c">o.geometry?.dispose()</td><td>libérer la carte graphique</td><td>Viewer3D:64</td></tr>
+<tr><td class="c">rhino.CommonObject.decode(d)</td><td>lire un objet openNURBS</td><td>apercu:188</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Handle</dt><dd>La poignée d'un nœud React Flow, où un câble s'accroche.</dd>
+<dt>WebGL</dt><dd>L'accès du navigateur à la carte graphique, sur lequel repose three.js.</dd>
+<dt>BufferGeometry</dt><dd>Une géométrie three.js faite de tableaux : sommets, indices.</dd>
+<dt>WebAssembly</dt><dd>Du code compilé, ici openNURBS en C++, exécuté par Node.</dd>
+<dt>openNURBS</dt><dd>La bibliothèque de McNeel qui définit les objets et le format .3dm.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 96</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 32 · React Flow, three.js et rhino3dm</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8A</b> · JavaScript et React</span><b>Cours 32</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · B.</b> Rangés dans useGraphEditor.</div>
-    <div><b>02 · A.</b> Puis les teintes du dernier Tester s'effacent.</div>
-    <div><b>03 · D.</b> Un nouvel objet passerait pour de nouveaux types.</div>
-    <div><b>04 · B.</b> target reçoit le câble, source l'émet.</div>
-    <div><b>05 · C.</b> D'où camera.up.set(0, 0, 1).</div>
-    <div><b>06 · B.</b> Caméra, taille du volet, nouvelle réponse.</div>
-    <div><b>07 · C.</b> Les tampons GPU ne se libèrent pas seuls.</div>
-    <div><b>08 · B.</b> Seul apercu.mjs l'importe.</div>
-    <div><b>09 · A.</b> D'où delete() dans un finally.</div>
-    <div><b>10 · B et D.</b> Sommets en float, indices en entiers.</div>
-    <div><b>11 · D.</b> Comme l'aperçu de Grasshopper.</div>
-    <div><b>12 · C.</b> Le volet affiche « Aperçu tronqué ».</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis la page 4 et le code de la page 5. <b>10 à 12</b> : passe au cours 96, « Une interface React rapide ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">applyNodeChanges(changes, nds)</td><td>appliquer un geste au graphe</td><td>graphEditor:131</td></tr>
-      <tr><td class="c">addEdge(connection, eds)</td><td>ajouter un câble</td><td>graphEditor:141</td></tr>
-      <tr><td class="c">&lt;Handle type="target" id={port.name} /&gt;</td><td>une poignée d'entrée</td><td>GenericNode:156</td></tr>
-      <tr><td class="c">geometry.setAttribute("position", …)</td><td>donner les sommets</td><td>Viewer3D:39</td></tr>
-      <tr><td class="c">o.geometry?.dispose()</td><td>libérer la carte graphique</td><td>Viewer3D:64</td></tr>
-      <tr><td class="c">rhino.CommonObject.decode(d)</td><td>lire un objet openNURBS</td><td>apercu:188</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Handle</dt><dd>La poignée d'un nœud React Flow, où un câble s'accroche.</dd>
-    <dt>WebGL</dt><dd>L'accès du navigateur à la carte graphique, sur lequel repose three.js.</dd>
-    <dt>BufferGeometry</dt><dd>Une géométrie three.js faite de tableaux : sommets, indices.</dd>
-    <dt>WebAssembly</dt><dd>Du code compilé, ici openNURBS en C++, exécuté par Node.</dd>
-    <dt>openNURBS</dt><dd>La bibliothèque de McNeel qui définit les objets et le format .3dm.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 96</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 32 · React Flow, three.js et rhino3dm</div>
-</section>
-
 </body>
 </html>

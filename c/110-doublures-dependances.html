@@ -1,279 +1,252 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>110 · Doublures et dépendances</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-11">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 110</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Doublures et dépendances</h1>
-  <p class="chapeau">Le code utile parle presque toujours à quelque chose d'extérieur : un serveur, une base, le disque, l'horloge. Pour le tester vite et sans dépendre de cet extérieur, on le remplace par une <b>doublure</b>, comme une doublure de cinéma remplace l'acteur pour une scène. Le cours suit le cas de Magpie, dont le serveur web dépend de Rhino Compute.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>109</b></span>
-    <span class="pastille">Exemples · <b>Magpie</b> web</span>
-  </div>
-
-  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
-    <svg viewBox="0 0 600 200" width="100%">
-<rect x="10" y="30" width="150" height="56" rx="4" fill="#ECEBFA" stroke="#4F46B8" stroke-width="1.2"/>
-<text x="85" y="52" font-size="9.4" fill="#4F46B8" text-anchor="middle" font-weight="700">le test</text>
-<text x="85" y="70" font-size="7.6" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.6px">node --test, 0,1 s</text>
-<rect x="220" y="30" width="160" height="56" rx="4" fill="#fff" stroke="#2B2F33" stroke-width="1.2"/>
-<text x="300" y="52" font-size="9" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">compute-proxy.mjs</text>
-<text x="300" y="70" font-size="7.4" fill="#6B7378" text-anchor="middle" class="mono" style="font-size:7.4px">handleSolve → callCompute</text>
-<rect x="440" y="30" width="150" height="56" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2" stroke-dasharray="4 3"/>
-<text x="515" y="52" font-size="9.4" fill="#C62828" text-anchor="middle" font-weight="700">Rhino Compute</text>
-<text x="515" y="70" font-size="7.4" fill="#2B2F33" text-anchor="middle">Windows, licence, réseau</text>
-<line x1="162" y1="58" x2="218" y2="58" stroke="#6B7378" stroke-width="1.2"/><polygon points="218,58 211.6,60.7 211.6,55.3" fill="#6B7378"/>
-<line x1="382" y1="58" x2="438" y2="58" stroke="#6B7378" stroke-width="1.2"/><polygon points="438,58 431.6,60.7 431.6,55.3" fill="#6B7378"/>
-<text x="410" y="50" font-size="7.4" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.4px">fetch</text>
-<text x="10" y="118" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">Le code à tester appelle un service lent, coûteux, absent de la machine de test. On le remplace par une doublure :</text>
-<rect x="10" y="136" width="186" height="24" rx="3" fill="#fff" stroke="#E6DED2"/>
-<text x="18" y="152" font-size="8.4" fill="#4F46B8" text-anchor="start" font-weight="700">factice</text>
-<text x="94" y="152" font-size="7.2" fill="#2B2F33" text-anchor="start">rempli, jamais utilisé</text>
-<rect x="206" y="136" width="186" height="24" rx="3" fill="#ECEBFA" stroke="#E6DED2"/>
-<text x="214" y="152" font-size="8.4" fill="#4F46B8" text-anchor="start" font-weight="700">bouchon</text>
-<text x="290" y="152" font-size="7.2" fill="#2B2F33" text-anchor="start">rend une réponse fixée</text>
-<rect x="402" y="136" width="186" height="24" rx="3" fill="#fff" stroke="#E6DED2"/>
-<text x="410" y="152" font-size="8.4" fill="#4F46B8" text-anchor="start" font-weight="700">espion</text>
-<text x="486" y="152" font-size="7.2" fill="#2B2F33" text-anchor="start">bouchon qui note ses appels</text>
-<rect x="10" y="166" width="186" height="24" rx="3" fill="#fff" stroke="#E6DED2"/>
-<text x="18" y="182" font-size="8.4" fill="#4F46B8" text-anchor="start" font-weight="700">simulacre</text>
-<text x="94" y="182" font-size="7.2" fill="#2B2F33" text-anchor="start">vérifie qu'on l'appelle bien</text>
-<rect x="206" y="166" width="186" height="24" rx="3" fill="#ECEBFA" stroke="#E6DED2"/>
-<text x="214" y="182" font-size="8.4" fill="#4F46B8" text-anchor="start" font-weight="700">faux</text>
-<text x="290" y="182" font-size="7.2" fill="#2B2F33" text-anchor="start">version simplifiée qui marche</text>
-<rect x="402" y="166" width="186" height="24" rx="3" fill="#ECEBFA" stroke="#E6DED2"/>
-<text x="410" y="182" font-size="8.4" fill="#4F46B8" text-anchor="start" font-weight="700">enregistrement</text>
-<text x="486" y="182" font-size="7.2" fill="#2B2F33" text-anchor="start">réponse réelle rejouée</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 110</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Doublures et dépendances</h1>
+<p class="chapeau">Le code utile parle presque toujours à quelque chose d'extérieur : un serveur, une base, le disque, l'horloge. Pour le tester vite et sans dépendre de cet extérieur, on le remplace par une <b>doublure</b>, comme une doublure de cinéma remplace l'acteur pour une scène. Le cours suit le cas de Magpie, dont le serveur web dépend de Rhino Compute.</p>
+<div class="meta">
+<span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>109</b></span>
+<span class="pastille">Exemples · <b>Magpie</b> web</span>
+</div>
+<div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+<svg viewbox="0 0 600 200" width="100%">
+<rect fill="#ECEBFA" height="56" rx="4" stroke="#4F46B8" stroke-width="1.2" width="150" x="10" y="30"></rect>
+<text fill="#4F46B8" font-size="9.4" font-weight="700" text-anchor="middle" x="85" y="52">le test</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="middle" x="85" y="70">node --test, 0,1 s</text>
+<rect fill="#fff" height="56" rx="4" stroke="#2B2F33" stroke-width="1.2" width="160" x="220" y="30"></rect>
+<text class="mono" fill="#2B2F33" font-size="9" font-weight="700" style="font-size:9px" text-anchor="middle" x="300" y="52">compute-proxy.mjs</text>
+<text class="mono" fill="#6B7378" font-size="7.4" style="font-size:7.4px" text-anchor="middle" x="300" y="70">handleSolve → callCompute</text>
+<rect fill="#fff" height="56" rx="4" stroke="#C62828" stroke-dasharray="4 3" stroke-width="1.2" width="150" x="440" y="30"></rect>
+<text fill="#C62828" font-size="9.4" font-weight="700" text-anchor="middle" x="515" y="52">Rhino Compute</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="middle" x="515" y="70">Windows, licence, réseau</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="162" x2="218" y1="58" y2="58"></line><polygon fill="#6B7378" points="218,58 211.6,60.7 211.6,55.3"></polygon>
+<line stroke="#6B7378" stroke-width="1.2" x1="382" x2="438" y1="58" y2="58"></line><polygon fill="#6B7378" points="438,58 431.6,60.7 431.6,55.3"></polygon>
+<text class="mono" fill="#6B7378" font-size="7.4" font-weight="700" style="font-size:7.4px" text-anchor="middle" x="410" y="50">fetch</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="10" y="118">Le code à tester appelle un service lent, coûteux, absent de la machine de test. On le remplace par une doublure :</text>
+<rect fill="#fff" height="24" rx="3" stroke="#E6DED2" width="186" x="10" y="136"></rect>
+<text fill="#4F46B8" font-size="8.4" font-weight="700" text-anchor="start" x="18" y="152">factice</text>
+<text fill="#2B2F33" font-size="7.2" text-anchor="start" x="94" y="152">rempli, jamais utilisé</text>
+<rect fill="#ECEBFA" height="24" rx="3" stroke="#E6DED2" width="186" x="206" y="136"></rect>
+<text fill="#4F46B8" font-size="8.4" font-weight="700" text-anchor="start" x="214" y="152">bouchon</text>
+<text fill="#2B2F33" font-size="7.2" text-anchor="start" x="290" y="152">rend une réponse fixée</text>
+<rect fill="#fff" height="24" rx="3" stroke="#E6DED2" width="186" x="402" y="136"></rect>
+<text fill="#4F46B8" font-size="8.4" font-weight="700" text-anchor="start" x="410" y="152">espion</text>
+<text fill="#2B2F33" font-size="7.2" text-anchor="start" x="486" y="152">bouchon qui note ses appels</text>
+<rect fill="#fff" height="24" rx="3" stroke="#E6DED2" width="186" x="10" y="166"></rect>
+<text fill="#4F46B8" font-size="8.4" font-weight="700" text-anchor="start" x="18" y="182">simulacre</text>
+<text fill="#2B2F33" font-size="7.2" text-anchor="start" x="94" y="182">vérifie qu'on l'appelle bien</text>
+<rect fill="#ECEBFA" height="24" rx="3" stroke="#E6DED2" width="186" x="206" y="166"></rect>
+<text fill="#4F46B8" font-size="8.4" font-weight="700" text-anchor="start" x="214" y="182">faux</text>
+<text fill="#2B2F33" font-size="7.2" text-anchor="start" x="290" y="182">version simplifiée qui marche</text>
+<rect fill="#ECEBFA" height="24" rx="3" stroke="#E6DED2" width="186" x="402" y="166"></rect>
+<text fill="#4F46B8" font-size="8.4" font-weight="700" text-anchor="start" x="410" y="182">enregistrement</text>
+<text fill="#2B2F33" font-size="7.2" text-anchor="start" x="486" y="182">réponse réelle rejouée</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>On isole le code testé de ce qu'il ne contrôle pas, en lui donnant une imitation de sa dépendance dont on choisit les réponses.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Un banc d'essai de moteur. On ne monte pas le moteur dans une voiture pour le tester : un frein simule la route, une sonde simule le réservoir, et l'on peut provoquer à volonté la côte, la panne d'essence ou le froid.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>nommer les six sortes de doublures ;</li>
-        <li>utiliser un enregistrement réel ;</li>
-        <li>monter un faux serveur ;</li>
-        <li>repérer une couture dans le code.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>On isole le code testé de ce qu'il ne contrôle pas, en lui donnant une imitation de sa dépendance dont on choisit les réponses.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Un banc d'essai de moteur. On ne monte pas le moteur dans une voiture pour le tester : un frein simule la route, une sonde simule le réservoir, et l'on peut provoquer à volonté la côte, la panne d'essence ou le froid.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>nommer les six sortes de doublures ;</li>
+<li>utiliser un enregistrement réel ;</li>
+<li>monter un faux serveur ;</li>
+<li>repérer une couture dans le code.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À retenir</span>
     Une doublure ne prouve que ce qu'elle imite. Plus elle s'éloigne du vrai service, plus le test peut être vert alors que l'ensemble ne marche pas : quelques tests de bout en bout, contre le vrai service, restent nécessaires.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 110 · Doublures et dépendances</div>
+<div class="folio">1</div>
+<div class="pied">Cours 110 · Doublures et dépendances</div>
 </section>
-
 <!-- ============ PAGE 2 · L'ENREGISTREMENT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 110</b></div>
-  <p class="rubrique">Schéma 1 · Rejouer le réel</p>
-  <h2>Un enregistrement comme doublure</h2>
-  <p style="max-width:165mm">La doublure la plus fidèle est une vraie réponse, capturée une fois sur le vrai service puis rangée avec les tests. Magpie fait ainsi pour l'aperçu 3D : la réponse de Compute à un graphe de neuf objets est un fichier JSON lu par les tests.</p>
-
-  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.4" fill="#4F46B8" text-anchor="start" font-weight="700">La fixture de l'aperçu 3D : une vraie réponse de Compute, enregistrée une fois, rejouée à chaque test</text>
-<rect x="16" y="36" width="180" height="70" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2" stroke-dasharray="4 3"/>
-<text x="106" y="56" font-size="8.6" fill="#6B7378" text-anchor="middle" font-weight="700">un vrai Compute</text>
-<text x="106" y="72" font-size="7.4" fill="#2B2F33" text-anchor="middle">9 objets : boîte, cercle,</text>
-<text x="106" y="84" font-size="7.4" fill="#2B2F33" text-anchor="middle">sphère, arc, cylindre…</text>
-<line x1="198" y1="70" x2="236" y2="70" stroke="#6B7378" stroke-width="1.2"/><polygon points="236,70 229.6,72.7 229.6,67.3" fill="#6B7378"/>
-<text x="217" y="62" font-size="7" fill="#6B7378" text-anchor="middle">une fois</text>
-<rect x="238" y="36" width="160" height="70" rx="4" fill="#ECEBFA" stroke="#4F46B8" stroke-width="1.2"/>
-<text x="318" y="56" font-size="8" fill="#4F46B8" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">apercu-compute.json</text>
-<text x="318" y="72" font-size="7.6" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.6px">68 582 octets</text>
-<text x="318" y="86" font-size="7.6" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.6px">24 valeurs, 9 cibles</text>
-<line x1="400" y1="70" x2="436" y2="70" stroke="#6B7378" stroke-width="1.2"/><polygon points="436,70 429.6,72.7 429.6,67.3" fill="#6B7378"/>
-<text x="418" y="62" font-size="7" fill="#6B7378" text-anchor="middle">à chaque fois</text>
-<rect x="438" y="36" width="146" height="70" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="511" y="56" font-size="7.8" fill="#2E7D32" text-anchor="middle" font-weight="700">3 tests de readPreview</text>
-<text x="511" y="72" font-size="7.6" fill="#2B2F33" text-anchor="middle">sans Rhino</text>
-<text x="511" y="86" font-size="7.6" fill="#2B2F33" text-anchor="middle">123, 9 et 8 ms</text>
-<text x="16" y="132" font-size="7.8" fill="#2B2F33" text-anchor="start">Avantage : la réponse est réelle, pas imaginée. Un bouchon écrit à la main reproduit ce qu'on croit que Compute renvoie.</text>
-<text x="16" y="148" font-size="7.8" fill="#2B2F33" text-anchor="start">Limite : elle fige le format du jour de l'enregistrement (commit 1d00cfe, 22/10). Si Compute change, le test reste vert.</text>
-<text x="16" y="170" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700">Mesuré sans les paquets installés, les 3 tests échouent (« Cannot find package 'rhino3dm' ») :</text>
-<text x="16" y="186" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700">la doublure remplace Compute, pas la bibliothèque rhino3dm qui décode la géométrie.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 110</b></div>
+<p class="rubrique">Schéma 1 · Rejouer le réel</p>
+<h2>Un enregistrement comme doublure</h2>
+<p style="max-width:165mm">La doublure la plus fidèle est une vraie réponse, capturée une fois sur le vrai service puis rangée avec les tests. Magpie fait ainsi pour l'aperçu 3D : la réponse de Compute à un graphe de neuf objets est un fichier JSON lu par les tests.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 206" width="100%">
+<rect fill="#EFE9E1" height="206" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="22">La fixture de l'aperçu 3D : une vraie réponse de Compute, enregistrée une fois, rejouée à chaque test</text>
+<rect fill="#fff" height="70" rx="4" stroke="#6B7378" stroke-dasharray="4 3" stroke-width="1.2" width="180" x="16" y="36"></rect>
+<text fill="#6B7378" font-size="8.6" font-weight="700" text-anchor="middle" x="106" y="56">un vrai Compute</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="middle" x="106" y="72">9 objets : boîte, cercle,</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="middle" x="106" y="84">sphère, arc, cylindre…</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="198" x2="236" y1="70" y2="70"></line><polygon fill="#6B7378" points="236,70 229.6,72.7 229.6,67.3"></polygon>
+<text fill="#6B7378" font-size="7" text-anchor="middle" x="217" y="62">une fois</text>
+<rect fill="#ECEBFA" height="70" rx="4" stroke="#4F46B8" stroke-width="1.2" width="160" x="238" y="36"></rect>
+<text class="mono" fill="#4F46B8" font-size="8" font-weight="700" style="font-size:8px" text-anchor="middle" x="318" y="56">apercu-compute.json</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="middle" x="318" y="72">68 582 octets</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="middle" x="318" y="86">24 valeurs, 9 cibles</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="400" x2="436" y1="70" y2="70"></line><polygon fill="#6B7378" points="436,70 429.6,72.7 429.6,67.3"></polygon>
+<text fill="#6B7378" font-size="7" text-anchor="middle" x="418" y="62">à chaque fois</text>
+<rect fill="#fff" height="70" rx="4" stroke="#2E7D32" stroke-width="1.2" width="146" x="438" y="36"></rect>
+<text fill="#2E7D32" font-size="7.8" font-weight="700" text-anchor="middle" x="511" y="56">3 tests de readPreview</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="middle" x="511" y="72">sans Rhino</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="middle" x="511" y="86">123, 9 et 8 ms</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="16" y="132">Avantage : la réponse est réelle, pas imaginée. Un bouchon écrit à la main reproduit ce qu'on croit que Compute renvoie.</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="16" y="148">Limite : elle fige le format du jour de l'enregistrement (commit 1d00cfe, 22/10). Si Compute change, le test reste vert.</text>
+<text fill="#C62828" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="170">Mesuré sans les paquets installés, les 3 tests échouent (« Cannot find package 'rhino3dm' ») :</text>
+<text fill="#C62828" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="186">la doublure remplace Compute, pas la bibliothèque rhino3dm qui décode la géométrie.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Code réel · magpie/web/test/apercu.test.mjs, ligne 9</span>const fixture = JSON.parse(readFileSync(new URL("./fixtures/apercu-compute.json",
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Code réel · magpie/web/test/apercu.test.mjs, ligne 9</span>const fixture = JSON.parse(readFileSync(new URL("./fixtures/apercu-compute.json",
                                                import.meta.url), "utf8"));</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Dire d'où vient l'enregistrement</h3>
-      <p>Le commentaire en tête d'apercu.test.mjs (lignes 2–3) dit que la fixture a été « enregistrée sur un vrai Compute » et liste les objets. Sans cette trace, personne ne saurait la refaire.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Le chemin relatif au test</h3>
-      <p><code>new URL("./fixtures/…", import.meta.url)</code> trouve le fichier à côté du test, d'où qu'on lance <code>node --test</code>. Un chemin relatif simple dépendrait du dossier courant.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Dire d'où vient l'enregistrement</h3>
+<p>Le commentaire en tête d'apercu.test.mjs (lignes 2–3) dit que la fixture a été « enregistrée sur un vrai Compute » et liste les objets. Sans cette trace, personne ne saurait la refaire.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Le chemin relatif au test</h3>
+<p><code>new URL("./fixtures/…", import.meta.url)</code> trouve le fichier à côté du test, d'où qu'on lance <code>node --test</code>. Un chemin relatif simple dépendrait du dossier courant.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Modifier la fixture à la main pour faire passer un test. Elle ne représente plus Compute, mais l'idée qu'on s'en fait : le test devient un bouchon déguisé en enregistrement. On la régénère sur le vrai service.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 110 · Doublures et dépendances</div>
+<div class="folio">2</div>
+<div class="pied">Cours 110 · Doublures et dépendances</div>
 </section>
-
 <!-- ============ PAGE 3 · LE FAUX SERVEUR ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 110</b></div>
-  <p class="rubrique">Schéma 2 · Un faux qui marche</p>
-  <h2>Provoquer les pannes à volonté</h2>
-  <p style="max-width:165mm">Un <b>faux</b> est une version simplifiée mais fonctionnelle de la dépendance. Ici, un petit serveur HTTP qui imite Compute : selon le scénario, il répond bien, répond une erreur, tarde, ou n'est pas là. Les cas de panne, difficiles à obtenir avec le vrai service, deviennent des tests ordinaires.</p>
-
-  <svg viewBox="0 0 600 222" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="222" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#4F46B8" text-anchor="start" font-weight="700">Un faux Compute de 20 lignes, et le vrai compute-proxy.mjs lancé contre lui : POST /api/solve (copie, mesuré)</text>
-<text x="30" y="44" font-size="7.8" fill="#6B7378" text-anchor="start" font-weight="700">le faux Compute répond</text>
-<text x="210" y="44" font-size="7.8" fill="#6B7378" text-anchor="start" font-weight="700">le proxy rend</text>
-<text x="330" y="44" font-size="7.8" fill="#6B7378" text-anchor="start" font-weight="700">code</text>
-<text x="420" y="44" font-size="7.8" fill="#6B7378" text-anchor="start" font-weight="700">durée</text>
-<rect x="16" y="52" width="568" height="22" rx="3" fill="#ECEBFA"/>
-<text x="30" y="67" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">200, valeurs vides</text>
-<text x="210" y="67" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">le résultat</text>
-<text x="330" y="67" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">200</text>
-<text x="420" y="67" font-size="8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8px">51 ms</text>
-<rect x="16" y="78" width="568" height="22" rx="3" fill="#fff"/>
-<text x="30" y="93" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">500, « Division by zero »</text>
-<text x="210" y="93" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">composant rouge</text>
-<text x="330" y="93" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">200</text>
-<text x="420" y="93" font-size="8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8px">24 ms</text>
-<rect x="16" y="104" width="568" height="22" rx="3" fill="#ECEBFA"/>
-<text x="30" y="119" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">rien pendant 3 s</text>
-<text x="210" y="119" font-size="7.6" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">COMPUTE_TIMEOUT</text>
-<text x="330" y="119" font-size="8.4" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">504</text>
-<text x="420" y="119" font-size="8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8px">1 015 ms</text>
-<rect x="16" y="130" width="568" height="22" rx="3" fill="#fff"/>
-<text x="30" y="145" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">502, une page HTML</text>
-<text x="210" y="145" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">{ message: "&lt;html&gt;…" }</text>
-<text x="330" y="145" font-size="8.4" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">502</text>
-<text x="420" y="145" font-size="8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8px">27 ms</text>
-<rect x="16" y="156" width="568" height="22" rx="3" fill="#ECEBFA"/>
-<text x="30" y="171" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">rien : serveur arrêté</text>
-<text x="210" y="171" font-size="7.6" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">COMPUTE_UNREACHABLE</text>
-<text x="330" y="171" font-size="8.4" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">502</text>
-<text x="420" y="171" font-size="8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8px">12 ms</text>
-<text x="16" y="196" font-size="7.8" fill="#2B2F33" text-anchor="start">Cinq comportements du serveur vérifiés en 1,1 s, sans Rhino. Le proxy n'a pas changé : seule l'adresse de Compute</text>
-<text x="16" y="210" font-size="7.8" fill="#2B2F33" text-anchor="start">(COMPUTE_TARGET) et le délai (COMPUTE_TIMEOUT_MS = 1000) ont été passés par l'environnement.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 110</b></div>
+<p class="rubrique">Schéma 2 · Un faux qui marche</p>
+<h2>Provoquer les pannes à volonté</h2>
+<p style="max-width:165mm">Un <b>faux</b> est une version simplifiée mais fonctionnelle de la dépendance. Ici, un petit serveur HTTP qui imite Compute : selon le scénario, il répond bien, répond une erreur, tarde, ou n'est pas là. Les cas de panne, difficiles à obtenir avec le vrai service, deviennent des tests ordinaires.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 222" width="100%">
+<rect fill="#EFE9E1" height="222" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">Un faux Compute de 20 lignes, et le vrai compute-proxy.mjs lancé contre lui : POST /api/solve (copie, mesuré)</text>
+<text fill="#6B7378" font-size="7.8" font-weight="700" text-anchor="start" x="30" y="44">le faux Compute répond</text>
+<text fill="#6B7378" font-size="7.8" font-weight="700" text-anchor="start" x="210" y="44">le proxy rend</text>
+<text fill="#6B7378" font-size="7.8" font-weight="700" text-anchor="start" x="330" y="44">code</text>
+<text fill="#6B7378" font-size="7.8" font-weight="700" text-anchor="start" x="420" y="44">durée</text>
+<rect fill="#ECEBFA" height="22" rx="3" width="568" x="16" y="52"></rect>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="30" y="67">200, valeurs vides</text>
+<text class="mono" fill="#2E7D32" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="210" y="67">le résultat</text>
+<text class="mono" fill="#2E7D32" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="330" y="67">200</text>
+<text class="mono" fill="#2B2F33" font-size="8" style="font-size:8px" text-anchor="start" x="420" y="67">51 ms</text>
+<rect fill="#fff" height="22" rx="3" width="568" x="16" y="78"></rect>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="30" y="93">500, « Division by zero »</text>
+<text class="mono" fill="#2E7D32" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="210" y="93">composant rouge</text>
+<text class="mono" fill="#2E7D32" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="330" y="93">200</text>
+<text class="mono" fill="#2B2F33" font-size="8" style="font-size:8px" text-anchor="start" x="420" y="93">24 ms</text>
+<rect fill="#ECEBFA" height="22" rx="3" width="568" x="16" y="104"></rect>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="30" y="119">rien pendant 3 s</text>
+<text class="mono" fill="#E65100" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="210" y="119">COMPUTE_TIMEOUT</text>
+<text class="mono" fill="#E65100" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="330" y="119">504</text>
+<text class="mono" fill="#2B2F33" font-size="8" style="font-size:8px" text-anchor="start" x="420" y="119">1 015 ms</text>
+<rect fill="#fff" height="22" rx="3" width="568" x="16" y="130"></rect>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="30" y="145">502, une page HTML</text>
+<text class="mono" fill="#C62828" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="210" y="145">{ message: "&lt;html&gt;…" }</text>
+<text class="mono" fill="#C62828" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="330" y="145">502</text>
+<text class="mono" fill="#2B2F33" font-size="8" style="font-size:8px" text-anchor="start" x="420" y="145">27 ms</text>
+<rect fill="#ECEBFA" height="22" rx="3" width="568" x="16" y="156"></rect>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="30" y="171">rien : serveur arrêté</text>
+<text class="mono" fill="#E65100" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="210" y="171">COMPUTE_UNREACHABLE</text>
+<text class="mono" fill="#E65100" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="330" y="171">502</text>
+<text class="mono" fill="#2B2F33" font-size="8" style="font-size:8px" text-anchor="start" x="420" y="171">12 ms</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="16" y="196">Cinq comportements du serveur vérifiés en 1,1 s, sans Rhino. Le proxy n'a pas changé : seule l'adresse de Compute</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="16" y="210">(COMPUTE_TARGET) et le délai (COMPUTE_TIMEOUT_MS = 1000) ont été passés par l'environnement.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Node, le cœur du faux Compute</span>http.createServer((req, res) =&gt; {
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Node, le cœur du faux Compute</span>http.createServer((req, res) =&gt; {
   if (mode === "lent") return setTimeout(() =&gt; repondre(200, {}), 3000);
   if (mode === "html") return res.writeHead(502).end("&lt;html&gt;Bad Gateway&lt;/html&gt;");
   repondre(200, { values: [], errors: [], warnings: [] });
 }).listen(6599);</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Un délai raccourci pour le test</h3>
-      <p>Avec le délai réel de 20 s (ligne 35), le cas « Compute muet » ferait attendre 20 s. Réglable par l'environnement, il passe à 1 s pour le test (mesuré : 1 015 ms).</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Ce que le faux a révélé</h3>
-      <p>Quand Compute répond une page HTML, le proxy la recopie dans <code>message</code> et la transmet au navigateur avec le code 502 (ligne 210). Rien d'anormal à la lecture du code ; le faux le montre en 27 ms.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Un délai raccourci pour le test</h3>
+<p>Avec le délai réel de 20 s (ligne 35), le cas « Compute muet » ferait attendre 20 s. Réglable par l'environnement, il passe à 1 s pour le test (mesuré : 1 015 ms).</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Ce que le faux a révélé</h3>
+<p>Quand Compute répond une page HTML, le proxy la recopie dans <code>message</code> et la transmet au navigateur avec le code 502 (ligne 210). Rien d'anormal à la lecture du code ; le faux le montre en 27 ms.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Laisser le faux serveur tourner après le test. Le port reste pris, le test suivant échoue avec « address already in use », sans rapport avec le code testé. On l'arrête dans un <code>after()</code>, même en cas d'échec.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 110 · Doublures et dépendances</div>
+<div class="folio">3</div>
+<div class="pied">Cours 110 · Doublures et dépendances</div>
 </section>
-
 <!-- ============ PAGE 4 · LES COUTURES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 110</b></div>
-  <p class="rubrique">Schéma 3 · Les coutures</p>
-  <h2>Prévoir la place de la doublure</h2>
-  <p style="max-width:165mm">Une <b>couture</b> est un endroit où l'on peut changer ce que fait le code sans le modifier : un paramètre, un réglage, un import. Le choix de la couture décide de la taille du test : une fonction seule en quelques millisecondes, ou tout un serveur.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">Où glisser une doublure : les « coutures » du code (seams)</text>
-<rect x="16" y="36" width="568" height="32" rx="3" fill="#ECEBFA"/>
-<rect x="16" y="36" width="4" height="32" fill="#2E7D32"/>
-<text x="30" y="50" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700">un paramètre</text>
-<text x="220" y="50" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">resoudre(xml, appeler = fetch)</text>
-<text x="30" y="63" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">le test passe mock.fn(…) ; mesuré : 1 appel, méthode POST</text>
-<rect x="16" y="74" width="568" height="32" rx="3" fill="#fff"/>
-<rect x="16" y="74" width="4" height="32" fill="#2E7D32"/>
-<text x="30" y="88" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700">une variable d'environnement</text>
-<text x="220" y="88" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">COMPUTE_TARGET (ligne 34)</text>
-<text x="30" y="101" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">le faux serveur ci-contre ; tout le processus est concerné</text>
-<rect x="16" y="112" width="568" height="32" rx="3" fill="#ECEBFA"/>
-<rect x="16" y="112" width="4" height="32" fill="#E65100"/>
-<text x="30" y="126" font-size="8.4" fill="#E65100" text-anchor="start" font-weight="700">un module remplacé</text>
-<text x="220" y="126" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">mock.module("./api.js")</text>
-<text x="30" y="139" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">node:test sait remplacer un import, en mode expérimental</text>
-<rect x="16" y="150" width="568" height="32" rx="3" fill="#fff"/>
-<rect x="16" y="150" width="4" height="32" fill="#C62828"/>
-<text x="30" y="164" font-size="8.4" fill="#C62828" text-anchor="start" font-weight="700">aucune</text>
-<text x="220" y="164" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">server.listen(…) à l'import (733)</text>
-<text x="30" y="177" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">importer le fichier démarre le serveur : pas de test unitaire</text>
-<text x="16" y="202" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">Plus la couture est proche du code testé, plus le test est rapide et précis.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 110</b></div>
+<p class="rubrique">Schéma 3 · Les coutures</p>
+<h2>Prévoir la place de la doublure</h2>
+<p style="max-width:165mm">Une <b>couture</b> est un endroit où l'on peut changer ce que fait le code sans le modifier : un paramètre, un réglage, un import. Le choix de la couture décide de la taille du test : une fonction seule en quelques millisecondes, ou tout un serveur.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">Où glisser une doublure : les « coutures » du code (seams)</text>
+<rect fill="#ECEBFA" height="32" rx="3" width="568" x="16" y="36"></rect>
+<rect fill="#2E7D32" height="32" width="4" x="16" y="36"></rect>
+<text fill="#2E7D32" font-size="8.4" font-weight="700" text-anchor="start" x="30" y="50">un paramètre</text>
+<text class="mono" fill="#2B2F33" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="220" y="50">resoudre(xml, appeler = fetch)</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="30" y="63">le test passe mock.fn(…) ; mesuré : 1 appel, méthode POST</text>
+<rect fill="#fff" height="32" rx="3" width="568" x="16" y="74"></rect>
+<rect fill="#2E7D32" height="32" width="4" x="16" y="74"></rect>
+<text fill="#2E7D32" font-size="8.4" font-weight="700" text-anchor="start" x="30" y="88">une variable d'environnement</text>
+<text class="mono" fill="#2B2F33" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="220" y="88">COMPUTE_TARGET (ligne 34)</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="30" y="101">le faux serveur ci-contre ; tout le processus est concerné</text>
+<rect fill="#ECEBFA" height="32" rx="3" width="568" x="16" y="112"></rect>
+<rect fill="#E65100" height="32" width="4" x="16" y="112"></rect>
+<text fill="#E65100" font-size="8.4" font-weight="700" text-anchor="start" x="30" y="126">un module remplacé</text>
+<text class="mono" fill="#2B2F33" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="220" y="126">mock.module("./api.js")</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="30" y="139">node:test sait remplacer un import, en mode expérimental</text>
+<rect fill="#fff" height="32" rx="3" width="568" x="16" y="150"></rect>
+<rect fill="#C62828" height="32" width="4" x="16" y="150"></rect>
+<text fill="#C62828" font-size="8.4" font-weight="700" text-anchor="start" x="30" y="164">aucune</text>
+<text class="mono" fill="#2B2F33" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="220" y="164">server.listen(…) à l'import (733)</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="30" y="177">importer le fichier démarre le serveur : pas de test unitaire</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="202">Plus la couture est proche du code testé, plus le test est rapide et précis.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · node:test, un espion à la place de fetch</span>const faux = mock.fn(async () =&gt; ({ ok: false, status: 500 }));
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · node:test, un espion à la place de fetch</span>const faux = mock.fn(async () =&gt; ({ ok: false, status: 500 }));
 assert.equal(await resoudre("&lt;a/&gt;", faux), "erreur 500");
 assert.equal(faux.mock.callCount(), 1);                 // espion : appelé une fois
 assert.equal(faux.mock.calls[0].arguments[1].method, "POST");</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Bouchon ou simulacre</h3>
-      <p>Le bouchon répond ; on vérifie le résultat du code. Le simulacre vérifie la façon d'être appelé. Le second casse à chaque réécriture interne, même juste : on le garde pour les effets visibles (un e-mail envoyé, un appel facturé).</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Séparer démarrage et logique</h3>
-      <p>Un fichier qui exporte ses fonctions et un autre qui fait <code>listen()</code> : le test importe le premier sans démarrer de serveur. C'est la couture qui manque à compute-proxy.mjs.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Bouchon ou simulacre</h3>
+<p>Le bouchon répond ; on vérifie le résultat du code. Le simulacre vérifie la façon d'être appelé. Le second casse à chaque réécriture interne, même juste : on le garde pour les effets visibles (un e-mail envoyé, un appel facturé).</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Séparer démarrage et logique</h3>
+<p>Un fichier qui exporte ses fonctions et un autre qui fait <code>listen()</code> : le test importe le premier sans démarrer de serveur. C'est la couture qui manque à compute-proxy.mjs.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Doubler ce qu'on est en train de tester. Un test de validation.mjs qui remplace validateSubmission par un bouchon ne vérifie plus que le bouchon. On ne double que les dépendances, jamais le sujet du test.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 110 · Doublures et dépendances</div>
+<div class="folio">4</div>
+<div class="pied">Cours 110 · Doublures et dépendances</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 110</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>compute-proxy.mjs, testé de l'extérieur</h2>
-  <p style="max-width:165mm">Le serveur de Magpie fait 748 lignes. Il lit l'adresse de Compute dans l'environnement, ce qui a permis le faux serveur, mais il démarre dès qu'on l'importe.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 110</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>compute-proxy.mjs, testé de l'extérieur</h2>
+<p style="max-width:165mm">Le serveur de Magpie fait 748 lignes. Il lit l'adresse de Compute dans l'environnement, ce qui a permis le faux serveur, mais il démarre dès qu'on l'importe.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">magpie/web/compute-proxy.mjs</span></div>
 <div class="l k1"><span class="n">34</span>const COMPUTE_TARGET = process.env.COMPUTE_TARGET || …<span class="rep r1">1</span></div>
@@ -284,137 +257,55 @@ assert.equal(faux.mock.calls[0].arguments[1].method, "POST");</div>
 <div class="l k4"><span class="n">215</span>      throw new HttpError(504, `Le serveur de calcul…<span class="rep r4">4</span></div>
 <div class="l k5"><span class="n">733</span>server.listen(PROXY_PORT, () =&gt; {<span class="rep r5">5</span></div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>Couture</b>Par l'environnement.</li>
-      <li><span class="rep r2">2</span><b>Non exportée</b>Pas d'accès direct.</li>
-      <li><span class="rep r3">3</span><b>Texte brut</b>HTML recopié.</li>
-      <li><span class="rep r4">4</span><b>Délai</b>Vu en 1 015 ms.</li>
-      <li><span class="rep r5">5</span><b>À l'import</b>Serveur démarré.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À surveiller · le cœur du serveur sans test automatique</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>Couture</b>Par l'environnement.</li>
+<li><span class="rep r2">2</span><b>Non exportée</b>Pas d'accès direct.</li>
+<li><span class="rep r3">3</span><b>Texte brut</b>HTML recopié.</li>
+<li><span class="rep r4">4</span><b>Délai</b>Vu en 1 015 ms.</li>
+<li><span class="rep r5">5</span><b>À l'import</b>Serveur démarré.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À surveiller · le cœur du serveur sans test automatique</span>
     Aucun des 25 tests de Magpie web ne charge compute-proxy.mjs : l'import démarre le serveur (ligne 733) et callCompute n'est pas exportée. Les cinq comportements du tableau ont été vérifiés à la main, avec un faux Compute et une copie du dépôt. Déduit : sortir les gestionnaires dans un module sans <code>listen()</code>, et passer <code>fetch</code> en paramètre, permettrait de les garder sous test. Relevé sans rien modifier.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 110 · Doublures et dépendances</div>
+<div class="folio">5</div>
+<div class="pied">Cours 110 · Doublures et dépendances</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 110</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 110</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">Une doublure remplace…</div><ul>
-      <li><span>A</span>une dépendance du code testé</li><li><span>B</span>l'assertion</li><li><span>C</span>le test</li><li><span>D</span>le code testé</li></ul></div>
 
-    <div class="q"><div class="enonce">Un bouchon…</div><ul>
-      <li><span>A</span>rend une réponse fixée</li><li><span>B</span>n'est jamais appelé</li><li><span>C</span>vérifie comment on l'appelle</li><li><span>D</span>est un vrai service</li></ul></div>
 
-    <div class="q"><div class="enonce">Un espion, en plus d'un bouchon…</div><ul>
-      <li><span>A</span>efface les fichiers</li><li><span>B</span>note ses appels</li><li><span>C</span>appelle le vrai service</li><li><span>D</span>ralentit le test</li></ul></div>
 
-    <div class="q"><div class="enonce">apercu-compute.json est…</div><ul>
-      <li><span>A</span>une réponse réelle de Compute, enregistrée</li><li><span>B</span>une réponse inventée</li><li><span>C</span>un instantané du navigateur</li><li><span>D</span>un fichier de configuration</li></ul></div>
-
-    <div class="q"><div class="enonce">La limite d'un enregistrement…</div><ul>
-      <li><span>A</span>il exige Rhino</li><li><span>B</span>il est aléatoire</li><li><span>C</span>il fige le format du jour où il a été pris</li><li><span>D</span>il est toujours faux</li></ul></div>
-
-    <div class="q"><div class="enonce">Sans rhino3dm installé, les tests de la fixture…</div><ul>
-      <li><span>A</span>appellent Compute</li><li><span>B</span>sont ignorés</li><li><span>C</span>passent</li><li><span>D</span>échouent : la doublure ne remplace pas la bibliothèque</li></ul></div>
-
-    <div class="q"><div class="enonce">Contre un faux Compute muet, le proxy rend…</div><ul>
-      <li><span>A</span>rien, jamais</li><li><span>B</span>200 tout de suite</li><li><span>C</span>404</li><li><span>D</span>504 après le délai réglé</li></ul></div>
-
-    <div class="q"><div class="enonce">Quand Compute rend 500 avec des valeurs, le proxy…</div><ul>
-      <li><span>A</span>coupe la connexion</li><li><span>B</span>relance Compute</li><li><span>C</span>rend 500</li><li><span>D</span>rend 200 : composant rouge, pas panne</li></ul></div>
-
-    <div class="q"><div class="enonce">Une couture est… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>par exemple un paramètre ou une variable d'environnement</li><li><span>B</span>un endroit où changer le comportement sans modifier le code</li><li><span>C</span>un commit de fusion</li><li><span>D</span>une ligne en erreur</li></ul></div>
-
-    <div class="q"><div class="enonce">compute-proxy.mjs ne peut pas être importé par un test parce que…</div><ul>
-      <li><span>A</span>il est trop long</li><li><span>B</span>l'import démarre le serveur</li><li><span>C</span>il est en TypeScript</li><li><span>D</span>il est chiffré</li></ul></div>
-
-    <div class="q"><div class="enonce">On ne double jamais…</div><ul>
-      <li><span>A</span>le réseau</li><li><span>B</span>le sujet du test lui-même</li><li><span>C</span>l'horloge</li><li><span>D</span>une base de données</li></ul></div>
-
-    <div class="q"><div class="enonce">Un simulacre casse souvent parce qu'il…</div><ul>
-      <li><span>A</span>est lent</li><li><span>B</span>appelle le réseau</li><li><span>C</span>vérifie la manière d'appeler, qui change aux réécritures</li><li><span>D</span>est aléatoire</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 110 · Doublures et dépendances</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">mock.fn(async () =&gt; …)</td><td>un bouchon espion</td><td>page 4</td></tr>
+<tr><td class="c">f.mock.callCount()</td><td>combien d'appels</td><td>page 4</td></tr>
+<tr><td class="c">readFileSync(new URL(…, import.meta.url))</td><td>lire une fixture à côté du test</td><td>page 2</td></tr>
+<tr><td class="c">COMPUTE_TARGET=… node …</td><td>pointer vers un faux serveur</td><td>schéma 2, page 3</td></tr>
+<tr><td class="c">after(() =&gt; serveur.close())</td><td>arrêter le faux, toujours</td><td>page 3</td></tr>
+<tr><td class="c">fonction(x, dep = vraie)</td><td>une couture par paramètre</td><td>schéma 3, page 4</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Doublure</dt><dd>Un objet qui remplace une dépendance pendant un test.</dd>
+<dt>Fixture</dt><dd>Une donnée préparée pour les tests, ici une réponse enregistrée.</dd>
+<dt>Faux (fake)</dt><dd>Une version simplifiée qui fonctionne vraiment.</dd>
+<dt>Simulacre (mock)</dt><dd>Une doublure qui vérifie comment elle est appelée.</dd>
+<dt>Couture (seam)</dt><dd>Un point où changer le comportement sans toucher au code.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 111</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 110 · Doublures et dépendances</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11B</b> · Tester</span><b>Cours 110</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · A.</b> Jamais le sujet.</div>
-    <div><b>02 · A.</b> Une réponse choisie.</div>
-    <div><b>03 · B.</b> callCount, calls.</div>
-    <div><b>04 · A.</b> Prise sur un vrai Compute.</div>
-    <div><b>05 · C.</b> Le 22/10.</div>
-    <div><b>06 · D.</b> Mesuré : 3 échecs.</div>
-    <div><b>07 · D.</b> 1 015 ms pour 1 s.</div>
-    <div><b>08 · D.</b> 500 devient 200.</div>
-    <div><b>09 · A et B.</b> Paramètre, environnement.</div>
-    <div><b>10 · B.</b> Ligne 733.</div>
-    <div><b>11 · B.</b> Il ne testerait rien.</div>
-    <div><b>12 · C.</b> Lié à l'interne.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 111, « Tests de propriétés ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">mock.fn(async () =&gt; …)</td><td>un bouchon espion</td><td>page 4</td></tr>
-      <tr><td class="c">f.mock.callCount()</td><td>combien d'appels</td><td>page 4</td></tr>
-      <tr><td class="c">readFileSync(new URL(…, import.meta.url))</td><td>lire une fixture à côté du test</td><td>page 2</td></tr>
-      <tr><td class="c">COMPUTE_TARGET=… node …</td><td>pointer vers un faux serveur</td><td>schéma 2, page 3</td></tr>
-      <tr><td class="c">after(() =&gt; serveur.close())</td><td>arrêter le faux, toujours</td><td>page 3</td></tr>
-      <tr><td class="c">fonction(x, dep = vraie)</td><td>une couture par paramètre</td><td>schéma 3, page 4</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Doublure</dt><dd>Un objet qui remplace une dépendance pendant un test.</dd>
-    <dt>Fixture</dt><dd>Une donnée préparée pour les tests, ici une réponse enregistrée.</dd>
-    <dt>Faux (fake)</dt><dd>Une version simplifiée qui fonctionne vraiment.</dd>
-    <dt>Simulacre (mock)</dt><dd>Une doublure qui vérifie comment elle est appelée.</dd>
-    <dt>Couture (seam)</dt><dd>Un point où changer le comportement sans toucher au code.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 111</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 110 · Doublures et dépendances</div>
-</section>
-
 </body>
 </html>

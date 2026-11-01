@@ -1,292 +1,265 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>82 · Les lois de l'ergonomie</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-6">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 82</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Les lois de l'ergonomie</h1>
-  <p class="chapeau">Certaines règles d'interface ne sont pas des goûts : ce sont des <b>régularités mesurées</b> du geste et de la perception humaine. Le temps pour atteindre un bouton, pour choisir dans un menu, la façon dont l'œil groupe des éléments voisins : tout cela se mesure en laboratoire depuis les années 1950, et se retrouve dans le code.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>79</b> et <b>80</b></span>
-    <span class="pastille">Exemples · <b>barre de navigation</b> (Magpie), <b>MenuReglages</b>, <b>Metrique</b> (SnapSet)</span>
-  </div>
-
-  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
-    <svg viewBox="0 0 600 196" width="100%">
-<rect x="8" y="10" width="136" height="170" rx="8" fill="#fff" stroke="#2E7D32" stroke-width="1.4"/>
-<rect x="8" y="10" width="136" height="30" rx="8" fill="#2E7D32"/>
-<rect x="8" y="30" width="136" height="10" fill="#2E7D32"/>
-<text x="76" y="30" font-size="11" fill="#fff" text-anchor="middle" font-weight="700">Fitts</text>
-<text x="76" y="62" font-size="8" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">T = a + b · log₂(D/W + 1)</text>
-<text x="76" y="160" font-size="7.8" fill="#6B7378" text-anchor="middle" font-style="italic">loin et petit = lent</text>
-<text x="76" y="172" font-size="7.8" fill="#6B7378" text-anchor="middle" font-style="italic">près et grand = rapide</text>
-<rect x="156" y="10" width="136" height="170" rx="8" fill="#fff" stroke="#1565C0" stroke-width="1.4"/>
-<rect x="156" y="10" width="136" height="30" rx="8" fill="#1565C0"/>
-<rect x="156" y="30" width="136" height="10" fill="#1565C0"/>
-<text x="224" y="30" font-size="11" fill="#fff" text-anchor="middle" font-weight="700">Hick</text>
-<text x="224" y="62" font-size="8" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">T = a + b · log₂(n + 1)</text>
-<text x="224" y="160" font-size="7.8" fill="#6B7378" text-anchor="middle" font-style="italic">doubler les choix</text>
-<text x="224" y="172" font-size="7.8" fill="#6B7378" text-anchor="middle" font-style="italic">ajoute un pas constant</text>
-<rect x="304" y="10" width="136" height="170" rx="8" fill="#fff" stroke="#7B1FA2" stroke-width="1.4"/>
-<rect x="304" y="10" width="136" height="30" rx="8" fill="#7B1FA2"/>
-<rect x="304" y="30" width="136" height="10" fill="#7B1FA2"/>
-<text x="372" y="30" font-size="11" fill="#fff" text-anchor="middle" font-weight="700">Proximité</text>
-<text x="372" y="62" font-size="8" fill="#2B2F33" text-anchor="middle" font-weight="700">proche = ensemble</text>
-<text x="372" y="160" font-size="7.8" fill="#6B7378" text-anchor="middle" font-style="italic">l'espace groupe</text>
-<text x="372" y="172" font-size="7.8" fill="#6B7378" text-anchor="middle" font-style="italic">avant le trait</text>
-<rect x="452" y="10" width="136" height="170" rx="8" fill="#fff" stroke="#E65100" stroke-width="1.4"/>
-<rect x="452" y="10" width="136" height="30" rx="8" fill="#E65100"/>
-<rect x="452" y="30" width="136" height="10" fill="#E65100"/>
-<text x="520" y="30" font-size="11" fill="#fff" text-anchor="middle" font-weight="700">Jakob</text>
-<text x="520" y="62" font-size="8" fill="#2B2F33" text-anchor="middle" font-weight="700">faire comme ailleurs</text>
-<text x="520" y="160" font-size="7.8" fill="#6B7378" text-anchor="middle" font-style="italic">l'utilisateur vit</text>
-<text x="520" y="172" font-size="7.8" fill="#6B7378" text-anchor="middle" font-style="italic">dans d'autres logiciels</text>
-<circle cx="38" cy="108" r="4" fill="#6B7378"/>
-<line x1="44" y1="108" x2="94" y2="108" stroke="#6B7378" stroke-width="1"/><polygon points="94,108 87.6,110.7 87.6,105.3" fill="#6B7378"/>
-<rect x="98" y="90" width="22" height="36" rx="3" fill="#E7F0E8" stroke="#2E7D32"/>
-<text x="68" y="102" font-size="8" fill="#6B7378" text-anchor="middle" font-weight="700">D</text>
-<text x="109" y="138" font-size="8" fill="#2E7D32" text-anchor="middle" font-weight="700">W</text>
-<rect x="190" y="74" width="68" height="9" rx="2" fill="#1565C0" stroke="#1565C0" stroke-width=".6"/>
-<rect x="190" y="85" width="68" height="9" rx="2" fill="#E7F0E8" stroke="#1565C0" stroke-width=".6"/>
-<rect x="190" y="96" width="68" height="9" rx="2" fill="#E7F0E8" stroke="#1565C0" stroke-width=".6"/>
-<rect x="190" y="107" width="68" height="9" rx="2" fill="#E7F0E8" stroke="#1565C0" stroke-width=".6"/>
-<rect x="190" y="118" width="68" height="9" rx="2" fill="#E7F0E8" stroke="#1565C0" stroke-width=".6"/>
-<text x="224" y="140" font-size="7.6" fill="#1565C0" text-anchor="middle" font-weight="700">n entrées</text>
-<circle cx="338" cy="84" r="5" fill="#7B1FA2"/>
-<circle cx="352" cy="98" r="5" fill="#7B1FA2"/>
-<circle cx="338" cy="112" r="5" fill="#7B1FA2"/>
-<circle cx="386" cy="84" r="5" fill="#7B1FA2"/>
-<circle cx="400" cy="98" r="5" fill="#7B1FA2"/>
-<circle cx="386" cy="112" r="5" fill="#7B1FA2"/>
-<text x="372" y="140" font-size="7.6" fill="#7B1FA2" text-anchor="middle" font-weight="700">deux groupes, sans trait</text>
-<rect x="482" y="80" width="76" height="44" rx="4" fill="#fff" stroke="#E65100"/>
-<text x="520" y="100" font-size="9" fill="#E65100" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">Ctrl+Z</text>
-<text x="520" y="115" font-size="8" fill="#E65100" text-anchor="middle" font-weight="700">double-clic</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 82</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Les lois de l'ergonomie</h1>
+<p class="chapeau">Certaines règles d'interface ne sont pas des goûts : ce sont des <b>régularités mesurées</b> du geste et de la perception humaine. Le temps pour atteindre un bouton, pour choisir dans un menu, la façon dont l'œil groupe des éléments voisins : tout cela se mesure en laboratoire depuis les années 1950, et se retrouve dans le code.</p>
+<div class="meta">
+<span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>79</b> et <b>80</b></span>
+<span class="pastille">Exemples · <b>barre de navigation</b> (Magpie), <b>MenuReglages</b>, <b>Metrique</b> (SnapSet)</span>
+</div>
+<div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+<svg viewbox="0 0 600 196" width="100%">
+<rect fill="#fff" height="170" rx="8" stroke="#2E7D32" stroke-width="1.4" width="136" x="8" y="10"></rect>
+<rect fill="#2E7D32" height="30" rx="8" width="136" x="8" y="10"></rect>
+<rect fill="#2E7D32" height="10" width="136" x="8" y="30"></rect>
+<text fill="#fff" font-size="11" font-weight="700" text-anchor="middle" x="76" y="30">Fitts</text>
+<text class="mono" fill="#2B2F33" font-size="8" font-weight="700" style="font-size:8px" text-anchor="middle" x="76" y="62">T = a + b · log₂(D/W + 1)</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="middle" x="76" y="160">loin et petit = lent</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="middle" x="76" y="172">près et grand = rapide</text>
+<rect fill="#fff" height="170" rx="8" stroke="#1565C0" stroke-width="1.4" width="136" x="156" y="10"></rect>
+<rect fill="#1565C0" height="30" rx="8" width="136" x="156" y="10"></rect>
+<rect fill="#1565C0" height="10" width="136" x="156" y="30"></rect>
+<text fill="#fff" font-size="11" font-weight="700" text-anchor="middle" x="224" y="30">Hick</text>
+<text class="mono" fill="#2B2F33" font-size="8" font-weight="700" style="font-size:8px" text-anchor="middle" x="224" y="62">T = a + b · log₂(n + 1)</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="middle" x="224" y="160">doubler les choix</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="middle" x="224" y="172">ajoute un pas constant</text>
+<rect fill="#fff" height="170" rx="8" stroke="#7B1FA2" stroke-width="1.4" width="136" x="304" y="10"></rect>
+<rect fill="#7B1FA2" height="30" rx="8" width="136" x="304" y="10"></rect>
+<rect fill="#7B1FA2" height="10" width="136" x="304" y="30"></rect>
+<text fill="#fff" font-size="11" font-weight="700" text-anchor="middle" x="372" y="30">Proximité</text>
+<text fill="#2B2F33" font-size="8" font-weight="700" text-anchor="middle" x="372" y="62">proche = ensemble</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="middle" x="372" y="160">l'espace groupe</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="middle" x="372" y="172">avant le trait</text>
+<rect fill="#fff" height="170" rx="8" stroke="#E65100" stroke-width="1.4" width="136" x="452" y="10"></rect>
+<rect fill="#E65100" height="30" rx="8" width="136" x="452" y="10"></rect>
+<rect fill="#E65100" height="10" width="136" x="452" y="30"></rect>
+<text fill="#fff" font-size="11" font-weight="700" text-anchor="middle" x="520" y="30">Jakob</text>
+<text fill="#2B2F33" font-size="8" font-weight="700" text-anchor="middle" x="520" y="62">faire comme ailleurs</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="middle" x="520" y="160">l'utilisateur vit</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="middle" x="520" y="172">dans d'autres logiciels</text>
+<circle cx="38" cy="108" fill="#6B7378" r="4"></circle>
+<line stroke="#6B7378" stroke-width="1" x1="44" x2="94" y1="108" y2="108"></line><polygon fill="#6B7378" points="94,108 87.6,110.7 87.6,105.3"></polygon>
+<rect fill="#E7F0E8" height="36" rx="3" stroke="#2E7D32" width="22" x="98" y="90"></rect>
+<text fill="#6B7378" font-size="8" font-weight="700" text-anchor="middle" x="68" y="102">D</text>
+<text fill="#2E7D32" font-size="8" font-weight="700" text-anchor="middle" x="109" y="138">W</text>
+<rect fill="#1565C0" height="9" rx="2" stroke="#1565C0" stroke-width=".6" width="68" x="190" y="74"></rect>
+<rect fill="#E7F0E8" height="9" rx="2" stroke="#1565C0" stroke-width=".6" width="68" x="190" y="85"></rect>
+<rect fill="#E7F0E8" height="9" rx="2" stroke="#1565C0" stroke-width=".6" width="68" x="190" y="96"></rect>
+<rect fill="#E7F0E8" height="9" rx="2" stroke="#1565C0" stroke-width=".6" width="68" x="190" y="107"></rect>
+<rect fill="#E7F0E8" height="9" rx="2" stroke="#1565C0" stroke-width=".6" width="68" x="190" y="118"></rect>
+<text fill="#1565C0" font-size="7.6" font-weight="700" text-anchor="middle" x="224" y="140">n entrées</text>
+<circle cx="338" cy="84" fill="#7B1FA2" r="5"></circle>
+<circle cx="352" cy="98" fill="#7B1FA2" r="5"></circle>
+<circle cx="338" cy="112" fill="#7B1FA2" r="5"></circle>
+<circle cx="386" cy="84" fill="#7B1FA2" r="5"></circle>
+<circle cx="400" cy="98" fill="#7B1FA2" r="5"></circle>
+<circle cx="386" cy="112" fill="#7B1FA2" r="5"></circle>
+<text fill="#7B1FA2" font-size="7.6" font-weight="700" text-anchor="middle" x="372" y="140">deux groupes, sans trait</text>
+<rect fill="#fff" height="44" rx="4" stroke="#E65100" width="76" x="482" y="80"></rect>
+<text class="mono" fill="#E65100" font-size="9" font-weight="700" style="font-size:9px" text-anchor="middle" x="520" y="100">Ctrl+Z</text>
+<text fill="#E65100" font-size="8" font-weight="700" text-anchor="middle" x="520" y="115">double-clic</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Une cible grande et proche s'atteint vite, un choix rangé se fait vite, ce qui est proche se lit ensemble, et ce qui ressemble aux autres logiciels n'a pas à s'apprendre.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Une cuisine bien rangée. Les ustensiles du quotidien à portée de main et en grand, les épices triées par familles, les tiroirs aux mêmes places que chez tout le monde : on cuisine sans chercher.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>calculer l'indice de difficulté de Fitts ;</li>
-        <li>dire ce que coûte un menu plus long ;</li>
-        <li>grouper par l'espace plutôt que par le trait ;</li>
-        <li>t'aligner sur les gestes que l'utilisateur connaît.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Une cible grande et proche s'atteint vite, un choix rangé se fait vite, ce qui est proche se lit ensemble, et ce qui ressemble aux autres logiciels n'a pas à s'apprendre.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Une cuisine bien rangée. Les ustensiles du quotidien à portée de main et en grand, les épices triées par familles, les tiroirs aux mêmes places que chez tout le monde : on cuisine sans chercher.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>calculer l'indice de difficulté de Fitts ;</li>
+<li>dire ce que coûte un menu plus long ;</li>
+<li>grouper par l'espace plutôt que par le trait ;</li>
+<li>t'aligner sur les gestes que l'utilisateur connaît.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À retenir</span>
     Ces lois donnent des ordres de grandeur et des tendances, pas des chiffres exacts pour ton logiciel. Elles servent à comparer deux dispositions et à justifier un choix ; la mesure avec de vrais utilisateurs reste le juge final (cours 84).
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 82 · Les lois de l'ergonomie</div>
+<div class="folio">1</div>
+<div class="pied">Cours 82 · Les lois de l'ergonomie</div>
 </section>
-
 <!-- ============ PAGE 2 · FITTS ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 82</b></div>
-  <p class="rubrique">Schéma 1 · La loi de Fitts</p>
-  <h2>Plus loin et plus petit, plus lent</h2>
-  <p style="max-width:165mm">Paul Fitts (1954) a mesuré que le temps pour pointer une cible croît avec le logarithme du rapport entre la distance <b>D</b> et la largeur <b>W</b>. Ce logarithme, en bits, s'appelle l'<b>indice de difficulté</b>. Doubler la largeur d'un bouton retire à peu près un bit ; le rapprocher fait de même.</p>
-
-  <svg viewBox="0 0 600 232" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="232" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#2F6B3A" text-anchor="start" font-weight="700">La barre de navigation de Magpie, à l'échelle (pixels à 96 ppp, grossissement 1,5 compris ; calculé)</text>
-<rect x="40" y="40" width="264.0" height="48.0" rx="9" fill="#fff" stroke="#CFC6B8"/>
-<rect x="55.0" y="49.0" width="108.0" height="30.0" rx="5" fill="#E7F0E8" stroke="#2F6B3A"/>
-<text x="109.0" y="68.0" font-size="9" fill="#2F6B3A" text-anchor="middle" font-weight="700">Recharger</text>
-<text x="109.0" y="93.0" font-size="8" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">108 px</text>
-<rect x="172.0" y="49.0" width="54.0" height="30.0" rx="5" fill="#E7F0E8" stroke="#2F6B3A"/>
-<text x="199.0" y="68.0" font-size="9" fill="#2F6B3A" text-anchor="middle" font-weight="700"><</text>
-<text x="199.0" y="93.0" font-size="8" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">54 px</text>
-<rect x="235.0" y="49.0" width="54.0" height="30.0" rx="5" fill="#E7F0E8" stroke="#2F6B3A"/>
-<text x="262.0" y="68.0" font-size="9" fill="#2F6B3A" text-anchor="middle" font-weight="700">></text>
-<text x="262.0" y="93.0" font-size="8" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:8px">54 px</text>
-<text x="330" y="52" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700">Indice de difficulté, pour D = 400 px</text>
-<text x="330" y="76" font-size="8" fill="#2B2F33" text-anchor="start">Recharger, W = 108</text>
-<rect x="470" y="67" width="44.675943692173945" height="12" fill="#2E7D32"/>
-<text x="518.675943692174" y="77" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">2,23 bits</text>
-<text x="330" y="98" font-size="8" fill="#2B2F33" text-anchor="start">< ou >, W = 54</text>
-<rect x="470" y="89" width="61.43321970254894" height="12" fill="#E65100"/>
-<text x="535.433219702549" y="99" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">3,07 bits</text>
-<text x="330" y="120" font-size="8" fill="#2B2F33" text-anchor="start">< ou >, sans le 1,5 : W = 36</text>
-<rect x="470" y="111" width="71.96518646669227" height="12" fill="#C62828"/>
-<text x="545.9651864666923" y="121" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">3,60 bits</text>
-<text x="16" y="160" font-size="7.8" fill="#2B2F33" text-anchor="start">Largeur de la rangée : 176 − 2 × 10 de marge − 2 × 6 de gouttière = 144, partagée au prorata des poids 2, 1, 1 (PeintreBoutons.cs:114–133).</text>
-<text x="16" y="178" font-size="7.8" fill="#2B2F33" text-anchor="start">Chaque bit de plus coûte un temps constant (b, de l'ordre de 0,1 à 0,2 s selon les études et le dispositif).</text>
-<text x="16" y="200" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">W est mesurée dans l'axe du mouvement : pour un trajet horizontal, la largeur du bouton.</text>
-<text x="16" y="216" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">D = 400 px est une distance d'exemple ; seul l'écart entre les lignes compte.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 82</b></div>
+<p class="rubrique">Schéma 1 · La loi de Fitts</p>
+<h2>Plus loin et plus petit, plus lent</h2>
+<p style="max-width:165mm">Paul Fitts (1954) a mesuré que le temps pour pointer une cible croît avec le logarithme du rapport entre la distance <b>D</b> et la largeur <b>W</b>. Ce logarithme, en bits, s'appelle l'<b>indice de difficulté</b>. Doubler la largeur d'un bouton retire à peu près un bit ; le rapprocher fait de même.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 232" width="100%">
+<rect fill="#EFE9E1" height="232" width="600" x="0" y="0"></rect>
+<text fill="#2F6B3A" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">La barre de navigation de Magpie, à l'échelle (pixels à 96 ppp, grossissement 1,5 compris ; calculé)</text>
+<rect fill="#fff" height="48.0" rx="9" stroke="#CFC6B8" width="264.0" x="40" y="40"></rect>
+<rect fill="#E7F0E8" height="30.0" rx="5" stroke="#2F6B3A" width="108.0" x="55.0" y="49.0"></rect>
+<text fill="#2F6B3A" font-size="9" font-weight="700" text-anchor="middle" x="109.0" y="68.0">Recharger</text>
+<text class="mono" fill="#6B7378" font-size="8" font-weight="700" style="font-size:8px" text-anchor="middle" x="109.0" y="93.0">108 px</text>
+<rect fill="#E7F0E8" height="30.0" rx="5" stroke="#2F6B3A" width="54.0" x="172.0" y="49.0"></rect>
+<text fill="#2F6B3A" font-size="9" font-weight="700" text-anchor="middle" x="199.0" y="68.0">&lt;</text>
+<text class="mono" fill="#6B7378" font-size="8" font-weight="700" style="font-size:8px" text-anchor="middle" x="199.0" y="93.0">54 px</text>
+<rect fill="#E7F0E8" height="30.0" rx="5" stroke="#2F6B3A" width="54.0" x="235.0" y="49.0"></rect>
+<text fill="#2F6B3A" font-size="9" font-weight="700" text-anchor="middle" x="262.0" y="68.0">&gt;</text>
+<text class="mono" fill="#6B7378" font-size="8" font-weight="700" style="font-size:8px" text-anchor="middle" x="262.0" y="93.0">54 px</text>
+<text fill="#2B2F33" font-size="8.4" font-weight="700" text-anchor="start" x="330" y="52">Indice de difficulté, pour D = 400 px</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="330" y="76">Recharger, W = 108</text>
+<rect fill="#2E7D32" height="12" width="44.675943692173945" x="470" y="67"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="518.675943692174" y="77">2,23 bits</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="330" y="98">&lt; ou &gt;, W = 54</text>
+<rect fill="#E65100" height="12" width="61.43321970254894" x="470" y="89"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="535.433219702549" y="99">3,07 bits</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="330" y="120">&lt; ou &gt;, sans le 1,5 : W = 36</text>
+<rect fill="#C62828" height="12" width="71.96518646669227" x="470" y="111"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="545.9651864666923" y="121">3,60 bits</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="16" y="160">Largeur de la rangée : 176 − 2 × 10 de marge − 2 × 6 de gouttière = 144, partagée au prorata des poids 2, 1, 1 (PeintreBoutons.cs:114–133).</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="16" y="178">Chaque bit de plus coûte un temps constant (b, de l'ordre de 0,1 à 0,2 s selon les études et le dispositif).</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="16" y="200">W est mesurée dans l'axe du mouvement : pour un trajet horizontal, la largeur du bouton.</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="16" y="216">D = 400 px est une distance d'exemple ; seul l'écart entre les lignes compte.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/plugin/Core/MagpieNavigationWidget.cs · lignes 37 à 42 (commentaire raccourci)</span>// La barre est peinte MOITIÉ PLUS GRANDE que ses
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/plugin/Core/MagpieNavigationWidget.cs · lignes 37 à 42 (commentaire raccourci)</span>// La barre est peinte MOITIÉ PLUS GRANDE que ses
 // mesures de base. Un élève qui cherche « Suivant »
 // doit le trouver sans le chercher, et une barre à
 // la taille d'un composant se confond avec le graphe.
 private const float Grossissement = 1.5f;</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Les bords sont infinis</h3>
-      <p>Une cible collée au bord de l'écran a une profondeur illimitée : la souris s'y arrête toute seule. C'est pourquoi un coin d'écran ou une barre de menus en haut s'atteignent si vite. La barre de Magpie se place en recul de 16 px des bords (ligne 34) : proche du bord, pas collée.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>La cible, c'est ce qu'on voit</h3>
-      <p>Le skill accessibility de SnapSet l'exige : la zone cliquable correspond exactement au rectangle peint (SKILL.md:100–103). Pour agrandir une Case, son libellé fait partie de la zone (lignes 109–111) : la cible grandit, et elle se voit.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Les bords sont infinis</h3>
+<p>Une cible collée au bord de l'écran a une profondeur illimitée : la souris s'y arrête toute seule. C'est pourquoi un coin d'écran ou une barre de menus en haut s'atteignent si vite. La barre de Magpie se place en recul de 16 px des bords (ligne 34) : proche du bord, pas collée.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>La cible, c'est ce qu'on voit</h3>
+<p>Le skill accessibility de SnapSet l'exige : la zone cliquable correspond exactement au rectangle peint (SKILL.md:100–103). Pour agrandir une Case, son libellé fait partie de la zone (lignes 109–111) : la cible grandit, et elle se voit.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Agrandir une cible par une zone invisible. Le clic marche, mais l'utilisateur ne vise pas ce qu'il ne voit pas : il garde le temps de la petite cible, et s'étonne quand un clic à côté déclenche l'action. On agrandit la forme, pas la zone.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 82 · Les lois de l'ergonomie</div>
+<div class="folio">2</div>
+<div class="pied">Cours 82 · Les lois de l'ergonomie</div>
 </section>
-
 <!-- ============ PAGE 3 · HICK ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 82</b></div>
-  <p class="rubrique">Schéma 2 · La loi de Hick</p>
-  <h2>Un menu se trie, il ne se lit pas</h2>
-  <p style="max-width:165mm">William Hick (1952) a mesuré que le temps de décision croît avec le logarithme du nombre de choix équiprobables. Le cerveau élimine des moitiés, il ne passe pas chaque entrée en revue. À une condition : que les choix soient connus et rangés de façon prévisible.</p>
-
-  <svg viewBox="0 0 600 212" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="212" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#2F6B3A" text-anchor="start" font-weight="700">log₂(n + 1) : le terme de Hick, selon le nombre n de choix également probables (calculé)</text>
-<text x="70" y="51" font-size="8.6" fill="#2B2F33" text-anchor="end" font-weight="700" class="mono" style="font-size:8.6px">n = 2</text>
-<rect x="80" y="40" width="95.09775004326937" height="14" fill="#1565C0"/>
-<text x="181.09775004326937" y="51" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">1,58 bits</text>
-<text x="70" y="75" font-size="8.6" fill="#2B2F33" text-anchor="end" font-weight="700" class="mono" style="font-size:8.6px">n = 4</text>
-<rect x="80" y="64" width="139.31568569324173" height="14" fill="#1565C0"/>
-<text x="225.31568569324173" y="75" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">2,32 bits</text>
-<text x="70" y="99" font-size="8.6" fill="#2B2F33" text-anchor="end" font-weight="700" class="mono" style="font-size:8.6px">n = 8</text>
-<rect x="80" y="88" width="190.19550008653874" height="14" fill="#1565C0"/>
-<text x="276.19550008653874" y="99" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">3,17 bits</text>
-<text x="70" y="123" font-size="8.6" fill="#2B2F33" text-anchor="end" font-weight="700" class="mono" style="font-size:8.6px">n = 16</text>
-<rect x="80" y="112" width="245.24777047502033" height="14" fill="#1565C0"/>
-<text x="331.24777047502033" y="123" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">4,09 bits</text>
-<text x="70" y="147" font-size="8.6" fill="#2B2F33" text-anchor="end" font-weight="700" class="mono" style="font-size:8.6px">n = 32</text>
-<rect x="80" y="136" width="302.6636471615072" height="14" fill="#1565C0"/>
-<text x="388.6636471615072" y="147" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">5,04 bits</text>
-<text x="470" y="70" font-size="8.4" fill="#1565C0" text-anchor="middle" font-weight="700">De 2 à 32 choix :</text>
-<text x="470" y="86" font-size="8.4" fill="#1565C0" text-anchor="middle" font-weight="700">16 fois plus d'entrées,</text>
-<text x="470" y="102" font-size="8.4" fill="#1565C0" text-anchor="middle" font-weight="700">3,2 fois plus de bits.</text>
-<text x="16" y="172" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">Le temps croît comme le logarithme : on trie les choix par moitiés, on ne les lit pas un par un.</text>
-<text x="16" y="190" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">Valable pour des choix connus et rangés ; une liste en vrac à lire mot à mot croît, elle, en ligne droite.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 82</b></div>
+<p class="rubrique">Schéma 2 · La loi de Hick</p>
+<h2>Un menu se trie, il ne se lit pas</h2>
+<p style="max-width:165mm">William Hick (1952) a mesuré que le temps de décision croît avec le logarithme du nombre de choix équiprobables. Le cerveau élimine des moitiés, il ne passe pas chaque entrée en revue. À une condition : que les choix soient connus et rangés de façon prévisible.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 212" width="100%">
+<rect fill="#EFE9E1" height="212" width="600" x="0" y="0"></rect>
+<text fill="#2F6B3A" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">log₂(n + 1) : le terme de Hick, selon le nombre n de choix également probables (calculé)</text>
+<text class="mono" fill="#2B2F33" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="end" x="70" y="51">n = 2</text>
+<rect fill="#1565C0" height="14" width="95.09775004326937" x="80" y="40"></rect>
+<text class="mono" fill="#2B2F33" font-size="8" font-weight="700" style="font-size:8px" text-anchor="start" x="181.09775004326937" y="51">1,58 bits</text>
+<text class="mono" fill="#2B2F33" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="end" x="70" y="75">n = 4</text>
+<rect fill="#1565C0" height="14" width="139.31568569324173" x="80" y="64"></rect>
+<text class="mono" fill="#2B2F33" font-size="8" font-weight="700" style="font-size:8px" text-anchor="start" x="225.31568569324173" y="75">2,32 bits</text>
+<text class="mono" fill="#2B2F33" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="end" x="70" y="99">n = 8</text>
+<rect fill="#1565C0" height="14" width="190.19550008653874" x="80" y="88"></rect>
+<text class="mono" fill="#2B2F33" font-size="8" font-weight="700" style="font-size:8px" text-anchor="start" x="276.19550008653874" y="99">3,17 bits</text>
+<text class="mono" fill="#2B2F33" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="end" x="70" y="123">n = 16</text>
+<rect fill="#1565C0" height="14" width="245.24777047502033" x="80" y="112"></rect>
+<text class="mono" fill="#2B2F33" font-size="8" font-weight="700" style="font-size:8px" text-anchor="start" x="331.24777047502033" y="123">4,09 bits</text>
+<text class="mono" fill="#2B2F33" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="end" x="70" y="147">n = 32</text>
+<rect fill="#1565C0" height="14" width="302.6636471615072" x="80" y="136"></rect>
+<text class="mono" fill="#2B2F33" font-size="8" font-weight="700" style="font-size:8px" text-anchor="start" x="388.6636471615072" y="147">5,04 bits</text>
+<text fill="#1565C0" font-size="8.4" font-weight="700" text-anchor="middle" x="470" y="70">De 2 à 32 choix :</text>
+<text fill="#1565C0" font-size="8.4" font-weight="700" text-anchor="middle" x="470" y="86">16 fois plus d'entrées,</text>
+<text fill="#1565C0" font-size="8.4" font-weight="700" text-anchor="middle" x="470" y="102">3,2 fois plus de bits.</text>
+<text fill="#2B2F33" font-size="8" font-weight="700" text-anchor="start" x="16" y="172">Le temps croît comme le logarithme : on trie les choix par moitiés, on ne les lit pas un par un.</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="start" x="16" y="190">Valable pour des choix connus et rangés ; une liste en vrac à lire mot à mot croît, elle, en ligne droite.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">SnapSet/src/SnapSet.Conception/Feuilles/MenuReglages.cs · lignes 5 à 9 (lignes raccourcies)</span>// Choix         → sous-menu d'éléments cochés,
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">SnapSet/src/SnapSet.Conception/Feuilles/MenuReglages.cs · lignes 5 à 9 (lignes raccourcies)</span>// Choix         → sous-menu d'éléments cochés,
 //                 un par valeur, la courante cochée ;
 // Booleen       → Menu_AppendItem coché ;
 // Entier/Nombre → sous-menu à une molette ;
 // Espacement    → sous-menu à quatre molettes ;
 // Texte         → titre inactif puis saisie native.</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Reconnaître plutôt que se rappeler</h3>
-      <p>Un choix fermé devient une liste d'éléments, la valeur courante cochée (ligne 111). L'utilisateur reconnaît la bonne entrée au lieu de taper un nom de mémoire, sans faute de frappe possible : c'est la raison donnée par le skill ux-design (SKILL.md:86).</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Hick ne dit pas tout</h3>
-      <p>Pour un expert qui sait où est l'entrée, le temps dépend surtout du geste (Fitts) et de l'habitude. Et chaque sous-menu ajoute une ouverture, donc un geste de plus. Un menu plat et bien rangé bat souvent trois niveaux de sous-menus.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Reconnaître plutôt que se rappeler</h3>
+<p>Un choix fermé devient une liste d'éléments, la valeur courante cochée (ligne 111). L'utilisateur reconnaît la bonne entrée au lieu de taper un nom de mémoire, sans faute de frappe possible : c'est la raison donnée par le skill ux-design (SKILL.md:86).</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Hick ne dit pas tout</h3>
+<p>Pour un expert qui sait où est l'entrée, le temps dépend surtout du geste (Fitts) et de l'habitude. Et chaque sous-menu ajoute une ouverture, donc un geste de plus. Un menu plat et bien rangé bat souvent trois niveaux de sous-menus.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Lire Hick comme « moins de choix, toujours mieux ». Passer de 16 à 8 entrées ne gagne qu'environ un bit ; cacher les 8 autres dans un sous-menu coûte un geste et un temps de recherche. On regroupe par sens, on ne découpe pas pour réduire n.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 82 · Les lois de l'ergonomie</div>
+<div class="folio">3</div>
+<div class="pied">Cours 82 · Les lois de l'ergonomie</div>
 </section>
-
 <!-- ============ PAGE 4 · PROXIMITÉ ET HABITUDES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 82</b></div>
-  <p class="rubrique">Schéma 3 · Proximité, habitudes, délais</p>
-  <h2>L'espace groupe, l'habitude guide</h2>
-  <p style="max-width:165mm">La psychologie de la forme (Gestalt, années 1920) a décrit comment l'œil groupe : ce qui est <b>proche</b> va ensemble, ce qui se <b>ressemble</b> aussi. Un écart plus petit à l'intérieur d'un groupe qu'entre deux groupes suffit, sans cadre ni trait.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#2F6B3A" text-anchor="start" font-weight="700">Une colonne de deux feuilles : écarts de Metrique.cs agrandis 3 fois (boîtes schématiques)</text>
-<rect x="40" y="46" width="60.0" height="26" rx="3" fill="#fff" stroke="#6B7378"/>
-<text x="70" y="63" font-size="9" fill="#2B2F33" text-anchor="middle" font-weight="700">Rayon</text>
-<rect x="112" y="46" width="120" height="26" rx="3" fill="#E7F0E8" stroke="#2F6B3A"/>
-<text x="172" y="63" font-size="9" fill="#2F6B3A" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">12,5</text>
-<rect x="40" y="96" width="60.0" height="26" rx="3" fill="#fff" stroke="#6B7378"/>
-<text x="70" y="113" font-size="9" fill="#2B2F33" text-anchor="middle" font-weight="700">Pas</text>
-<rect x="112" y="96" width="120" height="26" rx="3" fill="#E7F0E8" stroke="#2F6B3A"/>
-<text x="172" y="113" font-size="9" fill="#2F6B3A" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">4</text>
-<text x="106" y="40" font-size="8" fill="#2E7D32" text-anchor="middle" font-weight="700">4</text>
-<line x1="100" y1="43" x2="112" y2="43" stroke="#2E7D32" stroke-width="1.4"/>
-<line x1="250" y1="72" x2="250" y2="96" stroke="#E65100" stroke-width="1.4"/>
-<text x="256" y="87.0" font-size="8" fill="#E65100" text-anchor="start" font-weight="700">8 = 2 × 4</text>
-<text x="330" y="56" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700">libellé ↔ contrôle : 4 px</text>
-<text x="330" y="70" font-size="7.6" fill="#6B7378" text-anchor="start" class="mono" style="font-size:7.6px">EcartLibelle, Metrique.cs:1884</text>
-<text x="330" y="96" font-size="8.4" fill="#E65100" text-anchor="start" font-weight="700">feuille ↔ feuille : 8 px</text>
-<text x="330" y="110" font-size="7.6" fill="#6B7378" text-anchor="start" class="mono" style="font-size:7.6px">2 × MargeMinimaleFeuille, lignes 543–545</text>
-<text x="16" y="176" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">Le libellé est deux fois plus près de son contrôle que de la feuille voisine : l'œil fait les paires seul.</text>
-<text x="16" y="194" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Aucun trait, aucun cadre : l'espace suffit à grouper. (EcartLibelle est noté « provisoire », à caler dans Rhino.)</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 82</b></div>
+<p class="rubrique">Schéma 3 · Proximité, habitudes, délais</p>
+<h2>L'espace groupe, l'habitude guide</h2>
+<p style="max-width:165mm">La psychologie de la forme (Gestalt, années 1920) a décrit comment l'œil groupe : ce qui est <b>proche</b> va ensemble, ce qui se <b>ressemble</b> aussi. Un écart plus petit à l'intérieur d'un groupe qu'entre deux groupes suffit, sans cadre ni trait.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#2F6B3A" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">Une colonne de deux feuilles : écarts de Metrique.cs agrandis 3 fois (boîtes schématiques)</text>
+<rect fill="#fff" height="26" rx="3" stroke="#6B7378" width="60.0" x="40" y="46"></rect>
+<text fill="#2B2F33" font-size="9" font-weight="700" text-anchor="middle" x="70" y="63">Rayon</text>
+<rect fill="#E7F0E8" height="26" rx="3" stroke="#2F6B3A" width="120" x="112" y="46"></rect>
+<text class="mono" fill="#2F6B3A" font-size="9" font-weight="700" style="font-size:9px" text-anchor="middle" x="172" y="63">12,5</text>
+<rect fill="#fff" height="26" rx="3" stroke="#6B7378" width="60.0" x="40" y="96"></rect>
+<text fill="#2B2F33" font-size="9" font-weight="700" text-anchor="middle" x="70" y="113">Pas</text>
+<rect fill="#E7F0E8" height="26" rx="3" stroke="#2F6B3A" width="120" x="112" y="96"></rect>
+<text class="mono" fill="#2F6B3A" font-size="9" font-weight="700" style="font-size:9px" text-anchor="middle" x="172" y="113">4</text>
+<text fill="#2E7D32" font-size="8" font-weight="700" text-anchor="middle" x="106" y="40">4</text>
+<line stroke="#2E7D32" stroke-width="1.4" x1="100" x2="112" y1="43" y2="43"></line>
+<line stroke="#E65100" stroke-width="1.4" x1="250" x2="250" y1="72" y2="96"></line>
+<text fill="#E65100" font-size="8" font-weight="700" text-anchor="start" x="256" y="87.0">8 = 2 × 4</text>
+<text fill="#2E7D32" font-size="8.4" font-weight="700" text-anchor="start" x="330" y="56">libellé ↔ contrôle : 4 px</text>
+<text class="mono" fill="#6B7378" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="330" y="70">EcartLibelle, Metrique.cs:1884</text>
+<text fill="#E65100" font-size="8.4" font-weight="700" text-anchor="start" x="330" y="96">feuille ↔ feuille : 8 px</text>
+<text class="mono" fill="#6B7378" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="330" y="110">2 × MargeMinimaleFeuille, lignes 543–545</text>
+<text fill="#2B2F33" font-size="8" font-weight="700" text-anchor="start" x="16" y="176">Le libellé est deux fois plus près de son contrôle que de la feuille voisine : l'œil fait les paires seul.</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="16" y="194">Aucun trait, aucun cadre : l'espace suffit à grouper. (EcartLibelle est noté « provisoire », à caler dans Rhino.)</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">SnapSet/schema/Metrique.cs · lignes 533, 552 et 1884 (commentaires ajoutés)</span>public const float RemplissageMinimal = 4f;
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">SnapSet/schema/Metrique.cs · lignes 533, 552 et 1884 (commentaires ajoutés)</span>public const float RemplissageMinimal = 4f;
 // plancher autour de chaque feuille : 2 × 4 = 8 entre deux
 public const float MargeMinimaleFeuille = RemplissageMinimal;
 // entre un libellé et son contrôle
 public const float EcartLibelle = 4f;</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>La loi de Jakob</h3>
-      <p>Jakob Nielsen : les utilisateurs passent l'essentiel de leur temps dans d'autres logiciels. SnapSet en fait une règle : aucun survol, le Bouton s'enfonce comme le Button natif, l'Interrupteur répond au double-clic comme le Toggle (ux-design, SKILL.md:107–110).</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Trois délais</h3>
-      <p>Repères de Nielsen (1993) : sous 0,1 s, l'action paraît instantanée ; jusqu'à 1 s, le fil de pensée tient ; au-delà de 10 s, l'attention part. Entre les deux, on dit ce qui se passe : « Chargement du catalogue… » (Magpie web, App.jsx:100).</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>La loi de Jakob</h3>
+<p>Jakob Nielsen : les utilisateurs passent l'essentiel de leur temps dans d'autres logiciels. SnapSet en fait une règle : aucun survol, le Bouton s'enfonce comme le Button natif, l'Interrupteur répond au double-clic comme le Toggle (ux-design, SKILL.md:107–110).</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Trois délais</h3>
+<p>Repères de Nielsen (1993) : sous 0,1 s, l'action paraît instantanée ; jusqu'à 1 s, le fil de pensée tient ; au-delà de 10 s, l'attention part. Entre les deux, on dit ce qui se passe : « Chargement du catalogue… » (Magpie web, App.jsx:100).</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Des écarts tous égaux. Si le libellé est aussi loin de son contrôle que du contrôle voisin, l'œil ne sait plus à quel champ il appartient, et l'interface ajoute alors des cadres pour compenser. Deux niveaux d'écart nettement différents évitent les cadres.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 82 · Les lois de l'ergonomie</div>
+<div class="folio">4</div>
+<div class="pied">Cours 82 · Les lois de l'ergonomie</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 82</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>Des cibles pesées, des écarts calculés</h2>
-  <p style="max-width:165mm">Les deux dépôts appliquent ces lois sans les nommer : Magpie grossit une barre de commandes et répartit sa largeur par des poids ; SnapSet fixe ses écarts dans un seul fichier et passe les choix fermés par des listes cochées.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 82</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>Des cibles pesées, des écarts calculés</h2>
+<p style="max-width:165mm">Les deux dépôts appliquent ces lois sans les nommer : Magpie grossit une barre de commandes et répartit sa largeur par des poids ; SnapSet fixe ses écarts dans un seul fichier et passe les choix fermés par des listes cochées.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">magpie/plugin/Core/MagpieNavigationWidget.cs</span></div>
 <div class="l k1"><span class="n">42</span><span class="kw">private const float</span> Grossissement = 1.5f;<span class="rep r1">1</span></div>
@@ -300,137 +273,55 @@ public const float EcartLibelle = 4f;</div>
 <div class="l"><span class="cm">magpie/web/src/App.jsx</span></div>
 <div class="l k5"><span class="n">100</span>catalogLoading &amp;&amp; { text: <span class="st">"Chargement du catalogue…"</span> },<span class="rep r5">5</span></div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>Fitts</b>Tout grandit de moitié.</li>
-      <li><span class="rep r2">2</span><b>Des poids</b>2, 1, 1.</li>
-      <li><span class="rep r3">3</span><b>Proximité</b>4 contre 8.</li>
-      <li><span class="rep r4">4</span><b>Hick</b>La courante cochée.</li>
-      <li><span class="rep r5">5</span><b>Délai</b>On dit ce qui se passe.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À surveiller · la plus petite cible est la plus utilisée ?</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>Fitts</b>Tout grandit de moitié.</li>
+<li><span class="rep r2">2</span><b>Des poids</b>2, 1, 1.</li>
+<li><span class="rep r3">3</span><b>Proximité</b>4 contre 8.</li>
+<li><span class="rep r4">4</span><b>Hick</b>La courante cochée.</li>
+<li><span class="rep r5">5</span><b>Délai</b>On dit ce qui se passe.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À surveiller · la plus petite cible est la plus utilisée ?</span>
     Dans la barre de navigation, « Recharger » pèse 2 et chaque flèche 1 : 108 px pour « Recharger », 54 px pour « &lt; » et « &gt; » (calculé). Le commentaire des lignes 50 à 53 le justifie par la longueur du libellé. Or « Suivant » sert sans doute à chaque exercice, plus souvent que « Recharger ». Par Fitts, l'action la plus fréquente gagnerait à être la plus large ; à mesurer avec des élèves avant de changer quoi que ce soit (cours 84).
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 82 · Les lois de l'ergonomie</div>
+<div class="folio">5</div>
+<div class="pied">Cours 82 · Les lois de l'ergonomie</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 82</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 82</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">La loi de Fitts relie le temps de pointage à…</div><ul>
-      <li><span>A</span>le nombre de choix</li><li><span>B</span>la couleur de la cible</li><li><span>C</span>log₂(D/W + 1)</li><li><span>D</span>D × W</li></ul></div>
 
-    <div class="q"><div class="enonce">Doubler la largeur d'un bouton éloigné…</div><ul>
-      <li><span>A</span>double le temps</li><li><span>B</span>divise le temps par deux</li><li><span>C</span>ne change rien</li><li><span>D</span>retire environ un bit de difficulté</li></ul></div>
 
-    <div class="q"><div class="enonce">Le grossissement de la barre de Magpie vaut…</div><ul>
-      <li><span>A</span>1,5</li><li><span>B</span>3</li><li><span>C</span>1,25</li><li><span>D</span>2</li></ul></div>
 
-    <div class="q"><div class="enonce">Largeur des flèches « &lt; » et « &gt; » à l'écran (calculé) :</div><ul>
-      <li><span>A</span>36 px</li><li><span>B</span>108 px</li><li><span>C</span>176 px</li><li><span>D</span>54 px</li></ul></div>
-
-    <div class="q"><div class="enonce">Une cible collée au bord de l'écran…</div><ul>
-      <li><span>A</span>est plus lente à atteindre</li><li><span>B</span>est invisible</li><li><span>C</span>est interdite</li><li><span>D</span>a une profondeur illimitée</li></ul></div>
-
-    <div class="q"><div class="enonce">Selon Hick, de 2 à 32 choix, le terme log₂(n + 1)…</div><ul>
-      <li><span>A</span>passe d'environ 1,6 à 5 bits</li><li><span>B</span>est multiplié par 16</li><li><span>C</span>est divisé par 2</li><li><span>D</span>reste constant</li></ul></div>
-
-    <div class="q"><div class="enonce">Un choix fermé dans un menu SnapSet devient…</div><ul>
-      <li><span>A</span>une saisie de texte</li><li><span>B</span>un sous-menu d'éléments cochés</li><li><span>C</span>une fenêtre de dialogue</li><li><span>D</span>un sélecteur de couleur</li></ul></div>
-
-    <div class="q"><div class="enonce">Bonnes pratiques d'après le cours : <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>regrouper un menu par sens</li><li><span>B</span>agrandir la forme visible d'une cible</li><li><span>C</span>multiplier les sous-menus pour réduire n</li><li><span>D</span>ajouter une zone de clic invisible</li></ul></div>
-
-    <div class="q"><div class="enonce">Dans une colonne SnapSet, libellé ↔ contrôle et feuille ↔ feuille :</div><ul>
-      <li><span>A</span>8 px et 4 px</li><li><span>B</span>4 px et 8 px</li><li><span>C</span>0 px et 8 px</li><li><span>D</span>4 px et 4 px</li></ul></div>
-
-    <div class="q"><div class="enonce">La loi de Jakob dit que…</div><ul>
-      <li><span>A</span>ce qui est proche va ensemble</li><li><span>B</span>un bouton doit faire 44 px</li><li><span>C</span>l'utilisateur vit surtout dans d'autres logiciels</li><li><span>D</span>le temps croît avec n</li></ul></div>
-
-    <div class="q"><div class="enonce">Sous quel délai une action paraît-elle instantanée ?</div><ul>
-      <li><span>A</span>2 s</li><li><span>B</span>0,1 s</li><li><span>C</span>1 s</li><li><span>D</span>10 s</li></ul></div>
-
-    <div class="q"><div class="enonce">Les constituants SnapSet réagissent au survol…</div><ul>
-      <li><span>A</span>jamais, comme les objets natifs</li><li><span>B</span>par un changement de couleur</li><li><span>C</span>par une ombre</li><li><span>D</span>par une info-bulle animée</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 82 · Les lois de l'ergonomie</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Loi</th><th>Ce qu'elle dit</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">Fitts · log₂(D/W + 1)</td><td>grande et proche = rapide</td><td>MagpieNavigationWidget.cs:42</td></tr>
+<tr><td class="c">poids: 2f</td><td>partager une largeur au prorata</td><td>PeintreBoutons.cs:133</td></tr>
+<tr><td class="c">Hick · log₂(n + 1)</td><td>choisir parmi n coûte un logarithme</td><td>MenuReglages.cs:5–9</td></tr>
+<tr><td class="c">Proximité</td><td>un écart plus petit dans le groupe</td><td>Metrique.cs:1884</td></tr>
+<tr><td class="c">Jakob</td><td>faire comme les logiciels connus</td><td>ux-design, SKILL.md:107–110</td></tr>
+<tr><td class="c">0,1 s · 1 s · 10 s</td><td>instantané, fluide, attention perdue</td><td>App.jsx:100</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Indice de difficulté</dt><dd>log₂(D/W + 1), en bits : la difficulté d'un pointage selon Fitts.</dd>
+<dt>Cible</dt><dd>La zone qu'on vise et qui reçoit le clic ; ici, toujours celle qu'on voit.</dd>
+<dt>Gestalt</dt><dd>L'école qui a décrit comment l'œil groupe les formes : proximité, ressemblance.</dd>
+<dt>Reconnaissance</dt><dd>Choisir dans ce qu'on voit, plutôt que se rappeler un nom de mémoire.</dd>
+<dt>Poids</dt><dd>La part de largeur qu'un bouton prend dans sa rangée.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 83</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 82 · Les lois de l'ergonomie</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 82</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · C.</b> L'indice de difficulté, en bits.</div>
-    <div><b>02 · D.</b> D/W est divisé par deux.</div>
-    <div><b>03 · A.</b> MagpieNavigationWidget.cs:42.</div>
-    <div><b>04 · D.</b> 36 × 1,5 ; poids 1 sur 4.</div>
-    <div><b>05 · D.</b> La souris s'y arrête seule.</div>
-    <div><b>06 · A.</b> 1,58 puis 5,04 : × 3,2.</div>
-    <div><b>07 · B.</b> MenuReglages.cs:5 et 111.</div>
-    <div><b>08 · A et B.</b> Pages 2 et 3.</div>
-    <div><b>09 · B.</b> Metrique.cs:1884 et 543–545.</div>
-    <div><b>10 · C.</b> D'où l'alignement sur le natif.</div>
-    <div><b>11 · B.</b> Repères de Nielsen, 1993.</div>
-    <div><b>12 · A.</b> ux-design, SKILL.md:107.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 83, « Traduire une interface ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Loi</th><th>Ce qu'elle dit</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">Fitts · log₂(D/W + 1)</td><td>grande et proche = rapide</td><td>MagpieNavigationWidget.cs:42</td></tr>
-      <tr><td class="c">poids: 2f</td><td>partager une largeur au prorata</td><td>PeintreBoutons.cs:133</td></tr>
-      <tr><td class="c">Hick · log₂(n + 1)</td><td>choisir parmi n coûte un logarithme</td><td>MenuReglages.cs:5–9</td></tr>
-      <tr><td class="c">Proximité</td><td>un écart plus petit dans le groupe</td><td>Metrique.cs:1884</td></tr>
-      <tr><td class="c">Jakob</td><td>faire comme les logiciels connus</td><td>ux-design, SKILL.md:107–110</td></tr>
-      <tr><td class="c">0,1 s · 1 s · 10 s</td><td>instantané, fluide, attention perdue</td><td>App.jsx:100</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Indice de difficulté</dt><dd>log₂(D/W + 1), en bits : la difficulté d'un pointage selon Fitts.</dd>
-    <dt>Cible</dt><dd>La zone qu'on vise et qui reçoit le clic ; ici, toujours celle qu'on voit.</dd>
-    <dt>Gestalt</dt><dd>L'école qui a décrit comment l'œil groupe les formes : proximité, ressemblance.</dd>
-    <dt>Reconnaissance</dt><dd>Choisir dans ce qu'on voit, plutôt que se rappeler un nom de mémoire.</dd>
-    <dt>Poids</dt><dd>La part de largeur qu'un bouton prend dans sa rangée.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 83</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 82 · Les lois de l'ergonomie</div>
-</section>
-
 </body>
 </html>

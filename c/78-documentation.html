@@ -1,241 +1,214 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>78 · La documentation</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-11">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 78</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>La documentation</h1>
-  <p class="chapeau">Le code dit ce que fait la machine ; il ne dit ni pourquoi, ni comment s'en servir, ni ce qui a été écarté. La <b>documentation</b> porte tout cela, pour un lecteur qui n'était pas là : un utilisateur, un collègue, un agent, ou toi dans six mois. Sa difficulté n'est pas de l'écrire, c'est qu'elle reste <b>vraie</b>.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>73</b> et <b>74</b></span>
-    <span class="pastille">Exemples · <b>DocumentationNomTests</b> (SnapSet), <b>README</b> et <b>Bubble</b> (Cuttlefish), <b>MagpieReglages</b></span>
-  </div>
-
-  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
-    <svg viewBox="0 0 600 214" width="100%">
-<text x="170" y="14" font-size="8" fill="#6B7378" text-anchor="middle" font-weight="700">pour apprendre</text>
-<text x="450" y="14" font-size="8" fill="#6B7378" text-anchor="middle" font-weight="700">pour travailler</text>
-<text x="14" y="70" font-size="8" fill="#6B7378" text-anchor="middle" font-weight="700">faire</text>
-<text x="14" y="154" font-size="8" fill="#6B7378" text-anchor="middle" font-weight="700">savoir</text>
-<rect x="40" y="22" width="260" height="78" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="170" y="46" font-size="10" fill="#2E7D32" text-anchor="middle" font-weight="700">Tutoriel</text>
-<text x="170" y="66" font-size="8" fill="#2B2F33" text-anchor="middle" font-style="italic">« montre-moi, pas à pas »</text>
-<text x="170" y="86" font-size="7.6" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.6px">Cuttlefish-Examples.gh</text>
-<rect x="320" y="22" width="260" height="78" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
-<text x="450" y="46" font-size="10" fill="#1565C0" text-anchor="middle" font-weight="700">Guide pratique</text>
-<text x="450" y="66" font-size="8" fill="#2B2F33" text-anchor="middle" font-style="italic">« comment faire X ? »</text>
-<text x="450" y="86" font-size="7.6" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.6px">AMORCE.md, README « Tester »</text>
-<rect x="40" y="108" width="260" height="78" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
-<text x="170" y="132" font-size="10" fill="#E65100" text-anchor="middle" font-weight="700">Explication</text>
-<text x="170" y="152" font-size="8" fill="#2B2F33" text-anchor="middle" font-style="italic">« pourquoi est-ce ainsi ? »</text>
-<text x="170" y="172" font-size="7.6" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.6px">commentaires « pourquoi », docs/</text>
-<rect x="320" y="108" width="260" height="78" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
-<text x="450" y="132" font-size="10" fill="#7B1FA2" text-anchor="middle" font-weight="700">Référence</text>
-<text x="450" y="152" font-size="8" fill="#2B2F33" text-anchor="middle" font-style="italic">« que fait exactement X ? »</text>
-<text x="450" y="172" font-size="7.6" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.6px">tableau des composants, /// summary</text>
-<text x="300" y="206" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">Chaque lecteur arrive avec une question ; un document qui veut répondre à toutes n'en sert bien aucune.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 78</b></div>
+<p class="rubrique">Le concept</p>
+<h1>La documentation</h1>
+<p class="chapeau">Le code dit ce que fait la machine ; il ne dit ni pourquoi, ni comment s'en servir, ni ce qui a été écarté. La <b>documentation</b> porte tout cela, pour un lecteur qui n'était pas là : un utilisateur, un collègue, un agent, ou toi dans six mois. Sa difficulté n'est pas de l'écrire, c'est qu'elle reste <b>vraie</b>.</p>
+<div class="meta">
+<span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>73</b> et <b>74</b></span>
+<span class="pastille">Exemples · <b>DocumentationNomTests</b> (SnapSet), <b>README</b> et <b>Bubble</b> (Cuttlefish), <b>MagpieReglages</b></span>
+</div>
+<div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+<svg viewbox="0 0 600 214" width="100%">
+<text fill="#6B7378" font-size="8" font-weight="700" text-anchor="middle" x="170" y="14">pour apprendre</text>
+<text fill="#6B7378" font-size="8" font-weight="700" text-anchor="middle" x="450" y="14">pour travailler</text>
+<text fill="#6B7378" font-size="8" font-weight="700" text-anchor="middle" x="14" y="70">faire</text>
+<text fill="#6B7378" font-size="8" font-weight="700" text-anchor="middle" x="14" y="154">savoir</text>
+<rect fill="#fff" height="78" rx="4" stroke="#2E7D32" stroke-width="1.2" width="260" x="40" y="22"></rect>
+<text fill="#2E7D32" font-size="10" font-weight="700" text-anchor="middle" x="170" y="46">Tutoriel</text>
+<text fill="#2B2F33" font-size="8" font-style="italic" text-anchor="middle" x="170" y="66">« montre-moi, pas à pas »</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="middle" x="170" y="86">Cuttlefish-Examples.gh</text>
+<rect fill="#fff" height="78" rx="4" stroke="#1565C0" stroke-width="1.2" width="260" x="320" y="22"></rect>
+<text fill="#1565C0" font-size="10" font-weight="700" text-anchor="middle" x="450" y="46">Guide pratique</text>
+<text fill="#2B2F33" font-size="8" font-style="italic" text-anchor="middle" x="450" y="66">« comment faire X ? »</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="middle" x="450" y="86">AMORCE.md, README « Tester »</text>
+<rect fill="#fff" height="78" rx="4" stroke="#E65100" stroke-width="1.2" width="260" x="40" y="108"></rect>
+<text fill="#E65100" font-size="10" font-weight="700" text-anchor="middle" x="170" y="132">Explication</text>
+<text fill="#2B2F33" font-size="8" font-style="italic" text-anchor="middle" x="170" y="152">« pourquoi est-ce ainsi ? »</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="middle" x="170" y="172">commentaires « pourquoi », docs/</text>
+<rect fill="#fff" height="78" rx="4" stroke="#7B1FA2" stroke-width="1.2" width="260" x="320" y="108"></rect>
+<text fill="#7B1FA2" font-size="10" font-weight="700" text-anchor="middle" x="450" y="132">Référence</text>
+<text fill="#2B2F33" font-size="8" font-style="italic" text-anchor="middle" x="450" y="152">« que fait exactement X ? »</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="middle" x="450" y="172">tableau des composants, /// summary</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="middle" x="300" y="206">Chaque lecteur arrive avec une question ; un document qui veut répondre à toutes n'en sert bien aucune.</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>On écrit pour une question précise d'un lecteur précis, au plus près de ce qu'on documente, en évitant ce qui se périme vite ; et ce qui doit rester vrai, on le fait vérifier par un test.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Une maison. La notice de la chaudière (référence), le mot laissé au voisin pour arroser les plantes (guide), le plan de l'architecte avec ses raisons (explication). Personne ne cherche la vanne d'eau dans le plan de l'architecte.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>reconnaître les quatre sortes de documents ;</li>
-        <li>écrire un commentaire qui dit pourquoi ;</li>
-        <li>repérer ce qui se périme le plus vite ;</li>
-        <li>faire vérifier la doc par un test.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:5mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>On écrit pour une question précise d'un lecteur précis, au plus près de ce qu'on documente, en évitant ce qui se périme vite ; et ce qui doit rester vrai, on le fait vérifier par un test.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Une maison. La notice de la chaudière (référence), le mot laissé au voisin pour arroser les plantes (guide), le plan de l'architecte avec ses raisons (explication). Personne ne cherche la vanne d'eau dans le plan de l'architecte.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>reconnaître les quatre sortes de documents ;</li>
+<li>écrire un commentaire qui dit pourquoi ;</li>
+<li>repérer ce qui se périme le plus vite ;</li>
+<li>faire vérifier la doc par un test.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:5mm">
+<span class="titre">À retenir</span>
     Une documentation fausse est pire qu'une documentation absente : sans doc, on lit le code ; avec une doc fausse, on la croit. Chaque phrase écrite est une promesse qu'il faudra tenir à chaque modification du code.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 78 · La documentation</div>
+<div class="folio">1</div>
+<div class="pied">Cours 78 · La documentation</div>
 </section>
-
 <!-- ============ PAGE 2 · LES COMMENTAIRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 78</b></div>
-  <p class="rubrique">Schéma 1 · Les commentaires</p>
-  <h2>Dire pourquoi, pas quoi</h2>
-  <p style="max-width:165mm">Le commentaire le plus proche du code est aussi le plus lu. Il n'a pas à répéter ce que le code dit déjà mieux : il dit ce que le code ne peut pas dire, la raison d'un choix, l'alternative écartée, le piège évité.</p>
-
-  <svg viewBox="0 0 600 212" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="212" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">Trois commentaires sur la même ligne : un seul apprend quelque chose</text>
-<rect x="16" y="34" width="568" height="38" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
-<text x="28" y="50" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px">// on teste si le dossier existe</text>
-<text x="28" y="65" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700">répète le code : à supprimer</text>
-<rect x="16" y="80" width="568" height="38" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="28" y="96" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px">// disparu : revenir au défaut plutôt que recréer à l'aveugle</text>
-<text x="28" y="111" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700">dit pourquoi : à garder</text>
-<rect x="16" y="126" width="568" height="38" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
-<text x="28" y="142" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px">/// &lt;summary&gt;Le dossier réglé, ou le défaut…&lt;/summary&gt;</text>
-<text x="28" y="157" font-size="7.8" fill="#7B1FA2" text-anchor="start" font-weight="700">dit ce que l'appelant obtient : la référence</text>
-<text x="16" y="192" font-size="8.4" fill="#6B7378" text-anchor="start" class="mono" style="font-size:8.4px">return … Directory.Exists(regle) ? regle : DossierParDefaut;</text>
-<text x="16" y="206" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">La ligne commentée (MagpieReglages.cs:39). Les commentaires 2 et 3 résument ceux des lignes 29 à 33.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 78</b></div>
+<p class="rubrique">Schéma 1 · Les commentaires</p>
+<h2>Dire pourquoi, pas quoi</h2>
+<p style="max-width:165mm">Le commentaire le plus proche du code est aussi le plus lu. Il n'a pas à répéter ce que le code dit déjà mieux : il dit ce que le code ne peut pas dire, la raison d'un choix, l'alternative écartée, le piège évité.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 212" width="100%">
+<rect fill="#EFE9E1" height="212" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">Trois commentaires sur la même ligne : un seul apprend quelque chose</text>
+<rect fill="#fff" height="38" rx="4" stroke="#C62828" stroke-width="1.2" width="568" x="16" y="34"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.2" style="font-size:8.2px" text-anchor="start" x="28" y="50">// on teste si le dossier existe</text>
+<text fill="#C62828" font-size="7.8" font-weight="700" text-anchor="start" x="28" y="65">répète le code : à supprimer</text>
+<rect fill="#fff" height="38" rx="4" stroke="#2E7D32" stroke-width="1.2" width="568" x="16" y="80"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.2" style="font-size:8.2px" text-anchor="start" x="28" y="96">// disparu : revenir au défaut plutôt que recréer à l'aveugle</text>
+<text fill="#2E7D32" font-size="7.8" font-weight="700" text-anchor="start" x="28" y="111">dit pourquoi : à garder</text>
+<rect fill="#fff" height="38" rx="4" stroke="#7B1FA2" stroke-width="1.2" width="568" x="16" y="126"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.2" style="font-size:8.2px" text-anchor="start" x="28" y="142">/// &lt;summary&gt;Le dossier réglé, ou le défaut…&lt;/summary&gt;</text>
+<text fill="#7B1FA2" font-size="7.8" font-weight="700" text-anchor="start" x="28" y="157">dit ce que l'appelant obtient : la référence</text>
+<text class="mono" fill="#6B7378" font-size="8.4" style="font-size:8.4px" text-anchor="start" x="16" y="192">return … Directory.Exists(regle) ? regle : DossierParDefaut;</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="206">La ligne commentée (MagpieReglages.cs:39). Les commentaires 2 et 3 résument ceux des lignes 29 à 33.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/plugin/Core/MagpieReglages.cs · lignes 12 à 15</span>/// Stockés par Grasshopper lui-même (GH_SettingsServer) plutôt que dans un fichier
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/plugin/Core/MagpieReglages.cs · lignes 12 à 15</span>/// Stockés par Grasshopper lui-même (GH_SettingsServer) plutôt que dans un fichier
 /// à nous : un fichier de configuration rangé DANS le dossier de travail serait
 /// introuvable dès qu'on déplace ce dossier, et le réglage survit ainsi aux mises à
 /// jour du .gha. Voir issue #8.</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>L'alternative écartée</h3>
-      <p>Ce commentaire nomme la solution rejetée (« un fichier à nous ») et la raison du rejet. Sans lui, le prochain lecteur pourrait la proposer de bonne foi. Le renvoi à l'issue #8 mène au débat complet.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Le résumé XML</h3>
-      <p><code>/// &lt;summary&gt;</code> documente ce qu'un appelant peut attendre d'un membre public ; Visual Studio l'affiche au survol. Le dossier <code>src/</code> de SnapSet en compte 1 288, pour 76 fichiers C# (compté).</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>L'alternative écartée</h3>
+<p>Ce commentaire nomme la solution rejetée (« un fichier à nous ») et la raison du rejet. Sans lui, le prochain lecteur pourrait la proposer de bonne foi. Le renvoi à l'issue #8 mène au débat complet.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Le résumé XML</h3>
+<p><code>/// &lt;summary&gt;</code> documente ce qu'un appelant peut attendre d'un membre public ; Visual Studio l'affiche au survol. Le dossier <code>src/</code> de SnapSet en compte 1 288, pour 76 fichiers C# (compté).</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Le commentaire qui paraphrase (« incrémente i ») : il double le texte à maintenir, et le jour où le code change sans lui, il ment. Si un commentaire explique ce que fait une ligne obscure, mieux vaut souvent renommer une variable ou extraire une méthode au nom parlant.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 78 · La documentation</div>
+<div class="folio">2</div>
+<div class="pied">Cours 78 · La documentation</div>
 </section>
-
 <!-- ============ PAGE 3 · LA PÉREMPTION ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 78</b></div>
-  <p class="rubrique">Schéma 2 · Une documentation qui se périme</p>
-  <h2>Ce qui vieillit le plus vite</h2>
-  <p style="max-width:165mm">Toute doc vieillit, mais pas au même rythme. Un raisonnement reste vrai longtemps ; un nom de produit, un nombre de composants ou un numéro de ligne peuvent devenir faux au commit suivant, sans que personne ne relise la doc qui les cite.</p>
-
-  <svg viewBox="0 0 600 200" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="200" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">Le code avance, la documentation reste : trois écarts relevés dans tes dépôts</text>
-<line x1="30" y1="44" x2="570" y2="44" stroke="#6B7378" stroke-width="1.4"/>
-<text x="30" y="38" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700">écrit juste</text>
-<text x="570" y="38" font-size="7.6" fill="#C62828" text-anchor="end" font-weight="700">aujourd'hui</text>
-<rect x="16" y="58" width="568" height="36" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="28" y="73" font-size="8.6" fill="#2E7D32" text-anchor="start" font-weight="700">un nom</text>
-<text x="160" y="73" font-size="7.8" fill="#2B2F33" text-anchor="start">la doc disait « Atelier », le code « SnapSet »</text>
-<text x="160" y="87" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">corrigé, et gardé par un test</text>
-<rect x="16" y="102" width="568" height="36" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
-<text x="28" y="117" font-size="8.6" fill="#C62828" text-anchor="start" font-weight="700">un numéro de ligne</text>
-<text x="160" y="117" font-size="7.8" fill="#2B2F33" text-anchor="start">modele_diffusion.md cite TrainingManager.cs:172</text>
-<text x="160" y="131" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">l'appel est aujourd'hui en 212–214</text>
-<rect x="16" y="146" width="568" height="36" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
-<text x="28" y="161" font-size="8.6" fill="#C62828" text-anchor="start" font-weight="700">une liste</text>
-<text x="160" y="161" font-size="7.8" fill="#2B2F33" text-anchor="start">Directory.Build.props : trois projets, MagpieAdmin.gha</text>
-<text x="160" y="175" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">Magpie.csproj en liste quatre (cours 73)</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 78</b></div>
+<p class="rubrique">Schéma 2 · Une documentation qui se périme</p>
+<h2>Ce qui vieillit le plus vite</h2>
+<p style="max-width:165mm">Toute doc vieillit, mais pas au même rythme. Un raisonnement reste vrai longtemps ; un nom de produit, un nombre de composants ou un numéro de ligne peuvent devenir faux au commit suivant, sans que personne ne relise la doc qui les cite.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 200" width="100%">
+<rect fill="#EFE9E1" height="200" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">Le code avance, la documentation reste : trois écarts relevés dans tes dépôts</text>
+<line stroke="#6B7378" stroke-width="1.4" x1="30" x2="570" y1="44" y2="44"></line>
+<text fill="#2E7D32" font-size="7.6" font-weight="700" text-anchor="start" x="30" y="38">écrit juste</text>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="end" x="570" y="38">aujourd'hui</text>
+<rect fill="#fff" height="36" rx="4" stroke="#2E7D32" stroke-width="1.2" width="568" x="16" y="58"></rect>
+<text fill="#2E7D32" font-size="8.6" font-weight="700" text-anchor="start" x="28" y="73">un nom</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="160" y="73">la doc disait « Atelier », le code « SnapSet »</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="start" x="160" y="87">corrigé, et gardé par un test</text>
+<rect fill="#fff" height="36" rx="4" stroke="#C62828" stroke-width="1.2" width="568" x="16" y="102"></rect>
+<text fill="#C62828" font-size="8.6" font-weight="700" text-anchor="start" x="28" y="117">un numéro de ligne</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="160" y="117">modele_diffusion.md cite TrainingManager.cs:172</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="start" x="160" y="131">l'appel est aujourd'hui en 212–214</text>
+<rect fill="#fff" height="36" rx="4" stroke="#C62828" stroke-width="1.2" width="568" x="16" y="146"></rect>
+<text fill="#C62828" font-size="8.6" font-weight="700" text-anchor="start" x="28" y="161">une liste</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="160" y="161">Directory.Build.props : trois projets, MagpieAdmin.gha</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="start" x="160" y="175">Magpie.csproj en liste quatre (cours 73)</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · désigner sans numéro de ligne</span>Fragile : « l'appel est à TrainingManager.cs:172 »
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · désigner sans numéro de ligne</span>Fragile : « l'appel est à TrainingManager.cs:172 »
 Solide  : « CompleteParcours appelle MagpieCertificateGenerator.Generate »
 Fragile : « les 20 composants »        (vrai aujourd'hui : 20 classes, compté)
 Solide  : « les composants, par ordre de travail : … »</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Désigner par le nom</h3>
-      <p>Un nom de méthode survit aux ajouts de lignes au-dessus d'elle, et se retrouve par une recherche. Le numéro de ligne n'a de sens que figé dans le temps : dans un message de commit, une revue, ou un cours comme celui-ci.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Au même endroit que le code</h3>
-      <p>Plus la doc est loin du code, moins elle est relue quand il change. Un commentaire est vu à chaque modification ; un fichier de <code>docs/</code>, seulement si l'on pense à l'ouvrir. D'où l'intérêt d'un test qui l'ouvre à notre place.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Désigner par le nom</h3>
+<p>Un nom de méthode survit aux ajouts de lignes au-dessus d'elle, et se retrouve par une recherche. Le numéro de ligne n'a de sens que figé dans le temps : dans un message de commit, une revue, ou un cours comme celui-ci.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Au même endroit que le code</h3>
+<p>Plus la doc est loin du code, moins elle est relue quand il change. Un commentaire est vu à chaque modification ; un fichier de <code>docs/</code>, seulement si l'on pense à l'ouvrir. D'où l'intérêt d'un test qui l'ouvre à notre place.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Mettre à jour le code « et la doc plus tard ». Plus tard n'arrive pas : la modification est faite, le contexte s'efface, et l'écart ne se voit qu'au moment où quelqu'un s'y fie. La doc concernée se modifie dans le même commit que le code.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 78 · La documentation</div>
+<div class="folio">3</div>
+<div class="pied">Cours 78 · La documentation</div>
 </section>
-
 <!-- ============ PAGE 4 · DANS L'INTERFACE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 78</b></div>
-  <p class="rubrique">Schéma 3 · La documentation dans l'interface</p>
-  <h2>La doc que l'utilisateur lit vraiment</h2>
-  <p style="max-width:165mm">Un utilisateur de Grasshopper ouvre rarement un README. Il survole un composant, puis une entrée, et lit l'infobulle. Les chaînes passées au constructeur et à <code>pManager.Add…</code> sont donc la référence la plus lue d'un plugin.</p>
-
-  <svg viewBox="0 0 600 204" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="204" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">Dans Grasshopper, la référence s'affiche au survol : chaque chaîne du constructeur est lue</text>
-<rect x="40" y="60" width="120" height="70" rx="4" fill="#ECEBFA" stroke="#7B1FA2" stroke-width="1.2"/>
-<text x="100" y="90" font-size="10" fill="#7B1FA2" text-anchor="middle" font-weight="700">Bubble</text>
-<text x="100" y="108" font-size="8" fill="#6B7378" text-anchor="middle" class="mono" style="font-size:8px">BUBL</text>
-<text x="34" y="78" font-size="8" fill="#2B2F33" text-anchor="end" font-weight="700" class="mono" style="font-size:8px">P</text>
-<text x="34" y="112" font-size="8" fill="#2B2F33" text-anchor="end" font-weight="700" class="mono" style="font-size:8px">F</text>
-<text x="166" y="96" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">B</text>
-<line x1="162" y1="74" x2="228" y2="66" stroke="#6B7378" stroke-width="1"/><polygon points="228,66 221.9,69.5 221.3,64.1" fill="#6B7378"/>
-<line x1="162" y1="120" x2="228" y2="142" stroke="#6B7378" stroke-width="1"/><polygon points="228,142 221.0,142.5 222.7,137.4" fill="#6B7378"/>
-<rect x="232" y="40" width="352" height="54" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
-<text x="244" y="58" font-size="8" fill="#7B1FA2" text-anchor="start" font-weight="700">Bubble · description du composant</text>
-<text x="244" y="76" font-size="7.8" fill="#2B2F33" text-anchor="start">Draw a circle on each point, sized by the distance…</text>
-<rect x="232" y="112" width="352" height="66" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
-<text x="244" y="130" font-size="8" fill="#7B1FA2" text-anchor="start" font-weight="700">Factor (F) · description de l'entrée</text>
-<text x="244" y="148" font-size="7.8" fill="#2B2F33" text-anchor="start">The radius as a factor of half the distance to the</text>
-<text x="244" y="162" font-size="7.8" fill="#2B2F33" text-anchor="start">nearest point (1 = bubbles touch).</text>
-<text x="16" y="196" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Le « 1 = bubbles touch » vaut un paragraphe de manuel : il donne le sens de la valeur par défaut.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 78</b></div>
+<p class="rubrique">Schéma 3 · La documentation dans l'interface</p>
+<h2>La doc que l'utilisateur lit vraiment</h2>
+<p style="max-width:165mm">Un utilisateur de Grasshopper ouvre rarement un README. Il survole un composant, puis une entrée, et lit l'infobulle. Les chaînes passées au constructeur et à <code>pManager.Add…</code> sont donc la référence la plus lue d'un plugin.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 204" width="100%">
+<rect fill="#EFE9E1" height="204" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">Dans Grasshopper, la référence s'affiche au survol : chaque chaîne du constructeur est lue</text>
+<rect fill="#ECEBFA" height="70" rx="4" stroke="#7B1FA2" stroke-width="1.2" width="120" x="40" y="60"></rect>
+<text fill="#7B1FA2" font-size="10" font-weight="700" text-anchor="middle" x="100" y="90">Bubble</text>
+<text class="mono" fill="#6B7378" font-size="8" style="font-size:8px" text-anchor="middle" x="100" y="108">BUBL</text>
+<text class="mono" fill="#2B2F33" font-size="8" font-weight="700" style="font-size:8px" text-anchor="end" x="34" y="78">P</text>
+<text class="mono" fill="#2B2F33" font-size="8" font-weight="700" style="font-size:8px" text-anchor="end" x="34" y="112">F</text>
+<text class="mono" fill="#2B2F33" font-size="8" font-weight="700" style="font-size:8px" text-anchor="start" x="166" y="96">B</text>
+<line stroke="#6B7378" stroke-width="1" x1="162" x2="228" y1="74" y2="66"></line><polygon fill="#6B7378" points="228,66 221.9,69.5 221.3,64.1"></polygon>
+<line stroke="#6B7378" stroke-width="1" x1="162" x2="228" y1="120" y2="142"></line><polygon fill="#6B7378" points="228,142 221.0,142.5 222.7,137.4"></polygon>
+<rect fill="#fff" height="54" rx="4" stroke="#6B7378" stroke-width="1.2" width="352" x="232" y="40"></rect>
+<text fill="#7B1FA2" font-size="8" font-weight="700" text-anchor="start" x="244" y="58">Bubble · description du composant</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="244" y="76">Draw a circle on each point, sized by the distance…</text>
+<rect fill="#fff" height="66" rx="4" stroke="#6B7378" stroke-width="1.2" width="352" x="232" y="112"></rect>
+<text fill="#7B1FA2" font-size="8" font-weight="700" text-anchor="start" x="244" y="130">Factor (F) · description de l'entrée</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="244" y="148">The radius as a factor of half the distance to the</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="244" y="162">nearest point (1 = bubbles touch).</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="16" y="196">Le « 1 = bubbles touch » vaut un paragraphe de manuel : il donne le sens de la valeur par défaut.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">cuttlefish/Bubble.cs · lignes 18 à 20 et 30, la 30 coupée</span>: base("Bubble", "BUBL",
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">cuttlefish/Bubble.cs · lignes 18 à 20 et 30, la 30 coupée</span>: base("Bubble", "BUBL",
        "Draw a circle on each point, sized by the distance to its nearest neighbour",
        "Cuttlefish", "Draw")
 pManager.AddNumberParameter("Factor", "F", "The radius as a factor of half the distance
     to the nearest point (1 = bubbles touch).", GH_ParamAccess.item, 1);</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Un README qui sert</h3>
-      <p>Celui de Cuttlefish dit en une phrase ce que fait le plugin, puis présente les composants dans l'ordre du travail (points, transformer, dessiner) avec un tableau de référence. On sait en une minute si l'outil répond à son besoin.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>La langue du lecteur</h3>
-      <p>Cuttlefish, destiné au public, est documenté en anglais ; SnapSet et Magpie, en français, pour leurs utilisateurs et pour toi. Le choix vaut pour un projet entier : mélanger les deux dans une même interface déroute.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Un README qui sert</h3>
+<p>Celui de Cuttlefish dit en une phrase ce que fait le plugin, puis présente les composants dans l'ordre du travail (points, transformer, dessiner) avec un tableau de référence. On sait en une minute si l'outil répond à son besoin.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>La langue du lecteur</h3>
+<p>Cuttlefish, destiné au public, est documenté en anglais ; SnapSet et Magpie, en français, pour leurs utilisateurs et pour toi. Le choix vaut pour un projet entier : mélanger les deux dans une même interface déroute.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     La description qui répète le nom : « Factor : the factor ». Elle occupe la place sans répondre à la question du lecteur, qui est toujours la même : quelle valeur mettre, et que se passe-t-il si je la change ?
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 78 · La documentation</div>
+<div class="folio">4</div>
+<div class="pied">Cours 78 · La documentation</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 78</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>Une doc gardée par un test</h2>
-  <p style="max-width:165mm">SnapSet a déjà connu l'écart : sa doc disait « Atelier », son code « SnapSet ». Plutôt que de corriger une fois, un test relit désormais README et <code>docs/</code> à chaque exécution, et échoue si un nom de barre y diffère de la constante du code.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 78</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>Une doc gardée par un test</h2>
+<p style="max-width:165mm">SnapSet a déjà connu l'écart : sa doc disait « Atelier », son code « SnapSet ». Plutôt que de corriger une fois, un test relit désormais README et <code>docs/</code> à chaque exécution, et échoue si un nom de barre y diffère de la constante du code.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">SnapSet/src/SnapSet.Conception/Noyau/Constituant.cs</span></div>
 <div class="l k1"><span class="n">36</span><span class="kw">public const string</span> Categorie = <span class="st">"SnapSet"</span>;<span class="rep r1">1</span></div>
@@ -249,137 +222,55 @@ pManager.AddNumberParameter("Factor", "F", "The radius as a factor of half the d
 <div class="l k5"><span class="n">12</span><span class="cm">/// Stockés par Grasshopper lui-même …</span><span class="rep r5">5</span></div>
 <div class="l k5"><span class="n">15</span><span class="cm">/// jour du .gha. Voir issue #8.</span></div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>La source de vérité</b>Le nom vit une seule fois, dans le code.</li>
-      <li><span class="rep r2">2</span><b>Un test de doc</b>Il lit les .md, sans rien écrire.</li>
-      <li><span class="rep r3">3</span><b>Un échec qui dit où</b>Fichier, ligne, et texte fautif.</li>
-      <li><span class="rep r4">4</span><b>La référence au survol</b>Lue dans l'infobulle.</li>
-      <li><span class="rep r5">5</span><b>Le pourquoi, et le lien</b>Vers le débat complet.</li>
-    </ul>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>La source de vérité</b>Le nom vit une seule fois, dans le code.</li>
+<li><span class="rep r2">2</span><b>Un test de doc</b>Il lit les .md, sans rien écrire.</li>
+<li><span class="rep r3">3</span><b>Un échec qui dit où</b>Fichier, ligne, et texte fautif.</li>
+<li><span class="rep r4">4</span><b>La référence au survol</b>Lue dans l'infobulle.</li>
+<li><span class="rep r5">5</span><b>Le pourquoi, et le lien</b>Vers le débat complet.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À surveiller · deux renvois devenus faux</span>
+<b>magpie_modele_diffusion.md:196</b> situe l'appel de la génération du certificat à <code>TrainingManager.cs:172</code> ; il est aujourd'hui en 212–214, et la ligne 172 remplit un tout autre objet. Nommer <code>CompleteParcours</code> suffirait. <b>Directory.Build.props:5–7</b> décrit trois projets et un <code>MagpieAdmin.gha</code> que Magpie.csproj:8–12 ne connaît plus (cours 73). Deux cas de ce que le test de SnapSet empêche, pour un nom précis.
   </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À surveiller · deux renvois devenus faux</span>
-    <b>magpie_modele_diffusion.md:196</b> situe l'appel de la génération du certificat à <code>TrainingManager.cs:172</code> ; il est aujourd'hui en 212–214, et la ligne 172 remplit un tout autre objet. Nommer <code>CompleteParcours</code> suffirait. <b>Directory.Build.props:5–7</b> décrit trois projets et un <code>MagpieAdmin.gha</code> que Magpie.csproj:8–12 ne connaît plus (cours 73). Deux cas de ce que le test de SnapSet empêche, pour un nom précis.
-  </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 78 · La documentation</div>
+<div class="folio">5</div>
+<div class="pied">Cours 78 · La documentation</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 78</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 78</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">« Comment lancer les tests ? » appelle…</div><ul>
-      <li><span>A</span>une explication</li><li><span>B</span>un guide pratique</li><li><span>C</span>un glossaire</li><li><span>D</span>un tutoriel</li></ul></div>
 
-    <div class="q"><div class="enonce">Le tableau des composants du README de Cuttlefish est…</div><ul>
-      <li><span>A</span>un tutoriel</li><li><span>B</span>une explication</li><li><span>C</span>de la référence</li><li><span>D</span>un journal</li></ul></div>
 
-    <div class="q"><div class="enonce">Un bon commentaire dit surtout…</div><ul>
-      <li><span>A</span>ce que fait chaque ligne</li><li><span>B</span>pourquoi</li><li><span>C</span>qui a écrit le code</li><li><span>D</span>la date</li></ul></div>
 
-    <div class="q"><div class="enonce">Une doc fausse est…</div><ul>
-      <li><span>A</span>sans effet</li><li><span>B</span>impossible</li><li><span>C</span>mieux que rien</li><li><span>D</span>pire qu'une doc absente</li></ul></div>
-
-    <div class="q"><div class="enonce">Se périment le plus vite : <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>le but du projet</li><li><span>B</span>un compte d'éléments</li><li><span>C</span>la raison d'un choix</li><li><span>D</span>un numéro de ligne</li></ul></div>
-
-    <div class="q"><div class="enonce">Pour désigner un endroit du code dans une doc durable :</div><ul>
-      <li><span>A</span>le nom de la méthode</li><li><span>B</span>une capture d'écran</li><li><span>C</span>« plus haut »</li><li><span>D</span>le numéro de ligne</li></ul></div>
-
-    <div class="q"><div class="enonce">La doc concernée par un changement se modifie…</div><ul>
-      <li><span>A</span>jamais</li><li><span>B</span>quand un utilisateur se plaint</li><li><span>C</span>dans le même commit</li><li><span>D</span>à la fin du projet</li></ul></div>
-
-    <div class="q"><div class="enonce">DocumentationNomTests compare…</div><ul>
-      <li><span>A</span>les images</li><li><span>B</span>l'orthographe</li><li><span>C</span>deux versions de la doc</li><li><span>D</span>les noms de la doc à la constante du code</li></ul></div>
-
-    <div class="q"><div class="enonce">Dans Grasshopper, la description d'une entrée se lit…</div><ul>
-      <li><span>A</span>dans le .csproj</li><li><span>B</span>dans l'infobulle, au survol</li><li><span>C</span>dans le README</li><li><span>D</span>nulle part</li></ul></div>
-
-    <div class="q"><div class="enonce">« 1 = bubbles touch » dans Bubble.cs:30 donne…</div><ul>
-      <li><span>A</span>le sens de la valeur par défaut</li><li><span>B</span>le type</li><li><span>C</span>le nom de l'entrée</li><li><span>D</span>la licence</li></ul></div>
-
-    <div class="q"><div class="enonce">MagpieReglages.cs:12–15 est utile parce qu'il…</div><ul>
-      <li><span>A</span>liste les tests</li><li><span>B</span>répète le code</li><li><span>C</span>donne la date</li><li><span>D</span>nomme l'alternative écartée et sa raison</li></ul></div>
-
-    <div class="q"><div class="enonce">TrainingManager.cs:172, cité par la doc de diffusion, est aujourd'hui…</div><ul>
-      <li><span>A</span>un commentaire</li><li><span>B</span>supprimé</li><li><span>C</span>une autre ligne : l'appel est en 212–214</li><li><span>D</span>toujours l'appel</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 78 · La documentation</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">// … plutôt que … : …</td><td>dire le choix et l'alternative écartée</td><td>MagpieReglages.cs:12–15</td></tr>
+<tr><td class="c">/// &lt;summary&gt;…&lt;/summary&gt;</td><td>la référence d'un membre public</td><td>MagpieReglages.cs:29–33</td></tr>
+<tr><td class="c">base("Nom", "NOM", "description", …)</td><td>l'infobulle du composant</td><td>Bubble.cs:18–20</td></tr>
+<tr><td class="c">pManager.Add…("…", "F", "description")</td><td>l'infobulle d'une entrée</td><td>Bubble.cs:30</td></tr>
+<tr><td class="c">public const string Categorie</td><td>un nom défini une seule fois</td><td>Constituant.cs:36</td></tr>
+<tr><td class="c">[Fact] LaBarreDocumenteeEstCelleDuCode</td><td>un test qui relit la doc</td><td>DocumentationNomTests.cs:40–41</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Référence</dt><dd>La description exacte de ce que fait chaque élément, à consulter.</dd>
+<dt>Guide pratique</dt><dd>Les étapes pour accomplir une tâche précise.</dd>
+<dt>Explication</dt><dd>Le pourquoi d'une conception, ses raisons et ses alternatives.</dd>
+<dt>Péremption</dt><dd>L'écart qui se creuse entre une doc et le code qui a changé.</dd>
+<dt>Source de vérité</dt><dd>L'endroit unique où une information est définie ; les autres la citent.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 25</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 78 · La documentation</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11C</b> · Le code dans la durée</span><b>Cours 78</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · B.</b> Une tâche précise, à faire.</div>
-    <div><b>02 · C.</b> Ce que fait chaque composant.</div>
-    <div><b>03 · B.</b> Le code dit déjà quoi.</div>
-    <div><b>04 · D.</b> On la croit.</div>
-    <div><b>05 · B et D.</b> Changent au commit suivant.</div>
-    <div><b>06 · A.</b> Il survit aux ajouts de lignes.</div>
-    <div><b>07 · C.</b> Plus tard n'arrive pas.</div>
-    <div><b>08 · D.</b> README et docs/, à chaque test.</div>
-    <div><b>09 · B.</b> La référence la plus lue.</div>
-    <div><b>10 · A.</b> Quelle valeur mettre.</div>
-    <div><b>11 · D.</b> Un fichier « à nous », écarté.</div>
-    <div><b>12 · C.</b> Nommer CompleteParcours suffirait.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 25, « Génération de code ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">// … plutôt que … : …</td><td>dire le choix et l'alternative écartée</td><td>MagpieReglages.cs:12–15</td></tr>
-      <tr><td class="c">/// &lt;summary&gt;…&lt;/summary&gt;</td><td>la référence d'un membre public</td><td>MagpieReglages.cs:29–33</td></tr>
-      <tr><td class="c">base("Nom", "NOM", "description", …)</td><td>l'infobulle du composant</td><td>Bubble.cs:18–20</td></tr>
-      <tr><td class="c">pManager.Add…("…", "F", "description")</td><td>l'infobulle d'une entrée</td><td>Bubble.cs:30</td></tr>
-      <tr><td class="c">public const string Categorie</td><td>un nom défini une seule fois</td><td>Constituant.cs:36</td></tr>
-      <tr><td class="c">[Fact] LaBarreDocumenteeEstCelleDuCode</td><td>un test qui relit la doc</td><td>DocumentationNomTests.cs:40–41</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Référence</dt><dd>La description exacte de ce que fait chaque élément, à consulter.</dd>
-    <dt>Guide pratique</dt><dd>Les étapes pour accomplir une tâche précise.</dd>
-    <dt>Explication</dt><dd>Le pourquoi d'une conception, ses raisons et ses alternatives.</dd>
-    <dt>Péremption</dt><dd>L'écart qui se creuse entre une doc et le code qui a changé.</dd>
-    <dt>Source de vérité</dt><dd>L'endroit unique où une information est définie ; les autres la citent.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 25</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 78 · La documentation</div>
-</section>
-
 </body>
 </html>

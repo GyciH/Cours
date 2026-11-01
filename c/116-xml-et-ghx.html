@@ -1,251 +1,224 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>116 · XML et le .ghx</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-10">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 116</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>XML et le .ghx</h1>
-  <p class="chapeau">XML écrit un arbre en texte : des éléments ouverts et fermés, des attributs, du texte entre les deux. Le .ghx de Grasshopper en est un, et Magpie web en produit à chaque calcul. Le format est simple ; ses règles d'échappement, de fins de ligne et de caractères interdits le sont moins.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>24</b>, <b>115</b></span>
-    <span class="pastille">Exemples · <b>Magpie</b> web et exercices</span>
-  </div>
-
-  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
-    <svg viewBox="0 0 600 214" width="100%">
-<text x="16" y="24" font-size="7.8" fill="#4A4A68" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">&lt;Archive name="Root"&gt;</text>
-<text x="32" y="39" font-size="7.8" fill="#6B7378" text-anchor="start" class="mono" style="font-size:7.8px">&lt;items count="1"&gt;</text>
-<text x="48" y="54" font-size="7.8" fill="#7B1FA2" text-anchor="start" class="mono" style="font-size:7.8px">&lt;item name="ArchiveVersion" type_code="80"&gt;…</text>
-<text x="32" y="69" font-size="7.8" fill="#6B7378" text-anchor="start" class="mono" style="font-size:7.8px">&lt;chunks count="1"&gt;</text>
-<text x="48" y="84" font-size="7.8" fill="#4A4A68" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">&lt;chunk name="Definition"&gt;</text>
-<text x="64" y="99" font-size="7.8" fill="#6B7378" text-anchor="start" class="mono" style="font-size:7.8px">&lt;chunks count="6"&gt;</text>
-<text x="80" y="114" font-size="7.8" fill="#4A4A68" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">&lt;chunk name="DefinitionObjects"&gt;</text>
-<text x="96" y="129" font-size="7.8" fill="#4A4A68" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">&lt;chunk name="Object" index="0"&gt; …</text>
-<text x="586" y="24" font-size="7.6" fill="#4A4A68" text-anchor="end" font-weight="700">élément racine</text>
-<text x="586" y="54" font-size="7.6" fill="#7B1FA2" text-anchor="end" font-weight="700">un item : nom, type, valeur</text>
-<text x="586" y="84" font-size="7.6" fill="#4A4A68" text-anchor="end" font-weight="700">un chunk : un nœud de l'arbre</text>
-<rect x="340" y="104" width="246" height="34" rx="4" fill="#ECECF2" stroke="#6B7378" stroke-width="1.2"/>
-<text x="352" y="118" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">name="Definition"  : un attribut</text>
-<text x="352" y="131" font-size="7.4" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.4px">&gt;Shaded&lt;      : un texte</text>
-<text x="16" y="166" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">Un .ghx est l'arbre GH_IO écrit en XML : chaque chunk devient un élément, chaque item un élément typé.</text>
-<text x="16" y="182" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">Le parseur reconstruit l'arbre en mémoire (DOM) ; on y cherche ensuite par nom, sans compter les octets.</text>
-<text x="16" y="204" font-size="7.6" fill="#4A4A68" text-anchor="start" font-weight="700">Les 32 graphes de départ des exercices de Magpie sont des archives XML de racine « Clipboard » (mesuré).</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 116</b></div>
+<p class="rubrique">Le concept</p>
+<h1>XML et le .ghx</h1>
+<p class="chapeau">XML écrit un arbre en texte : des éléments ouverts et fermés, des attributs, du texte entre les deux. Le .ghx de Grasshopper en est un, et Magpie web en produit à chaque calcul. Le format est simple ; ses règles d'échappement, de fins de ligne et de caractères interdits le sont moins.</p>
+<div class="meta">
+<span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>24</b>, <b>115</b></span>
+<span class="pastille">Exemples · <b>Magpie</b> web et exercices</span>
+</div>
+<div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+<svg viewbox="0 0 600 214" width="100%">
+<text class="mono" fill="#4A4A68" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="16" y="24">&lt;Archive name="Root"&gt;</text>
+<text class="mono" fill="#6B7378" font-size="7.8" style="font-size:7.8px" text-anchor="start" x="32" y="39">&lt;items count="1"&gt;</text>
+<text class="mono" fill="#7B1FA2" font-size="7.8" style="font-size:7.8px" text-anchor="start" x="48" y="54">&lt;item name="ArchiveVersion" type_code="80"&gt;…</text>
+<text class="mono" fill="#6B7378" font-size="7.8" style="font-size:7.8px" text-anchor="start" x="32" y="69">&lt;chunks count="1"&gt;</text>
+<text class="mono" fill="#4A4A68" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="48" y="84">&lt;chunk name="Definition"&gt;</text>
+<text class="mono" fill="#6B7378" font-size="7.8" style="font-size:7.8px" text-anchor="start" x="64" y="99">&lt;chunks count="6"&gt;</text>
+<text class="mono" fill="#4A4A68" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="80" y="114">&lt;chunk name="DefinitionObjects"&gt;</text>
+<text class="mono" fill="#4A4A68" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="96" y="129">&lt;chunk name="Object" index="0"&gt; …</text>
+<text fill="#4A4A68" font-size="7.6" font-weight="700" text-anchor="end" x="586" y="24">élément racine</text>
+<text fill="#7B1FA2" font-size="7.6" font-weight="700" text-anchor="end" x="586" y="54">un item : nom, type, valeur</text>
+<text fill="#4A4A68" font-size="7.6" font-weight="700" text-anchor="end" x="586" y="84">un chunk : un nœud de l'arbre</text>
+<rect fill="#ECECF2" height="34" rx="4" stroke="#6B7378" stroke-width="1.2" width="246" x="340" y="104"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.4" style="font-size:7.4px" text-anchor="start" x="352" y="118">name="Definition"  : un attribut</text>
+<text class="mono" fill="#2B2F33" font-size="7.4" style="font-size:7.4px" text-anchor="start" x="352" y="131">&gt;Shaded&lt;      : un texte</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="166">Un .ghx est l'arbre GH_IO écrit en XML : chaque chunk devient un élément, chaque item un élément typé.</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="182">Le parseur reconstruit l'arbre en mémoire (DOM) ; on y cherche ensuite par nom, sans compter les octets.</text>
+<text fill="#4A4A68" font-size="7.6" font-weight="700" text-anchor="start" x="16" y="204">Les 32 graphes de départ des exercices de Magpie sont des archives XML de racine « Clipboard » (mesuré).</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Un document XML est « bien formé » ou il n'est rien : une seule balise mal fermée, un seul caractère interdit, et le parseur refuse le fichier entier.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Une nomenclature à tiroirs : chaque sous-ensemble s'ouvre, liste ses pièces, se referme. Qu'un tiroir ne se referme pas, et on ne sait plus à quel ensemble appartient la pièce suivante.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>lire l'arbre d'un .ghx ;</li>
-        <li>dire ce qu'il faut échapper, et ce qui est interdit ;</li>
-        <li>prévoir ce que le parseur change ;</li>
-        <li>préférer l'arbre aux expressions régulières.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Un document XML est « bien formé » ou il n'est rien : une seule balise mal fermée, un seul caractère interdit, et le parseur refuse le fichier entier.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Une nomenclature à tiroirs : chaque sous-ensemble s'ouvre, liste ses pièces, se referme. Qu'un tiroir ne se referme pas, et on ne sait plus à quel ensemble appartient la pièce suivante.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>lire l'arbre d'un .ghx ;</li>
+<li>dire ce qu'il faut échapper, et ce qui est interdit ;</li>
+<li>prévoir ce que le parseur change ;</li>
+<li>préférer l'arbre aux expressions régulières.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À retenir</span>
     On écrit XML comme du texte, mais on le relit comme un arbre. Tout ce qui ne change pas l'arbre (ordre des attributs, fins de ligne, indentation) est libre pour le parseur et peut changer à chaque aller-retour.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 116 · XML et le .ghx</div>
+<div class="folio">1</div>
+<div class="pied">Cours 116 · XML et le .ghx</div>
 </section>
-
 <!-- ============ PAGE 2 · ÉCHAPPER ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 116</b></div>
-  <p class="rubrique">Schéma 1 · Échapper, et ce qui ne s'échappe pas</p>
-  <h2>Ce qui survit à l'aller-retour</h2>
-  <p style="max-width:165mm">Le texte d'un item ne peut pas contenir un « &lt; » brut : le parseur y verrait une balise. On l'écrit &amp;lt;. Mais l'échappement ne règle pas tout ; on a fait écrire cinq valeurs par le sérialiseur de Magpie, puis on les a relues.</p>
-
-  <svg viewBox="0 0 600 228" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="228" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.4" fill="#4A4A68" text-anchor="start" font-weight="700">Une valeur gh_string écrite par une copie de xml-builder.mjs, relue par DOMParser dans Chromium (mesuré)</text>
-<text x="28" y="44" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">écrit</text>
-<text x="236" y="44" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">relu</text>
-<text x="372" y="44" font-size="7.4" fill="#6B7378" text-anchor="start" font-weight="700">pourquoi</text>
-<rect x="16" y="52" width="568" height="20" rx="3" fill="#fff"/>
-<text x="28" y="66" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">A &amp; B &lt; C &gt; "D"</text>
-<text x="236" y="66" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">identique</text>
-<text x="372" y="66" font-size="7.6" fill="#2B2F33" text-anchor="start">échappée à l'écriture</text>
-<rect x="16" y="76" width="568" height="20" rx="3" fill="#ECECF2"/>
-<text x="28" y="90" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">«  bord  » (espaces)</text>
-<text x="236" y="90" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">identique</text>
-<text x="372" y="90" font-size="7.6" fill="#2B2F33" text-anchor="start">les espaces du texte restent</text>
-<rect x="16" y="100" width="568" height="20" rx="3" fill="#fff"/>
-<text x="28" y="114" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">a\tb (tabulation)</text>
-<text x="236" y="114" font-size="7.6" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">identique</text>
-<text x="372" y="114" font-size="7.6" fill="#2B2F33" text-anchor="start">autorisée en XML 1.0</text>
-<rect x="16" y="124" width="568" height="20" rx="3" fill="#ECECF2"/>
-<text x="28" y="138" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">ligne 1 \r\n ligne 2</text>
-<text x="236" y="138" font-size="7.6" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">ligne 1 \n ligne 2</text>
-<text x="372" y="138" font-size="7.6" fill="#2B2F33" text-anchor="start">le parseur normalise les fins de ligne</text>
-<rect x="16" y="148" width="568" height="20" rx="3" fill="#fff"/>
-<text x="28" y="162" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">copié \f collé (saut de page)</text>
-<text x="236" y="162" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:7.6px">parsererror</text>
-<text x="372" y="162" font-size="7.6" fill="#2B2F33" text-anchor="start">caractère interdit, même échappé</text>
-<text x="16" y="192" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Quatre caractères à échapper suffisent pour les balises ; mais XML 1.0 interdit aussi la plupart des caractères de contrôle,</text>
-<text x="16" y="208" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">et aucun échappement ne les rend valides. Python (expat) donne les mêmes cinq résultats.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 116</b></div>
+<p class="rubrique">Schéma 1 · Échapper, et ce qui ne s'échappe pas</p>
+<h2>Ce qui survit à l'aller-retour</h2>
+<p style="max-width:165mm">Le texte d'un item ne peut pas contenir un « &lt; » brut : le parseur y verrait une balise. On l'écrit &amp;lt;. Mais l'échappement ne règle pas tout ; on a fait écrire cinq valeurs par le sérialiseur de Magpie, puis on les a relues.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 228" width="100%">
+<rect fill="#EFE9E1" height="228" width="600" x="0" y="0"></rect>
+<text fill="#4A4A68" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="22">Une valeur gh_string écrite par une copie de xml-builder.mjs, relue par DOMParser dans Chromium (mesuré)</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="28" y="44">écrit</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="236" y="44">relu</text>
+<text fill="#6B7378" font-size="7.4" font-weight="700" text-anchor="start" x="372" y="44">pourquoi</text>
+<rect fill="#fff" height="20" rx="3" width="568" x="16" y="52"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="28" y="66">A &amp; B &lt; C &gt; "D"</text>
+<text class="mono" fill="#2E7D32" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="236" y="66">identique</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="372" y="66">échappée à l'écriture</text>
+<rect fill="#ECECF2" height="20" rx="3" width="568" x="16" y="76"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="28" y="90">«  bord  » (espaces)</text>
+<text class="mono" fill="#2E7D32" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="236" y="90">identique</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="372" y="90">les espaces du texte restent</text>
+<rect fill="#fff" height="20" rx="3" width="568" x="16" y="100"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="28" y="114">a\tb (tabulation)</text>
+<text class="mono" fill="#2E7D32" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="236" y="114">identique</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="372" y="114">autorisée en XML 1.0</text>
+<rect fill="#ECECF2" height="20" rx="3" width="568" x="16" y="124"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="28" y="138">ligne 1 \r\n ligne 2</text>
+<text class="mono" fill="#E65100" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="236" y="138">ligne 1 \n ligne 2</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="372" y="138">le parseur normalise les fins de ligne</text>
+<rect fill="#fff" height="20" rx="3" width="568" x="16" y="148"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="28" y="162">copié \f collé (saut de page)</text>
+<text class="mono" fill="#C62828" font-size="7.6" font-weight="700" style="font-size:7.6px" text-anchor="start" x="236" y="162">parsererror</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="372" y="162">caractère interdit, même échappé</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="192">Quatre caractères à échapper suffisent pour les balises ; mais XML 1.0 interdit aussi la plupart des caractères de contrôle,</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="208">et aucun échappement ne les rend valides. Python (expat) donne les mêmes cinq résultats.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript, retirer les caractères interdits avant d'échapper</span>const INTERDITS = /[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g;   // XML 1.0 : sauf \t, \n, \r
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript, retirer les caractères interdits avant d'échapper</span>const INTERDITS = /[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g;   // XML 1.0 : sauf \t, \n, \r
 function texteXml(s) {
   return String(s).replace(INTERDITS, "").replace(/&amp;/g, "&amp;amp;").replace(/&lt;/g, "&amp;lt;")
                   .replace(/&gt;/g, "&amp;gt;").replace(/"/g, "&amp;quot;");
 }</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>L'esperluette d'abord</h3>
-      <p>escapeXml remplace &amp; en premier (xml-builder.mjs:27). Dans l'autre ordre, le &amp; de &amp;lt; serait échappé à son tour, et le texte relu contiendrait « &amp;lt; » au lieu de « &lt; ».</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Pourquoi « &gt; » et « " »</h3>
-      <p>« &gt; » n'est obligatoire que dans « ]]&gt; », et « " » que dans un attribut entre guillemets. Les échapper partout ne coûte rien et évite d'avoir à se souvenir où ils comptent.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>L'esperluette d'abord</h3>
+<p>escapeXml remplace &amp; en premier (xml-builder.mjs:27). Dans l'autre ordre, le &amp; de &amp;lt; serait échappé à son tour, et le texte relu contiendrait « &amp;lt; » au lieu de « &lt; ».</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Pourquoi « &gt; » et « " »</h3>
+<p>« &gt; » n'est obligatoire que dans « ]]&gt; », et « " » que dans un attribut entre guillemets. Les échapper partout ne coûte rien et évite d'avoir à se souvenir où ils comptent.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Croire que &amp;#12; sauve un caractère de contrôle. En XML 1.0, la référence numérique d'un caractère interdit est interdite elle aussi : le document reste mal formé. Il faut retirer ou remplacer le caractère avant d'écrire.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 116 · XML et le .ghx</div>
+<div class="folio">2</div>
+<div class="pied">Cours 116 · XML et le .ghx</div>
 </section>
-
 <!-- ============ PAGE 3 · DEUX ÉCRIVAINS ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 116</b></div>
-  <p class="rubrique">Schéma 2 · Même arbre, autres octets</p>
-  <h2>Ce que le parseur ne garde pas</h2>
-  <p style="max-width:165mm">Deux programmes écrivent des .ghx autour de Magpie : Grasshopper, quand l'auteur copie un graphe de départ, et le sérialiseur web, avant chaque calcul. Leurs fichiers ne se ressemblent pas octet pour octet, et pourtant les parseurs en tirent le même arbre.</p>
-
-  <svg viewBox="0 0 600 222" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="222" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#4A4A68" text-anchor="start" font-weight="700">Le même format, écrit par Grasshopper et par Magpie web (mesuré sur les 32 graphes de départ et sur une copie)</text>
-<rect x="16" y="34" width="278" height="112" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
-<text x="155" y="52" font-size="8.6" fill="#6B7378" text-anchor="middle" font-weight="700">GH_IO.dll (Grasshopper)</text>
-<text x="30" y="72" font-size="7.6" fill="#2B2F33" text-anchor="start">· fins de ligne CRLF : 246 dans IA-14</text>
-<text x="30" y="87" font-size="7.6" fill="#2B2F33" text-anchor="start">· des commentaires en tête</text>
-<text x="30" y="102" font-size="7.6" fill="#2B2F33" text-anchor="start">· « GH_IO.dll {0.2.0002} »</text>
-<text x="30" y="117" font-size="7.6" fill="#2B2F33" text-anchor="start">· racine Clipboard (copier)</text>
-<text x="30" y="132" font-size="7.6" fill="#2B2F33" text-anchor="start">· 6 388 à 28 021 octets</text>
-<rect x="306" y="34" width="278" height="112" rx="4" fill="#ECECF2" stroke="#4A4A68" stroke-width="1.2"/>
-<text x="445" y="52" font-size="8.6" fill="#4A4A68" text-anchor="middle" font-weight="700">xml-builder.mjs (Magpie web)</text>
-<text x="320" y="72" font-size="7.6" fill="#2B2F33" text-anchor="start">· fins de ligne LF (join("\n"))</text>
-<text x="320" y="87" font-size="7.6" fill="#2B2F33" text-anchor="start">· aucun commentaire</text>
-<text x="320" y="102" font-size="7.6" fill="#2B2F33" text-anchor="start">· indentation de 2 espaces</text>
-<text x="320" y="117" font-size="7.6" fill="#2B2F33" text-anchor="start">· racine Archive > Definition</text>
-<text x="320" y="132" font-size="7.6" fill="#2B2F33" text-anchor="start">· écrit pour Rhino Compute</text>
-<text x="16" y="170" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Pour un parseur, ces différences n'existent pas : il rend le même arbre. Pour un diff ou une empreinte, elles sont tout.</text>
-<text x="16" y="186" font-size="7.6" fill="#2B2F33" text-anchor="start">IA-14 : le Panel « COMPOSANT FOURNI\r\nannonce… » ressort de DOMParser avec \n seul, et l'objet resérialisé</text>
-<text x="16" y="200" font-size="7.6" fill="#2B2F33" text-anchor="start">(importGhx.js:161) ne contient plus aucun \r. Le texte affiché est le même ; les octets, non.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 116</b></div>
+<p class="rubrique">Schéma 2 · Même arbre, autres octets</p>
+<h2>Ce que le parseur ne garde pas</h2>
+<p style="max-width:165mm">Deux programmes écrivent des .ghx autour de Magpie : Grasshopper, quand l'auteur copie un graphe de départ, et le sérialiseur web, avant chaque calcul. Leurs fichiers ne se ressemblent pas octet pour octet, et pourtant les parseurs en tirent le même arbre.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 222" width="100%">
+<rect fill="#EFE9E1" height="222" width="600" x="0" y="0"></rect>
+<text fill="#4A4A68" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">Le même format, écrit par Grasshopper et par Magpie web (mesuré sur les 32 graphes de départ et sur une copie)</text>
+<rect fill="#fff" height="112" rx="4" stroke="#6B7378" stroke-width="1.2" width="278" x="16" y="34"></rect>
+<text fill="#6B7378" font-size="8.6" font-weight="700" text-anchor="middle" x="155" y="52">GH_IO.dll (Grasshopper)</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="30" y="72">· fins de ligne CRLF : 246 dans IA-14</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="30" y="87">· des commentaires en tête</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="30" y="102">· « GH_IO.dll {0.2.0002} »</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="30" y="117">· racine Clipboard (copier)</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="30" y="132">· 6 388 à 28 021 octets</text>
+<rect fill="#ECECF2" height="112" rx="4" stroke="#4A4A68" stroke-width="1.2" width="278" x="306" y="34"></rect>
+<text fill="#4A4A68" font-size="8.6" font-weight="700" text-anchor="middle" x="445" y="52">xml-builder.mjs (Magpie web)</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="320" y="72">· fins de ligne LF (join("\n"))</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="320" y="87">· aucun commentaire</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="320" y="102">· indentation de 2 espaces</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="320" y="117">· racine Archive &gt; Definition</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="320" y="132">· écrit pour Rhino Compute</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="170">Pour un parseur, ces différences n'existent pas : il rend le même arbre. Pour un diff ou une empreinte, elles sont tout.</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="16" y="186">IA-14 : le Panel « COMPOSANT FOURNI\r\nannonce… » ressort de DOMParser avec \n seul, et l'objet resérialisé</text>
+<text fill="#2B2F33" font-size="7.6" text-anchor="start" x="16" y="200">(importGhx.js:161) ne contient plus aucun \r. Le texte affiché est le même ; les octets, non.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · garder un CR volontaire à travers le parseur</span>&lt;item name="UserText" type_name="gh_string" type_code="10"&gt;ligne 1&amp;#xD;
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · garder un CR volontaire à travers le parseur</span>&lt;item name="UserText" type_name="gh_string" type_code="10"&gt;ligne 1&amp;#xD;
 ligne 2&lt;/item&gt;
 &lt;!-- &amp;#xD; est une référence : le parseur la rend telle quelle, sans normaliser --&gt;</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>La normalisation</h3>
-      <p>La norme impose au parseur de changer tout CR LF et tout CR isolé en LF avant de rendre le texte. C'est voulu : un fichier écrit sous Windows et relu ailleurs donne le même arbre.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Comparer des arbres</h3>
-      <p>Pour savoir si deux .ghx disent la même chose, on compare ce que le parseur en tire, pas les fichiers. Le cours 114 masquait les GUID ; ici, il faudrait aussi oublier fins de ligne et commentaires.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>La normalisation</h3>
+<p>La norme impose au parseur de changer tout CR LF et tout CR isolé en LF avant de rendre le texte. C'est voulu : un fichier écrit sous Windows et relu ailleurs donne le même arbre.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Comparer des arbres</h3>
+<p>Pour savoir si deux .ghx disent la même chose, on compare ce que le parseur en tire, pas les fichiers. Le cours 114 masquait les GUID ; ici, il faudrait aussi oublier fins de ligne et commentaires.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Calculer une empreinte (un hachage) sur le texte d'un .ghx pour détecter un changement. Le même graphe recopié par Grasshopper, puis par le navigateur, change d'empreinte sans que rien n'ait changé : 28 021 caractères avant, 27 762 après, pour IA-14 (mesuré).
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 116 · XML et le .ghx</div>
+<div class="folio">3</div>
+<div class="pied">Cours 116 · XML et le .ghx</div>
 </section>
-
 <!-- ============ PAGE 4 · L'ARBRE PLUTÔT QUE LE TEXTE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 116</b></div>
-  <p class="rubrique">Schéma 3 · L'arbre plutôt que le texte</p>
-  <h2>Une expression régulière ne lit pas XML</h2>
-  <p style="max-width:165mm">Une expression régulière voit une suite de caractères ; XML est un arbre où l'ordre des attributs, les espaces et les guillemets sont libres. Elle marche tant que l'écrivain ne change pas ses habitudes.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#4A4A68" text-anchor="start" font-weight="700">rawChunk réécrit l'index d'un objet conservé avec une expression régulière (xml-builder.mjs:81, copie, mesuré)</text>
-<text x="28" y="44" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">/^&lt;chunk name="([^"]+)"(?: index="\d+")?/</text>
-<rect x="16" y="60" width="250" height="28" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
-<text x="141.0" y="76.46666666666667" font-size="7.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.4px">&lt;chunk name="Object" index="3"&gt;</text>
-<line x1="272" y1="74" x2="300" y2="74" stroke="#6B7378" stroke-width="1.2"/><polygon points="300,74 293.6,76.7 293.6,71.3" fill="#6B7378"/>
-<rect x="306" y="60" width="250" height="28" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="431.0" y="76.46666666666667" font-size="7.4" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.4px">&lt;chunk name="Object" index="0"&gt;</text>
-<text x="562" y="78" font-size="11" fill="#2E7D32" text-anchor="start" font-weight="700">✓</text>
-<rect x="16" y="100" width="250" height="28" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
-<text x="141.0" y="116.46666666666667" font-size="7.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.4px">&lt;chunk index="3" name="Object"&gt;</text>
-<line x1="272" y1="114" x2="300" y2="114" stroke="#6B7378" stroke-width="1.2"/><polygon points="300,114 293.6,116.7 293.6,111.3" fill="#6B7378"/>
-<rect x="306" y="100" width="250" height="28" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
-<text x="431.0" y="116.46666666666667" font-size="7.4" fill="#C62828" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.4px">&lt;chunk index="3" name="Object"&gt;</text>
-<text x="562" y="118" font-size="11" fill="#C62828" text-anchor="start" font-weight="700">✗</text>
-<text x="16" y="160" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Pour XML, l'ordre des attributs ne compte pas : les deux lignes de gauche sont le même élément.</text>
-<text x="16" y="176" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">L'expression, elle, n'en reconnaît qu'un ordre : dans l'autre, l'index reste 3, sans erreur ni avertissement.</text>
-<text x="16" y="198" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Grasshopper écrit name puis index (631 fois sur 631 dans les graphes de départ), et XMLSerializer garde l'ordre lu : le cas ne se présente pas aujourd'hui.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 116</b></div>
+<p class="rubrique">Schéma 3 · L'arbre plutôt que le texte</p>
+<h2>Une expression régulière ne lit pas XML</h2>
+<p style="max-width:165mm">Une expression régulière voit une suite de caractères ; XML est un arbre où l'ordre des attributs, les espaces et les guillemets sont libres. Elle marche tant que l'écrivain ne change pas ses habitudes.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#4A4A68" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">rawChunk réécrit l'index d'un objet conservé avec une expression régulière (xml-builder.mjs:81, copie, mesuré)</text>
+<text class="mono" fill="#2B2F33" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="28" y="44">/^&lt;chunk name="([^"]+)"(?: index="\d+")?/</text>
+<rect fill="#fff" height="28" rx="4" stroke="#6B7378" stroke-width="1.2" width="250" x="16" y="60"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.4" style="font-size:7.4px" text-anchor="middle" x="141.0" y="76.46666666666667">&lt;chunk name="Object" index="3"&gt;</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="272" x2="300" y1="74" y2="74"></line><polygon fill="#6B7378" points="300,74 293.6,76.7 293.6,71.3"></polygon>
+<rect fill="#fff" height="28" rx="4" stroke="#2E7D32" stroke-width="1.2" width="250" x="306" y="60"></rect>
+<text class="mono" fill="#2E7D32" font-size="7.4" font-weight="700" style="font-size:7.4px" text-anchor="middle" x="431.0" y="76.46666666666667">&lt;chunk name="Object" index="0"&gt;</text>
+<text fill="#2E7D32" font-size="11" font-weight="700" text-anchor="start" x="562" y="78">✓</text>
+<rect fill="#fff" height="28" rx="4" stroke="#6B7378" stroke-width="1.2" width="250" x="16" y="100"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.4" style="font-size:7.4px" text-anchor="middle" x="141.0" y="116.46666666666667">&lt;chunk index="3" name="Object"&gt;</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="272" x2="300" y1="114" y2="114"></line><polygon fill="#6B7378" points="300,114 293.6,116.7 293.6,111.3"></polygon>
+<rect fill="#fff" height="28" rx="4" stroke="#C62828" stroke-width="1.2" width="250" x="306" y="100"></rect>
+<text class="mono" fill="#C62828" font-size="7.4" font-weight="700" style="font-size:7.4px" text-anchor="middle" x="431.0" y="116.46666666666667">&lt;chunk index="3" name="Object"&gt;</text>
+<text fill="#C62828" font-size="11" font-weight="700" text-anchor="start" x="562" y="118">✗</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="160">Pour XML, l'ordre des attributs ne compte pas : les deux lignes de gauche sont le même élément.</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="176">L'expression, elle, n'en reconnaît qu'un ordre : dans l'autre, l'index reste 3, sans erreur ni avertissement.</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="198">Grasshopper écrit name puis index (631 fois sur 631 dans les graphes de départ), et XMLSerializer garde l'ordre lu : le cas ne se présente pas aujourd'hui.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript, réécrire l'index par l'arbre</span>const doc = new DOMParser().parseFromString(xml, "application/xml");
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript, réécrire l'index par l'arbre</span>const doc = new DOMParser().parseFromString(xml, "application/xml");
 doc.documentElement.setAttribute("index", "0");      // quel que soit l'ordre d'origine
 return new XMLSerializer().serializeToString(doc);</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Côté lecture, c'est fait</h3>
-      <p>importGhx.js ne lit jamais par expression : <code>findChunk</code> et <code>getItems</code> (lignes 14–48) descendent l'arbre par nom d'élément et d'attribut. Ils ne regardent ni type_code ni index : seul le nom compte.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Côté plugin aussi</h3>
-      <p>MagpieExerciseEditor.cs:323–324 retire Bounds et Pivot par expression, pour comparer deux graphes sans leurs positions. Le motif suppose qu'un item ne contient pas d'autre item, ce que GH_IO respecte.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Côté lecture, c'est fait</h3>
+<p>importGhx.js ne lit jamais par expression : <code>findChunk</code> et <code>getItems</code> (lignes 14–48) descendent l'arbre par nom d'élément et d'attribut. Ils ne regardent ni type_code ni index : seul le nom compte.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Côté plugin aussi</h3>
+<p>MagpieExerciseEditor.cs:323–324 retire Bounds et Pivot par expression, pour comparer deux graphes sans leurs positions. Le motif suppose qu'un item ne contient pas d'autre item, ce que GH_IO respecte.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Valider une expression sur les fichiers d'aujourd'hui. Elle tient tant que l'écrivain ne change pas ; une mise à jour de Grasshopper, un passage par un autre outil, et elle échoue en silence, sans erreur, en rendant le texte d'origine.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 116 · XML et le .ghx</div>
+<div class="folio">4</div>
+<div class="pied">Cours 116 · XML et le .ghx</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 116</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>Écrire et relire un .ghx dans Magpie web</h2>
-  <p style="max-width:165mm">Le sérialiseur échappe chaque valeur ; l'importeur confie la lecture au parseur du navigateur et refuse le fichier entier s'il est mal formé.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 116</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>Écrire et relire un .ghx dans Magpie web</h2>
+<p style="max-width:165mm">Le sérialiseur échappe chaque valeur ; l'importeur confie la lecture au parseur du navigateur et refuse le fichier entier s'il est mal formé.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">magpie/web/src/serializer/xml-builder.mjs</span></div>
 <div class="l k1"><span class="n">27</span>    .replace(/&amp;/g, "&amp;amp;")<span class="rep r1">1</span></div>
@@ -256,137 +229,55 @@ return new XMLSerializer().serializeToString(doc);</div>
 <div class="l k4"><span class="n">117</span>const doc = new DOMParser().parseFromString(xmlText, …);<span class="rep r4">4</span></div>
 <div class="l k5"><span class="n">119</span>  throw new Error("Fichier .ghx invalide (XML mal formé).");<span class="rep r5">5</span></div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>&amp; d'abord</b>Puis &lt;, &gt;, ".</li>
-      <li><span class="rep r2">2</span><b>Le texte</b>Toujours échappé.</li>
-      <li><span class="rep r3">3</span><b>Texte saisi</b>Tel quel.</li>
-      <li><span class="rep r4">4</span><b>Le parseur</b>Du navigateur.</li>
-      <li><span class="rep r5">5</span><b>Tout ou rien</b>Fichier refusé.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À surveiller · les caractères de contrôle</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>&amp; d'abord</b>Puis &lt;, &gt;, ".</li>
+<li><span class="rep r2">2</span><b>Le texte</b>Toujours échappé.</li>
+<li><span class="rep r3">3</span><b>Texte saisi</b>Tel quel.</li>
+<li><span class="rep r4">4</span><b>Le parseur</b>Du navigateur.</li>
+<li><span class="rep r5">5</span><b>Tout ou rien</b>Fichier refusé.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À surveiller · les caractères de contrôle</span>
     escapeXml (lignes 25–31) échappe quatre caractères mais n'écarte pas les caractères de contrôle. Mesuré sur une copie : une valeur contenant un saut de page (U+000C) donne un document que DOMParser et expat refusent. Déduit : un texte collé d'un autre logiciel dans une valeur Text (build-graph.mjs:74) partirait vers Compute en XML mal formé, et un .ghx qui en contient serait refusé en entier à l'import (ligne 119). Non vérifié dans Rhino. Relevé sans rien modifier.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 116 · XML et le .ghx</div>
+<div class="folio">5</div>
+<div class="pied">Cours 116 · XML et le .ghx</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 116</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 116</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">Dans un .ghx, un chunk devient…</div><ul>
-      <li><span>A</span>un commentaire</li><li><span>B</span>une ligne vide</li><li><span>C</span>un attribut</li><li><span>D</span>un élément chunk</li></ul></div>
 
-    <div class="q"><div class="enonce">Un document XML mal formé…</div><ul>
-      <li><span>A</span>est lu sans l'élément fautif</li><li><span>B</span>est lu jusqu'à l'erreur</li><li><span>C</span>est refusé en entier</li><li><span>D</span>est corrigé par le parseur</li></ul></div>
 
-    <div class="q"><div class="enonce">escapeXml remplace &amp; en premier pour…</div><ul>
-      <li><span>A</span>aller plus vite</li><li><span>B</span>suivre l'alphabet</li><li><span>C</span>rien de particulier</li><li><span>D</span>ne pas échapper deux fois</li></ul></div>
 
-    <div class="q"><div class="enonce">Un CR LF dans le texte d'un item ressort du parseur…</div><ul>
-      <li><span>A</span>en LF seul</li><li><span>B</span>intact</li><li><span>C</span>en espace</li><li><span>D</span>en erreur</li></ul></div>
-
-    <div class="q"><div class="enonce">Un saut de page (U+000C) dans une valeur…</div><ul>
-      <li><span>A</span>est ignoré</li><li><span>B</span>rend le document mal formé</li><li><span>C</span>est échappé par escapeXml</li><li><span>D</span>devient un LF</li></ul></div>
-
-    <div class="q"><div class="enonce">&amp;#12; dans un document XML 1.0…</div><ul>
-      <li><span>A</span>donne « 12 »</li><li><span>B</span>est interdit aussi</li><li><span>C</span>est ignoré</li><li><span>D</span>donne un saut de page</li></ul></div>
-
-    <div class="q"><div class="enonce">Les graphes de départ des exercices ont pour racine…</div><ul>
-      <li><span>A</span>Clipboard</li><li><span>B</span>Exercise</li><li><span>C</span>Definition</li><li><span>D</span>Document</li></ul></div>
-
-    <div class="q"><div class="enonce">Les fins de ligne écrites par GH_IO sont…</div><ul>
-      <li><span>A</span>LF</li><li><span>B</span>CR</li><li><span>C</span>mélangées</li><li><span>D</span>CRLF</li></ul></div>
-
-    <div class="q"><div class="enonce">Pour savoir si deux .ghx disent la même chose, on compare…</div><ul>
-      <li><span>A</span>les octets</li><li><span>B</span>les dates</li><li><span>C</span>les arbres relus</li><li><span>D</span>les tailles</li></ul></div>
-
-    <div class="q"><div class="enonce">La regex de rawChunk échoue si…</div><ul>
-      <li><span>A</span>index précède name</li><li><span>B</span>le chunk est long</li><li><span>C</span>le nom a un accent</li><li><span>D</span>il y a deux chunks</li></ul></div>
-
-    <div class="q"><div class="enonce">Pour XML, ce qui est libre… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>l'indentation entre éléments</li><li><span>B</span>l'ordre des éléments</li><li><span>C</span>le nom des balises</li><li><span>D</span>l'ordre des attributs</li></ul></div>
-
-    <div class="q"><div class="enonce">getItems (importGhx.js) retrouve un item par…</div><ul>
-      <li><span>A</span>son type_code</li><li><span>B</span>sa position en octets</li><li><span>C</span>son nom</li><li><span>D</span>son index</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 116 · XML et le .ghx</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">&amp;amp; &amp;lt; &amp;gt; &amp;quot;</td><td>échapper texte et attributs</td><td>xml-builder.mjs:27–30</td></tr>
+<tr><td class="c">&amp;#xD;</td><td>garder un CR volontaire</td><td>page 3</td></tr>
+<tr><td class="c">new DOMParser().parseFromString</td><td>relire en arbre</td><td>importGhx.js:117</td></tr>
+<tr><td class="c">doc.querySelector("parsererror")</td><td>détecter un document mal formé</td><td>importGhx.js:118</td></tr>
+<tr><td class="c">new XMLSerializer()</td><td>réécrire un arbre en texte</td><td>importGhx.js:161</td></tr>
+<tr><td class="c">setAttribute("index", …)</td><td>modifier par l'arbre</td><td>page 4</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Bien formé</dt><dd>Un document qui respecte la syntaxe XML ; sinon, il est refusé.</dd>
+<dt>Échappement</dt><dd>L'écriture d'un caractère spécial par une entité, &amp;lt; pour « &lt; ».</dd>
+<dt>DOM</dt><dd>L'arbre d'objets que le parseur construit en mémoire.</dd>
+<dt>Normalisation</dt><dd>Les changements que le parseur applique, comme CR LF en LF.</dd>
+<dt>Caractère de contrôle</dt><dd>Un code sous U+0020 ; XML 1.0 n'admet que tabulation, LF et CR.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 117</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 116 · XML et le .ghx</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10A</b> · Les formats de fichiers</span><b>Cours 116</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · D.</b> Un élément, avec son nom en attribut.</div>
-    <div><b>02 · C.</b> Bien formé ou rien.</div>
-    <div><b>03 · D.</b> Sinon &amp;lt; deviendrait &amp;amp;lt;.</div>
-    <div><b>04 · A.</b> Normalisation imposée.</div>
-    <div><b>05 · B.</b> Mesuré, Chromium et expat.</div>
-    <div><b>06 · B.</b> La référence est interdite.</div>
-    <div><b>07 · A.</b> 32 sur 32.</div>
-    <div><b>08 · D.</b> 246 dans IA-14.</div>
-    <div><b>09 · C.</b> Pas les octets.</div>
-    <div><b>10 · A.</b> L'index reste 3.</div>
-    <div><b>11 · A et D.</b> L'ordre des éléments compte.</div>
-    <div><b>12 · C.</b> Ni type ni index.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 117, « JSON et son schéma ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">&amp;amp; &amp;lt; &amp;gt; &amp;quot;</td><td>échapper texte et attributs</td><td>xml-builder.mjs:27–30</td></tr>
-      <tr><td class="c">&amp;#xD;</td><td>garder un CR volontaire</td><td>page 3</td></tr>
-      <tr><td class="c">new DOMParser().parseFromString</td><td>relire en arbre</td><td>importGhx.js:117</td></tr>
-      <tr><td class="c">doc.querySelector("parsererror")</td><td>détecter un document mal formé</td><td>importGhx.js:118</td></tr>
-      <tr><td class="c">new XMLSerializer()</td><td>réécrire un arbre en texte</td><td>importGhx.js:161</td></tr>
-      <tr><td class="c">setAttribute("index", …)</td><td>modifier par l'arbre</td><td>page 4</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Bien formé</dt><dd>Un document qui respecte la syntaxe XML ; sinon, il est refusé.</dd>
-    <dt>Échappement</dt><dd>L'écriture d'un caractère spécial par une entité, &amp;lt; pour « &lt; ».</dd>
-    <dt>DOM</dt><dd>L'arbre d'objets que le parseur construit en mémoire.</dd>
-    <dt>Normalisation</dt><dd>Les changements que le parseur applique, comme CR LF en LF.</dd>
-    <dt>Caractère de contrôle</dt><dd>Un code sous U+0020 ; XML 1.0 n'admet que tabulation, LF et CR.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 117</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 116 · XML et le .ghx</div>
-</section>
-
 </body>
 </html>

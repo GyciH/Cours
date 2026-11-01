@@ -1,254 +1,227 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>108 · Chercher dans l'histoire</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-11">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 108</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Chercher dans l'histoire</h1>
-  <p class="chapeau">L'histoire d'un dépôt est une base de données : chaque version de chaque ligne y est, datée et signée. Git fournit quatre manières de l'interroger, selon qu'on cherche un texte, une ligne, un passage, ou le moment où quelque chose a cessé de marcher.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>103</b> à <b>107</b></span>
-    <span class="pastille">Exemples · <b>Magpie</b>, <b>SnapSet</b>, un dépôt d'essai</span>
-  </div>
-
-  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
-    <svg viewBox="0 0 600 200" width="100%">
-<rect x="10" y="14" width="280" height="66" rx="4" fill="#ECEBFA" stroke="#4F46B8" stroke-width="1.2"/>
-<text x="22" y="34" font-size="8.8" fill="#4F46B8" text-anchor="start" font-weight="700">Quand ce texte est-il apparu ?</text>
-<text x="22" y="54" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">git log -S texte</text>
-<text x="22" y="70" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">cherche dans les changements</text>
-<rect x="305" y="14" width="280" height="66" rx="4" fill="#fff" stroke="#4F46B8" stroke-width="1.2"/>
-<text x="317" y="34" font-size="8.8" fill="#4F46B8" text-anchor="start" font-weight="700">Qui a écrit cette ligne, et quand ?</text>
-<text x="317" y="54" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">git blame -L 33,33 f</text>
-<text x="317" y="70" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">part du fichier actuel</text>
-<rect x="10" y="90" width="280" height="66" rx="4" fill="#fff" stroke="#4F46B8" stroke-width="1.2"/>
-<text x="22" y="110" font-size="8.8" fill="#4F46B8" text-anchor="start" font-weight="700">Quelle est l'histoire de ce passage ?</text>
-<text x="22" y="130" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">git log -L 30,36:f  /  --follow</text>
-<text x="22" y="146" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">suit une plage, ou un fichier renommé</text>
-<rect x="305" y="90" width="280" height="66" rx="4" fill="#ECEBFA" stroke="#4F46B8" stroke-width="1.2"/>
-<text x="317" y="110" font-size="8.8" fill="#4F46B8" text-anchor="start" font-weight="700">Depuis quand est-ce cassé ?</text>
-<text x="317" y="130" font-size="8.4" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">git bisect run test.sh</text>
-<text x="317" y="146" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">coupe l'histoire en deux, encore et encore</text>
-<text x="10" y="188" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">Toutes ces commandes lisent sans rien changer, sauf bisect, qui déplace HEAD le temps de la recherche.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 108</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Chercher dans l'histoire</h1>
+<p class="chapeau">L'histoire d'un dépôt est une base de données : chaque version de chaque ligne y est, datée et signée. Git fournit quatre manières de l'interroger, selon qu'on cherche un texte, une ligne, un passage, ou le moment où quelque chose a cessé de marcher.</p>
+<div class="meta">
+<span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>103</b> à <b>107</b></span>
+<span class="pastille">Exemples · <b>Magpie</b>, <b>SnapSet</b>, un dépôt d'essai</span>
+</div>
+<div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+<svg viewbox="0 0 600 200" width="100%">
+<rect fill="#ECEBFA" height="66" rx="4" stroke="#4F46B8" stroke-width="1.2" width="280" x="10" y="14"></rect>
+<text fill="#4F46B8" font-size="8.8" font-weight="700" text-anchor="start" x="22" y="34">Quand ce texte est-il apparu ?</text>
+<text class="mono" fill="#2B2F33" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="22" y="54">git log -S texte</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="22" y="70">cherche dans les changements</text>
+<rect fill="#fff" height="66" rx="4" stroke="#4F46B8" stroke-width="1.2" width="280" x="305" y="14"></rect>
+<text fill="#4F46B8" font-size="8.8" font-weight="700" text-anchor="start" x="317" y="34">Qui a écrit cette ligne, et quand ?</text>
+<text class="mono" fill="#2B2F33" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="317" y="54">git blame -L 33,33 f</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="317" y="70">part du fichier actuel</text>
+<rect fill="#fff" height="66" rx="4" stroke="#4F46B8" stroke-width="1.2" width="280" x="10" y="90"></rect>
+<text fill="#4F46B8" font-size="8.8" font-weight="700" text-anchor="start" x="22" y="110">Quelle est l'histoire de ce passage ?</text>
+<text class="mono" fill="#2B2F33" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="22" y="130">git log -L 30,36:f  /  --follow</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="22" y="146">suit une plage, ou un fichier renommé</text>
+<rect fill="#ECEBFA" height="66" rx="4" stroke="#4F46B8" stroke-width="1.2" width="280" x="305" y="90"></rect>
+<text fill="#4F46B8" font-size="8.8" font-weight="700" text-anchor="start" x="317" y="110">Depuis quand est-ce cassé ?</text>
+<text class="mono" fill="#2B2F33" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="317" y="130">git bisect run test.sh</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="317" y="146">coupe l'histoire en deux, encore et encore</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="10" y="188">Toutes ces commandes lisent sans rien changer, sauf bisect, qui déplace HEAD le temps de la recherche.</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Chercher dans l'histoire, c'est poser une question précise (quel texte, quelle ligne, quel test) plutôt que de lire des centaines de commits.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Un cahier de chantier tenu au jour le jour. On peut chercher le jour où un mot apparaît, demander qui a écrit tel paragraphe, ou, pour trouver le jour où la fissure est apparue, ouvrir au milieu, puis au milieu de la bonne moitié.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>choisir entre -S et -G ;</li>
-        <li>ne pas croire blame sur parole ;</li>
-        <li>suivre un fichier renommé ;</li>
-        <li>automatiser une bisection.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Chercher dans l'histoire, c'est poser une question précise (quel texte, quelle ligne, quel test) plutôt que de lire des centaines de commits.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Un cahier de chantier tenu au jour le jour. On peut chercher le jour où un mot apparaît, demander qui a écrit tel paragraphe, ou, pour trouver le jour où la fissure est apparue, ouvrir au milieu, puis au milieu de la bonne moitié.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>choisir entre -S et -G ;</li>
+<li>ne pas croire blame sur parole ;</li>
+<li>suivre un fichier renommé ;</li>
+<li>automatiser une bisection.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À retenir</span>
     Ces recherches ne valent que si les commits sont petits et bien nommés. Un commit « divers » de 2 000 lignes répond à toutes les questions par « là, quelque part » : c'est le meilleur argument pour des commits courts.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 108 · Chercher dans l'histoire</div>
+<div class="folio">1</div>
+<div class="pied">Cours 108 · Chercher dans l'histoire</div>
 </section>
-
 <!-- ============ PAGE 2 · LA PIOCHE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 108</b></div>
-  <p class="rubrique">Schéma 1 · La pioche</p>
-  <h2>Trouver quand un texte a changé</h2>
-  <p style="max-width:165mm"><code>git log -S texte</code>, surnommé la pioche (pickaxe), ne lit pas les messages : il compare, pour chaque commit, combien de fois le texte apparaît avant et après. <code>-G motif</code> cherche une expression régulière dans les lignes ajoutées ou retirées du diff. Les deux ne trouvent pas les mêmes commits.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#4F46B8" text-anchor="start" font-weight="700">Trois commits sur M.cs : création (Marge = 4), déplacement de la ligne, Marge passe à 6 (dépôt d'essai, mesuré)</text>
-<text x="30" y="44" font-size="7.8" fill="#6B7378" text-anchor="start" font-weight="700">recherche</text>
-<text x="220" y="44" font-size="7.8" fill="#6B7378" text-anchor="start" font-weight="700">commits trouvés</text>
-<rect x="16" y="52" width="568" height="24" rx="3" fill="#ECEBFA"/>
-<text x="30" y="68" font-size="8.2" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:8.2px">git log -S Marge</text>
-<text x="220" y="68" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">crée Marge</text>
-<text x="410" y="68" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">le nombre de « Marge » ne change qu'une fois</text>
-<rect x="16" y="80" width="568" height="24" rx="3" fill="#fff"/>
-<text x="30" y="96" font-size="8.2" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8.2px">git log -S 'Marge = 4'</text>
-<text x="220" y="96" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">crée Marge, Marge passe à 6</text>
-<text x="410" y="96" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">apparition, puis disparition du texte</text>
-<rect x="16" y="108" width="568" height="24" rx="3" fill="#ECEBFA"/>
-<text x="30" y="124" font-size="8.2" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8.2px">git log -G Marge</text>
-<text x="220" y="124" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">crée Marge, Marge passe à 6</text>
-<text x="410" y="124" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">toute ligne du diff qui contient Marge</text>
-<text x="16" y="154" font-size="7.8" fill="#2B2F33" text-anchor="start">-S compte les occurrences avant et après chaque commit : un changement de valeur sans changement de nom lui échappe.</text>
-<text x="16" y="170" font-size="7.8" fill="#2B2F33" text-anchor="start">Le déplacement, lui, n'a été trouvé par aucune : Git l'a montré comme un déplacement de la ligne Pas.</text>
-<text x="16" y="192" font-size="7.8" fill="#4F46B8" text-anchor="start" font-weight="700">Sur Magpie, git log -S CheckTextList : 8 commits, du 07/09 (6fbb234, l'apparition) au 20/10 (binaires reconstruits).</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 108</b></div>
+<p class="rubrique">Schéma 1 · La pioche</p>
+<h2>Trouver quand un texte a changé</h2>
+<p style="max-width:165mm"><code>git log -S texte</code>, surnommé la pioche (pickaxe), ne lit pas les messages : il compare, pour chaque commit, combien de fois le texte apparaît avant et après. <code>-G motif</code> cherche une expression régulière dans les lignes ajoutées ou retirées du diff. Les deux ne trouvent pas les mêmes commits.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">Trois commits sur M.cs : création (Marge = 4), déplacement de la ligne, Marge passe à 6 (dépôt d'essai, mesuré)</text>
+<text fill="#6B7378" font-size="7.8" font-weight="700" text-anchor="start" x="30" y="44">recherche</text>
+<text fill="#6B7378" font-size="7.8" font-weight="700" text-anchor="start" x="220" y="44">commits trouvés</text>
+<rect fill="#ECEBFA" height="24" rx="3" width="568" x="16" y="52"></rect>
+<text class="mono" fill="#E65100" font-size="8.2" font-weight="700" style="font-size:8.2px" text-anchor="start" x="30" y="68">git log -S Marge</text>
+<text fill="#2B2F33" font-size="8" font-weight="700" text-anchor="start" x="220" y="68">crée Marge</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="410" y="68">le nombre de « Marge » ne change qu'une fois</text>
+<rect fill="#fff" height="24" rx="3" width="568" x="16" y="80"></rect>
+<text class="mono" fill="#2E7D32" font-size="8.2" font-weight="700" style="font-size:8.2px" text-anchor="start" x="30" y="96">git log -S 'Marge = 4'</text>
+<text fill="#2B2F33" font-size="8" font-weight="700" text-anchor="start" x="220" y="96">crée Marge, Marge passe à 6</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="410" y="96">apparition, puis disparition du texte</text>
+<rect fill="#ECEBFA" height="24" rx="3" width="568" x="16" y="108"></rect>
+<text class="mono" fill="#2E7D32" font-size="8.2" font-weight="700" style="font-size:8.2px" text-anchor="start" x="30" y="124">git log -G Marge</text>
+<text fill="#2B2F33" font-size="8" font-weight="700" text-anchor="start" x="220" y="124">crée Marge, Marge passe à 6</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="410" y="124">toute ligne du diff qui contient Marge</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="16" y="154">-S compte les occurrences avant et après chaque commit : un changement de valeur sans changement de nom lui échappe.</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="16" y="170">Le déplacement, lui, n'a été trouvé par aucune : Git l'a montré comme un déplacement de la ligne Pas.</text>
+<text fill="#4F46B8" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="192">Sur Magpie, git log -S CheckTextList : 8 commits, du 07/09 (6fbb234, l'apparition) au 20/10 (binaires reconstruits).</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Git, chercher un texte</span>git log -S CheckTextList --oneline           # apparitions et disparitions
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Git, chercher un texte</span>git log -S CheckTextList --oneline           # apparitions et disparitions
 git log -G 'Marge\s*=' -p -- schema/          # lignes modifiées, avec le diff
 git log --grep=revert -i                      # dans les messages, pas le code
 git grep -n Marge v0.1.0                      # dans une version donnée</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>-S pour un nom</h3>
-      <p>Pour savoir quand une fonction, une classe ou une constante est née ou morte, <code>-S</code> est exact : il ne s'arrête que sur les commits qui changent son nombre d'apparitions, pas sur ceux qui l'utilisent.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>-G pour une valeur</h3>
-      <p>Pour suivre les changements d'une ligne dont le nom reste (une valeur, un réglage), <code>-G</code> voit chaque modification. Il trouve aussi plus de bruit : toute ligne du diff qui correspond.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>-S pour un nom</h3>
+<p>Pour savoir quand une fonction, une classe ou une constante est née ou morte, <code>-S</code> est exact : il ne s'arrête que sur les commits qui changent son nombre d'apparitions, pas sur ceux qui l'utilisent.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>-G pour une valeur</h3>
+<p>Pour suivre les changements d'une ligne dont le nom reste (une valeur, un réglage), <code>-G</code> voit chaque modification. Il trouve aussi plus de bruit : toute ligne du diff qui correspond.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Chercher par <code>--grep</code> ce qu'il fallait chercher par <code>-S</code>. <code>--grep</code> ne lit que les messages : si le commit qui a introduit un défaut ne le nomme pas, et c'est presque toujours le cas, il ne sort pas.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 108 · Chercher dans l'histoire</div>
+<div class="folio">2</div>
+<div class="pied">Cours 108 · Chercher dans l'histoire</div>
 </section>
-
 <!-- ============ PAGE 3 · BLAME ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 108</b></div>
-  <p class="rubrique">Schéma 2 · L'auteur d'une ligne</p>
-  <h2>blame, et ce qu'il ne voit pas</h2>
-  <p style="max-width:165mm"><code>git blame</code> annote chaque ligne du fichier actuel avec le dernier commit qui l'a modifiée. Quand une ligne a été déplacée ou recopiée d'un autre fichier, ce dernier commit est le déplacement, pas l'écriture. Les options <code>-C</code> lui demandent de chercher plus loin.</p>
-
-  <svg viewBox="0 0 600 222" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="222" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.4" fill="#4F46B8" text-anchor="start" font-weight="700">Qui a écrit &lt;Version&gt;0.1.5&lt;/Version&gt;, ligne 33 de plugin/Directory.Build.props (Magpie, mesuré) ?</text>
-<rect x="16" y="36" width="568" height="24" rx="3" fill="#ECEBFA"/>
-<text x="26" y="52" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">git blame -L 33,33</text>
-<text x="290" y="52" font-size="8.2" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:8.2px">9d32457 · 20/10</text>
-<text x="420" y="52" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">le commit qui a créé le fichier</text>
-<rect x="16" y="64" width="568" height="24" rx="3" fill="#fff"/>
-<text x="26" y="80" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">git blame -C -C -C -L 33,33</text>
-<text x="290" y="80" font-size="8.2" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:8.2px">9d32457 · 20/10</text>
-<text x="420" y="80" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">ligne seule : trop courte</text>
-<rect x="16" y="92" width="568" height="24" rx="3" fill="#ECEBFA"/>
-<text x="26" y="108" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">git blame -C -C -C  (tout le fichier)</text>
-<text x="290" y="108" font-size="8.2" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8.2px">40875fe · 24/09</text>
-<text x="420" y="108" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">venue de plugin/Magpie.csproj</text>
-<rect x="16" y="120" width="568" height="24" rx="3" fill="#fff"/>
-<text x="26" y="136" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700" class="mono" style="font-size:7.8px">git log -S '&lt;Version&gt;0.1.5&lt;/Version&gt;'</text>
-<text x="290" y="136" font-size="8.2" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8.2px">40875fe, puis 9d32457</text>
-<text x="420" y="136" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">l'apparition, puis le déplacement</text>
-<text x="16" y="166" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Sur les 62 lignes du fichier, blame simple les donne toutes à 9d32457 ; avec -C -C -C, 42 remontent à 4 commits plus anciens.</text>
-<text x="16" y="184" font-size="7.8" fill="#2B2F33" text-anchor="start">Même piège pour un fichier renommé : ContenuTests.cs (SnapSet) a 4 commits pour git log, 5 avec --follow,</text>
-<text x="16" y="198" font-size="7.8" fill="#2B2F33" text-anchor="start">qui remonte à ContenuV9Tests.cs, son nom jusqu'au 07/10.</text>
-<text x="16" y="216" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">blame dit qui a touché la ligne en dernier, pas qui l'a pensée.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 108</b></div>
+<p class="rubrique">Schéma 2 · L'auteur d'une ligne</p>
+<h2>blame, et ce qu'il ne voit pas</h2>
+<p style="max-width:165mm"><code>git blame</code> annote chaque ligne du fichier actuel avec le dernier commit qui l'a modifiée. Quand une ligne a été déplacée ou recopiée d'un autre fichier, ce dernier commit est le déplacement, pas l'écriture. Les options <code>-C</code> lui demandent de chercher plus loin.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 222" width="100%">
+<rect fill="#EFE9E1" height="222" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="22">Qui a écrit &lt;Version&gt;0.1.5&lt;/Version&gt;, ligne 33 de plugin/Directory.Build.props (Magpie, mesuré) ?</text>
+<rect fill="#ECEBFA" height="24" rx="3" width="568" x="16" y="36"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="26" y="52">git blame -L 33,33</text>
+<text class="mono" fill="#C62828" font-size="8.2" font-weight="700" style="font-size:8.2px" text-anchor="start" x="290" y="52">9d32457 · 20/10</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="420" y="52">le commit qui a créé le fichier</text>
+<rect fill="#fff" height="24" rx="3" width="568" x="16" y="64"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="26" y="80">git blame -C -C -C -L 33,33</text>
+<text class="mono" fill="#C62828" font-size="8.2" font-weight="700" style="font-size:8.2px" text-anchor="start" x="290" y="80">9d32457 · 20/10</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="420" y="80">ligne seule : trop courte</text>
+<rect fill="#ECEBFA" height="24" rx="3" width="568" x="16" y="92"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="26" y="108">git blame -C -C -C  (tout le fichier)</text>
+<text class="mono" fill="#2E7D32" font-size="8.2" font-weight="700" style="font-size:8.2px" text-anchor="start" x="290" y="108">40875fe · 24/09</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="420" y="108">venue de plugin/Magpie.csproj</text>
+<rect fill="#fff" height="24" rx="3" width="568" x="16" y="120"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.8" font-weight="700" style="font-size:7.8px" text-anchor="start" x="26" y="136">git log -S '&lt;Version&gt;0.1.5&lt;/Version&gt;'</text>
+<text class="mono" fill="#2E7D32" font-size="8.2" font-weight="700" style="font-size:8.2px" text-anchor="start" x="290" y="136">40875fe, puis 9d32457</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="420" y="136">l'apparition, puis le déplacement</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="166">Sur les 62 lignes du fichier, blame simple les donne toutes à 9d32457 ; avec -C -C -C, 42 remontent à 4 commits plus anciens.</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="16" y="184">Même piège pour un fichier renommé : ContenuTests.cs (SnapSet) a 4 commits pour git log, 5 avec --follow,</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="16" y="198">qui remonte à ContenuV9Tests.cs, son nom jusqu'au 07/10.</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="16" y="216">blame dit qui a touché la ligne en dernier, pas qui l'a pensée.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Git, interroger une ligne</span>git blame -L 30,36 f              # une plage seulement
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Git, interroger une ligne</span>git blame -L 30,36 f              # une plage seulement
 git blame -w -C -C -C f            # ignorer les espaces, suivre les copies
 git log -L 30,36:f                 # chaque version de la plage, avec le diff
 git log --follow -- f              # l'histoire à travers les renommages</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Un, deux, trois -C</h3>
-      <p>Un <code>-C</code> cherche les lignes venues d'autres fichiers modifiés dans le même commit, deux dans le commit qui a créé le fichier, trois dans tous les commits. Une ligne doit dépasser environ 40 caractères pour être reconnue, d'où l'échec sur la ligne seule.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>log -L, l'histoire d'un passage</h3>
-      <p>Là où blame donne une date par ligne, <code>git log -L</code> montre chaque commit qui a touché la plage, avec son diff. Sur Metrique.cs de SnapSet, la ligne 1980 n'a qu'un commit : l'état initial du 07/10.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Un, deux, trois -C</h3>
+<p>Un <code>-C</code> cherche les lignes venues d'autres fichiers modifiés dans le même commit, deux dans le commit qui a créé le fichier, trois dans tous les commits. Une ligne doit dépasser environ 40 caractères pour être reconnue, d'où l'échec sur la ligne seule.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>log -L, l'histoire d'un passage</h3>
+<p>Là où blame donne une date par ligne, <code>git log -L</code> montre chaque commit qui a touché la plage, avec son diff. Sur Metrique.cs de SnapSet, la ligne 1980 n'a qu'un commit : l'état initial du 07/10.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Conclure « c'est lui qui a écrit ça » d'après blame. Un reformatage, un déplacement, une scission de fichier mettent leur auteur sur des lignes qu'il n'a pas pensées : c'est le cas des 62 lignes de Directory.Build.props.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 108 · Chercher dans l'histoire</div>
+<div class="folio">3</div>
+<div class="pied">Cours 108 · Chercher dans l'histoire</div>
 </section>
-
 <!-- ============ PAGE 4 · BISECT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 108</b></div>
-  <p class="rubrique">Schéma 3 · La bisection</p>
-  <h2>Trouver le commit qui a tout cassé</h2>
-  <p style="max-width:165mm">On connaît un commit bon et un commit mauvais. <code>git bisect</code> se place au milieu, demande si c'est bon ou mauvais, garde la moitié suspecte, et recommence. Avec un script qui répond à la place, la recherche est entièrement automatique.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#4F46B8" text-anchor="start" font-weight="700">git bisect run sur une copie de Magpie : quel commit a commencé à versionner plugin/bin ? (mesuré)</text>
-<rect x="20" y="42" width="560" height="14" rx="3" fill="#fff" stroke="#CFC6B8"/>
-<text x="20" y="70" font-size="7.4" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:7.4px">4f0eefc, premier commit : bon</text>
-<text x="580" y="70" font-size="7.4" fill="#C62828" text-anchor="end" font-weight="700" class="mono" style="font-size:7.4px">b0ff1b6, HEAD : mauvais</text>
-<rect x="20" y="84" width="280" height="8" fill="#4F46B8" opacity="0.25"/>
-<text x="306" y="91" font-size="7" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7px">65 à tester</text>
-<rect x="20" y="96" width="140" height="8" fill="#4F46B8" opacity="0.35"/>
-<text x="166" y="103" font-size="7" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7px">33</text>
-<rect x="90" y="108" width="70" height="8" fill="#4F46B8" opacity="0.45"/>
-<text x="166" y="115" font-size="7" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7px">16</text>
-<rect x="90" y="120" width="35" height="8" fill="#4F46B8" opacity="0.55"/>
-<text x="131" y="127" font-size="7" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7px">8</text>
-<rect x="108" y="132" width="17" height="8" fill="#4F46B8" opacity="0.65"/>
-<text x="131" y="139" font-size="7" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7px">4</text>
-<rect x="108" y="144" width="8" height="8" fill="#4F46B8" opacity="0.75"/>
-<text x="122" y="151" font-size="7" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7px">2</text>
-<rect x="112" y="156" width="4" height="8" fill="#4F46B8" opacity="0.85"/>
-<text x="122" y="163" font-size="7" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7px">0 : trouvé</text>
-<text x="390" y="98" font-size="9" fill="#2B2F33" text-anchor="start" font-weight="700">134 commits</text>
-<text x="390" y="114" font-size="9" fill="#4F46B8" text-anchor="start" font-weight="700">7 tests du script</text>
-<text x="390" y="130" font-size="9" fill="#2B2F33" text-anchor="start" font-weight="700">1,6 s en tout</text>
-<text x="390" y="150" font-size="8.6" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:8.6px">→ 66023b0, 2026-09-02</text>
-<text x="16" y="184" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Chaque test élimine la moitié des suspects : 7 tests suffisent pour 134 commits, 10 pour mille, 14 pour dix mille.</text>
-<text x="16" y="200" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Le script rend 0 si le commit est bon, 1 à 127 s'il est mauvais (sauf 125 : « impossible à tester, passe »).</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 108</b></div>
+<p class="rubrique">Schéma 3 · La bisection</p>
+<h2>Trouver le commit qui a tout cassé</h2>
+<p style="max-width:165mm">On connaît un commit bon et un commit mauvais. <code>git bisect</code> se place au milieu, demande si c'est bon ou mauvais, garde la moitié suspecte, et recommence. Avec un script qui répond à la place, la recherche est entièrement automatique.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#4F46B8" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">git bisect run sur une copie de Magpie : quel commit a commencé à versionner plugin/bin ? (mesuré)</text>
+<rect fill="#fff" height="14" rx="3" stroke="#CFC6B8" width="560" x="20" y="42"></rect>
+<text class="mono" fill="#2E7D32" font-size="7.4" font-weight="700" style="font-size:7.4px" text-anchor="start" x="20" y="70">4f0eefc, premier commit : bon</text>
+<text class="mono" fill="#C62828" font-size="7.4" font-weight="700" style="font-size:7.4px" text-anchor="end" x="580" y="70">b0ff1b6, HEAD : mauvais</text>
+<rect fill="#4F46B8" height="8" opacity="0.25" width="280" x="20" y="84"></rect>
+<text class="mono" fill="#2B2F33" font-size="7" style="font-size:7px" text-anchor="start" x="306" y="91">65 à tester</text>
+<rect fill="#4F46B8" height="8" opacity="0.35" width="140" x="20" y="96"></rect>
+<text class="mono" fill="#2B2F33" font-size="7" style="font-size:7px" text-anchor="start" x="166" y="103">33</text>
+<rect fill="#4F46B8" height="8" opacity="0.45" width="70" x="90" y="108"></rect>
+<text class="mono" fill="#2B2F33" font-size="7" style="font-size:7px" text-anchor="start" x="166" y="115">16</text>
+<rect fill="#4F46B8" height="8" opacity="0.55" width="35" x="90" y="120"></rect>
+<text class="mono" fill="#2B2F33" font-size="7" style="font-size:7px" text-anchor="start" x="131" y="127">8</text>
+<rect fill="#4F46B8" height="8" opacity="0.65" width="17" x="108" y="132"></rect>
+<text class="mono" fill="#2B2F33" font-size="7" style="font-size:7px" text-anchor="start" x="131" y="139">4</text>
+<rect fill="#4F46B8" height="8" opacity="0.75" width="8" x="108" y="144"></rect>
+<text class="mono" fill="#2B2F33" font-size="7" style="font-size:7px" text-anchor="start" x="122" y="151">2</text>
+<rect fill="#4F46B8" height="8" opacity="0.85" width="4" x="112" y="156"></rect>
+<text class="mono" fill="#2B2F33" font-size="7" style="font-size:7px" text-anchor="start" x="122" y="163">0 : trouvé</text>
+<text fill="#2B2F33" font-size="9" font-weight="700" text-anchor="start" x="390" y="98">134 commits</text>
+<text fill="#4F46B8" font-size="9" font-weight="700" text-anchor="start" x="390" y="114">7 tests du script</text>
+<text fill="#2B2F33" font-size="9" font-weight="700" text-anchor="start" x="390" y="130">1,6 s en tout</text>
+<text class="mono" fill="#C62828" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="start" x="390" y="150">→ 66023b0, 2026-09-02</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="184">Chaque test élimine la moitié des suspects : 7 tests suffisent pour 134 commits, 10 pour mille, 14 pour dix mille.</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="16" y="200">Le script rend 0 si le commit est bon, 1 à 127 s'il est mauvais (sauf 125 : « impossible à tester, passe »).</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Git, une bisection automatique</span>git bisect start HEAD v0.1.0      # mauvais, puis bon
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Git, une bisection automatique</span>git bisect start HEAD v0.1.0      # mauvais, puis bon
 git bisect run ./test.sh          # 0 bon, 1 mauvais, 125 à sauter
 git bisect log                    # la trace, rejouable
 git bisect reset                  # retour à la branche de départ</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Un test qui ne dépend que du commit</h3>
-      <p>Le script doit répondre pour le commit sorti, sans dépendre de fichiers non suivis. Pour un plugin, c'est souvent « compile-t-il » ou un test unitaire ; ici, un <code>git ls-files</code> suffit.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Les fusions</h3>
-      <p>Bisect explore aussi les branches fusionnées : le premier commit testé sur Magpie était la fusion de la PR #35 (168460f). <code>--first-parent</code> limite la recherche à la ligne principale.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Un test qui ne dépend que du commit</h3>
+<p>Le script doit répondre pour le commit sorti, sans dépendre de fichiers non suivis. Pour un plugin, c'est souvent « compile-t-il » ou un test unitaire ; ici, un <code>git ls-files</code> suffit.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Les fusions</h3>
+<p>Bisect explore aussi les branches fusionnées : le premier commit testé sur Magpie était la fusion de la PR #35 (168460f). <code>--first-parent</code> limite la recherche à la ligne principale.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Oublier <code>git bisect reset</code>. Le dépôt reste sur un commit ancien, HEAD détachée : le travail fait ensuite n'est sur aucune branche (cours 104).
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 108 · Chercher dans l'histoire</div>
+<div class="folio">4</div>
+<div class="pied">Cours 108 · Chercher dans l'histoire</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 108</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>La ligne de version de Magpie</h2>
-  <p style="max-width:165mm">La version du plugin vit à la ligne 33 de plugin/Directory.Build.props. Le fichier a été créé le 20/10 par la scission en trois projets ; la ligne, elle, est plus ancienne.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 108</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>La ligne de version de Magpie</h2>
+<p style="max-width:165mm">La version du plugin vit à la ligne 33 de plugin/Directory.Build.props. Le fichier a été créé le 20/10 par la scission en trois projets ; la ligne, elle, est plus ancienne.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">plugin/Directory.Build.props</span></div>
 <div class="l k1"><span class="n">33</span>    &lt;Version&gt;0.1.5&lt;/Version&gt;<span class="rep r1">1</span></div>
@@ -261,137 +234,55 @@ git bisect reset                  # retour à la branche de départ</div>
 <div class="l"><span class="cm">git bisect run test.sh   (copie, plugin/bin suivi ?)</span></div>
 <div class="l k5"><span class="n">—</span>66023b0 is the first bad commit<span class="rep r5">5</span></div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>La ligne</b>Version annoncée.</li>
-      <li><span class="rep r2">2</span><b>blame simple</b>La scission.</li>
-      <li><span class="rep r3">3</span><b>Avec -C</b>Le vrai auteur.</li>
-      <li><span class="rep r4">4</span><b>L'origine</b>24/09.</li>
-      <li><span class="rep r5">5</span><b>Bisection</b>7 tests.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À surveiller · une version que personne ne fait avancer</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>La ligne</b>Version annoncée.</li>
+<li><span class="rep r2">2</span><b>blame simple</b>La scission.</li>
+<li><span class="rep r3">3</span><b>Avec -C</b>Le vrai auteur.</li>
+<li><span class="rep r4">4</span><b>L'origine</b>24/09.</li>
+<li><span class="rep r5">5</span><b>Bisection</b>7 tests.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À surveiller · une version que personne ne fait avancer</span>
     La valeur 0.1.5 date du 24/09 (40875fe, 0.1.0 vers 0.1.5). Depuis, la ligne n'a plus changé : la scission du 20/10 l'a seulement déplacée, et blame simple la date de ce jour-là : un lecteur pressé croirait la version revue récemment. Le plugin a pourtant beaucoup changé (cours 104). Déduit : faire avancer la version à chaque tag, et relire blame avec -C -C -C avant de conclure. Relevé sans rien modifier, la bisection a tourné sur une copie.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 108 · Chercher dans l'histoire</div>
+<div class="folio">5</div>
+<div class="pied">Cours 108 · Chercher dans l'histoire</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 108</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 108</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">git log -S texte retient un commit quand…</div><ul>
-      <li><span>A</span>le fichier contient le texte</li><li><span>B</span>le message contient le texte</li><li><span>C</span>l'auteur s'appelle texte</li><li><span>D</span>le nombre d'apparitions du texte change</li></ul></div>
 
-    <div class="q"><div class="enonce">Dans l'essai, Marge passe de 4 à 6. git log -S Marge…</div><ul>
-      <li><span>A</span>échoue</li><li><span>B</span>le trouve</li><li><span>C</span>trouve le déplacement</li><li><span>D</span>ne trouve pas ce commit</li></ul></div>
 
-    <div class="q"><div class="enonce">Pour voir chaque changement de valeur d'une ligne…</div><ul>
-      <li><span>A</span>git log -G</li><li><span>B</span>git blame seul</li><li><span>C</span>git reflog</li><li><span>D</span>git log --grep</li></ul></div>
 
-    <div class="q"><div class="enonce">git log --grep cherche dans…</div><ul>
-      <li><span>A</span>les noms de fichiers</li><li><span>B</span>les diffs</li><li><span>C</span>les messages de commit</li><li><span>D</span>le code</li></ul></div>
-
-    <div class="q"><div class="enonce">git blame donne pour chaque ligne…</div><ul>
-      <li><span>A</span>la prochaine modification</li><li><span>B</span>le premier qui l'a écrite</li><li><span>C</span>le dernier commit qui l'a touchée</li><li><span>D</span>tous les commits</li></ul></div>
-
-    <div class="q"><div class="enonce">blame simple attribue la ligne 33 de Directory.Build.props à…</div><ul>
-      <li><span>A</span>9d32457, la scission du 20/10</li><li><span>B</span>66023b0</li><li><span>C</span>personne</li><li><span>D</span>40875fe</li></ul></div>
-
-    <div class="q"><div class="enonce">Avec -C -C -C sur tout le fichier, la ligne 33 remonte à…</div><ul>
-      <li><span>A</span>9d32457</li><li><span>B</span>6fbb234</li><li><span>C</span>b0ff1b6</li><li><span>D</span>40875fe, dans Magpie.csproj</li></ul></div>
-
-    <div class="q"><div class="enonce">Pour suivre un fichier renommé… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>git reflog</li><li><span>B</span>git log --follow -- f</li><li><span>C</span>regarder le R096 de --name-status</li><li><span>D</span>git grep</li></ul></div>
-
-    <div class="q"><div class="enonce">git bisect a trouvé 66023b0 parmi 134 commits en…</div><ul>
-      <li><span>A</span>7 tests</li><li><span>B</span>1 test</li><li><span>C</span>134 tests</li><li><span>D</span>67 tests</li></ul></div>
-
-    <div class="q"><div class="enonce">Un script de bisect qui rend 125 signifie…</div><ul>
-      <li><span>A</span>mauvais</li><li><span>B</span>commit impossible à tester, à sauter</li><li><span>C</span>bon</li><li><span>D</span>fin de la recherche</li></ul></div>
-
-    <div class="q"><div class="enonce">Après une bisection, il faut…</div><ul>
-      <li><span>A</span>git reset --hard</li><li><span>B</span>git push</li><li><span>C</span>git bisect reset</li><li><span>D</span>rien</li></ul></div>
-
-    <div class="q"><div class="enonce">La valeur 0.1.5 de la ligne 33 date…</div><ul>
-      <li><span>A</span>du 20/10</li><li><span>B</span>du 24/09</li><li><span>C</span>de l'état initial</li><li><span>D</span>du 07/09</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 108 · Chercher dans l'histoire</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">git log -S texte</td><td>apparitions et disparitions d'un texte</td><td>schéma 1, page 2</td></tr>
+<tr><td class="c">git log -G motif</td><td>lignes modifiées qui correspondent</td><td>schéma 1, page 2</td></tr>
+<tr><td class="c">git blame -C -C -C f</td><td>auteur des lignes, à travers les copies</td><td>schéma 2, page 3</td></tr>
+<tr><td class="c">git log -L 30,36:f</td><td>l'histoire d'une plage</td><td>page 3</td></tr>
+<tr><td class="c">git log --follow -- f</td><td>à travers les renommages</td><td>page 3</td></tr>
+<tr><td class="c">git bisect run test.sh</td><td>trouver le premier mauvais commit</td><td>schéma 3, page 4</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Pioche (pickaxe)</dt><dd>La recherche par -S, qui compte les apparitions d'un texte.</dd>
+<dt>Blame</dt><dd>L'annotation de chaque ligne par le dernier commit qui l'a touchée.</dd>
+<dt>Bisection</dt><dd>La recherche par moitiés du premier commit fautif.</dd>
+<dt>Renommage</dt><dd>Un fichier supprimé et recréé, reconnu par sa ressemblance (R096).</dd>
+<dt>Plage</dt><dd>Un groupe de lignes désigné par -L début,fin.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 26</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 108 · Chercher dans l'histoire</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 108</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · D.</b> Avant et après.</div>
-    <div><b>02 · D.</b> Toujours un Marge.</div>
-    <div><b>03 · A.</b> Les lignes du diff.</div>
-    <div><b>04 · C.</b> Pas le code.</div>
-    <div><b>05 · C.</b> Le dernier contact.</div>
-    <div><b>06 · A.</b> Le fichier y est né.</div>
-    <div><b>07 · D.</b> Le vrai auteur.</div>
-    <div><b>08 · B et C.</b> 4 puis 5 commits.</div>
-    <div><b>09 · A.</b> Moitié par moitié.</div>
-    <div><b>10 · B.</b> On passe.</div>
-    <div><b>11 · C.</b> Sinon HEAD détachée.</div>
-    <div><b>12 · B.</b> 40875fe, puis plus rien.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 26, « Tests automatisés ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">git log -S texte</td><td>apparitions et disparitions d'un texte</td><td>schéma 1, page 2</td></tr>
-      <tr><td class="c">git log -G motif</td><td>lignes modifiées qui correspondent</td><td>schéma 1, page 2</td></tr>
-      <tr><td class="c">git blame -C -C -C f</td><td>auteur des lignes, à travers les copies</td><td>schéma 2, page 3</td></tr>
-      <tr><td class="c">git log -L 30,36:f</td><td>l'histoire d'une plage</td><td>page 3</td></tr>
-      <tr><td class="c">git log --follow -- f</td><td>à travers les renommages</td><td>page 3</td></tr>
-      <tr><td class="c">git bisect run test.sh</td><td>trouver le premier mauvais commit</td><td>schéma 3, page 4</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Pioche (pickaxe)</dt><dd>La recherche par -S, qui compte les apparitions d'un texte.</dd>
-    <dt>Blame</dt><dd>L'annotation de chaque ligne par le dernier commit qui l'a touchée.</dd>
-    <dt>Bisection</dt><dd>La recherche par moitiés du premier commit fautif.</dd>
-    <dt>Renommage</dt><dd>Un fichier supprimé et recréé, reconnu par sa ressemblance (R096).</dd>
-    <dt>Plage</dt><dd>Un groupe de lignes désigné par -L début,fin.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 26</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 108 · Chercher dans l'histoire</div>
-</section>
-
 </body>
 </html>

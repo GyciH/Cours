@@ -1,246 +1,219 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>102 · Sauvegarder une base</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-10">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 102</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Sauvegarder une base</h1>
-  <p class="chapeau">Une base SQLite tient dans un fichier, et l'on est tenté de la sauvegarder comme n'importe quel fichier : une copie. Tant qu'une connexion peut écrire, cette copie risque d'être fausse, sans que rien ne le signale. SQLite sait faire une copie juste d'une base ouverte ; encore faut-il la faire, la garder, et savoir la restaurer.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>100</b> et <b>101</b></span>
-    <span class="pastille">Exemples · <b>data/README.md</b>, <b>deployer.sh</b>, <b>compute-proxy.mjs</b> (Magpie)</span>
-  </div>
-
-  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
-    <svg viewBox="0 0 600 204" width="100%">
-<rect x="10" y="10" width="260" height="132" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="22" y="30" font-size="8.8" fill="#2E7D32" text-anchor="start" font-weight="700">dans git : de quoi reconstruire</text>
-<text x="22" y="52" font-size="7.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.8px">src/data/catalog.json</text>
-<text x="22" y="70" font-size="7.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.8px">data/exercises/*.json</text>
-<text x="22" y="88" font-size="7.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.8px">data/parcours/*.json</text>
-<text x="22" y="106" font-size="7.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.8px">data/authorized-components.json</text>
-<text x="22" y="130" font-size="7.2" fill="#6B7378" text-anchor="start" font-style="italic">migrate, import, restore : data/README.md</text>
-<rect x="330" y="10" width="260" height="132" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
-<text x="342" y="30" font-size="8.8" fill="#C62828" text-anchor="start" font-weight="700">dans magpie.db seulement</text>
-<text x="342" y="52" font-size="7.8" fill="#2B2F33" text-anchor="start">les autorisations changées dans /admin</text>
-<text x="342" y="70" font-size="7.8" fill="#2B2F33" text-anchor="start">l'ordre des exercices réordonnés</text>
-<text x="342" y="88" font-size="7.8" fill="#2B2F33" text-anchor="start">les graphes de départ</text>
-<text x="342" y="106" font-size="7.8" fill="#2B2F33" text-anchor="start">les exercices importés par l'admin</text>
-<text x="342" y="130" font-size="7.2" fill="#6B7378" text-anchor="start" font-style="italic">aucun code ne les recopie dans git</text>
-<line x1="272" y1="70" x2="328" y2="70" stroke="#2E7D32" stroke-width="1.4"/><polygon points="328,70 321.6,72.7 321.6,67.3" fill="#2E7D32"/>
-<text x="300" y="62" font-size="7" fill="#2E7D32" text-anchor="middle" font-weight="700">reconstruit</text>
-<text x="300" y="166" font-size="8.4" fill="#2B2F33" text-anchor="middle" font-weight="700">Une base reconstruite depuis git retrouve le catalogue et les exercices d'origine,</text>
-<text x="300" y="182" font-size="8.4" fill="#2B2F33" text-anchor="middle" font-weight="700">pas le travail fait ensuite sur le serveur : celui-là n'existe qu'à un seul endroit.</text>
-<text x="300" y="198" font-size="7.2" fill="#6B7378" text-anchor="middle" font-style="italic">Répartition déduite de data/README.md, de deployer.sh et des routes d'administration de compute-proxy.mjs.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 102</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Sauvegarder une base</h1>
+<p class="chapeau">Une base SQLite tient dans un fichier, et l'on est tenté de la sauvegarder comme n'importe quel fichier : une copie. Tant qu'une connexion peut écrire, cette copie risque d'être fausse, sans que rien ne le signale. SQLite sait faire une copie juste d'une base ouverte ; encore faut-il la faire, la garder, et savoir la restaurer.</p>
+<div class="meta">
+<span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>100</b> et <b>101</b></span>
+<span class="pastille">Exemples · <b>data/README.md</b>, <b>deployer.sh</b>, <b>compute-proxy.mjs</b> (Magpie)</span>
+</div>
+<div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+<svg viewbox="0 0 600 204" width="100%">
+<rect fill="#fff" height="132" rx="4" stroke="#2E7D32" stroke-width="1.2" width="260" x="10" y="10"></rect>
+<text fill="#2E7D32" font-size="8.8" font-weight="700" text-anchor="start" x="22" y="30">dans git : de quoi reconstruire</text>
+<text class="mono" fill="#2B2F33" font-size="7.8" style="font-size:7.8px" text-anchor="start" x="22" y="52">src/data/catalog.json</text>
+<text class="mono" fill="#2B2F33" font-size="7.8" style="font-size:7.8px" text-anchor="start" x="22" y="70">data/exercises/*.json</text>
+<text class="mono" fill="#2B2F33" font-size="7.8" style="font-size:7.8px" text-anchor="start" x="22" y="88">data/parcours/*.json</text>
+<text class="mono" fill="#2B2F33" font-size="7.8" style="font-size:7.8px" text-anchor="start" x="22" y="106">data/authorized-components.json</text>
+<text fill="#6B7378" font-size="7.2" font-style="italic" text-anchor="start" x="22" y="130">migrate, import, restore : data/README.md</text>
+<rect fill="#fff" height="132" rx="4" stroke="#C62828" stroke-width="1.2" width="260" x="330" y="10"></rect>
+<text fill="#C62828" font-size="8.8" font-weight="700" text-anchor="start" x="342" y="30">dans magpie.db seulement</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="342" y="52">les autorisations changées dans /admin</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="342" y="70">l'ordre des exercices réordonnés</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="342" y="88">les graphes de départ</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="342" y="106">les exercices importés par l'admin</text>
+<text fill="#6B7378" font-size="7.2" font-style="italic" text-anchor="start" x="342" y="130">aucun code ne les recopie dans git</text>
+<line stroke="#2E7D32" stroke-width="1.4" x1="272" x2="328" y1="70" y2="70"></line><polygon fill="#2E7D32" points="328,70 321.6,72.7 321.6,67.3"></polygon>
+<text fill="#2E7D32" font-size="7" font-weight="700" text-anchor="middle" x="300" y="62">reconstruit</text>
+<text fill="#2B2F33" font-size="8.4" font-weight="700" text-anchor="middle" x="300" y="166">Une base reconstruite depuis git retrouve le catalogue et les exercices d'origine,</text>
+<text fill="#2B2F33" font-size="8.4" font-weight="700" text-anchor="middle" x="300" y="182">pas le travail fait ensuite sur le serveur : celui-là n'existe qu'à un seul endroit.</text>
+<text fill="#6B7378" font-size="7.2" font-style="italic" text-anchor="middle" x="300" y="198">Répartition déduite de data/README.md, de deployer.sh et des routes d'administration de compute-proxy.mjs.</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Ce qui ne peut pas se reconstruire doit se copier, par l'outil de la base, régulièrement, ailleurs, et une copie n'est sûre qu'une fois restaurée avec succès.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Photographier un tableau blanc pendant que quelqu'un efface une ligne pour la réécrire : la photo montre un tableau qui n'a jamais existé. Il faut demander une pause, ou photographier la version propre.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>distinguer ce qui se reconstruit de ce qui se sauvegarde ;</li>
-        <li>dire pourquoi une simple copie peut mentir ;</li>
-        <li>copier une base ouverte sans risque ;</li>
-        <li>organiser des sauvegardes utiles.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Ce qui ne peut pas se reconstruire doit se copier, par l'outil de la base, régulièrement, ailleurs, et une copie n'est sûre qu'une fois restaurée avec succès.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Photographier un tableau blanc pendant que quelqu'un efface une ligne pour la réécrire : la photo montre un tableau qui n'a jamais existé. Il faut demander une pause, ou photographier la version propre.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>distinguer ce qui se reconstruit de ce qui se sauvegarde ;</li>
+<li>dire pourquoi une simple copie peut mentir ;</li>
+<li>copier une base ouverte sans risque ;</li>
+<li>organiser des sauvegardes utiles.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À retenir</span>
     Magpie a déjà la moitié de la réponse : sa base se reconstruit depuis des fichiers versionnés, et la procédure a été vérifiée (data/README.md). Ce cours regarde l'autre moitié, ce qui s'accumule ensuite sur le serveur.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 102 · Sauvegarder une base</div>
+<div class="folio">1</div>
+<div class="pied">Cours 102 · Sauvegarder une base</div>
 </section>
-
 <!-- ============ PAGE 2 · LA COPIE QUI MENT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 102</b></div>
-  <p class="rubrique">Schéma 1 · Copier le fichier</p>
-  <h2>Une copie qui ment</h2>
-  <p style="max-width:165mm">En mode <code>delete</code>, une grosse transaction écrit déjà dans le fichier avant de valider. En mode <code>WAL</code>, les validations récentes vivent dans <code>-wal</code> jusqu'à leur recopie. Dans les deux cas, le fichier principal seul, copié au mauvais moment, ne contient pas un état validé de la base.</p>
-
-  <svg viewBox="0 0 600 218" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="218" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#4A4A68" text-anchor="start" font-weight="700">Copier le fichier de la base pendant qu'une autre connexion travaille (deux processus, mesuré)</text>
-<rect x="16" y="34" width="568" height="44" rx="4" fill="#ECECF2" stroke="#C62828" stroke-width="1.2"/>
-<text x="28" y="51" font-size="8.4" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">journal delete</text>
-<text x="150" y="51" font-size="8" fill="#2B2F33" text-anchor="start">copie pendant une transaction de 20 000 lignes</text>
-<text x="574" y="51" font-size="8.6" fill="#C62828" text-anchor="end" font-weight="700" class="mono" style="font-size:8.6px">5 016 lignes</text>
-<text x="150" y="68" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">ni l'état d'avant (5 000), ni celui d'après (25 000)</text>
-<rect x="16" y="84" width="568" height="44" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
-<text x="28" y="101" font-size="8.4" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">journal WAL</text>
-<text x="150" y="101" font-size="8" fill="#2B2F33" text-anchor="start">copie de magpie.db seul, serveur ouvert</text>
-<text x="574" y="101" font-size="8.6" fill="#C62828" text-anchor="end" font-weight="700" class="mono" style="font-size:8.6px">2 000 lignes</text>
-<text x="150" y="118" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">les 300 dernières, validées, sont restées dans -wal</text>
-<rect x="16" y="134" width="568" height="44" rx="4" fill="#ECECF2" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="28" y="151" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700">les deux</text>
-<text x="150" y="151" font-size="8" fill="#2B2F33" text-anchor="start">copie après la fin de toute écriture</text>
-<text x="574" y="151" font-size="8.6" fill="#2E7D32" text-anchor="end" font-weight="700" class="mono" style="font-size:8.6px">toutes</text>
-<text x="150" y="168" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">juste, mais il faut être sûr que rien n'écrit</text>
-<text x="16" y="196" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">PRAGMA integrity_check a répondu « ok » sur chacune de ces copies : la structure était saine,</text>
-<text x="16" y="210" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">le contenu faux. Le contrôle d'intégrité ne remplace pas une copie faite correctement.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 102</b></div>
+<p class="rubrique">Schéma 1 · Copier le fichier</p>
+<h2>Une copie qui ment</h2>
+<p style="max-width:165mm">En mode <code>delete</code>, une grosse transaction écrit déjà dans le fichier avant de valider. En mode <code>WAL</code>, les validations récentes vivent dans <code>-wal</code> jusqu'à leur recopie. Dans les deux cas, le fichier principal seul, copié au mauvais moment, ne contient pas un état validé de la base.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 218" width="100%">
+<rect fill="#EFE9E1" height="218" width="600" x="0" y="0"></rect>
+<text fill="#4A4A68" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">Copier le fichier de la base pendant qu'une autre connexion travaille (deux processus, mesuré)</text>
+<rect fill="#ECECF2" height="44" rx="4" stroke="#C62828" stroke-width="1.2" width="568" x="16" y="34"></rect>
+<text class="mono" fill="#C62828" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="28" y="51">journal delete</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="150" y="51">copie pendant une transaction de 20 000 lignes</text>
+<text class="mono" fill="#C62828" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="end" x="574" y="51">5 016 lignes</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="start" x="150" y="68">ni l'état d'avant (5 000), ni celui d'après (25 000)</text>
+<rect fill="#fff" height="44" rx="4" stroke="#C62828" stroke-width="1.2" width="568" x="16" y="84"></rect>
+<text class="mono" fill="#C62828" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="28" y="101">journal WAL</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="150" y="101">copie de magpie.db seul, serveur ouvert</text>
+<text class="mono" fill="#C62828" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="end" x="574" y="101">2 000 lignes</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="start" x="150" y="118">les 300 dernières, validées, sont restées dans -wal</text>
+<rect fill="#ECECF2" height="44" rx="4" stroke="#2E7D32" stroke-width="1.2" width="568" x="16" y="134"></rect>
+<text fill="#2E7D32" font-size="8.4" font-weight="700" text-anchor="start" x="28" y="151">les deux</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="150" y="151">copie après la fin de toute écriture</text>
+<text class="mono" fill="#2E7D32" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="end" x="574" y="151">toutes</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="start" x="150" y="168">juste, mais il faut être sûr que rien n'écrit</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="196">PRAGMA integrity_check a répondu « ok » sur chacune de ces copies : la structure était saine,</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="210">le contenu faux. Le contrôle d'intégrité ne remplace pas une copie faite correctement.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/outils/deployer.sh · ligne 13</span># magpie.db n'est pas versionnée : elle n'est ni envoyée ni écrasée ici.</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Le déploiement n'y touche pas</h3>
-      <p>Le script de mise en ligne envoie le code et laisse la base du serveur en place : une mise à jour ne perd aucun réglage. Mais cela veut aussi dire qu'aucune copie de cette base n'existe ailleurs que sur le serveur.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Pourquoi l'intégrité ne suffit pas</h3>
-      <p><code>integrity_check</code> vérifie que les pages et les index se tiennent. Une copie qui a saisi une transaction à moitié peut être parfaitement bien formée : elle contient seulement des lignes qui n'auraient pas dû y être, ou pas encore.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/outils/deployer.sh · ligne 13</span># magpie.db n'est pas versionnée : elle n'est ni envoyée ni écrasée ici.</div>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Le déploiement n'y touche pas</h3>
+<p>Le script de mise en ligne envoie le code et laisse la base du serveur en place : une mise à jour ne perd aucun réglage. Mais cela veut aussi dire qu'aucune copie de cette base n'existe ailleurs que sur le serveur.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Pourquoi l'intégrité ne suffit pas</h3>
+<p><code>integrity_check</code> vérifie que les pages et les index se tiennent. Une copie qui a saisi une transaction à moitié peut être parfaitement bien formée : elle contient seulement des lignes qui n'auraient pas dû y être, ou pas encore.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Télécharger magpie.db par SFTP pendant que l'application tourne, et croire avoir une sauvegarde. Elle sera juste la plupart du temps, ce qui rend l'exception d'autant plus difficile à soupçonner.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 102 · Sauvegarder une base</div>
+<div class="folio">2</div>
+<div class="pied">Cours 102 · Sauvegarder une base</div>
 </section>
-
 <!-- ============ PAGE 3 · LA COPIE SÛRE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 102</b></div>
-  <p class="rubrique">Schéma 2 · La copie sûre</p>
-  <h2>Demander la copie à SQLite</h2>
-  <p style="max-width:165mm">SQLite sait lire un état validé pendant que d'autres écrivent : c'est ce que fait n'importe quelle requête. Ses outils de copie s'appuient là-dessus. Ils produisent un fichier autonome, cohérent, qui s'ouvre seul, sans <code>-wal</code> ni journal.</p>
-
-  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.4" fill="#4A4A68" text-anchor="start" font-weight="700">Trois façons de copier une base ouverte, sans rien arrêter (mesuré sur la base WAL du schéma précédent)</text>
-<rect x="16" y="34" width="568" height="28" rx="3" fill="#ECECF2"/>
-<text x="28" y="52" font-size="8" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">VACUUM INTO 'copie.db'</text>
-<text x="300" y="52" font-size="7.8" fill="#2B2F33" text-anchor="start">SQL, dans n'importe quelle connexion</text>
-<text x="500" y="52" font-size="8" fill="#2E7D32" text-anchor="end" font-weight="700" class="mono" style="font-size:8px">2 300 lignes</text>
-<text x="574" y="52" font-size="8" fill="#2B2F33" text-anchor="end" font-weight="700" class="mono" style="font-size:8px">4,9 ms</text>
-<rect x="16" y="68" width="568" height="28" rx="3" fill="#fff"/>
-<text x="28" y="86" font-size="8" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">await backup(db, 'copie.db')</text>
-<text x="300" y="86" font-size="7.8" fill="#2B2F33" text-anchor="start">node:sqlite, page par page</text>
-<text x="500" y="86" font-size="8" fill="#2E7D32" text-anchor="end" font-weight="700" class="mono" style="font-size:8px">2 300 lignes</text>
-<text x="574" y="86" font-size="8" fill="#2B2F33" text-anchor="end" font-weight="700" class="mono" style="font-size:8px">6,7 ms</text>
-<rect x="16" y="102" width="568" height="28" rx="3" fill="#ECECF2"/>
-<text x="28" y="120" font-size="8" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">sqlite3 magpie.db ".backup copie.db"</text>
-<text x="300" y="120" font-size="7.8" fill="#2B2F33" text-anchor="start">l'outil en ligne de commande</text>
-<text x="500" y="120" font-size="8" fill="#6B7378" text-anchor="end" font-weight="700" class="mono" style="font-size:8px">—</text>
-<text x="574" y="120" font-size="8" fill="#2B2F33" text-anchor="end" font-weight="700" class="mono" style="font-size:8px">non mesuré</text>
-<text x="16" y="152" font-size="8" fill="#2B2F33" text-anchor="start" font-weight="700">Chacune lit un état validé, d'un seul tenant, et écrit un fichier complet, journal compris.</text>
-<text x="16" y="170" font-size="8" fill="#2B2F33" text-anchor="start">Sur une base de la taille de magpie.db (727 composants, 1,1 Mo, 273 pages) : backup en 15 ms,</text>
-<text x="16" y="184" font-size="8" fill="#2B2F33" text-anchor="start">integrity_check en 0,9 ms. Sauvegarder chaque jour ne coûte rien.</text>
-<text x="16" y="200" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">VACUUM INTO compacte au passage ; backup recopie les pages telles quelles.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 102</b></div>
+<p class="rubrique">Schéma 2 · La copie sûre</p>
+<h2>Demander la copie à SQLite</h2>
+<p style="max-width:165mm">SQLite sait lire un état validé pendant que d'autres écrivent : c'est ce que fait n'importe quelle requête. Ses outils de copie s'appuient là-dessus. Ils produisent un fichier autonome, cohérent, qui s'ouvre seul, sans <code>-wal</code> ni journal.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 206" width="100%">
+<rect fill="#EFE9E1" height="206" width="600" x="0" y="0"></rect>
+<text fill="#4A4A68" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="22">Trois façons de copier une base ouverte, sans rien arrêter (mesuré sur la base WAL du schéma précédent)</text>
+<rect fill="#ECECF2" height="28" rx="3" width="568" x="16" y="34"></rect>
+<text class="mono" fill="#1565C0" font-size="8" font-weight="700" style="font-size:8px" text-anchor="start" x="28" y="52">VACUUM INTO 'copie.db'</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="300" y="52">SQL, dans n'importe quelle connexion</text>
+<text class="mono" fill="#2E7D32" font-size="8" font-weight="700" style="font-size:8px" text-anchor="end" x="500" y="52">2 300 lignes</text>
+<text class="mono" fill="#2B2F33" font-size="8" font-weight="700" style="font-size:8px" text-anchor="end" x="574" y="52">4,9 ms</text>
+<rect fill="#fff" height="28" rx="3" width="568" x="16" y="68"></rect>
+<text class="mono" fill="#1565C0" font-size="8" font-weight="700" style="font-size:8px" text-anchor="start" x="28" y="86">await backup(db, 'copie.db')</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="300" y="86">node:sqlite, page par page</text>
+<text class="mono" fill="#2E7D32" font-size="8" font-weight="700" style="font-size:8px" text-anchor="end" x="500" y="86">2 300 lignes</text>
+<text class="mono" fill="#2B2F33" font-size="8" font-weight="700" style="font-size:8px" text-anchor="end" x="574" y="86">6,7 ms</text>
+<rect fill="#ECECF2" height="28" rx="3" width="568" x="16" y="102"></rect>
+<text class="mono" fill="#1565C0" font-size="8" font-weight="700" style="font-size:8px" text-anchor="start" x="28" y="120">sqlite3 magpie.db ".backup copie.db"</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="300" y="120">l'outil en ligne de commande</text>
+<text class="mono" fill="#6B7378" font-size="8" font-weight="700" style="font-size:8px" text-anchor="end" x="500" y="120">—</text>
+<text class="mono" fill="#2B2F33" font-size="8" font-weight="700" style="font-size:8px" text-anchor="end" x="574" y="120">non mesuré</text>
+<text fill="#2B2F33" font-size="8" font-weight="700" text-anchor="start" x="16" y="152">Chacune lit un état validé, d'un seul tenant, et écrit un fichier complet, journal compris.</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="16" y="170">Sur une base de la taille de magpie.db (727 composants, 1,1 Mo, 273 pages) : backup en 15 ms,</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="16" y="184">integrity_check en 0,9 ms. Sauvegarder chaque jour ne coûte rien.</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="200">VACUUM INTO compacte au passage ; backup recopie les pages telles quelles.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Node 22, un script de sauvegarde datée</span>import { DatabaseSync, backup } from "node:sqlite";
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Node 22, un script de sauvegarde datée</span>import { DatabaseSync, backup } from "node:sqlite";
 const db = new DatabaseSync("magpie.db", { timeout: 5000 });
 const jour = new Date().toISOString().slice(0, 10);          // 2026-10-25
 await backup(db, `sauvegardes/magpie-${jour}.db`);
 db.close();</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Pendant que le serveur tourne</h3>
-      <p><code>backup</code> copie la base par paquets de pages. Si une écriture survient entre deux paquets, il recommence, pour finir sur un état cohérent. Sur une base de 1,1 Mo, le tout dure 15 ms : le serveur ne s'en aperçoit pas.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>VACUUM INTO</h3>
-      <p>Une seule instruction SQL, utilisable depuis n'importe quel outil, qui écrit une copie compactée. Elle refuse d'écrire sur un fichier existant : chaque sauvegarde porte donc un nom nouveau, ce qui va bien avec des copies datées.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Pendant que le serveur tourne</h3>
+<p><code>backup</code> copie la base par paquets de pages. Si une écriture survient entre deux paquets, il recommence, pour finir sur un état cohérent. Sur une base de 1,1 Mo, le tout dure 15 ms : le serveur ne s'en aperçoit pas.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>VACUUM INTO</h3>
+<p>Une seule instruction SQL, utilisable depuis n'importe quel outil, qui écrit une copie compactée. Elle refuse d'écrire sur un fichier existant : chaque sauvegarde porte donc un nom nouveau, ce qui va bien avec des copies datées.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Garder la sauvegarde dans le même dossier que la base, sur le même serveur. Une erreur de manipulation, un dossier effacé ou un hébergement perdu emportent l'original et sa copie ensemble.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 102 · Sauvegarder une base</div>
+<div class="folio">3</div>
+<div class="pied">Cours 102 · Sauvegarder une base</div>
 </section>
-
 <!-- ============ PAGE 4 · LA STRATÉGIE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 102</b></div>
-  <p class="rubrique">Schéma 3 · Une sauvegarde qui sert</p>
-  <h2>Régulière, gardée, ailleurs, essayée</h2>
-  <p style="max-width:165mm">On ne choisit pas une sauvegarde pour le jour où tout va bien, mais pour celui où l'on s'aperçoit, trois jours plus tard, qu'un import a abîmé les données. Il faut alors une copie d'avant, intacte, accessible, et une procédure déjà essayée pour la remettre en place.</p>
-
-  <svg viewBox="0 0 600 212" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="212" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#4A4A68" text-anchor="start" font-weight="700">Une sauvegarde n'existe que si l'on peut la restaurer</text>
-<rect x="16" y="34" width="568" height="34" rx="4" fill="#ECECF2" stroke="#4A4A68" stroke-width="1.2"/>
-<text x="28" y="55" font-size="9" fill="#4A4A68" text-anchor="start" font-weight="700">régulière</text>
-<text x="150" y="49" font-size="8" fill="#2B2F33" text-anchor="start">chaque jour, par une tâche planifiée</text>
-<text x="150" y="62" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">le cron de cPanel, par exemple</text>
-<rect x="16" y="74" width="568" height="34" rx="4" fill="#fff" stroke="#4A4A68" stroke-width="1.2"/>
-<text x="28" y="95" font-size="9" fill="#4A4A68" text-anchor="start" font-weight="700">datée et gardée</text>
-<text x="150" y="89" font-size="8" fill="#2B2F33" text-anchor="start">plusieurs jours en arrière, pas une seule copie écrasée</text>
-<text x="150" y="102" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">magpie-2026-10-25.db…</text>
-<rect x="16" y="114" width="568" height="34" rx="4" fill="#ECECF2" stroke="#4A4A68" stroke-width="1.2"/>
-<text x="28" y="135" font-size="9" fill="#4A4A68" text-anchor="start" font-weight="700">ailleurs</text>
-<text x="150" y="129" font-size="8" fill="#2B2F33" text-anchor="start">hors du serveur : une panne ou une erreur de manipulation y emporterait tout</text>
-<text x="150" y="142" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">rapatriée par SSH</text>
-<rect x="16" y="154" width="568" height="34" rx="4" fill="#fff" stroke="#4A4A68" stroke-width="1.2"/>
-<text x="28" y="175" font-size="9" fill="#4A4A68" text-anchor="start" font-weight="700">essayée</text>
-<text x="150" y="169" font-size="8" fill="#2B2F33" text-anchor="start">restaurer de temps en temps une copie dans une base de test, et la lire</text>
-<text x="150" y="182" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">integrity_check, des COUNT</text>
-<text x="16" y="204" font-size="7.6" fill="#2B2F33" text-anchor="start" font-weight="700">La copie la plus utile est celle d'avant une opération risquée : une reconstruction, une migration, un import en masse.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 102</b></div>
+<p class="rubrique">Schéma 3 · Une sauvegarde qui sert</p>
+<h2>Régulière, gardée, ailleurs, essayée</h2>
+<p style="max-width:165mm">On ne choisit pas une sauvegarde pour le jour où tout va bien, mais pour celui où l'on s'aperçoit, trois jours plus tard, qu'un import a abîmé les données. Il faut alors une copie d'avant, intacte, accessible, et une procédure déjà essayée pour la remettre en place.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 212" width="100%">
+<rect fill="#EFE9E1" height="212" width="600" x="0" y="0"></rect>
+<text fill="#4A4A68" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">Une sauvegarde n'existe que si l'on peut la restaurer</text>
+<rect fill="#ECECF2" height="34" rx="4" stroke="#4A4A68" stroke-width="1.2" width="568" x="16" y="34"></rect>
+<text fill="#4A4A68" font-size="9" font-weight="700" text-anchor="start" x="28" y="55">régulière</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="150" y="49">chaque jour, par une tâche planifiée</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="150" y="62">le cron de cPanel, par exemple</text>
+<rect fill="#fff" height="34" rx="4" stroke="#4A4A68" stroke-width="1.2" width="568" x="16" y="74"></rect>
+<text fill="#4A4A68" font-size="9" font-weight="700" text-anchor="start" x="28" y="95">datée et gardée</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="150" y="89">plusieurs jours en arrière, pas une seule copie écrasée</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="150" y="102">magpie-2026-10-25.db…</text>
+<rect fill="#ECECF2" height="34" rx="4" stroke="#4A4A68" stroke-width="1.2" width="568" x="16" y="114"></rect>
+<text fill="#4A4A68" font-size="9" font-weight="700" text-anchor="start" x="28" y="135">ailleurs</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="150" y="129">hors du serveur : une panne ou une erreur de manipulation y emporterait tout</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="150" y="142">rapatriée par SSH</text>
+<rect fill="#fff" height="34" rx="4" stroke="#4A4A68" stroke-width="1.2" width="568" x="16" y="154"></rect>
+<text fill="#4A4A68" font-size="9" font-weight="700" text-anchor="start" x="28" y="175">essayée</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="150" y="169">restaurer de temps en temps une copie dans une base de test, et la lire</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="150" y="182">integrity_check, des COUNT</text>
+<text fill="#2B2F33" font-size="7.6" font-weight="700" text-anchor="start" x="16" y="204">La copie la plus utile est celle d'avant une opération risquée : une reconstruction, une migration, un import en masse.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/data/README.md · lignes 48 à 50</span>La procédure complète ci-dessus a été vérifiée : base supprimée puis reconstruite,
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/data/README.md · lignes 48 à 50</span>La procédure complète ci-dessus a été vérifiée : base supprimée puis reconstruite,
 résultat comparé à l'originale — 725 composants, 8 autorisés, 5 exercices, 1 parcours,
 et les 5 configurations de validation identiques.</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Une restauration essayée</h3>
-      <p>Ces trois lignes sont exactement ce qu'on attend d'une sauvegarde : on a reconstruit, puis comparé à l'original. Le même geste vaut pour une copie : l'ouvrir ailleurs, lancer <code>integrity_check</code>, compter les lignes de chaque table.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Restaurer, c'est remplacer</h3>
-      <p>On arrête l'application, on remplace magpie.db par la copie, on supprime d'éventuels <code>-wal</code> et <code>-shm</code> restés à côté, puis on redémarre. Un <code>-wal</code> ancien rejoué sur une copie neuve la mélangerait à un autre état.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Une restauration essayée</h3>
+<p>Ces trois lignes sont exactement ce qu'on attend d'une sauvegarde : on a reconstruit, puis comparé à l'original. Le même geste vaut pour une copie : l'ouvrir ailleurs, lancer <code>integrity_check</code>, compter les lignes de chaque table.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Restaurer, c'est remplacer</h3>
+<p>On arrête l'application, on remplace magpie.db par la copie, on supprime d'éventuels <code>-wal</code> et <code>-shm</code> restés à côté, puis on redémarre. Un <code>-wal</code> ancien rejoué sur une copie neuve la mélangerait à un autre état.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     N'avoir qu'une copie, écrasée chaque nuit. Si l'erreur date d'avant-hier, la copie de cette nuit la contient déjà : on a sauvegardé le problème.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 102 · Sauvegarder une base</div>
+<div class="folio">4</div>
+<div class="pied">Cours 102 · Sauvegarder une base</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 102</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>Ce que Magpie reconstruit, et ce qu'il ne reconstruit pas</h2>
-  <p style="max-width:165mm">La base de Magpie se reconstruit entièrement depuis git, c'est un vrai point fort. Mais les routes d'administration écrivent dans la base du serveur, et rien ne recopie ces écritures vers les fichiers de départ.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 102</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>Ce que Magpie reconstruit, et ce qu'il ne reconstruit pas</h2>
+<p style="max-width:165mm">La base de Magpie se reconstruit entièrement depuis git, c'est un vrai point fort. Mais les routes d'administration écrivent dans la base du serveur, et rien ne recopie ces écritures vers les fichiers de départ.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">magpie/web/data/README.md</span></div>
 <div class="l k1"><span class="n">3</span>Contenu versionné permettant de **reconstruire …<span class="rep r1">1</span></div>
@@ -254,137 +227,55 @@ et les 5 configurations de validation identiques.</div>
 <div class="l"><span class="cm">grep authorized-components (web/)</span></div>
 <div class="l k5"><span class="n">—</span><span class="cm">lu par un script, écrit par aucun</span><span class="rep r5">5</span></div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>Reconstruire</b>Depuis git.</li>
-      <li><span class="rep r2">2</span><b>Le seed</b>Des autorisations.</li>
-      <li><span class="rep r3">3</span><b>L'admin</b>Écrit en base.</li>
-      <li><span class="rep r4">4</span><b>Déployer</b>Sans toucher la base.</li>
-      <li><span class="rep r5">5</span><b>Personne</b>N'exporte.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À surveiller · le travail fait dans /admin n'existe qu'en un exemplaire</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>Reconstruire</b>Depuis git.</li>
+<li><span class="rep r2">2</span><b>Le seed</b>Des autorisations.</li>
+<li><span class="rep r3">3</span><b>L'admin</b>Écrit en base.</li>
+<li><span class="rep r4">4</span><b>Déployer</b>Sans toucher la base.</li>
+<li><span class="rep r5">5</span><b>Personne</b>N'exporte.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À surveiller · le travail fait dans /admin n'existe qu'en un exemplaire</span>
     Une autorisation basculée, un parcours réordonné ou un graphe de départ enregistré depuis l'administration ne vivent que dans le magpie.db du serveur. Le dépôt ne contient aucun script de sauvegarde, et <code>authorized-components.json</code> se met à jour à la main. Une base perdue se reconstruirait à l'état du dernier seed, sans ce travail. Déduit du code et des deux README. Un <code>backup</code> quotidien, daté, rapatrié hors du serveur, suffirait.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 102 · Sauvegarder une base</div>
+<div class="folio">5</div>
+<div class="pied">Cours 102 · Sauvegarder une base</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 102</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 102</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">Ce qui peut se reconstruire depuis git…</div><ul>
-      <li><span>A</span>vit dans magpie.db seulement</li><li><span>B</span>doit être copié chaque heure</li><li><span>C</span>est perdu au déploiement</li><li><span>D</span>n'a pas besoin d'être sauvegardé à part</li></ul></div>
 
-    <div class="q"><div class="enonce">Copier magpie.db pendant une grosse transaction, en mode delete, a donné…</div><ul>
-      <li><span>A</span>25 000 lignes</li><li><span>B</span>5 000 lignes</li><li><span>C</span>5 016 lignes, un état qui n'a jamais été validé</li><li><span>D</span>un fichier illisible</li></ul></div>
 
-    <div class="q"><div class="enonce">En WAL, la copie du seul fichier principal a perdu…</div><ul>
-      <li><span>A</span>les 300 lignes encore dans -wal</li><li><span>B</span>toute la table</li><li><span>C</span>rien</li><li><span>D</span>les index</li></ul></div>
 
-    <div class="q"><div class="enonce">integrity_check sur ces copies fausses a répondu…</div><ul>
-      <li><span>A</span>database is locked</li><li><span>B</span>une erreur de page</li><li><span>C</span>rien</li><li><span>D</span>ok</li></ul></div>
-
-    <div class="q"><div class="enonce">Copient une base ouverte sans risque… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>un copier-coller du fichier</li><li><span>B</span>backup() de node:sqlite</li><li><span>C</span>VACUUM INTO</li><li><span>D</span>un téléchargement SFTP</li></ul></div>
-
-    <div class="q"><div class="enonce">Sur une base de la taille de magpie.db, backup a pris (mesuré)…</div><ul>
-      <li><span>A</span>1,5 min</li><li><span>B</span>15 ms</li><li><span>C</span>une heure</li><li><span>D</span>15 s</li></ul></div>
-
-    <div class="q"><div class="enonce">VACUUM INTO vers un fichier qui existe déjà…</div><ul>
-      <li><span>A</span>est refusé</li><li><span>B</span>ajoute à la fin</li><li><span>C</span>l'écrase</li><li><span>D</span>fusionne les deux</li></ul></div>
-
-    <div class="q"><div class="enonce">Une seule copie écrasée chaque nuit ne protège pas…</div><ul>
-      <li><span>A</span>d'une coupure de courant</li><li><span>B</span>d'une panne de cette nuit</li><li><span>C</span>de rien</li><li><span>D</span>d'une erreur découverte deux jours après</li></ul></div>
-
-    <div class="q"><div class="enonce">Pour restaurer une copie, on… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>supprime d'anciens -wal et -shm</li><li><span>B</span>garde l'ancien -wal à côté</li><li><span>C</span>arrête l'application</li><li><span>D</span>relance une migration</li></ul></div>
-
-    <div class="q"><div class="enonce">deployer.sh, pour magpie.db…</div><ul>
-      <li><span>A</span>la sauvegarde</li><li><span>B</span>ne l'envoie ni ne l'écrase</li><li><span>C</span>la versionne</li><li><span>D</span>la remplace</li></ul></div>
-
-    <div class="q"><div class="enonce">Un graphe de départ enregistré dans /admin se trouve…</div><ul>
-      <li><span>A</span>dans git</li><li><span>B</span>dans magpie.db du serveur seulement</li><li><span>C</span>dans data/exercises</li><li><span>D</span>dans authorized-components.json</li></ul></div>
-
-    <div class="q"><div class="enonce">Une sauvegarde n'est sûre qu'une fois…</div><ul>
-      <li><span>A</span>restaurée et vérifiée avec succès</li><li><span>B</span>compressée</li><li><span>C</span>renommée</li><li><span>D</span>chiffrée</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 102 · Sauvegarder une base</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">VACUUM INTO 'copie.db'</td><td>une copie compactée, en SQL</td><td>schéma 2, page 3</td></tr>
+<tr><td class="c">await backup(db, chemin)</td><td>une copie page par page (node:sqlite)</td><td>exemple autonome, page 3</td></tr>
+<tr><td class="c">sqlite3 f ".backup copie.db"</td><td>la même, en ligne de commande</td><td>schéma 2, page 3</td></tr>
+<tr><td class="c">PRAGMA integrity_check</td><td>la structure se tient-elle ?</td><td>page 4</td></tr>
+<tr><td class="c">PRAGMA wal_checkpoint(TRUNCATE)</td><td>vider -wal dans la base</td><td>schéma 1, page 2</td></tr>
+<tr><td class="c">SELECT COUNT(*) FROM t</td><td>comparer une copie à l'original</td><td>page 4</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Sauvegarde</dt><dd>Une copie cohérente, gardée ailleurs, dont on a vérifié la restauration.</dd>
+<dt>Seed</dt><dd>Les fichiers versionnés à partir desquels une base se reconstruit.</dd>
+<dt>Point de contrôle</dt><dd>La recopie des pages de -wal dans le fichier principal (checkpoint).</dd>
+<dt>Restauration</dt><dd>Le remplacement d'une base par une copie, application arrêtée.</dd>
+<dt>Contrôle d'intégrité</dt><dd>La vérification que les pages et les index d'une base se tiennent.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : fiche récap de la partie 10</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 102 · Sauvegarder une base</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 10B</b> · Les bases de données</span><b>Cours 102</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · D.</b> La procédure suffit.</div>
-    <div><b>02 · C.</b> Une transaction à moitié.</div>
-    <div><b>03 · A.</b> Validées, mais ailleurs.</div>
-    <div><b>04 · D.</b> Bien formées, contenu faux.</div>
-    <div><b>05 · B et C.</b> Un état validé, d'un tenant.</div>
-    <div><b>06 · B.</b> 273 pages.</div>
-    <div><b>07 · A.</b> D'où les noms datés.</div>
-    <div><b>08 · D.</b> La copie contient déjà l'erreur.</div>
-    <div><b>09 · A et C.</b> Pas de mélange.</div>
-    <div><b>10 · B.</b> Ligne 13.</div>
-    <div><b>11 · B.</b> Rien ne l'exporte.</div>
-    <div><b>12 · A.</b> Comme data/README.md.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : la partie 10 est terminée ; passe à sa fiche récap.
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">VACUUM INTO 'copie.db'</td><td>une copie compactée, en SQL</td><td>schéma 2, page 3</td></tr>
-      <tr><td class="c">await backup(db, chemin)</td><td>une copie page par page (node:sqlite)</td><td>exemple autonome, page 3</td></tr>
-      <tr><td class="c">sqlite3 f ".backup copie.db"</td><td>la même, en ligne de commande</td><td>schéma 2, page 3</td></tr>
-      <tr><td class="c">PRAGMA integrity_check</td><td>la structure se tient-elle ?</td><td>page 4</td></tr>
-      <tr><td class="c">PRAGMA wal_checkpoint(TRUNCATE)</td><td>vider -wal dans la base</td><td>schéma 1, page 2</td></tr>
-      <tr><td class="c">SELECT COUNT(*) FROM t</td><td>comparer une copie à l'original</td><td>page 4</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Sauvegarde</dt><dd>Une copie cohérente, gardée ailleurs, dont on a vérifié la restauration.</dd>
-    <dt>Seed</dt><dd>Les fichiers versionnés à partir desquels une base se reconstruit.</dd>
-    <dt>Point de contrôle</dt><dd>La recopie des pages de -wal dans le fichier principal (checkpoint).</dd>
-    <dt>Restauration</dt><dd>Le remplacement d'une base par une copie, application arrêtée.</dd>
-    <dt>Contrôle d'intégrité</dt><dd>La vérification que les pages et les index d'une base se tiennent.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : fiche récap de la partie 10</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 102 · Sauvegarder une base</div>
-</section>
-
 </body>
 </html>

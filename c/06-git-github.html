@@ -1,304 +1,280 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>06 · Git et GitHub au quotidien</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-11">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 06</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Git et GitHub<br>au quotidien</h1>
-  <p class="chapeau">Git garde l'histoire de ton projet, photo après photo, sur ton poste. GitHub en garde une copie en ligne et ajoute ce qu'il faut pour travailler à plusieurs : pull requests, issues, jalons. Magpie compte 134 commits et 25 pull requests fusionnées.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>aucun</b></span>
-    <span class="pastille">Exemples · <b>Magpie</b> : historique réel au 22/10/2026</span>
-  </div>
-
-  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
-    <svg viewBox="0 0 600 200" width="100%">
-      <defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2B2F33"/></marker></defs>
-      <text x="0" y="14" font-size="10" font-weight="700" fill="#4F46B8" letter-spacing="1.2">QUATRE ENDROITS, QUATRE COMMANDES</text>
-      <g font-size="10">
-        <rect x="0" y="30" width="130" height="78" rx="6" fill="#fff" stroke="#6B7378" stroke-width="1.4"/>
-        <text x="65" y="52" text-anchor="middle" font-weight="700">dossier de travail</text>
-        <text x="65" y="70" text-anchor="middle" font-size="9">les fichiers que</text>
-        <text x="65" y="83" text-anchor="middle" font-size="9">tu modifies</text>
-        <rect x="152" y="30" width="130" height="78" rx="6" fill="#fff" stroke="#E65100" stroke-width="1.4"/>
-        <text x="217" y="52" text-anchor="middle" font-weight="700" fill="#E65100">zone de préparation</text>
-        <text x="217" y="70" text-anchor="middle" font-size="9">ce qui ira dans</text>
-        <text x="217" y="83" text-anchor="middle" font-size="9">la prochaine photo</text>
-        <rect x="304" y="30" width="130" height="78" rx="6" fill="#fff" stroke="#4F46B8" stroke-width="1.6"/>
-        <text x="369" y="52" text-anchor="middle" font-weight="700" fill="#4F46B8">dépôt local</text>
-        <text x="369" y="70" text-anchor="middle" font-size="9">l'historique</text>
-        <text x="369" y="83" text-anchor="middle" font-size="9">des commits, .git/</text>
-        <rect x="470" y="30" width="130" height="78" rx="6" fill="#2B2F33"/>
-        <text x="535" y="52" text-anchor="middle" font-weight="700" fill="#fff">GitHub (origin)</text>
-        <text x="535" y="70" text-anchor="middle" font-size="9" fill="#fff">la copie partagée,</text>
-        <text x="535" y="83" text-anchor="middle" font-size="9" fill="#fff">PR, issues, jalons</text>
-      </g>
-      <g font-size="9.5" class="mono">
-        <path d="M130 124 H 150" stroke="#E65100" stroke-width="1.6" marker-end="url(#a1)"/><text x="100" y="140" class="mono" style="font-size:9.5px" fill="#E65100">git add</text>
-        <path d="M282 124 H 302" stroke="#4F46B8" stroke-width="1.6" marker-end="url(#a1)"/><text x="246" y="140" class="mono" style="font-size:9.5px" fill="#4F46B8">git commit</text>
-        <path d="M434 124 H 468" stroke="#2B2F33" stroke-width="1.6" marker-end="url(#a1)"/><text x="420" y="140" class="mono" style="font-size:9.5px">git push</text>
-        <path d="M468 166 H 434" stroke="#1565C0" stroke-width="1.6" marker-end="url(#a1)"/><text x="412" y="184" class="mono" style="font-size:9.5px" fill="#1565C0">git pull / fetch</text>
-      </g>
-      <text x="0" y="172" font-size="9.5" fill="#6B7378">Tant que tu n'as pas poussé,</text>
-      <text x="0" y="186" font-size="9.5" fill="#6B7378">rien n'a quitté ton poste.</text>
-    </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Un <b>commit</b> est une photo de tout le projet, avec un message qui dit pourquoi ; une <b>branche</b> est une étiquette qui avance de photo en photo ; <b>GitHub</b> héberge une copie et fait fusionner les branches par pull request.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Les indices d'un plan d'architecte. Chaque version porte un indice, une date et la nature de la modification. On peut toujours ressortir l'indice C, et une variante se dessine sur un calque à part avant d'être reportée sur le plan principal.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>dire où se trouve une modification : dossier, préparation, dépôt local, GitHub ;</li>
-        <li>lire un graphe de branches et reconnaître une fusion ;</li>
-        <li>suivre la vie d'une pull request, de la branche à la fusion, et relier un commit à une issue.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:5mm">
-    <span class="titre">À retenir</span>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 06</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Git et GitHub<br/>au quotidien</h1>
+<p class="chapeau">Git garde l'histoire de ton projet, photo après photo, sur ton poste. GitHub en garde une copie en ligne et ajoute ce qu'il faut pour travailler à plusieurs : pull requests, issues, jalons. Magpie compte 134 commits et 25 pull requests fusionnées.</p>
+<div class="meta">
+<span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>aucun</b></span>
+<span class="pastille">Exemples · <b>Magpie</b> : historique réel au 22/10/2026</span>
+</div>
+<div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+<svg viewbox="0 0 600 200" width="100%">
+<defs><marker id="a1" markerheight="7" markerwidth="7" orient="auto" refx="9" refy="5" viewbox="0 0 10 10"><path d="M0 0 L10 5 L0 10 z" fill="#2B2F33"></path></marker></defs>
+<text fill="#4F46B8" font-size="10" font-weight="700" letter-spacing="1.2" x="0" y="14">QUATRE ENDROITS, QUATRE COMMANDES</text>
+<g font-size="10">
+<rect fill="#fff" height="78" rx="6" stroke="#6B7378" stroke-width="1.4" width="130" x="0" y="30"></rect>
+<text font-weight="700" text-anchor="middle" x="65" y="52">dossier de travail</text>
+<text font-size="9" text-anchor="middle" x="65" y="70">les fichiers que</text>
+<text font-size="9" text-anchor="middle" x="65" y="83">tu modifies</text>
+<rect fill="#fff" height="78" rx="6" stroke="#E65100" stroke-width="1.4" width="130" x="152" y="30"></rect>
+<text fill="#E65100" font-weight="700" text-anchor="middle" x="217" y="52">zone de préparation</text>
+<text font-size="9" text-anchor="middle" x="217" y="70">ce qui ira dans</text>
+<text font-size="9" text-anchor="middle" x="217" y="83">la prochaine photo</text>
+<rect fill="#fff" height="78" rx="6" stroke="#4F46B8" stroke-width="1.6" width="130" x="304" y="30"></rect>
+<text fill="#4F46B8" font-weight="700" text-anchor="middle" x="369" y="52">dépôt local</text>
+<text font-size="9" text-anchor="middle" x="369" y="70">l'historique</text>
+<text font-size="9" text-anchor="middle" x="369" y="83">des commits, .git/</text>
+<rect fill="#2B2F33" height="78" rx="6" width="130" x="470" y="30"></rect>
+<text fill="#fff" font-weight="700" text-anchor="middle" x="535" y="52">GitHub (origin)</text>
+<text fill="#fff" font-size="9" text-anchor="middle" x="535" y="70">la copie partagée,</text>
+<text fill="#fff" font-size="9" text-anchor="middle" x="535" y="83">PR, issues, jalons</text>
+</g>
+<g class="mono" font-size="9.5">
+<path d="M130 124 H 150" marker-end="url(#a1)" stroke="#E65100" stroke-width="1.6"></path><text class="mono" fill="#E65100" style="font-size:9.5px" x="100" y="140">git add</text>
+<path d="M282 124 H 302" marker-end="url(#a1)" stroke="#4F46B8" stroke-width="1.6"></path><text class="mono" fill="#4F46B8" style="font-size:9.5px" x="246" y="140">git commit</text>
+<path d="M434 124 H 468" marker-end="url(#a1)" stroke="#2B2F33" stroke-width="1.6"></path><text class="mono" style="font-size:9.5px" x="420" y="140">git push</text>
+<path d="M468 166 H 434" marker-end="url(#a1)" stroke="#1565C0" stroke-width="1.6"></path><text class="mono" fill="#1565C0" style="font-size:9.5px" x="412" y="184">git pull / fetch</text>
+</g>
+<text fill="#6B7378" font-size="9.5" x="0" y="172">Tant que tu n'as pas poussé,</text>
+<text fill="#6B7378" font-size="9.5" x="0" y="186">rien n'a quitté ton poste.</text>
+</svg>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Un <b>commit</b> est une photo de tout le projet, avec un message qui dit pourquoi ; une <b>branche</b> est une étiquette qui avance de photo en photo ; <b>GitHub</b> héberge une copie et fait fusionner les branches par pull request.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Les indices d'un plan d'architecte. Chaque version porte un indice, une date et la nature de la modification. On peut toujours ressortir l'indice C, et une variante se dessine sur un calque à part avant d'être reportée sur le plan principal.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>dire où se trouve une modification : dossier, préparation, dépôt local, GitHub ;</li>
+<li>lire un graphe de branches et reconnaître une fusion ;</li>
+<li>suivre la vie d'une pull request, de la branche à la fusion, et relier un commit à une issue.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:5mm">
+<span class="titre">À retenir</span>
     Git ne garde que ce que tu lui confies par un commit. Un fichier modifié mais jamais commité n'a pas d'histoire ; un commit jamais poussé n'existe que sur ton poste.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 06 · Git et GitHub au quotidien</div>
+<div class="folio">1</div>
+<div class="pied">Cours 06 · Git et GitHub au quotidien</div>
 </section>
-
 <!-- ============ PAGE 2 · LE COMMIT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 06</b></div>
-  <p class="rubrique">Schéma 1 · Ce qu'est un commit</p>
-  <h2>Une photo, un parent, un message</h2>
-  <p style="max-width:165mm">Chaque commit pointe vers celui qui le précède : l'historique est une chaîne. Son identifiant, un hash, est calculé à partir de son contenu ; deux commits différents ne peuvent pas avoir le même.</p>
-
-  <svg viewBox="0 0 600 420" width="100%" style="margin-top:2mm">
-    <defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2B2F33"/></marker></defs>
-    <rect x="0" y="0" width="600" height="420" fill="#EFE9E1"/>
-    <!-- chaîne -->
-    <g font-size="10">
-      <circle cx="60" cy="50" r="16" fill="#fff" stroke="#4F46B8" stroke-width="2"/>
-      <circle cx="180" cy="50" r="16" fill="#fff" stroke="#4F46B8" stroke-width="2"/>
-      <circle cx="300" cy="50" r="16" fill="#fff" stroke="#4F46B8" stroke-width="2"/>
-      <circle cx="420" cy="50" r="16" fill="#4F46B8"/>
-      <path d="M164 50 H 80" stroke="#2B2F33" stroke-width="1.4" marker-end="url(#a2)"/>
-      <path d="M284 50 H 200" stroke="#2B2F33" stroke-width="1.4" marker-end="url(#a2)"/>
-      <path d="M404 50 H 320" stroke="#2B2F33" stroke-width="1.4" marker-end="url(#a2)"/>
-      <text x="60" y="84" text-anchor="middle" class="mono" style="font-size:9px">c312129</text>
-      <text x="180" y="84" text-anchor="middle" class="mono" style="font-size:9px">4d174c3</text>
-      <text x="300" y="84" text-anchor="middle" class="mono" style="font-size:9px">b639c35</text>
-      <text x="420" y="84" text-anchor="middle" class="mono" style="font-size:9px">869447f</text>
-      <rect x="460" y="34" width="120" height="32" rx="4" fill="#2E7D32"/>
-      <text x="520" y="54" text-anchor="middle" font-weight="700" fill="#fff">Admin-react</text>
-      <path d="M458 50 H 440" stroke="#2E7D32" stroke-width="1.4" marker-end="url(#a2)"/>
-      <rect x="460" y="76" width="120" height="26" rx="4" fill="#1565C0"/>
-      <text x="520" y="93" text-anchor="middle" font-weight="700" fill="#fff" font-size="9.5">HEAD</text>
-      <path d="M520 74 V 70" stroke="#1565C0" stroke-width="1.4"/>
-      <text x="220" y="116" text-anchor="middle" font-size="9.5" fill="#6B7378">la flèche va de l'enfant vers son parent : « je viens après »</text>
-    </g>
-
-    <!-- anatomie -->
-    <rect x="20" y="140" width="380" height="264" rx="6" fill="#fff" stroke="#4F46B8" stroke-width="1.4"/>
-    <text x="34" y="162" class="mono" style="font-size:9.6px" fill="#7B1FA2">commit 1d00cfe311f9c82211440fda669ed7192cfc0dbb</text>
-    <text x="34" y="180" class="mono" style="font-size:9.6px" fill="#1565C0">Author: Gyci</text>
-    <text x="34" y="196" class="mono" style="font-size:9.6px" fill="#1565C0">Date:   Thu Oct 22 16:51:48 2026 +0200</text>
-    <text x="34" y="222" class="mono" style="font-size:9.6px" font-weight="700" fill="#4F46B8">Aperçu 3D façon Grasshopper : maillage</text>
-    <text x="34" y="236" class="mono" style="font-size:9.6px" font-weight="700" fill="#4F46B8">côté serveur, Three.js côté navigateur</text>
-    <text x="34" y="262" class="mono" style="font-size:9.2px" fill="#2E7D32">« Tester » renvoie aussi la géométrie de</text>
-    <text x="34" y="276" class="mono" style="font-size:9.2px" fill="#2E7D32">chaque composant. Le serveur câble un</text>
-    <text x="34" y="290" class="mono" style="font-size:9.2px" fill="#2E7D32">paramètre Mesh caché derrière chaque</text>
-    <text x="34" y="304" class="mono" style="font-size:9.2px" fill="#2E7D32">sortie… plafonné à 200 000 triangles.</text>
-    <text x="34" y="330" class="mono" style="font-size:9.2px" fill="#6B7378"> web/apercu.mjs        | 270 +++++++</text>
-    <text x="34" y="344" class="mono" style="font-size:9.2px" fill="#6B7378"> web/compute-proxy.mjs |  16 +-</text>
-    <text x="34" y="372" font-size="9" fill="#6B7378">sortie de <tspan class="mono" style="font-size:9px">git show --stat 1d00cfe</tspan>,</text>
-    <text x="34" y="386" font-size="9" fill="#6B7378">raccourcie</text>
-
-    <g font-size="9.5">
-      <circle cx="420" cy="160" r="9" fill="#7B1FA2"/><text x="420" y="163.5" text-anchor="middle" fill="#fff" font-weight="700">1</text>
-      <text x="436" y="156" font-weight="700" fill="#7B1FA2">Le hash</text>
-      <text x="436" y="170">40 caractères ; les 7</text>
-      <text x="436" y="184">premiers suffisent à le citer</text>
-      <circle cx="420" cy="208" r="9" fill="#1565C0"/><text x="420" y="211.5" text-anchor="middle" fill="#fff" font-weight="700">2</text>
-      <text x="436" y="204" font-weight="700" fill="#1565C0">Qui et quand</text>
-      <text x="436" y="218">nom et e-mail de la config</text>
-      <circle cx="420" cy="250" r="9" fill="#4F46B8"/><text x="420" y="253.5" text-anchor="middle" fill="#fff" font-weight="700">3</text>
-      <text x="436" y="246" font-weight="700" fill="#4F46B8">Le titre</text>
-      <text x="436" y="260">ce que le commit fait, en</text>
-      <text x="436" y="274">une ligne, sans point final</text>
-      <circle cx="420" cy="302" r="9" fill="#2E7D32"/><text x="420" y="305.5" text-anchor="middle" fill="#fff" font-weight="700">4</text>
-      <text x="436" y="298" font-weight="700" fill="#2E7D32">Le corps</text>
-      <text x="436" y="312">pourquoi et comment,</text>
-      <text x="436" y="326">après une ligne vide</text>
-      <circle cx="420" cy="354" r="9" fill="#6B7378"/><text x="420" y="357.5" text-anchor="middle" fill="#fff" font-weight="700">5</text>
-      <text x="436" y="350" font-weight="700" fill="#6B7378">Les fichiers touchés</text>
-      <text x="436" y="364">lignes ajoutées (+)</text>
-      <text x="436" y="378">et retirées (–)</text>
-    </g>
-  </svg>
-
-  <div class="encadre piege" style="margin-top:4mm">
-    <span class="titre">Piège courant</span>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 06</b></div>
+<p class="rubrique">Schéma 1 · Ce qu'est un commit</p>
+<h2>Une photo, un parent, un message</h2>
+<p style="max-width:165mm">Chaque commit pointe vers celui qui le précède : l'historique est une chaîne. Son identifiant, un hash, est calculé à partir de son contenu ; deux commits différents ne peuvent pas avoir le même.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 420" width="100%">
+<defs><marker id="a2" markerheight="7" markerwidth="7" orient="auto" refx="9" refy="5" viewbox="0 0 10 10"><path d="M0 0 L10 5 L0 10 z" fill="#2B2F33"></path></marker></defs>
+<rect fill="#EFE9E1" height="420" width="600" x="0" y="0"></rect>
+<!-- chaîne -->
+<g font-size="10">
+<circle cx="60" cy="50" fill="#fff" r="16" stroke="#4F46B8" stroke-width="2"></circle>
+<circle cx="180" cy="50" fill="#fff" r="16" stroke="#4F46B8" stroke-width="2"></circle>
+<circle cx="300" cy="50" fill="#fff" r="16" stroke="#4F46B8" stroke-width="2"></circle>
+<circle cx="420" cy="50" fill="#4F46B8" r="16"></circle>
+<path d="M164 50 H 80" marker-end="url(#a2)" stroke="#2B2F33" stroke-width="1.4"></path>
+<path d="M284 50 H 200" marker-end="url(#a2)" stroke="#2B2F33" stroke-width="1.4"></path>
+<path d="M404 50 H 320" marker-end="url(#a2)" stroke="#2B2F33" stroke-width="1.4"></path>
+<text class="mono" style="font-size:9px" text-anchor="middle" x="60" y="84">c312129</text>
+<text class="mono" style="font-size:9px" text-anchor="middle" x="180" y="84">4d174c3</text>
+<text class="mono" style="font-size:9px" text-anchor="middle" x="300" y="84">b639c35</text>
+<text class="mono" style="font-size:9px" text-anchor="middle" x="420" y="84">869447f</text>
+<rect fill="#2E7D32" height="32" rx="4" width="120" x="460" y="34"></rect>
+<text fill="#fff" font-weight="700" text-anchor="middle" x="520" y="54">Admin-react</text>
+<path d="M458 50 H 440" marker-end="url(#a2)" stroke="#2E7D32" stroke-width="1.4"></path>
+<rect fill="#1565C0" height="26" rx="4" width="120" x="460" y="76"></rect>
+<text fill="#fff" font-size="9.5" font-weight="700" text-anchor="middle" x="520" y="93">HEAD</text>
+<path d="M520 74 V 70" stroke="#1565C0" stroke-width="1.4"></path>
+<text fill="#6B7378" font-size="9.5" text-anchor="middle" x="220" y="116">la flèche va de l'enfant vers son parent : « je viens après »</text>
+</g>
+<!-- anatomie -->
+<rect fill="#fff" height="264" rx="6" stroke="#4F46B8" stroke-width="1.4" width="380" x="20" y="140"></rect>
+<text class="mono" fill="#7B1FA2" style="font-size:9.6px" x="34" y="162">commit 1d00cfe311f9c82211440fda669ed7192cfc0dbb</text>
+<text class="mono" fill="#1565C0" style="font-size:9.6px" x="34" y="180">Author: Gyci</text>
+<text class="mono" fill="#1565C0" style="font-size:9.6px" x="34" y="196">Date:   Thu Oct 22 16:51:48 2026 +0200</text>
+<text class="mono" fill="#4F46B8" font-weight="700" style="font-size:9.6px" x="34" y="222">Aperçu 3D façon Grasshopper : maillage</text>
+<text class="mono" fill="#4F46B8" font-weight="700" style="font-size:9.6px" x="34" y="236">côté serveur, Three.js côté navigateur</text>
+<text class="mono" fill="#2E7D32" style="font-size:9.2px" x="34" y="262">« Tester » renvoie aussi la géométrie de</text>
+<text class="mono" fill="#2E7D32" style="font-size:9.2px" x="34" y="276">chaque composant. Le serveur câble un</text>
+<text class="mono" fill="#2E7D32" style="font-size:9.2px" x="34" y="290">paramètre Mesh caché derrière chaque</text>
+<text class="mono" fill="#2E7D32" style="font-size:9.2px" x="34" y="304">sortie… plafonné à 200 000 triangles.</text>
+<text class="mono" fill="#6B7378" style="font-size:9.2px" x="34" y="330"> web/apercu.mjs        | 270 +++++++</text>
+<text class="mono" fill="#6B7378" style="font-size:9.2px" x="34" y="344"> web/compute-proxy.mjs |  16 +-</text>
+<text fill="#6B7378" font-size="9" x="34" y="372">sortie de <tspan class="mono" style="font-size:9px">git show --stat 1d00cfe</tspan>,</text>
+<text fill="#6B7378" font-size="9" x="34" y="386">raccourcie</text>
+<g font-size="9.5">
+<circle cx="420" cy="160" fill="#7B1FA2" r="9"></circle><text fill="#fff" font-weight="700" text-anchor="middle" x="420" y="163.5">1</text>
+<text fill="#7B1FA2" font-weight="700" x="436" y="156">Le hash</text>
+<text x="436" y="170">40 caractères ; les 7</text>
+<text x="436" y="184">premiers suffisent à le citer</text>
+<circle cx="420" cy="208" fill="#1565C0" r="9"></circle><text fill="#fff" font-weight="700" text-anchor="middle" x="420" y="211.5">2</text>
+<text fill="#1565C0" font-weight="700" x="436" y="204">Qui et quand</text>
+<text x="436" y="218">nom et e-mail de la config</text>
+<circle cx="420" cy="250" fill="#4F46B8" r="9"></circle><text fill="#fff" font-weight="700" text-anchor="middle" x="420" y="253.5">3</text>
+<text fill="#4F46B8" font-weight="700" x="436" y="246">Le titre</text>
+<text x="436" y="260">ce que le commit fait, en</text>
+<text x="436" y="274">une ligne, sans point final</text>
+<circle cx="420" cy="302" fill="#2E7D32" r="9"></circle><text fill="#fff" font-weight="700" text-anchor="middle" x="420" y="305.5">4</text>
+<text fill="#2E7D32" font-weight="700" x="436" y="298">Le corps</text>
+<text x="436" y="312">pourquoi et comment,</text>
+<text x="436" y="326">après une ligne vide</text>
+<circle cx="420" cy="354" fill="#6B7378" r="9"></circle><text fill="#fff" font-weight="700" text-anchor="middle" x="420" y="357.5">5</text>
+<text fill="#6B7378" font-weight="700" x="436" y="350">Les fichiers touchés</text>
+<text x="436" y="364">lignes ajoutées (+)</text>
+<text x="436" y="378">et retirées (–)</text>
+</g>
+</svg>
+<div class="encadre piege" style="margin-top:4mm">
+<span class="titre">Piège courant</span>
     Un titre comme « modifs » ou « wip ». Dans six mois, <code>git log</code> sera ta seule mémoire du pourquoi. Les commits de Magpie disent ce qui change pour l'utilisateur : « Composant en erreur : rouge, plus d'échec 500 à Tester ».
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 06 · Git et GitHub au quotidien</div>
+<div class="folio">2</div>
+<div class="pied">Cours 06 · Git et GitHub au quotidien</div>
 </section>
-
 <!-- ============ PAGE 3 · BRANCHES ET FUSIONS ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 06</b></div>
-  <p class="rubrique">Schéma 2 · Branches et fusions</p>
-  <h2>Travailler à côté, puis reporter sur master</h2>
-  <p style="max-width:165mm">Une branche est une ligne de commits qui part d'un point de master. Quand le travail est prêt, une fusion crée un commit à deux parents : la suite de master, et le bout de la branche. Voici les deux dernières pull requests de Magpie.</p>
-
-  <svg viewBox="0 0 600 300" width="100%" style="margin-top:2mm">
-    <defs><marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2B2F33"/></marker></defs>
-    <rect x="0" y="0" width="600" height="300" fill="#EFE9E1"/>
-    <!-- master -->
-    <line x1="30" y1="200" x2="570" y2="200" stroke="#2B2F33" stroke-width="3"/>
-    <text x="30" y="226" font-size="10.5" font-weight="700">master</text>
-    <circle cx="70" cy="200" r="8" fill="#2B2F33"/>
-    <circle cx="400" cy="200" r="11" fill="#fff" stroke="#2B2F33" stroke-width="3"/>
-    <circle cx="540" cy="200" r="11" fill="#fff" stroke="#2B2F33" stroke-width="3"/>
-    <text x="400" y="232" text-anchor="middle" class="mono" style="font-size:9px">6b76d18</text>
-    <text x="400" y="246" text-anchor="middle" font-size="9">fusion PR #50</text>
-    <text x="540" y="232" text-anchor="middle" class="mono" style="font-size:9px">b0ff1b6</text>
-    <text x="540" y="246" text-anchor="middle" font-size="9">fusion PR #51</text>
-    <!-- Admin-react -->
-    <path d="M70 200 C 90 120, 110 110, 130 110" stroke="#2E7D32" stroke-width="2.4" fill="none"/>
-    <line x1="130" y1="110" x2="360" y2="110" stroke="#2E7D32" stroke-width="2.4"/>
-    <path d="M360 110 C 380 110, 395 150, 400 189" stroke="#2E7D32" stroke-width="2.4" fill="none"/>
-    <g fill="#2E7D32"><circle cx="130" cy="110" r="6"/><circle cx="160" cy="110" r="6"/><circle cx="190" cy="110" r="6"/><circle cx="220" cy="110" r="6"/><circle cx="250" cy="110" r="6"/><circle cx="280" cy="110" r="6"/><circle cx="310" cy="110" r="6"/><circle cx="340" cy="110" r="6"/></g>
-    <text x="130" y="90" font-size="10.5" font-weight="700" fill="#2E7D32">Admin-react : 16 commits sur deux jours</text>
-    <text x="130" y="140" font-size="9" fill="#2E7D32">admin React, rendu mobile, mise en ligne, clé d'API…</text>
-    <!-- Apercu-3D -->
-    <path d="M400 200 C 420 150, 440 150, 470 150" stroke="#1565C0" stroke-width="2.4" fill="none"/>
-    <circle cx="470" cy="150" r="6" fill="#1565C0"/>
-    <path d="M470 150 C 510 150, 530 170, 536 189" stroke="#1565C0" stroke-width="2.4" fill="none"/>
-    <text x="440" y="132" font-size="10.5" font-weight="700" fill="#1565C0">Apercu-3D</text>
-    <text x="478" y="166" class="mono" style="font-size:8.6px" fill="#1565C0">1d00cfe</text>
-    <!-- repères -->
-    <g font-size="9.5">
-      <circle cx="40" cy="44" r="9" fill="#4F46B8"/><text x="40" y="47.5" text-anchor="middle" fill="#fff" font-weight="700">1</text>
-      <text x="56" y="48">la branche part d'un commit de master</text>
-      <circle cx="330" cy="44" r="9" fill="#4F46B8"/><text x="330" y="47.5" text-anchor="middle" fill="#fff" font-weight="700">2</text>
-      <text x="346" y="48">la fusion a deux parents (cercle blanc)</text>
-      <circle cx="40" cy="272" r="9" fill="#4F46B8"/><text x="40" y="275.5" text-anchor="middle" fill="#fff" font-weight="700">3</text>
-      <text x="56" y="276">Apercu-3D part de la fusion #50 : elle profite déjà de tout le travail d'Admin-react</text>
-    </g>
-  </svg>
-
-  <div class="deuxcol" style="margin-top:4mm; gap:6mm">
-    <div>
-      <h3>Pourquoi travailler en branche</h3>
-      <p style="font-size:8.8pt">Master reste toujours dans un état qui compile et qui marche. Une idée abandonnée se jette avec sa branche, sans avoir touché au reste. Et la pull request montre d'un bloc tout ce que la branche change.</p>
-    </div>
-    <div class="encadre piege" style="margin:0">
-      <span class="titre">Piège courant : le conflit</span>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 06</b></div>
+<p class="rubrique">Schéma 2 · Branches et fusions</p>
+<h2>Travailler à côté, puis reporter sur master</h2>
+<p style="max-width:165mm">Une branche est une ligne de commits qui part d'un point de master. Quand le travail est prêt, une fusion crée un commit à deux parents : la suite de master, et le bout de la branche. Voici les deux dernières pull requests de Magpie.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 300" width="100%">
+<defs><marker id="a3" markerheight="7" markerwidth="7" orient="auto" refx="9" refy="5" viewbox="0 0 10 10"><path d="M0 0 L10 5 L0 10 z" fill="#2B2F33"></path></marker></defs>
+<rect fill="#EFE9E1" height="300" width="600" x="0" y="0"></rect>
+<!-- master -->
+<line stroke="#2B2F33" stroke-width="3" x1="30" x2="570" y1="200" y2="200"></line>
+<text font-size="10.5" font-weight="700" x="30" y="226">master</text>
+<circle cx="70" cy="200" fill="#2B2F33" r="8"></circle>
+<circle cx="400" cy="200" fill="#fff" r="11" stroke="#2B2F33" stroke-width="3"></circle>
+<circle cx="540" cy="200" fill="#fff" r="11" stroke="#2B2F33" stroke-width="3"></circle>
+<text class="mono" style="font-size:9px" text-anchor="middle" x="400" y="232">6b76d18</text>
+<text font-size="9" text-anchor="middle" x="400" y="246">fusion PR #50</text>
+<text class="mono" style="font-size:9px" text-anchor="middle" x="540" y="232">b0ff1b6</text>
+<text font-size="9" text-anchor="middle" x="540" y="246">fusion PR #51</text>
+<!-- Admin-react -->
+<path d="M70 200 C 90 120, 110 110, 130 110" fill="none" stroke="#2E7D32" stroke-width="2.4"></path>
+<line stroke="#2E7D32" stroke-width="2.4" x1="130" x2="360" y1="110" y2="110"></line>
+<path d="M360 110 C 380 110, 395 150, 400 189" fill="none" stroke="#2E7D32" stroke-width="2.4"></path>
+<g fill="#2E7D32"><circle cx="130" cy="110" r="6"></circle><circle cx="160" cy="110" r="6"></circle><circle cx="190" cy="110" r="6"></circle><circle cx="220" cy="110" r="6"></circle><circle cx="250" cy="110" r="6"></circle><circle cx="280" cy="110" r="6"></circle><circle cx="310" cy="110" r="6"></circle><circle cx="340" cy="110" r="6"></circle></g>
+<text fill="#2E7D32" font-size="10.5" font-weight="700" x="130" y="90">Admin-react : 16 commits sur deux jours</text>
+<text fill="#2E7D32" font-size="9" x="130" y="140">admin React, rendu mobile, mise en ligne, clé d'API…</text>
+<!-- Apercu-3D -->
+<path d="M400 200 C 420 150, 440 150, 470 150" fill="none" stroke="#1565C0" stroke-width="2.4"></path>
+<circle cx="470" cy="150" fill="#1565C0" r="6"></circle>
+<path d="M470 150 C 510 150, 530 170, 536 189" fill="none" stroke="#1565C0" stroke-width="2.4"></path>
+<text fill="#1565C0" font-size="10.5" font-weight="700" x="440" y="132">Apercu-3D</text>
+<text class="mono" fill="#1565C0" style="font-size:8.6px" x="478" y="166">1d00cfe</text>
+<!-- repères -->
+<g font-size="9.5">
+<circle cx="40" cy="44" fill="#4F46B8" r="9"></circle><text fill="#fff" font-weight="700" text-anchor="middle" x="40" y="47.5">1</text>
+<text x="56" y="48">la branche part d'un commit de master</text>
+<circle cx="330" cy="44" fill="#4F46B8" r="9"></circle><text fill="#fff" font-weight="700" text-anchor="middle" x="330" y="47.5">2</text>
+<text x="346" y="48">la fusion a deux parents (cercle blanc)</text>
+<circle cx="40" cy="272" fill="#4F46B8" r="9"></circle><text fill="#fff" font-weight="700" text-anchor="middle" x="40" y="275.5">3</text>
+<text x="56" y="276">Apercu-3D part de la fusion #50 : elle profite déjà de tout le travail d'Admin-react</text>
+</g>
+</svg>
+<div class="deuxcol" style="margin-top:4mm; gap:6mm">
+<div>
+<h3>Pourquoi travailler en branche</h3>
+<p style="font-size:8.8pt">Master reste toujours dans un état qui compile et qui marche. Une idée abandonnée se jette avec sa branche, sans avoir touché au reste. Et la pull request montre d'un bloc tout ce que la branche change.</p>
+</div>
+<div class="encadre piege" style="margin:0">
+<span class="titre">Piège courant : le conflit</span>
       Deux branches modifient les mêmes lignes d'un fichier. Git ne choisit pas : il marque le fichier avec <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>, <code>=======</code>, <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> et attend que tu gardes la bonne version. C'est normal, pas une panne.
     </div>
-  </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 06 · Git et GitHub au quotidien</div>
+</div>
+<div class="folio">3</div>
+<div class="pied">Cours 06 · Git et GitHub au quotidien</div>
 </section>
-
 <!-- ============ PAGE 4 · GITHUB ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 06</b></div>
-  <p class="rubrique">Schéma 3 · Ce que GitHub ajoute</p>
-  <h2>Pull requests, issues, jalons</h2>
-  <p style="max-width:165mm">Git ne connaît que des commits et des branches. GitHub ajoute une couche d'organisation autour : on discute d'un problème dans une issue, on propose un changement par une pull request, on regroupe le tout par jalon.</p>
-
-  <svg viewBox="0 0 600 330" width="100%" style="margin-top:2mm">
-    <defs><marker id="a4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2B2F33"/></marker></defs>
-    <rect x="0" y="0" width="600" height="330" fill="#EFE9E1"/>
-    <!-- cycle PR -->
-    <text x="20" y="24" font-size="10" font-weight="700" fill="#4F46B8" letter-spacing="1">LA VIE D'UNE PULL REQUEST</text>
-    <g font-size="9.5">
-      <rect x="20" y="36" width="100" height="56" rx="6" fill="#fff" stroke="#2E7D32" stroke-width="1.4"/>
-      <text x="70" y="56" text-anchor="middle" font-weight="700">1 · branche</text>
-      <text x="70" y="72" text-anchor="middle" font-size="9">commits locaux,</text>
-      <text x="70" y="84" text-anchor="middle" font-size="9">puis git push</text>
-      <path d="M122 64 H 136" stroke="#2B2F33" stroke-width="1.3" marker-end="url(#a4)"/>
-      <rect x="138" y="36" width="100" height="56" rx="6" fill="#fff" stroke="#1565C0" stroke-width="1.4"/>
-      <text x="188" y="56" text-anchor="middle" font-weight="700">2 · PR ouverte</text>
-      <text x="188" y="72" text-anchor="middle" font-size="9">« fusionne ma</text>
-      <text x="188" y="84" text-anchor="middle" font-size="9">branche dans master »</text>
-      <path d="M240 64 H 254" stroke="#2B2F33" stroke-width="1.3" marker-end="url(#a4)"/>
-      <rect x="256" y="36" width="100" height="56" rx="6" fill="#fff" stroke="#E65100" stroke-width="1.4"/>
-      <text x="306" y="56" text-anchor="middle" font-weight="700">3 · relecture</text>
-      <text x="306" y="72" text-anchor="middle" font-size="9">commentaires,</text>
-      <text x="306" y="84" text-anchor="middle" font-size="9">tests automatiques</text>
-      <path d="M358 64 H 372" stroke="#2B2F33" stroke-width="1.3" marker-end="url(#a4)"/>
-      <rect x="374" y="36" width="100" height="56" rx="6" fill="#fff" stroke="#7B1FA2" stroke-width="1.4"/>
-      <text x="424" y="56" text-anchor="middle" font-weight="700">4 · corrections</text>
-      <text x="424" y="72" text-anchor="middle" font-size="9">nouveaux commits</text>
-      <text x="424" y="84" text-anchor="middle" font-size="9">sur la même branche</text>
-      <path d="M476 64 H 490" stroke="#2B2F33" stroke-width="1.3" marker-end="url(#a4)"/>
-      <rect x="492" y="36" width="90" height="56" rx="6" fill="#2B2F33"/>
-      <text x="537" y="56" text-anchor="middle" font-weight="700" fill="#fff">5 · fusion</text>
-      <text x="537" y="72" text-anchor="middle" font-size="9" fill="#fff">« Merge pull</text>
-      <text x="537" y="84" text-anchor="middle" font-size="9" fill="#fff">request #51 »</text>
-      <path d="M424 94 C 424 116, 306 116, 306 96" stroke="#7B1FA2" stroke-width="1.2" stroke-dasharray="4 3" fill="none" marker-end="url(#a4)"/>
-    </g>
-
-    <!-- issues / jalons -->
-    <text x="20" y="150" font-size="10" font-weight="700" fill="#4F46B8" letter-spacing="1">LES ISSUES ET LES JALONS DE MAGPIE</text>
-    <rect x="20" y="162" width="270" height="152" rx="6" fill="#fff" stroke="#D9D2C8"/>
-    <g font-size="9.5">
-      <text x="34" y="182" font-weight="700">Issue #5 · Parcours utilisateur</text>
-      <text x="34" y="198" fill="#6B7378">un besoin, une discussion, un numéro</text>
-      <text x="34" y="222" class="mono" style="font-size:8.6px">e99b1fc Nouveau certificat … (#5)</text>
-      <text x="34" y="238" class="mono" style="font-size:8.6px">d6fe9e9 Pas de certificat sans … (#5)</text>
-      <text x="34" y="254" class="mono" style="font-size:8.6px">c1f434e « À propos » : textes … (#5)</text>
-      <text x="34" y="280" fill="#2E7D32" font-weight="700">« (#5) » dans le titre : GitHub relie</text>
-      <text x="34" y="294" fill="#2E7D32" font-weight="700">le commit à l'issue, dans les deux sens</text>
-    </g>
-    <rect x="306" y="162" width="276" height="152" rx="6" fill="#fff" stroke="#D9D2C8"/>
-    <g font-size="9.5">
-      <text x="320" y="182" font-weight="700">Jalons (milestones)</text>
-      <text x="320" y="198" fill="#6B7378">un lot d'issues et une échéance</text>
-      <rect x="320" y="210" width="248" height="22" rx="3" fill="#E8F3E8"/><text x="330" y="225">V0.1 · 01/10/2026 · bouclé</text>
-      <rect x="320" y="238" width="248" height="22" rx="3" fill="#FCEDE2"/><text x="330" y="253">V0.2 · 31/01/2027 · 3 ouvertes</text>
-      <rect x="320" y="266" width="248" height="22" rx="3" fill="#F9E5E5"/><text x="330" y="281">V1.0 · 31/05/2027 · 4 ouvertes</text>
-      <text x="320" y="304" fill="#6B7378">voir le document hors série sur Magpie</text>
-    </g>
-  </svg>
-
-  <div class="encadre piege" style="margin-top:4mm">
-    <span class="titre">Piège courant : pousser un secret</span>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 06</b></div>
+<p class="rubrique">Schéma 3 · Ce que GitHub ajoute</p>
+<h2>Pull requests, issues, jalons</h2>
+<p style="max-width:165mm">Git ne connaît que des commits et des branches. GitHub ajoute une couche d'organisation autour : on discute d'un problème dans une issue, on propose un changement par une pull request, on regroupe le tout par jalon.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 330" width="100%">
+<defs><marker id="a4" markerheight="7" markerwidth="7" orient="auto" refx="9" refy="5" viewbox="0 0 10 10"><path d="M0 0 L10 5 L0 10 z" fill="#2B2F33"></path></marker></defs>
+<rect fill="#EFE9E1" height="330" width="600" x="0" y="0"></rect>
+<!-- cycle PR -->
+<text fill="#4F46B8" font-size="10" font-weight="700" letter-spacing="1" x="20" y="24">LA VIE D'UNE PULL REQUEST</text>
+<g font-size="9.5">
+<rect fill="#fff" height="56" rx="6" stroke="#2E7D32" stroke-width="1.4" width="100" x="20" y="36"></rect>
+<text font-weight="700" text-anchor="middle" x="70" y="56">1 · branche</text>
+<text font-size="9" text-anchor="middle" x="70" y="72">commits locaux,</text>
+<text font-size="9" text-anchor="middle" x="70" y="84">puis git push</text>
+<path d="M122 64 H 136" marker-end="url(#a4)" stroke="#2B2F33" stroke-width="1.3"></path>
+<rect fill="#fff" height="56" rx="6" stroke="#1565C0" stroke-width="1.4" width="100" x="138" y="36"></rect>
+<text font-weight="700" text-anchor="middle" x="188" y="56">2 · PR ouverte</text>
+<text font-size="9" text-anchor="middle" x="188" y="72">« fusionne ma</text>
+<text font-size="9" text-anchor="middle" x="188" y="84">branche dans master »</text>
+<path d="M240 64 H 254" marker-end="url(#a4)" stroke="#2B2F33" stroke-width="1.3"></path>
+<rect fill="#fff" height="56" rx="6" stroke="#E65100" stroke-width="1.4" width="100" x="256" y="36"></rect>
+<text font-weight="700" text-anchor="middle" x="306" y="56">3 · relecture</text>
+<text font-size="9" text-anchor="middle" x="306" y="72">commentaires,</text>
+<text font-size="9" text-anchor="middle" x="306" y="84">tests automatiques</text>
+<path d="M358 64 H 372" marker-end="url(#a4)" stroke="#2B2F33" stroke-width="1.3"></path>
+<rect fill="#fff" height="56" rx="6" stroke="#7B1FA2" stroke-width="1.4" width="100" x="374" y="36"></rect>
+<text font-weight="700" text-anchor="middle" x="424" y="56">4 · corrections</text>
+<text font-size="9" text-anchor="middle" x="424" y="72">nouveaux commits</text>
+<text font-size="9" text-anchor="middle" x="424" y="84">sur la même branche</text>
+<path d="M476 64 H 490" marker-end="url(#a4)" stroke="#2B2F33" stroke-width="1.3"></path>
+<rect fill="#2B2F33" height="56" rx="6" width="90" x="492" y="36"></rect>
+<text fill="#fff" font-weight="700" text-anchor="middle" x="537" y="56">5 · fusion</text>
+<text fill="#fff" font-size="9" text-anchor="middle" x="537" y="72">« Merge pull</text>
+<text fill="#fff" font-size="9" text-anchor="middle" x="537" y="84">request #51 »</text>
+<path d="M424 94 C 424 116, 306 116, 306 96" fill="none" marker-end="url(#a4)" stroke="#7B1FA2" stroke-dasharray="4 3" stroke-width="1.2"></path>
+</g>
+<!-- issues / jalons -->
+<text fill="#4F46B8" font-size="10" font-weight="700" letter-spacing="1" x="20" y="150">LES ISSUES ET LES JALONS DE MAGPIE</text>
+<rect fill="#fff" height="152" rx="6" stroke="#D9D2C8" width="270" x="20" y="162"></rect>
+<g font-size="9.5">
+<text font-weight="700" x="34" y="182">Issue #5 · Parcours utilisateur</text>
+<text fill="#6B7378" x="34" y="198">un besoin, une discussion, un numéro</text>
+<text class="mono" style="font-size:8.6px" x="34" y="222">e99b1fc Nouveau certificat … (#5)</text>
+<text class="mono" style="font-size:8.6px" x="34" y="238">d6fe9e9 Pas de certificat sans … (#5)</text>
+<text class="mono" style="font-size:8.6px" x="34" y="254">c1f434e « À propos » : textes … (#5)</text>
+<text fill="#2E7D32" font-weight="700" x="34" y="280">« (#5) » dans le titre : GitHub relie</text>
+<text fill="#2E7D32" font-weight="700" x="34" y="294">le commit à l'issue, dans les deux sens</text>
+</g>
+<rect fill="#fff" height="152" rx="6" stroke="#D9D2C8" width="276" x="306" y="162"></rect>
+<g font-size="9.5">
+<text font-weight="700" x="320" y="182">Jalons (milestones)</text>
+<text fill="#6B7378" x="320" y="198">un lot d'issues et une échéance</text>
+<rect fill="#E8F3E8" height="22" rx="3" width="248" x="320" y="210"></rect><text x="330" y="225">V0.1 · 01/10/2026 · bouclé</text>
+<rect fill="#FCEDE2" height="22" rx="3" width="248" x="320" y="238"></rect><text x="330" y="253">V0.2 · 31/01/2027 · 3 ouvertes</text>
+<rect fill="#F9E5E5" height="22" rx="3" width="248" x="320" y="266"></rect><text x="330" y="281">V1.0 · 31/05/2027 · 4 ouvertes</text>
+<text fill="#6B7378" x="320" y="304">voir le document hors série sur Magpie</text>
+</g>
+</svg>
+<div class="encadre piege" style="margin-top:4mm">
+<span class="titre">Piège courant : pousser un secret</span>
     Une fois poussé, un fichier reste dans l'historique même si on le supprime ensuite. Le <code>.gitignore</code> de Magpie exclut donc <code>.env</code> (clés et adresses du serveur), <code>launchSettings.json</code> (chemin de Rhino du poste) et <code>pedagogie/propositions/</code>, qui contient les corrigés en clair.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 06 · Git et GitHub au quotidien</div>
+<div class="folio">4</div>
+<div class="pied">Cours 06 · Git et GitHub au quotidien</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 06</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>Ce que Magpie refuse de versionner</h2>
-  <p style="max-width:165mm">La fin du <code>.gitignore</code> de Magpie : ses 414 lignes commencent par le modèle standard de Visual Studio, puis ajoutent les règles propres au projet. Chacune est commentée : on sait pourquoi le fichier ne doit pas partir.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 06</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>Ce que Magpie refuse de versionner</h2>
+<p style="max-width:165mm">La fin du <code>.gitignore</code> de Magpie : ses 414 lignes commencent par le modèle standard de Visual Studio, puis ajoutent les règles propres au projet. Chacune est commentée : on sait pourquoi le fichier ne doit pas partir.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="n"> </span><span class="cm"># Magpie/.gitignore (extraits)</span></div>
 <div class="l k6"><span class="n">9</span>*.user<span class="rep r6">1</span></div>
@@ -327,137 +303,57 @@
 <div class="l k3"><span class="n"> </span><span class="cm"># pousser sur le dépôt.</span></div>
 <div class="l k3"><span class="n">396</span>pedagogie/propositions/</div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r6">1</span><b>Ce qui se reconstruit</b>bin/, obj/, node_modules/ : produits par le build ou par npm. Les versionner alourdirait le dépôt pour rien.</li>
-      <li><span class="rep r4">2</span><b>Le résultat du build web</b>web/dist/ se régénère par npm run build ; le serveur le produit lui-même.</li>
-      <li><span class="rep r5">3</span><b>Les secrets</b>.env porte la clé d'API de Compute et les adresses : jamais dans Git. Le motif .env.* couvre les variantes.</li>
-      <li><span class="rep r1">4</span><b>L'exception</b>Le ! réintègre un fichier : .env.example, sans valeurs, montre quelles variables définir.</li>
-      <li><span class="rep r2">5</span><b>Ce qui dépend du poste</b>Même logique que RHINO_PATH au cours 05 : un modèle est versionné, la copie locale non.</li>
-      <li><span class="rep r3">6</span><b>Ce qui donnerait la réponse</b>Spécifique à Magpie : un corrigé poussé sur le dépôt serait lisible par qui y a accès.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À retenir</span>
+<ul class="notes">
+<li><span class="rep r6">1</span><b>Ce qui se reconstruit</b>bin/, obj/, node_modules/ : produits par le build ou par npm. Les versionner alourdirait le dépôt pour rien.</li>
+<li><span class="rep r4">2</span><b>Le résultat du build web</b>web/dist/ se régénère par npm run build ; le serveur le produit lui-même.</li>
+<li><span class="rep r5">3</span><b>Les secrets</b>.env porte la clé d'API de Compute et les adresses : jamais dans Git. Le motif .env.* couvre les variantes.</li>
+<li><span class="rep r1">4</span><b>L'exception</b>Le ! réintègre un fichier : .env.example, sans valeurs, montre quelles variables définir.</li>
+<li><span class="rep r2">5</span><b>Ce qui dépend du poste</b>Même logique que RHINO_PATH au cours 05 : un modèle est versionné, la copie locale non.</li>
+<li><span class="rep r3">6</span><b>Ce qui donnerait la réponse</b>Spécifique à Magpie : un corrigé poussé sur le dépôt serait lisible par qui y a accès.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À retenir</span>
     Le .gitignore n'agit que sur les fichiers pas encore suivis. Un fichier déjà commité reste suivi même si on l'ajoute à la liste ; il faut l'en retirer explicitement avec <code>git rm --cached</code>.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 06 · Git et GitHub au quotidien</div>
+<div class="folio">5</div>
+<div class="pied">Cours 06 · Git et GitHub au quotidien</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 06</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 06</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">Que fait <code>git add</code> ?</div><ul>
-      <li><span>A</span>envoie sur GitHub</li><li><span>B</span>place une modification dans la zone de préparation</li><li><span>C</span>crée une branche</li><li><span>D</span>crée un commit</li></ul></div>
 
-    <div class="q"><div class="enonce">Après un <code>git commit</code> sans <code>git push</code>…</div><ul>
-      <li><span>A</span>le commit est sur GitHub</li><li><span>B</span>le commit n'existe que sur ton poste</li><li><span>C</span>le commit est perdu</li><li><span>D</span>la PR est ouverte</li></ul></div>
 
-    <div class="q"><div class="enonce">Qu'est-ce qu'une branche ?</div><ul>
-      <li><span>A</span>une copie complète du dossier</li><li><span>B</span>une étiquette qui pointe sur un commit et avance avec lui</li><li><span>C</span>un dépôt séparé</li><li><span>D</span>un fichier .gitignore</li></ul></div>
 
-    <div class="q"><div class="enonce">Combien de parents a un commit de fusion ?</div><ul>
-      <li><span>A</span>aucun</li><li><span>B</span>un</li><li><span>C</span>deux</li><li><span>D</span>autant que de fichiers</li></ul></div>
-
-    <div class="q"><div class="enonce">Que contient un bon message de commit ? <span class="tag" style="color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>un titre qui dit ce que le commit fait</li><li><span>B</span>« modifs »</li><li><span>C</span>un corps qui dit pourquoi</li><li><span>D</span>le hash du commit</li></ul></div>
-
-    <div class="q"><div class="enonce">Pourquoi Apercu-3D part-il de la fusion #50 ?</div><ul>
-      <li><span>A</span>par hasard</li><li><span>B</span>pour profiter du travail d'Admin-react déjà fusionné</li><li><span>C</span>GitHub l'impose</li><li><span>D</span>pour éviter une PR</li></ul></div>
-
-    <div class="q"><div class="enonce">Que se passe-t-il lors d'un conflit ?</div><ul>
-      <li><span>A</span>Git garde la version la plus récente</li><li><span>B</span>Git marque le fichier et attend ton choix</li><li><span>C</span>le dépôt est corrompu</li><li><span>D</span>la branche est supprimée</li></ul></div>
-
-    <div class="q"><div class="enonce">Écrire « (#5) » dans un titre de commit…</div><ul>
-      <li><span>A</span>ferme l'issue 5</li><li><span>B</span>relie le commit à l'issue 5 sur GitHub</li><li><span>C</span>crée la PR 5</li><li><span>D</span>n'a aucun effet</li></ul></div>
-
-    <div class="q"><div class="enonce">Que ne faut-il jamais versionner ? <span class="tag" style="color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>un .env avec des clés</li><li><span>B</span>bin/ et obj/</li><li><span>C</span>le README</li><li><span>D</span>les corrigés d'exercices en clair</li></ul></div>
-
-    <div class="q"><div class="enonce">Que fait <code>!.env.example</code> dans un .gitignore ?</div><ul>
-      <li><span>A</span>l'ignore deux fois</li><li><span>B</span>le réintègre : il sera versionné</li><li><span>C</span>le supprime</li><li><span>D</span>le chiffre</li></ul></div>
-
-    <div class="q"><div class="enonce">Un fichier déjà commité, ajouté ensuite au .gitignore…</div><ul>
-      <li><span>A</span>disparaît de l'historique</li><li><span>B</span>reste suivi tant qu'on ne le retire pas</li><li><span>C</span>est supprimé du disque</li><li><span>D</span>est chiffré</li></ul></div>
-
-    <div class="q"><div class="enonce">À quoi sert un jalon GitHub ?</div><ul>
-      <li><span>A</span>à regrouper des issues autour d'une échéance</li><li><span>B</span>à fusionner deux branches</li><li><span>C</span>à créer une version du .gha</li><li><span>D</span>à protéger master</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 06 · Git et GitHub au quotidien</div>
+<p class="rubrique" style="">Aide-mémoire · les commandes du quotidien</p>
+<table class="aide">
+<thead><tr><th>Commande</th><th>Ce qu'elle fait</th><th>Touche</th></tr></thead>
+<tbody>
+<tr><td class="c">git status</td><td>ce qui a changé, ce qui est préparé</td><td>rien</td></tr>
+<tr><td class="c">git add fichier</td><td>prépare une modification</td><td>préparation</td></tr>
+<tr><td class="c">git commit -m "…"</td><td>prend la photo</td><td>dépôt local</td></tr>
+<tr><td class="c">git switch -c nom</td><td>crée une branche et s'y place</td><td>dépôt local</td></tr>
+<tr><td class="c">git push -u origin nom</td><td>envoie la branche sur GitHub</td><td>GitHub</td></tr>
+<tr><td class="c">git pull</td><td>récupère et fusionne le distant</td><td>local</td></tr>
+<tr><td class="c">git log --graph --oneline</td><td>dessine l'historique</td><td>rien</td></tr>
+<tr><td class="c">git rm --cached fichier</td><td>arrête de suivre, garde sur disque</td><td>préparation</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:6mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Commit</dt><dd>Photo du projet, avec un parent, un auteur et un message.</dd>
+<dt>Branche</dt><dd>Étiquette mobile posée sur le dernier commit d'une ligne de travail.</dd>
+<dt>Pull request</dt><dd>Demande, sur GitHub, de fusionner une branche dans une autre.</dd>
+<dt>origin</dt><dd>Le nom par défaut du dépôt distant (ici, GitHub).</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 103</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 06 · Git et GitHub au quotidien</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET AIDE-MÉMOIRE ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 11A</b> · Git</span><b>Cours 06</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · B.</b> add choisit ce qui entrera dans la prochaine photo ; commit la prend.</div>
-    <div><b>02 · B.</b> Rien ne quitte le poste sans push.</div>
-    <div><b>03 · B.</b> Une branche coûte quelques octets : c'est un nom posé sur un commit.</div>
-    <div><b>04 · C.</b> La suite de master et le bout de la branche.</div>
-    <div><b>05 · A et C.</b> Le hash est calculé par Git, il ne s'écrit pas dans le message.</div>
-    <div><b>06 · B.</b> Partir du master le plus récent évite de refaire des fusions.</div>
-    <div><b>07 · B.</b> Git ne devine pas quelle version est la bonne : c'est à toi.</div>
-    <div><b>08 · B.</b> « Fixes #5 » la fermerait à la fusion ; « (#5) » la relie seulement.</div>
-    <div><b>09 · A, B et D.</b> Le README est justement fait pour être versionné.</div>
-    <div><b>10 · B.</b> Le point d'exclamation annule une règle d'exclusion.</div>
-    <div><b>11 · B.</b> Il faut git rm --cached, puis un commit.</div>
-    <div><b>12 · A.</b> Magpie en a trois : V0.1, V0.2, V1.0.</div>
-  </div>
-
-  <div class="panneau" style="padding:3.5mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:30mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.3pt; line-height:1.45"><b>0 à 6</b> : refais le schéma de la page 1 de mémoire. <b>7 à 9</b> : lance <code>git log --graph --oneline</code> sur Magpie et retrouve la page 3. <b>10 à 12</b> : passe au cours 103, « Les objets de Git ».</div>
-  </div>
-
-  <p class="rubrique" style="margin-top:6mm">Aide-mémoire · les commandes du quotidien</p>
-  <table class="aide">
-    <thead><tr><th>Commande</th><th>Ce qu'elle fait</th><th>Touche</th></tr></thead>
-    <tbody>
-      <tr><td class="c">git status</td><td>ce qui a changé, ce qui est préparé</td><td>rien</td></tr>
-      <tr><td class="c">git add fichier</td><td>prépare une modification</td><td>préparation</td></tr>
-      <tr><td class="c">git commit -m "…"</td><td>prend la photo</td><td>dépôt local</td></tr>
-      <tr><td class="c">git switch -c nom</td><td>crée une branche et s'y place</td><td>dépôt local</td></tr>
-      <tr><td class="c">git push -u origin nom</td><td>envoie la branche sur GitHub</td><td>GitHub</td></tr>
-      <tr><td class="c">git pull</td><td>récupère et fusionne le distant</td><td>local</td></tr>
-      <tr><td class="c">git log --graph --oneline</td><td>dessine l'historique</td><td>rien</td></tr>
-      <tr><td class="c">git rm --cached fichier</td><td>arrête de suivre, garde sur disque</td><td>préparation</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:6mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Commit</dt><dd>Photo du projet, avec un parent, un auteur et un message.</dd>
-    <dt>Branche</dt><dd>Étiquette mobile posée sur le dernier commit d'une ligne de travail.</dd>
-    <dt>Pull request</dt><dd>Demande, sur GitHub, de fusionner une branche dans une autre.</dd>
-    <dt>origin</dt><dd>Le nom par défaut du dépôt distant (ici, GitHub).</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 103</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 06 · Git et GitHub au quotidien</div>
-</section>
-
 </body>
 </html>

@@ -1,265 +1,238 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>126 · Les outils de développement</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-8">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 126</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Les outils de développement</h1>
-  <p class="chapeau">Tout ce que ce bloc a mesuré, les DevTools de Chrome le montrent sans écrire une ligne : la boucle, les mises en page, le stockage, le réseau, la mémoire. Encore faut-il savoir quel <b>panneau</b> ouvrir, dans quelles conditions mesurer, et ce que l'outil lui-même change à ce qu'on observe.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>121</b> à <b>125</b></span>
-    <span class="pastille">Exemples · <b>Magpie</b> web construit</span>
-  </div>
-
-  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
-    <svg viewBox="0 0 600 200" width="100%">
-<rect x="10" y="8" width="136" height="52" rx="4" fill="#F4EEDF" stroke="#7A5A12" stroke-width="1.2"/>
-<text x="78" y="29" font-size="9" fill="#7A5A12" text-anchor="middle" font-weight="700">Elements</text>
-<text x="78" y="46" font-size="7.4" fill="#2B2F33" text-anchor="middle">quel DOM, quel style ?</text>
-<rect x="156" y="8" width="136" height="52" rx="4" fill="#F4EEDF" stroke="#7A5A12" stroke-width="1.2"/>
-<text x="224" y="29" font-size="9" fill="#7A5A12" text-anchor="middle" font-weight="700">Console</text>
-<text x="224" y="46" font-size="7.4" fill="#2B2F33" text-anchor="middle">que dit le code ?</text>
-<rect x="302" y="8" width="136" height="52" rx="4" fill="#F4EEDF" stroke="#7A5A12" stroke-width="1.2"/>
-<text x="370" y="29" font-size="9" fill="#7A5A12" text-anchor="middle" font-weight="700">Sources</text>
-<text x="370" y="46" font-size="7.4" fill="#2B2F33" text-anchor="middle">où s'arrêter, pas à pas ?</text>
-<rect x="448" y="8" width="136" height="52" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.2"/>
-<text x="516" y="29" font-size="9" fill="#1565C0" text-anchor="middle" font-weight="700">Network</text>
-<text x="516" y="46" font-size="7.4" fill="#2B2F33" text-anchor="middle">qu'est-ce qui arrive, quand ?</text>
-<rect x="10" y="72" width="136" height="52" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
-<text x="78" y="93" font-size="9" fill="#C62828" text-anchor="middle" font-weight="700">Performance</text>
-<text x="78" y="110" font-size="7.4" fill="#2B2F33" text-anchor="middle">qu'est-ce qui occupe le fil ?</text>
-<rect x="156" y="72" width="136" height="52" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
-<text x="224" y="93" font-size="9" fill="#C62828" text-anchor="middle" font-weight="700">Memory</text>
-<text x="224" y="110" font-size="7.4" fill="#2B2F33" text-anchor="middle">qui garde quoi en vie ?</text>
-<rect x="302" y="72" width="136" height="52" rx="4" fill="#fff" stroke="#7B1FA2" stroke-width="1.2"/>
-<text x="370" y="93" font-size="9" fill="#7B1FA2" text-anchor="middle" font-weight="700">Application</text>
-<text x="370" y="110" font-size="7.4" fill="#2B2F33" text-anchor="middle">qu'est-ce qui est rangé ?</text>
-<rect x="448" y="72" width="136" height="52" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.2"/>
-<text x="516" y="93" font-size="9" fill="#E65100" text-anchor="middle" font-weight="700">Coverage</text>
-<text x="516" y="110" font-size="7.4" fill="#2B2F33" text-anchor="middle">quel code a servi ?</text>
-<text x="10" y="158" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">Chaque panneau répond à une question. Choisir le panneau, c'est d'abord formuler ce qu'on cherche.</text>
-<text x="10" y="178" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Les cours 121 à 125 s'y retrouvent : la boucle dans Performance, les pixels dans Rendering, le stockage dans Application.</text>
-<text x="10" y="192" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Coverage et Rendering s'ouvrent par la palette de commandes, Ctrl+Maj+P.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 126</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Les outils de développement</h1>
+<p class="chapeau">Tout ce que ce bloc a mesuré, les DevTools de Chrome le montrent sans écrire une ligne : la boucle, les mises en page, le stockage, le réseau, la mémoire. Encore faut-il savoir quel <b>panneau</b> ouvrir, dans quelles conditions mesurer, et ce que l'outil lui-même change à ce qu'on observe.</p>
+<div class="meta">
+<span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>121</b> à <b>125</b></span>
+<span class="pastille">Exemples · <b>Magpie</b> web construit</span>
+</div>
+<div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+<svg viewbox="0 0 600 200" width="100%">
+<rect fill="#F4EEDF" height="52" rx="4" stroke="#7A5A12" stroke-width="1.2" width="136" x="10" y="8"></rect>
+<text fill="#7A5A12" font-size="9" font-weight="700" text-anchor="middle" x="78" y="29">Elements</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="middle" x="78" y="46">quel DOM, quel style ?</text>
+<rect fill="#F4EEDF" height="52" rx="4" stroke="#7A5A12" stroke-width="1.2" width="136" x="156" y="8"></rect>
+<text fill="#7A5A12" font-size="9" font-weight="700" text-anchor="middle" x="224" y="29">Console</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="middle" x="224" y="46">que dit le code ?</text>
+<rect fill="#F4EEDF" height="52" rx="4" stroke="#7A5A12" stroke-width="1.2" width="136" x="302" y="8"></rect>
+<text fill="#7A5A12" font-size="9" font-weight="700" text-anchor="middle" x="370" y="29">Sources</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="middle" x="370" y="46">où s'arrêter, pas à pas ?</text>
+<rect fill="#fff" height="52" rx="4" stroke="#1565C0" stroke-width="1.2" width="136" x="448" y="8"></rect>
+<text fill="#1565C0" font-size="9" font-weight="700" text-anchor="middle" x="516" y="29">Network</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="middle" x="516" y="46">qu'est-ce qui arrive, quand ?</text>
+<rect fill="#fff" height="52" rx="4" stroke="#C62828" stroke-width="1.2" width="136" x="10" y="72"></rect>
+<text fill="#C62828" font-size="9" font-weight="700" text-anchor="middle" x="78" y="93">Performance</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="middle" x="78" y="110">qu'est-ce qui occupe le fil ?</text>
+<rect fill="#fff" height="52" rx="4" stroke="#C62828" stroke-width="1.2" width="136" x="156" y="72"></rect>
+<text fill="#C62828" font-size="9" font-weight="700" text-anchor="middle" x="224" y="93">Memory</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="middle" x="224" y="110">qui garde quoi en vie ?</text>
+<rect fill="#fff" height="52" rx="4" stroke="#7B1FA2" stroke-width="1.2" width="136" x="302" y="72"></rect>
+<text fill="#7B1FA2" font-size="9" font-weight="700" text-anchor="middle" x="370" y="93">Application</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="middle" x="370" y="110">qu'est-ce qui est rangé ?</text>
+<rect fill="#fff" height="52" rx="4" stroke="#E65100" stroke-width="1.2" width="136" x="448" y="72"></rect>
+<text fill="#E65100" font-size="9" font-weight="700" text-anchor="middle" x="516" y="93">Coverage</text>
+<text fill="#2B2F33" font-size="7.4" text-anchor="middle" x="516" y="110">quel code a servi ?</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="10" y="158">Chaque panneau répond à une question. Choisir le panneau, c'est d'abord formuler ce qu'on cherche.</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="10" y="178">Les cours 121 à 125 s'y retrouvent : la boucle dans Performance, les pixels dans Rendering, le stockage dans Application.</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="10" y="192">Coverage et Rendering s'ouvrent par la palette de commandes, Ctrl+Maj+P.</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Poser la question, choisir le panneau, mesurer sur la version construite et sur une machine bridée, puis vérifier que l'outil ne fausse pas la mesure.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Les instruments d'un atelier de métrologie. Un pied à coulisse ne mesure pas une température ; et un comparateur mal posé appuie sur la pièce qu'il contrôle.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>choisir le bon panneau ;</li>
-        <li>lire les tâches longues ;</li>
-        <li>mesurer le code qui sert ;</li>
-        <li>ne pas fausser la mémoire.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Poser la question, choisir le panneau, mesurer sur la version construite et sur une machine bridée, puis vérifier que l'outil ne fausse pas la mesure.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Les instruments d'un atelier de métrologie. Un pied à coulisse ne mesure pas une température ; et un comparateur mal posé appuie sur la pièce qu'il contrôle.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>choisir le bon panneau ;</li>
+<li>lire les tâches longues ;</li>
+<li>mesurer le code qui sert ;</li>
+<li>ne pas fausser la mémoire.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À retenir</span>
     Une mesure vaut ce que valent ses conditions : mode développement ou construit, cache plein ou vide, processeur réel ou bridé. Les noter à côté du chiffre, comme ce bloc l'a fait.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 126 · Les outils de développement</div>
+<div class="folio">1</div>
+<div class="pied">Cours 126 · Les outils de développement</div>
 </section>
-
 <!-- ============ PAGE 2 · PERFORMANCE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 126</b></div>
-  <p class="rubrique">Schéma 1 · Le panneau Performance</p>
-  <h2>Les tâches longues</h2>
-  <p style="max-width:165mm">Le panneau Performance enregistre tout ce que fait le fil principal et marque d'un triangle rouge chaque tâche de plus de 50 ms. On a relevé les mêmes tâches au démarrage de Magpie, processeur réel puis bridé.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#7A5A12" text-anchor="start" font-weight="700">Démarrage de Magpie web, tâches de plus de 50 ms vues par PerformanceObserver (Chromium, mesuré)</text>
-<line x1="130.0" y1="34" x2="130.0" y2="124" stroke="#D8D8DE" stroke-width=".8"/>
-<text x="130.0" y="134" font-size="7" fill="#6B7378" text-anchor="middle">0</text>
-<line x1="185.0" y1="34" x2="185.0" y2="124" stroke="#D8D8DE" stroke-width=".8"/>
-<text x="185.0" y="134" font-size="7" fill="#6B7378" text-anchor="middle">100</text>
-<line x1="240.0" y1="34" x2="240.0" y2="124" stroke="#D8D8DE" stroke-width=".8"/>
-<text x="240.0" y="134" font-size="7" fill="#6B7378" text-anchor="middle">200</text>
-<line x1="295.0" y1="34" x2="295.0" y2="124" stroke="#D8D8DE" stroke-width=".8"/>
-<text x="295.0" y="134" font-size="7" fill="#6B7378" text-anchor="middle">300</text>
-<line x1="350.0" y1="34" x2="350.0" y2="124" stroke="#D8D8DE" stroke-width=".8"/>
-<text x="350.0" y="134" font-size="7" fill="#6B7378" text-anchor="middle">400</text>
-<line x1="405.0" y1="34" x2="405.0" y2="124" stroke="#D8D8DE" stroke-width=".8"/>
-<text x="405.0" y="134" font-size="7" fill="#6B7378" text-anchor="middle">500</text>
-<line x1="460.0" y1="34" x2="460.0" y2="124" stroke="#D8D8DE" stroke-width=".8"/>
-<text x="460.0" y="134" font-size="7" fill="#6B7378" text-anchor="middle">600</text>
-<line x1="515.0" y1="34" x2="515.0" y2="124" stroke="#D8D8DE" stroke-width=".8"/>
-<text x="515.0" y="134" font-size="7" fill="#6B7378" text-anchor="middle">700</text>
-<line x1="570.0" y1="34" x2="570.0" y2="124" stroke="#D8D8DE" stroke-width=".8"/>
-<text x="570.0" y="134" font-size="7" fill="#6B7378" text-anchor="middle">800</text>
-<text x="16" y="57" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">processeur réel</text>
-<rect x="130" y="46" width="440" height="16" fill="#fff" opacity=".6"/>
-<rect x="201.5" y="46" width="29.2" height="16" fill="#C62828"/>
-<rect x="231.8" y="46" width="46.2" height="16" fill="#C62828"/>
-<line x1="283.5" y1="42" x2="283.5" y2="66" stroke="#2E7D32" stroke-width="2"/>
-<text x="287.45000000000005" y="74" font-size="7.2" fill="#2E7D32" text-anchor="start" font-weight="700">canvas à 279 ms</text>
-<text x="16" y="97" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">bridé ×4</text>
-<rect x="130" y="86" width="440" height="16" fill="#fff" opacity=".6"/>
-<rect x="177.8" y="86" width="37.4" height="16" fill="#C62828"/>
-<rect x="238.9" y="86" width="29.7" height="16" fill="#C62828"/>
-<rect x="271.9" y="86" width="29.2" height="16" fill="#C62828"/>
-<rect x="347.8" y="86" width="102.9" height="16" fill="#C62828"/>
-<rect x="451.8" y="86" width="62.2" height="16" fill="#C62828"/>
-<line x1="521.6" y1="82" x2="521.6" y2="106" stroke="#2E7D32" stroke-width="2"/>
-<text x="525.6" y="114" font-size="7.2" fill="#2E7D32" text-anchor="start" font-weight="700">canvas à 712 ms</text>
-<text x="16" y="160" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Brider le processeur, comme le propose le panneau Performance, transforme deux tâches en cinq, dont une de 187 ms.</text>
-<text x="16" y="176" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Une tâche longue, c'est un clic qui attend : sur une machine modeste, le premier geste peut patienter 0,2 s (déduit).</text>
-<text x="16" y="198" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Copie construite par vite build, catalogue vide. Deux essais par réglage, un seul tracé ; l'autre est du même ordre.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 126</b></div>
+<p class="rubrique">Schéma 1 · Le panneau Performance</p>
+<h2>Les tâches longues</h2>
+<p style="max-width:165mm">Le panneau Performance enregistre tout ce que fait le fil principal et marque d'un triangle rouge chaque tâche de plus de 50 ms. On a relevé les mêmes tâches au démarrage de Magpie, processeur réel puis bridé.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#7A5A12" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">Démarrage de Magpie web, tâches de plus de 50 ms vues par PerformanceObserver (Chromium, mesuré)</text>
+<line stroke="#D8D8DE" stroke-width=".8" x1="130.0" x2="130.0" y1="34" y2="124"></line>
+<text fill="#6B7378" font-size="7" text-anchor="middle" x="130.0" y="134">0</text>
+<line stroke="#D8D8DE" stroke-width=".8" x1="185.0" x2="185.0" y1="34" y2="124"></line>
+<text fill="#6B7378" font-size="7" text-anchor="middle" x="185.0" y="134">100</text>
+<line stroke="#D8D8DE" stroke-width=".8" x1="240.0" x2="240.0" y1="34" y2="124"></line>
+<text fill="#6B7378" font-size="7" text-anchor="middle" x="240.0" y="134">200</text>
+<line stroke="#D8D8DE" stroke-width=".8" x1="295.0" x2="295.0" y1="34" y2="124"></line>
+<text fill="#6B7378" font-size="7" text-anchor="middle" x="295.0" y="134">300</text>
+<line stroke="#D8D8DE" stroke-width=".8" x1="350.0" x2="350.0" y1="34" y2="124"></line>
+<text fill="#6B7378" font-size="7" text-anchor="middle" x="350.0" y="134">400</text>
+<line stroke="#D8D8DE" stroke-width=".8" x1="405.0" x2="405.0" y1="34" y2="124"></line>
+<text fill="#6B7378" font-size="7" text-anchor="middle" x="405.0" y="134">500</text>
+<line stroke="#D8D8DE" stroke-width=".8" x1="460.0" x2="460.0" y1="34" y2="124"></line>
+<text fill="#6B7378" font-size="7" text-anchor="middle" x="460.0" y="134">600</text>
+<line stroke="#D8D8DE" stroke-width=".8" x1="515.0" x2="515.0" y1="34" y2="124"></line>
+<text fill="#6B7378" font-size="7" text-anchor="middle" x="515.0" y="134">700</text>
+<line stroke="#D8D8DE" stroke-width=".8" x1="570.0" x2="570.0" y1="34" y2="124"></line>
+<text fill="#6B7378" font-size="7" text-anchor="middle" x="570.0" y="134">800</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="57">processeur réel</text>
+<rect fill="#fff" height="16" opacity=".6" width="440" x="130" y="46"></rect>
+<rect fill="#C62828" height="16" width="29.2" x="201.5" y="46"></rect>
+<rect fill="#C62828" height="16" width="46.2" x="231.8" y="46"></rect>
+<line stroke="#2E7D32" stroke-width="2" x1="283.5" x2="283.5" y1="42" y2="66"></line>
+<text fill="#2E7D32" font-size="7.2" font-weight="700" text-anchor="start" x="287.45000000000005" y="74">canvas à 279 ms</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="97">bridé ×4</text>
+<rect fill="#fff" height="16" opacity=".6" width="440" x="130" y="86"></rect>
+<rect fill="#C62828" height="16" width="37.4" x="177.8" y="86"></rect>
+<rect fill="#C62828" height="16" width="29.7" x="238.9" y="86"></rect>
+<rect fill="#C62828" height="16" width="29.2" x="271.9" y="86"></rect>
+<rect fill="#C62828" height="16" width="102.9" x="347.8" y="86"></rect>
+<rect fill="#C62828" height="16" width="62.2" x="451.8" y="86"></rect>
+<line stroke="#2E7D32" stroke-width="2" x1="521.6" x2="521.6" y1="82" y2="106"></line>
+<text fill="#2E7D32" font-size="7.2" font-weight="700" text-anchor="start" x="525.6" y="114">canvas à 712 ms</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="160">Brider le processeur, comme le propose le panneau Performance, transforme deux tâches en cinq, dont une de 187 ms.</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="176">Une tâche longue, c'est un clic qui attend : sur une machine modeste, le premier geste peut patienter 0,2 s (déduit).</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="198">Copie construite par vite build, catalogue vide. Deux essais par réglage, un seul tracé ; l'autre est du même ordre.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript, poser ses propres repères</span>performance.mark("tester-debut");
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript, poser ses propres repères</span>performance.mark("tester-debut");
 const resultat = await envoyer(graphe);
 performance.measure("Tester", "tester-debut");   // apparaît dans la piste Timings du panneau</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Lire une trace</h3>
-      <p>Le graphique en flammes empile les appels : la largeur est le temps, la hauteur la profondeur. On cherche la barre large la plus basse qui vienne de notre code, pas de React.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Brider</h3>
-      <p>La roue dentée du panneau propose de ralentir le processeur par 4 ou par 6, et le réseau. Ton poste de développement est plus rapide que la machine d'un apprenant.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Lire une trace</h3>
+<p>Le graphique en flammes empile les appels : la largeur est le temps, la hauteur la profondeur. On cherche la barre large la plus basse qui vienne de notre code, pas de React.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Brider</h3>
+<p>La roue dentée du panneau propose de ralentir le processeur par 4 ou par 6, et le réseau. Ton poste de développement est plus rapide que la machine d'un apprenant.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Mesurer sous npm run dev. React y tourne en mode développement, plus lent, et StrictMode y fait chaque rendu deux fois. Les chiffres de cette page viennent d'une version construite.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 126 · Les outils de développement</div>
+<div class="folio">2</div>
+<div class="pied">Cours 126 · Les outils de développement</div>
 </section>
-
 <!-- ============ PAGE 3 · COVERAGE ET SOURCES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 126</b></div>
-  <p class="rubrique">Schéma 2 · Coverage et Sources</p>
-  <h2>Le code qui a servi</h2>
-  <p style="max-width:165mm">Le panneau Coverage compte, pendant un enregistrement, quels octets de chaque fichier ont été exécutés. On l'a fait au démarrage de Magpie, sur un écran large où la 3D se charge d'office.</p>
-
-  <svg viewBox="0 0 600 196" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="196" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#7A5A12" text-anchor="start" font-weight="700">Part du JavaScript exécutée pendant le démarrage, écran large (couverture par blocs, Chromium, mesuré)</text>
-<text x="16" y="50" font-size="7.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.8px">index-BuQhiUT6.js</text>
-<rect x="190" y="38" width="300" height="16" rx="2" fill="#fff" stroke="#7A5A12" stroke-width="1"/>
-<rect x="190" y="38" width="150.7" height="16" rx="2" fill="#7A5A12"/>
-<text x="498" y="50" font-size="7.6" fill="#7A5A12" text-anchor="start" font-weight="700">50,2 % de 520 767 o</text>
-<text x="16" y="80" font-size="7.8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.8px">Viewer3D-BzlQt_aR.js</text>
-<rect x="190" y="68" width="300" height="16" rx="2" fill="#fff" stroke="#C62828" stroke-width="1"/>
-<rect x="190" y="68" width="144.9" height="16" rx="2" fill="#C62828"/>
-<text x="498" y="80" font-size="7.6" fill="#C62828" text-anchor="start" font-weight="700">48,3 % de 550 935 o</text>
-<text x="16" y="112" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">La moitié du code téléchargé n'a pas servi à afficher l'écran d'ouverture. Ce n'est pas du code mort :</text>
-<text x="16" y="128" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">il servira au premier glisser, au premier Tester. C'est du code qui aurait pu arriver plus tard.</text>
-<text x="16" y="152" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Le dossier dist/assets de la copie ne contient que trois fichiers et aucune carte .map (mesuré) :</text>
-<text x="16" y="166" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">en production, Sources et les piles d'erreur montrent le code minifié, une seule ligne par fichier.</text>
-<text x="16" y="182" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Le panneau Coverage fait le même calcul ; il compte, lui, par fonctions ou par blocs selon le réglage.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 126</b></div>
+<p class="rubrique">Schéma 2 · Coverage et Sources</p>
+<h2>Le code qui a servi</h2>
+<p style="max-width:165mm">Le panneau Coverage compte, pendant un enregistrement, quels octets de chaque fichier ont été exécutés. On l'a fait au démarrage de Magpie, sur un écran large où la 3D se charge d'office.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 196" width="100%">
+<rect fill="#EFE9E1" height="196" width="600" x="0" y="0"></rect>
+<text fill="#7A5A12" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">Part du JavaScript exécutée pendant le démarrage, écran large (couverture par blocs, Chromium, mesuré)</text>
+<text class="mono" fill="#2B2F33" font-size="7.8" style="font-size:7.8px" text-anchor="start" x="16" y="50">index-BuQhiUT6.js</text>
+<rect fill="#fff" height="16" rx="2" stroke="#7A5A12" stroke-width="1" width="300" x="190" y="38"></rect>
+<rect fill="#7A5A12" height="16" rx="2" width="150.7" x="190" y="38"></rect>
+<text fill="#7A5A12" font-size="7.6" font-weight="700" text-anchor="start" x="498" y="50">50,2 % de 520 767 o</text>
+<text class="mono" fill="#2B2F33" font-size="7.8" style="font-size:7.8px" text-anchor="start" x="16" y="80">Viewer3D-BzlQt_aR.js</text>
+<rect fill="#fff" height="16" rx="2" stroke="#C62828" stroke-width="1" width="300" x="190" y="68"></rect>
+<rect fill="#C62828" height="16" rx="2" width="144.9" x="190" y="68"></rect>
+<text fill="#C62828" font-size="7.6" font-weight="700" text-anchor="start" x="498" y="80">48,3 % de 550 935 o</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="112">La moitié du code téléchargé n'a pas servi à afficher l'écran d'ouverture. Ce n'est pas du code mort :</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="128">il servira au premier glisser, au premier Tester. C'est du code qui aurait pu arriver plus tard.</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="152">Le dossier dist/assets de la copie ne contient que trois fichiers et aucune carte .map (mesuré) :</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="166">en production, Sources et les piles d'erreur montrent le code minifié, une seule ligne par fichier.</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="182">Le panneau Coverage fait le même calcul ; il compte, lui, par fonctions ou par blocs selon le réglage.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · vite.config.js, des cartes sans les publier</span>export default defineConfig({
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · vite.config.js, des cartes sans les publier</span>export default defineConfig({
   build: { sourcemap: "hidden" },   // .map produites, non annoncées : on les charge soi-même
 });</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Les cartes de code source</h3>
-      <p>Un fichier .map relie chaque caractère minifié à sa ligne d'origine. Sources montre alors App.jsx et ses noms, et une erreur cite la vraie ligne.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Points d'arrêt</h3>
-      <p>Dans Sources, un clic sur un numéro de ligne arrête le code à cet endroit ; un clic droit en fait un arrêt conditionnel, ou un logpoint qui écrit sans modifier le fichier.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Les cartes de code source</h3>
+<p>Un fichier .map relie chaque caractère minifié à sa ligne d'origine. Sources montre alors App.jsx et ses noms, et une erreur cite la vraie ligne.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Points d'arrêt</h3>
+<p>Dans Sources, un clic sur un numéro de ligne arrête le code à cet endroit ; un clic droit en fait un arrêt conditionnel, ou un logpoint qui écrit sans modifier le fichier.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Lire « non exécuté » comme « inutile ». Coverage ne voit que ce qui a tourné pendant l'enregistrement : le code d'un bouton qu'on n'a pas cliqué paraît mort, et sert pourtant.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 126 · Les outils de développement</div>
+<div class="folio">3</div>
+<div class="pied">Cours 126 · Les outils de développement</div>
 </section>
-
 <!-- ============ PAGE 4 · MEMORY ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 126</b></div>
-  <p class="rubrique">Schéma 3 · Mémoire et console</p>
-  <h2>L'outil qui retient</h2>
-  <p style="max-width:165mm">Afficher un objet dans la console le garde en vie, pour qu'on puisse le déplier plus tard. On a mesuré ce que coûtent dix grosses réponses passées à console.log puis oubliées par la page.</p>
-
-  <svg viewBox="0 0 600 208" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="208" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.2" fill="#7A5A12" text-anchor="start" font-weight="700">Dix réponses de 6,7 millions de caractères base64, comme un aperçu au plafond (Chromium, inspecteur attaché, mesuré)</text>
-<text x="16" y="47" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">au départ</text>
-<rect x="270" y="36" width="2.0" height="14" rx="2" fill="#7A5A12"/>
-<text x="278" y="47" font-size="7.8" fill="#7A5A12" text-anchor="start" font-weight="700">0,5 Mio</text>
-<text x="16" y="69" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">les dix réponses gardées par la page</text>
-<rect x="270" y="58" width="238.1" height="14" rx="2" fill="#7A5A12"/>
-<text x="514.0857142857143" y="69" font-size="7.8" fill="#7A5A12" text-anchor="start" font-weight="700">64,1 Mio</text>
-<text x="16" y="91" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">lâchées par la page, mais passées à console.log</text>
-<rect x="270" y="80" width="238.1" height="14" rx="2" fill="#C62828"/>
-<text x="514.0857142857143" y="91" font-size="7.8" fill="#C62828" text-anchor="start" font-weight="700">64,1 Mio</text>
-<text x="16" y="113" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">après « effacer la console »</text>
-<rect x="270" y="102" width="2.0" height="14" rx="2" fill="#2E7D32"/>
-<text x="278" y="113" font-size="7.8" fill="#2E7D32" text-anchor="start" font-weight="700">0,5 Mio</text>
-<text x="16" y="144" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Un objet affiché dans la console y reste, pour qu'on puisse le déplier. Il n'est libéré qu'avec la console.</text>
-<text x="16" y="166" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Mémoire lue par performance.memory après un ramasse-miettes forcé ; getHeapUsage ne voyait pas ces grandes chaînes.</text>
-<text x="16" y="182" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Chromium montre aussi les messages émis avant l'ouverture des DevTools : il les garde sans doute fermés,</text>
-<text x="16" y="196" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">mais seul le cas inspecteur attaché a été mesuré ici (à vérifier, DevTools fermés).</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 126</b></div>
+<p class="rubrique">Schéma 3 · Mémoire et console</p>
+<h2>L'outil qui retient</h2>
+<p style="max-width:165mm">Afficher un objet dans la console le garde en vie, pour qu'on puisse le déplier plus tard. On a mesuré ce que coûtent dix grosses réponses passées à console.log puis oubliées par la page.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 208" width="100%">
+<rect fill="#EFE9E1" height="208" width="600" x="0" y="0"></rect>
+<text fill="#7A5A12" font-size="8.2" font-weight="700" text-anchor="start" x="16" y="22">Dix réponses de 6,7 millions de caractères base64, comme un aperçu au plafond (Chromium, inspecteur attaché, mesuré)</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="47">au départ</text>
+<rect fill="#7A5A12" height="14" rx="2" width="2.0" x="270" y="36"></rect>
+<text fill="#7A5A12" font-size="7.8" font-weight="700" text-anchor="start" x="278" y="47">0,5 Mio</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="69">les dix réponses gardées par la page</text>
+<rect fill="#7A5A12" height="14" rx="2" width="238.1" x="270" y="58"></rect>
+<text fill="#7A5A12" font-size="7.8" font-weight="700" text-anchor="start" x="514.0857142857143" y="69">64,1 Mio</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="91">lâchées par la page, mais passées à console.log</text>
+<rect fill="#C62828" height="14" rx="2" width="238.1" x="270" y="80"></rect>
+<text fill="#C62828" font-size="7.8" font-weight="700" text-anchor="start" x="514.0857142857143" y="91">64,1 Mio</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="113">après « effacer la console »</text>
+<rect fill="#2E7D32" height="14" rx="2" width="2.0" x="270" y="102"></rect>
+<text fill="#2E7D32" font-size="7.8" font-weight="700" text-anchor="start" x="278" y="113">0,5 Mio</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="144">Un objet affiché dans la console y reste, pour qu'on puisse le déplier. Il n'est libéré qu'avec la console.</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="166">Mémoire lue par performance.memory après un ramasse-miettes forcé ; getHeapUsage ne voyait pas ces grandes chaînes.</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="182">Chromium montre aussi les messages émis avant l'ouverture des DevTools : il les garde sans doute fermés,</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="196">mais seul le cas inspecteur attaché a été mesuré ici (à vérifier, DevTools fermés).</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript, ne journaliser qu'en développement</span>if (import.meta.env.DEV) console.log("Réponse :", resultat);       // retiré de la version construite
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · JavaScript, ne journaliser qu'en développement</span>if (import.meta.env.DEV) console.log("Réponse :", resultat);       // retiré de la version construite
 else console.info("Réponse :", resultat.errors?.length ?? 0, "erreur(s)");   // un résumé, pas l'objet</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Instantanés de tas</h3>
-      <p>Memory prend une photo de tous les objets vivants. Deux photos, avant et après un geste répété, comparées : ce qui a grandi, et le chemin qui le retient.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Application</h3>
-      <p>Le panneau Application liste localStorage, IndexedDB, le cache et le manifeste ; on y lit et on y efface ce que le cours 123 a rangé, clé par clé.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Instantanés de tas</h3>
+<p>Memory prend une photo de tous les objets vivants. Deux photos, avant et après un geste répété, comparées : ce qui a grandi, et le chemin qui le retient.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Application</h3>
+<p>Le panneau Application liste localStorage, IndexedDB, le cache et le manifeste ; on y lit et on y efface ce que le cours 123 a rangé, clé par clé.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Chercher une fuite mémoire sans vider la console. Les objets qu'elle affiche restent vivants : l'instantané les montre retenus, et on accuse le code d'une fuite que l'outil a créée.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 126 · Les outils de développement</div>
+<div class="folio">4</div>
+<div class="pied">Cours 126 · Les outils de développement</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 126</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>Ce que Magpie web laisse voir</h2>
-  <p style="max-width:165mm">Une réponse entière dans la console, un mode strict, une construction sans cartes.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 126</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>Ce que Magpie web laisse voir</h2>
+<p style="max-width:165mm">Une réponse entière dans la console, un mode strict, une construction sans cartes.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">magpie/web/src/graphEditor.jsx · App.jsx</span></div>
 <div class="l k1"><span class="n">218</span>const result = await solveGraph({ … preview: previewIds });<span class="rep r1">1</span></div>
@@ -269,137 +242,55 @@ else console.info("Réponse :", resultat.errors?.length ?? 0, "erreur(s)");   //
 <div class="l k4"><span class="n">10</span>….render(&lt;StrictMode&gt;{isAdmin ? … : &lt;App /&gt;}&lt;/StrictMode&gt;);<span class="rep r4">4</span></div>
 <div class="l k5"><span class="n">6</span>export default defineConfig({<span class="rep r5">5</span></div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>La réponse</b>Avec l'aperçu.</li>
-      <li><span class="rep r2">2</span><b>Affichée</b>Entière.</li>
-      <li><span class="rep r3">3</span><b>Une erreur</b>Pile minifiée.</li>
-      <li><span class="rep r4">4</span><b>Mode strict</b>Double en dev.</li>
-      <li><span class="rep r5">5</span><b>Pas de build</b>Donc pas de .map.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À surveiller · chaque « Tester » laisse sa réponse dans la console</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>La réponse</b>Avec l'aperçu.</li>
+<li><span class="rep r2">2</span><b>Affichée</b>Entière.</li>
+<li><span class="rep r3">3</span><b>Une erreur</b>Pile minifiée.</li>
+<li><span class="rep r4">4</span><b>Mode strict</b>Double en dev.</li>
+<li><span class="rep r5">5</span><b>Pas de build</b>Donc pas de .map.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À surveiller · chaque « Tester » laisse sa réponse dans la console</span>
     graphEditor.jsx:221 affiche la réponse entière, aperçu 3D compris, en production. Mesuré hors de Magpie, inspecteur attaché : dix réponses au plafond restent en mémoire, 64,1 Mio, jusqu'à ce qu'on vide la console. Déduit : sur une longue séance, la page grossit à chaque essai ; fenêtre DevTools fermée, à vérifier. Relevé sans rien modifier.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 126 · Les outils de développement</div>
+<div class="folio">5</div>
+<div class="pied">Cours 126 · Les outils de développement</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 126</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 126</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">Pour savoir ce qui occupe le fil principal, on ouvre…</div><ul>
-      <li><span>A</span>Elements</li><li><span>B</span>Application</li><li><span>C</span>Coverage</li><li><span>D</span>Performance</li></ul></div>
 
-    <div class="q"><div class="enonce">Une tâche longue dure plus de…</div><ul>
-      <li><span>A</span>1 s</li><li><span>B</span>50 ms</li><li><span>C</span>1 ms</li><li><span>D</span>16 µs</li></ul></div>
 
-    <div class="q"><div class="enonce">Processeur bridé par 4, le démarrage de Magpie a montré…</div><ul>
-      <li><span>A</span>cinq tâches longues, la plus longue de 187 ms</li><li><span>B</span>une seule de 50 ms</li><li><span>C</span>cent</li><li><span>D</span>aucune</li></ul></div>
 
-    <div class="q"><div class="enonce">Mesurer sous npm run dev…</div><ul>
-      <li><span>A</span>est plus fiable</li><li><span>B</span>est identique</li><li><span>C</span>fausse les chiffres : React de développement, rendus doublés</li><li><span>D</span>est impossible</li></ul></div>
-
-    <div class="q"><div class="enonce">Au démarrage, part exécutée d'index.js…</div><ul>
-      <li><span>A</span>0 %</li><li><span>B</span>100 %</li><li><span>C</span>environ 50 %</li><li><span>D</span>5 %</li></ul></div>
-
-    <div class="q"><div class="enonce">Un octet non exécuté pendant l'enregistrement est…</div><ul>
-      <li><span>A</span>supprimé par Vite</li><li><span>B</span>forcément mort</li><li><span>C</span>une erreur</li><li><span>D</span>du code qui n'a pas encore servi</li></ul></div>
-
-    <div class="q"><div class="enonce">Une carte .map sert à…</div><ul>
-      <li><span>A</span>cacher le code</li><li><span>B</span>accélérer le code</li><li><span>C</span>relier le code minifié à ses lignes d'origine</li><li><span>D</span>compresser</li></ul></div>
-
-    <div class="q"><div class="enonce">Peuvent s'ouvrir par la palette Ctrl+Maj+P… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>Rendering</li><li><span>B</span>Coverage</li><li><span>C</span>le gestionnaire de fichiers</li><li><span>D</span>la barre d'adresse</li></ul></div>
-
-    <div class="q"><div class="enonce">Un objet passé à console.log puis oublié par la page…</div><ul>
-      <li><span>A</span>reste en vie tant que la console le garde</li><li><span>B</span>est copié sur disque</li><li><span>C</span>est envoyé au serveur</li><li><span>D</span>est libéré aussitôt</li></ul></div>
-
-    <div class="q"><div class="enonce">Dix réponses au plafond, loggées, ont occupé…</div><ul>
-      <li><span>A</span>6,7 Mio</li><li><span>B</span>0,5 Mio</li><li><span>C</span>1 Go</li><li><span>D</span>64,1 Mio, puis 0,5 une fois la console vidée</li></ul></div>
-
-    <div class="q"><div class="enonce">import.meta.env.DEV vaut true…</div><ul>
-      <li><span>A</span>dans un worker seulement</li><li><span>B</span>sous le serveur de développement de Vite</li><li><span>C</span>en production</li><li><span>D</span>toujours</li></ul></div>
-
-    <div class="q"><div class="enonce">Magpie web affiche la réponse de Compute…</div><ul>
-      <li><span>A</span>seulement en cas d'erreur</li><li><span>B</span>entière, à chaque Tester</li><li><span>C</span>en résumé</li><li><span>D</span>jamais</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 126 · Les outils de développement</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">Ctrl+Maj+P</td><td>palette de commandes des DevTools</td><td>page 1</td></tr>
+<tr><td class="c">performance.mark / measure</td><td>poser des repères dans la trace</td><td>page 2</td></tr>
+<tr><td class="c">build.sourcemap: "hidden"</td><td>produire les cartes sans les publier</td><td>page 3</td></tr>
+<tr><td class="c">import.meta.env.DEV</td><td>vrai seulement en développement</td><td>page 4</td></tr>
+<tr><td class="c">console.log(objet)</td><td>garde l'objet en vie</td><td>graphEditor.jsx:221</td></tr>
+<tr><td class="c">Memory · Heap snapshot</td><td>photographier les objets vivants</td><td>page 4</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Tâche longue</dt><dd>Un travail de plus de 50 ms sur le fil principal.</dd>
+<dt>Bridage</dt><dd>Le ralentissement simulé du processeur ou du réseau.</dd>
+<dt>Couverture</dt><dd>La part du code exécutée pendant un enregistrement.</dd>
+<dt>Carte de code source</dt><dd>Le fichier .map qui relie code minifié et code d'origine.</dd>
+<dt>Instantané de tas</dt><dd>La liste des objets vivants à un instant, avec ce qui les retient.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 33</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 126 · Les outils de développement</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8B</b> · Le navigateur de l'intérieur</span><b>Cours 126</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · D.</b> Le fil, image par image.</div>
-    <div><b>02 · B.</b> Le seuil du triangle rouge.</div>
-    <div><b>03 · A.</b> Mesuré, page 2.</div>
-    <div><b>04 · C.</b> Mesurer construit.</div>
-    <div><b>05 · C.</b> 50,2 %, mesuré.</div>
-    <div><b>06 · D.</b> Il servira peut-être plus tard.</div>
-    <div><b>07 · C.</b> Sources s'en sert.</div>
-    <div><b>08 · A et B.</b> Show Coverage, Show Rendering.</div>
-    <div><b>09 · A.</b> Pour pouvoir le déplier.</div>
-    <div><b>10 · D.</b> Mesuré, page 4.</div>
-    <div><b>11 · B.</b> Faux à la construction.</div>
-    <div><b>12 · B.</b> graphEditor.jsx:221.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 33, « Le backend qui parle à Rhino Compute ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">Ctrl+Maj+P</td><td>palette de commandes des DevTools</td><td>page 1</td></tr>
-      <tr><td class="c">performance.mark / measure</td><td>poser des repères dans la trace</td><td>page 2</td></tr>
-      <tr><td class="c">build.sourcemap: "hidden"</td><td>produire les cartes sans les publier</td><td>page 3</td></tr>
-      <tr><td class="c">import.meta.env.DEV</td><td>vrai seulement en développement</td><td>page 4</td></tr>
-      <tr><td class="c">console.log(objet)</td><td>garde l'objet en vie</td><td>graphEditor.jsx:221</td></tr>
-      <tr><td class="c">Memory · Heap snapshot</td><td>photographier les objets vivants</td><td>page 4</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Tâche longue</dt><dd>Un travail de plus de 50 ms sur le fil principal.</dd>
-    <dt>Bridage</dt><dd>Le ralentissement simulé du processeur ou du réseau.</dd>
-    <dt>Couverture</dt><dd>La part du code exécutée pendant un enregistrement.</dd>
-    <dt>Carte de code source</dt><dd>Le fichier .map qui relie code minifié et code d'origine.</dd>
-    <dt>Instantané de tas</dt><dd>La liste des objets vivants à un instant, avec ce qui les retient.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 33</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 126 · Les outils de développement</div>
-</section>
-
 </body>
 </html>

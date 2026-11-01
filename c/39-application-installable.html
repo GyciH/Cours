@@ -1,154 +1,144 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>39 · Une application web installable</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-8">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 39</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Une application web installable</h1>
-  <p class="chapeau">Magpie Web s'ouvre dans un navigateur, mais un apprenant peut aussi l'<b>installer</b> sur l'écran d'accueil de son téléphone ou de sa tablette. Lancée de là, elle prend tout l'écran, sans barre d'adresse, en paysage. Un fichier de description, quelques balises, et une interface qui sait qu'on la touche au doigt.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>29</b>, <b>31</b>, <b>32</b> et <b>35</b></span>
-    <span class="pastille">Exemples · <b>public/manifest.webmanifest</b>, <b>index.html</b>, <b>graphEditor.jsx</b>, <b>styles.css</b> (Magpie web)</span>
-  </div>
-
-  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
-    <svg viewBox="0 0 600 186" width="100%">
-<rect x="30" y="10" width="84" height="156" rx="12" fill="#fff" stroke="#2B2F33" stroke-width="2"/>
-<rect x="58.0" y="13" width="28" height="6" rx="3" fill="#2B2F33"/>
-<rect x="38" y="22" width="68" height="12" rx="3" fill="#E6E6E6"/><text x="72" y="31" font-size="6.4" fill="#6B7378" text-anchor="middle">magpie…</text>
-<rect x="38" y="38" width="68" height="118" fill="#dcdad2"/>
-<line x1="48" y1="38" x2="48" y2="156" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="58" y1="38" x2="58" y2="156" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="68" y1="38" x2="68" y2="156" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="78" y1="38" x2="78" y2="156" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="88" y1="38" x2="88" y2="156" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="98" y1="38" x2="98" y2="156" stroke="#cdcbc2" stroke-width=".5"/>
-<rect x="40" y="42" width="64" height="20" rx="3" fill="#20262a"/><text x="72" y="50" font-size="6" fill="#fff" text-anchor="middle">Tourne ton</text><text x="72" y="58" font-size="6" fill="#fff" text-anchor="middle">téléphone…</text>
-<text x="72" y="182" font-size="8.2" fill="#6B7378" text-anchor="middle" font-style="italic">navigateur, portrait</text>
-<line x1="122" y1="88" x2="170" y2="88" stroke="#6B7378" stroke-width="1.4"/><polygon points="170,88 163.6,90.7 163.6,85.3" fill="#6B7378"/>
-<text x="146" y="80" font-size="7.8" fill="#7A5A12" text-anchor="middle" font-weight="700">installer</text>
-<rect x="178" y="58" width="60" height="60" rx="14" fill="#20262a"/>
-<circle cx="208" cy="88" r="16" fill="none" stroke="#dcdad2" stroke-width="2"/><text x="208" y="92" font-size="12" fill="#dcdad2" text-anchor="middle" font-weight="700">M</text>
-<text x="208" y="134" font-size="8.6" fill="#2B2F33" text-anchor="middle" font-weight="700">Magpie</text>
-<text x="208" y="182" font-size="8.2" fill="#6B7378" text-anchor="middle" font-style="italic">écran d'accueil</text>
-<line x1="246" y1="88" x2="294" y2="88" stroke="#6B7378" stroke-width="1.4"/><polygon points="294,88 287.6,90.7 287.6,85.3" fill="#6B7378"/>
-<text x="270" y="80" font-size="7.8" fill="#7A5A12" text-anchor="middle" font-weight="700">ouvrir</text>
-<rect x="302" y="30" width="290" height="120" rx="12" fill="#fff" stroke="#2B2F33" stroke-width="2"/>
-<rect x="305" y="76.0" width="6" height="28" rx="3" fill="#2B2F33"/>
-<rect x="318" y="38" width="266" height="104" fill="#dcdad2"/>
-<line x1="328" y1="38" x2="328" y2="142" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="338" y1="38" x2="338" y2="142" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="348" y1="38" x2="348" y2="142" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="358" y1="38" x2="358" y2="142" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="368" y1="38" x2="368" y2="142" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="378" y1="38" x2="378" y2="142" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="388" y1="38" x2="388" y2="142" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="398" y1="38" x2="398" y2="142" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="408" y1="38" x2="408" y2="142" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="418" y1="38" x2="418" y2="142" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="428" y1="38" x2="428" y2="142" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="438" y1="38" x2="438" y2="142" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="448" y1="38" x2="448" y2="142" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="458" y1="38" x2="458" y2="142" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="468" y1="38" x2="468" y2="142" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="478" y1="38" x2="478" y2="142" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="488" y1="38" x2="488" y2="142" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="498" y1="38" x2="498" y2="142" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="508" y1="38" x2="508" y2="142" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="518" y1="38" x2="518" y2="142" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="528" y1="38" x2="528" y2="142" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="538" y1="38" x2="538" y2="142" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="548" y1="38" x2="548" y2="142" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="558" y1="38" x2="558" y2="142" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="568" y1="38" x2="568" y2="142" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="578" y1="38" x2="578" y2="142" stroke="#cdcbc2" stroke-width=".5"/>
-<rect x="350" y="60" width="50" height="22" rx="5" fill="#D8D8D8" stroke="#2B2F33"/><text x="375" y="75" font-size="7" fill="#2B2F33" text-anchor="middle" font-weight="700">Series</text>
-<rect x="440" y="92" width="50" height="22" rx="5" fill="#D8D8D8" stroke="#2B2F33"/><text x="465" y="107" font-size="7" fill="#2B2F33" text-anchor="middle" font-weight="700">Square</text>
-<path d="M400 71 C 420 71, 420 103, 440 103" fill="none" stroke="#2B2F33" stroke-width="1.2"/>
-<rect x="496" y="122" width="40" height="14" rx="3" fill="#fafaf7" stroke="#b8b5a8"/><text x="516" y="132" font-size="6" fill="#2B2F33" text-anchor="middle" font-weight="700">Ajouter…</text>
-<rect x="540" y="122" width="40" height="14" rx="3" fill="#fafaf7" stroke="#b8b5a8"/><text x="560" y="132" font-size="5.8" fill="#2B2F33" text-anchor="middle" font-weight="700">Supprimer</text>
-<text x="447" y="182" font-size="8.2" fill="#6B7378" text-anchor="middle" font-style="italic">application installée : plein écran, paysage</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 39</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Une application web installable</h1>
+<p class="chapeau">Magpie Web s'ouvre dans un navigateur, mais un apprenant peut aussi l'<b>installer</b> sur l'écran d'accueil de son téléphone ou de sa tablette. Lancée de là, elle prend tout l'écran, sans barre d'adresse, en paysage. Un fichier de description, quelques balises, et une interface qui sait qu'on la touche au doigt.</p>
+<div class="meta">
+<span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>29</b>, <b>31</b>, <b>32</b> et <b>35</b></span>
+<span class="pastille">Exemples · <b>public/manifest.webmanifest</b>, <b>index.html</b>, <b>graphEditor.jsx</b>, <b>styles.css</b> (Magpie web)</span>
+</div>
+<div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+<svg viewbox="0 0 600 186" width="100%">
+<rect fill="#fff" height="156" rx="12" stroke="#2B2F33" stroke-width="2" width="84" x="30" y="10"></rect>
+<rect fill="#2B2F33" height="6" rx="3" width="28" x="58.0" y="13"></rect>
+<rect fill="#E6E6E6" height="12" rx="3" width="68" x="38" y="22"></rect><text fill="#6B7378" font-size="6.4" text-anchor="middle" x="72" y="31">magpie…</text>
+<rect fill="#dcdad2" height="118" width="68" x="38" y="38"></rect>
+<line stroke="#cdcbc2" stroke-width=".5" x1="48" x2="48" y1="38" y2="156"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="58" x2="58" y1="38" y2="156"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="68" x2="68" y1="38" y2="156"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="78" x2="78" y1="38" y2="156"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="88" x2="88" y1="38" y2="156"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="98" x2="98" y1="38" y2="156"></line>
+<rect fill="#20262a" height="20" rx="3" width="64" x="40" y="42"></rect><text fill="#fff" font-size="6" text-anchor="middle" x="72" y="50">Tourne ton</text><text fill="#fff" font-size="6" text-anchor="middle" x="72" y="58">téléphone…</text>
+<text fill="#6B7378" font-size="8.2" font-style="italic" text-anchor="middle" x="72" y="182">navigateur, portrait</text>
+<line stroke="#6B7378" stroke-width="1.4" x1="122" x2="170" y1="88" y2="88"></line><polygon fill="#6B7378" points="170,88 163.6,90.7 163.6,85.3"></polygon>
+<text fill="#7A5A12" font-size="7.8" font-weight="700" text-anchor="middle" x="146" y="80">installer</text>
+<rect fill="#20262a" height="60" rx="14" width="60" x="178" y="58"></rect>
+<circle cx="208" cy="88" fill="none" r="16" stroke="#dcdad2" stroke-width="2"></circle><text fill="#dcdad2" font-size="12" font-weight="700" text-anchor="middle" x="208" y="92">M</text>
+<text fill="#2B2F33" font-size="8.6" font-weight="700" text-anchor="middle" x="208" y="134">Magpie</text>
+<text fill="#6B7378" font-size="8.2" font-style="italic" text-anchor="middle" x="208" y="182">écran d'accueil</text>
+<line stroke="#6B7378" stroke-width="1.4" x1="246" x2="294" y1="88" y2="88"></line><polygon fill="#6B7378" points="294,88 287.6,90.7 287.6,85.3"></polygon>
+<text fill="#7A5A12" font-size="7.8" font-weight="700" text-anchor="middle" x="270" y="80">ouvrir</text>
+<rect fill="#fff" height="120" rx="12" stroke="#2B2F33" stroke-width="2" width="290" x="302" y="30"></rect>
+<rect fill="#2B2F33" height="28" rx="3" width="6" x="305" y="76.0"></rect>
+<rect fill="#dcdad2" height="104" width="266" x="318" y="38"></rect>
+<line stroke="#cdcbc2" stroke-width=".5" x1="328" x2="328" y1="38" y2="142"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="338" x2="338" y1="38" y2="142"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="348" x2="348" y1="38" y2="142"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="358" x2="358" y1="38" y2="142"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="368" x2="368" y1="38" y2="142"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="378" x2="378" y1="38" y2="142"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="388" x2="388" y1="38" y2="142"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="398" x2="398" y1="38" y2="142"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="408" x2="408" y1="38" y2="142"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="418" x2="418" y1="38" y2="142"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="428" x2="428" y1="38" y2="142"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="438" x2="438" y1="38" y2="142"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="448" x2="448" y1="38" y2="142"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="458" x2="458" y1="38" y2="142"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="468" x2="468" y1="38" y2="142"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="478" x2="478" y1="38" y2="142"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="488" x2="488" y1="38" y2="142"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="498" x2="498" y1="38" y2="142"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="508" x2="508" y1="38" y2="142"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="518" x2="518" y1="38" y2="142"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="528" x2="528" y1="38" y2="142"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="538" x2="538" y1="38" y2="142"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="548" x2="548" y1="38" y2="142"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="558" x2="558" y1="38" y2="142"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="568" x2="568" y1="38" y2="142"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="578" x2="578" y1="38" y2="142"></line>
+<rect fill="#D8D8D8" height="22" rx="5" stroke="#2B2F33" width="50" x="350" y="60"></rect><text fill="#2B2F33" font-size="7" font-weight="700" text-anchor="middle" x="375" y="75">Series</text>
+<rect fill="#D8D8D8" height="22" rx="5" stroke="#2B2F33" width="50" x="440" y="92"></rect><text fill="#2B2F33" font-size="7" font-weight="700" text-anchor="middle" x="465" y="107">Square</text>
+<path d="M400 71 C 420 71, 420 103, 440 103" fill="none" stroke="#2B2F33" stroke-width="1.2"></path>
+<rect fill="#fafaf7" height="14" rx="3" stroke="#b8b5a8" width="40" x="496" y="122"></rect><text fill="#2B2F33" font-size="6" font-weight="700" text-anchor="middle" x="516" y="132">Ajouter…</text>
+<rect fill="#fafaf7" height="14" rx="3" stroke="#b8b5a8" width="40" x="540" y="122"></rect><text fill="#2B2F33" font-size="5.8" font-weight="700" text-anchor="middle" x="560" y="132">Supprimer</text>
+<text fill="#6B7378" font-size="8.2" font-style="italic" text-anchor="middle" x="447" y="182">application installée : plein écran, paysage</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Le manifeste dit au système comment présenter l'application une fois installée ; les règles <code>@media (pointer: coarse)</code> adaptent l'interface au doigt ; le reste corrige ce qu'un téléphone a de particulier : l'encoche, la barre d'adresse, le portrait.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Un raccourci de bureau qui ouvrirait une fenêtre sur mesure. Le programme reste le même site, au même endroit ; seule la façon de l'ouvrir et de l'habiller change.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>lire un manifeste d'application web ;</li>
-        <li>distinguer ce qu'Android et iOS lisent chacun ;</li>
-        <li>adapter une interface au doigt avec <code>pointer: coarse</code> ;</li>
-        <li>garder le contenu dans la zone sûre de l'écran.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:5mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Le manifeste dit au système comment présenter l'application une fois installée ; les règles <code>@media (pointer: coarse)</code> adaptent l'interface au doigt ; le reste corrige ce qu'un téléphone a de particulier : l'encoche, la barre d'adresse, le portrait.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Un raccourci de bureau qui ouvrirait une fenêtre sur mesure. Le programme reste le même site, au même endroit ; seule la façon de l'ouvrir et de l'habiller change.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>lire un manifeste d'application web ;</li>
+<li>distinguer ce qu'Android et iOS lisent chacun ;</li>
+<li>adapter une interface au doigt avec <code>pointer: coarse</code> ;</li>
+<li>garder le contenu dans la zone sûre de l'écran.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:5mm">
+<span class="titre">À retenir</span>
     Installée, Magpie reste un site : elle n'a pas de service worker, donc rien ne fonctionne hors ligne. L'icône ouvre le même serveur, la même adresse ; mettre en ligne une nouvelle version (cours 35) met à jour toutes les applications installées à leur prochaine ouverture.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 39 · Une application web installable</div>
+<div class="folio">1</div>
+<div class="pied">Cours 39 · Une application web installable</div>
 </section>
-
 <!-- ============ PAGE 2 · LE MANIFESTE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 39</b></div>
-  <p class="rubrique">Schéma 1 · Le manifeste et les balises</p>
-  <h2>Dix-huit lignes pour Android, quatre balises pour iOS</h2>
-  <p style="max-width:165mm"><code>index.html</code> désigne le manifeste par une balise <code>&lt;link rel="manifest"&gt;</code>. Chrome sur Android y lit le nom, les icônes et l'affichage voulu ; Safari sur iPhone préfère ses propres balises <code>apple-…</code>, posées juste à côté.</p>
-
-  <svg viewBox="0 0 600 208" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="208" fill="#EFE9E1"/>
-<rect x="210" y="14" width="180" height="180" rx="5" fill="#fff" stroke="#7A5A12" stroke-width="1.4"/>
-<text x="300" y="32" font-size="9.6" fill="#7A5A12" text-anchor="middle" font-weight="700" class="mono" style="font-size:9.6px">index.html</text>
-<text x="222" y="54" font-size="8" fill="#1565C0" text-anchor="start" font-weight="700" class="mono" style="font-size:8px">&lt;link rel="manifest"&gt;</text>
-<text x="222" y="73" font-size="8" fill="#1565C0" text-anchor="start" class="mono" style="font-size:8px">theme-color</text>
-<text x="222" y="92" font-size="8" fill="#1565C0" text-anchor="start" class="mono" style="font-size:8px">mobile-web-app-capable</text>
-<text x="222" y="111" font-size="8" fill="#6D4C41" text-anchor="start" class="mono" style="font-size:8px">apple-…-capable</text>
-<text x="222" y="130" font-size="8" fill="#6D4C41" text-anchor="start" class="mono" style="font-size:8px">apple-…-status-bar-style</text>
-<text x="222" y="149" font-size="8" fill="#6D4C41" text-anchor="start" class="mono" style="font-size:8px">apple-…-title</text>
-<text x="222" y="168" font-size="8" fill="#6D4C41" text-anchor="start" class="mono" style="font-size:8px">apple-touch-icon</text>
-<rect x="16" y="14" width="178" height="180" rx="5" fill="#fff" stroke="#1565C0" stroke-width="1.4"/>
-<rect x="16" y="14" width="178" height="22" rx="5" fill="#1565C0"/>
-<text x="26" y="29" font-size="9.4" fill="#fff" text-anchor="start" font-weight="700">Chrome, Android</text>
-<text x="26" y="52" font-size="8.2" fill="#6B7378" text-anchor="start" font-style="italic">lit le manifeste</text>
-<text x="26" y="76" font-size="8.4" fill="#2B2F33" text-anchor="start">name, short_name</text>
-<text x="26" y="98" font-size="8.4" fill="#2B2F33" text-anchor="start">icons : 192, 512, maskable</text>
-<text x="26" y="120" font-size="8.4" fill="#2B2F33" text-anchor="start">display : fullscreen</text>
-<text x="26" y="142" font-size="8.4" fill="#2B2F33" text-anchor="start">orientation : landscape</text>
-<text x="26" y="164" font-size="8.4" fill="#2B2F33" text-anchor="start">theme / background_color</text>
-<rect x="406" y="14" width="178" height="180" rx="5" fill="#fff" stroke="#6D4C41" stroke-width="1.4"/>
-<rect x="406" y="14" width="178" height="22" rx="5" fill="#6D4C41"/>
-<text x="416" y="29" font-size="9.4" fill="#fff" text-anchor="start" font-weight="700">Safari, iPhone</text>
-<text x="416" y="52" font-size="8.2" fill="#6B7378" text-anchor="start" font-style="italic">lit ses balises apple-…</text>
-<text x="416" y="76" font-size="8.4" fill="#2B2F33" text-anchor="start">capable : sans barre</text>
-<text x="416" y="98" font-size="8.4" fill="#2B2F33" text-anchor="start">barre d'état translucide</text>
-<text x="416" y="120" font-size="8.4" fill="#2B2F33" text-anchor="start">titre : Magpie</text>
-<text x="416" y="142" font-size="8.4" fill="#2B2F33" text-anchor="start">apple-touch-icon.png</text>
-<text x="416" y="164" font-size="8.4" fill="#2B2F33" text-anchor="start">pas de plein écran par script</text>
-<line x1="208" y1="54" x2="196" y2="54" stroke="#1565C0" stroke-width="1.4"/><polygon points="196,54 202.4,51.3 202.4,56.7" fill="#1565C0"/>
-<line x1="392" y1="130" x2="404" y2="130" stroke="#6D4C41" stroke-width="1.4"/><polygon points="404,130 397.6,132.7 397.6,127.3" fill="#6D4C41"/>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 39</b></div>
+<p class="rubrique">Schéma 1 · Le manifeste et les balises</p>
+<h2>Dix-huit lignes pour Android, quatre balises pour iOS</h2>
+<p style="max-width:165mm"><code>index.html</code> désigne le manifeste par une balise <code>&lt;link rel="manifest"&gt;</code>. Chrome sur Android y lit le nom, les icônes et l'affichage voulu ; Safari sur iPhone préfère ses propres balises <code>apple-…</code>, posées juste à côté.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 208" width="100%">
+<rect fill="#EFE9E1" height="208" width="600" x="0" y="0"></rect>
+<rect fill="#fff" height="180" rx="5" stroke="#7A5A12" stroke-width="1.4" width="180" x="210" y="14"></rect>
+<text class="mono" fill="#7A5A12" font-size="9.6" font-weight="700" style="font-size:9.6px" text-anchor="middle" x="300" y="32">index.html</text>
+<text class="mono" fill="#1565C0" font-size="8" font-weight="700" style="font-size:8px" text-anchor="start" x="222" y="54">&lt;link rel="manifest"&gt;</text>
+<text class="mono" fill="#1565C0" font-size="8" style="font-size:8px" text-anchor="start" x="222" y="73">theme-color</text>
+<text class="mono" fill="#1565C0" font-size="8" style="font-size:8px" text-anchor="start" x="222" y="92">mobile-web-app-capable</text>
+<text class="mono" fill="#6D4C41" font-size="8" style="font-size:8px" text-anchor="start" x="222" y="111">apple-…-capable</text>
+<text class="mono" fill="#6D4C41" font-size="8" style="font-size:8px" text-anchor="start" x="222" y="130">apple-…-status-bar-style</text>
+<text class="mono" fill="#6D4C41" font-size="8" style="font-size:8px" text-anchor="start" x="222" y="149">apple-…-title</text>
+<text class="mono" fill="#6D4C41" font-size="8" style="font-size:8px" text-anchor="start" x="222" y="168">apple-touch-icon</text>
+<rect fill="#fff" height="180" rx="5" stroke="#1565C0" stroke-width="1.4" width="178" x="16" y="14"></rect>
+<rect fill="#1565C0" height="22" rx="5" width="178" x="16" y="14"></rect>
+<text fill="#fff" font-size="9.4" font-weight="700" text-anchor="start" x="26" y="29">Chrome, Android</text>
+<text fill="#6B7378" font-size="8.2" font-style="italic" text-anchor="start" x="26" y="52">lit le manifeste</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="start" x="26" y="76">name, short_name</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="start" x="26" y="98">icons : 192, 512, maskable</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="start" x="26" y="120">display : fullscreen</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="start" x="26" y="142">orientation : landscape</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="start" x="26" y="164">theme / background_color</text>
+<rect fill="#fff" height="180" rx="5" stroke="#6D4C41" stroke-width="1.4" width="178" x="406" y="14"></rect>
+<rect fill="#6D4C41" height="22" rx="5" width="178" x="406" y="14"></rect>
+<text fill="#fff" font-size="9.4" font-weight="700" text-anchor="start" x="416" y="29">Safari, iPhone</text>
+<text fill="#6B7378" font-size="8.2" font-style="italic" text-anchor="start" x="416" y="52">lit ses balises apple-…</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="start" x="416" y="76">capable : sans barre</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="start" x="416" y="98">barre d'état translucide</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="start" x="416" y="120">titre : Magpie</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="start" x="416" y="142">apple-touch-icon.png</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="start" x="416" y="164">pas de plein écran par script</text>
+<line stroke="#1565C0" stroke-width="1.4" x1="208" x2="196" y1="54" y2="54"></line><polygon fill="#1565C0" points="196,54 202.4,51.3 202.4,56.7"></polygon>
+<line stroke="#6D4C41" stroke-width="1.4" x1="392" x2="404" y1="130" y2="130"></line><polygon fill="#6D4C41" points="404,130 397.6,132.7 397.6,127.3"></polygon>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">public/manifest.webmanifest · 6–16, extraits</span>"start_url": "/",
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">public/manifest.webmanifest · 6–16, extraits</span>"start_url": "/",
 "scope": "/",
 "display": "fullscreen",
 "display_override": ["fullscreen", "standalone"],
@@ -157,62 +147,56 @@
 "theme_color": "#20262a",
 "icons": [ …192, …512,
   { "src": "/app-icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Plein écran, sinon sans barre</h3>
-      <p><code>display_override</code> donne un ordre de préférence : le système prend le premier mode qu'il sait faire. <code>fullscreen</code> masque aussi la barre d'état ; <code>standalone</code> garde la barre d'état mais retire celle du navigateur.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Une icône qu'on peut rogner</h3>
-      <p>Android découpe les icônes en cercle, en carré arrondi ou en goutte, selon le téléphone. L'icône <code>maskable</code> garde le dessin au centre, avec une marge que la découpe peut manger sans toucher la pie. iOS prend <code>apple-touch-icon.png</code> (index.html, ligne 14).</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Plein écran, sinon sans barre</h3>
+<p><code>display_override</code> donne un ordre de préférence : le système prend le premier mode qu'il sait faire. <code>fullscreen</code> masque aussi la barre d'état ; <code>standalone</code> garde la barre d'état mais retire celle du navigateur.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Une icône qu'on peut rogner</h3>
+<p>Android découpe les icônes en cercle, en carré arrondi ou en goutte, selon le téléphone. L'icône <code>maskable</code> garde le dessin au centre, avec une marge que la découpe peut manger sans toucher la pie. iOS prend <code>apple-touch-icon.png</code> (index.html, ligne 14).</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Oublier le serveur. En production, c'est <code>compute-proxy.mjs</code> qui sert les fichiers, avec un type par extension ; un fichier inconnu part en <code>application/octet-stream</code> (ligne 510). Le commit qui rend Magpie installable a donc dû ajouter <code>.webmanifest</code> à <code>MIME_TYPES</code> (ligne 57).
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 39 · Une application web installable</div>
+<div class="folio">2</div>
+<div class="pied">Cours 39 · Une application web installable</div>
 </section>
-
 <!-- ============ PAGE 3 · AU DOIGT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 39</b></div>
-  <p class="rubrique">Schéma 2 · Le doigt n'est pas une souris</p>
-  <h2>pointer: coarse</h2>
-  <p style="max-width:165mm">Une souris pointe au pixel près, survole, double-clique ; un doigt couvre une zone large et n'a ni survol ni touche Suppr. CSS sait dire lequel pilote l'écran : <code>pointer: fine</code> pour une souris ou un stylet, <code>pointer: coarse</code> pour un doigt.</p>
-
-  <svg viewBox="0 0 600 216" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="216" fill="#EFE9E1"/>
-<rect x="16" y="14" width="568" height="24" rx="4" fill="#7A5A12"/>
-<text x="28" y="30" font-size="9" fill="#fff" text-anchor="start" font-weight="700">Geste</text><text x="196" y="30" font-size="9" fill="#fff" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">pointer: fine (souris)</text><text x="400" y="30" font-size="9" fill="#fff" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">pointer: coarse (doigt)</text>
-<rect x="16" y="42" width="568" height="26" fill="#fff"/>
-<text x="28" y="59" font-size="8.8" fill="#2B2F33" text-anchor="start" font-weight="700">Ajouter un composant</text>
-<text x="196" y="59" font-size="8.6" fill="#2B2F33" text-anchor="start">double-clic sur le fond</text>
-<text x="400" y="59" font-size="8.6" fill="#2E7D32" text-anchor="start" font-weight="700">bouton « Ajouter… »</text>
-<rect x="16" y="72" width="568" height="26" fill="#F4EEDF"/>
-<text x="28" y="89" font-size="8.8" fill="#2B2F33" text-anchor="start" font-weight="700">Supprimer la sélection</text>
-<text x="196" y="89" font-size="8.6" fill="#2B2F33" text-anchor="start">touche Suppr</text>
-<text x="400" y="89" font-size="8.6" fill="#2E7D32" text-anchor="start" font-weight="700">bouton « Supprimer »</text>
-<rect x="16" y="102" width="568" height="26" fill="#fff"/>
-<text x="28" y="119" font-size="8.8" fill="#2B2F33" text-anchor="start" font-weight="700">Plein écran</text>
-<text x="196" y="119" font-size="8.6" fill="#2B2F33" text-anchor="start">bouton masqué</text>
-<text x="400" y="119" font-size="8.6" fill="#2E7D32" text-anchor="start" font-weight="700">bouton ⤢, si le navigateur le permet</text>
-<rect x="16" y="132" width="568" height="26" fill="#F4EEDF"/>
-<text x="28" y="149" font-size="8.8" fill="#2B2F33" text-anchor="start" font-weight="700">Icônes du ruban</text>
-<text x="196" y="149" font-size="8.6" fill="#2B2F33" text-anchor="start">taille normale</text>
-<text x="400" y="149" font-size="8.6" fill="#2E7D32" text-anchor="start" font-weight="700">réduites de 40 %</text>
-<rect x="16" y="162" width="568" height="26" fill="#fff"/>
-<text x="28" y="179" font-size="8.8" fill="#2B2F33" text-anchor="start" font-weight="700">Poser un composant</text>
-<text x="196" y="179" font-size="8.6" fill="#2B2F33" text-anchor="start">clic sur le canvas</text>
-<text x="400" y="179" font-size="8.6" fill="#2E7D32" text-anchor="start" font-weight="700">toucher sur le canvas</text>
-<text x="16" y="206" font-size="8.4" fill="#6B7378" text-anchor="start" font-style="italic">Les deux colonnes partagent la même page : seules les règles CSS et la barre tactile changent.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 39</b></div>
+<p class="rubrique">Schéma 2 · Le doigt n'est pas une souris</p>
+<h2>pointer: coarse</h2>
+<p style="max-width:165mm">Une souris pointe au pixel près, survole, double-clique ; un doigt couvre une zone large et n'a ni survol ni touche Suppr. CSS sait dire lequel pilote l'écran : <code>pointer: fine</code> pour une souris ou un stylet, <code>pointer: coarse</code> pour un doigt.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 216" width="100%">
+<rect fill="#EFE9E1" height="216" width="600" x="0" y="0"></rect>
+<rect fill="#7A5A12" height="24" rx="4" width="568" x="16" y="14"></rect>
+<text fill="#fff" font-size="9" font-weight="700" text-anchor="start" x="28" y="30">Geste</text><text class="mono" fill="#fff" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="196" y="30">pointer: fine (souris)</text><text class="mono" fill="#fff" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="400" y="30">pointer: coarse (doigt)</text>
+<rect fill="#fff" height="26" width="568" x="16" y="42"></rect>
+<text fill="#2B2F33" font-size="8.8" font-weight="700" text-anchor="start" x="28" y="59">Ajouter un composant</text>
+<text fill="#2B2F33" font-size="8.6" text-anchor="start" x="196" y="59">double-clic sur le fond</text>
+<text fill="#2E7D32" font-size="8.6" font-weight="700" text-anchor="start" x="400" y="59">bouton « Ajouter… »</text>
+<rect fill="#F4EEDF" height="26" width="568" x="16" y="72"></rect>
+<text fill="#2B2F33" font-size="8.8" font-weight="700" text-anchor="start" x="28" y="89">Supprimer la sélection</text>
+<text fill="#2B2F33" font-size="8.6" text-anchor="start" x="196" y="89">touche Suppr</text>
+<text fill="#2E7D32" font-size="8.6" font-weight="700" text-anchor="start" x="400" y="89">bouton « Supprimer »</text>
+<rect fill="#fff" height="26" width="568" x="16" y="102"></rect>
+<text fill="#2B2F33" font-size="8.8" font-weight="700" text-anchor="start" x="28" y="119">Plein écran</text>
+<text fill="#2B2F33" font-size="8.6" text-anchor="start" x="196" y="119">bouton masqué</text>
+<text fill="#2E7D32" font-size="8.6" font-weight="700" text-anchor="start" x="400" y="119">bouton ⤢, si le navigateur le permet</text>
+<rect fill="#F4EEDF" height="26" width="568" x="16" y="132"></rect>
+<text fill="#2B2F33" font-size="8.8" font-weight="700" text-anchor="start" x="28" y="149">Icônes du ruban</text>
+<text fill="#2B2F33" font-size="8.6" text-anchor="start" x="196" y="149">taille normale</text>
+<text fill="#2E7D32" font-size="8.6" font-weight="700" text-anchor="start" x="400" y="149">réduites de 40 %</text>
+<rect fill="#fff" height="26" width="568" x="16" y="162"></rect>
+<text fill="#2B2F33" font-size="8.8" font-weight="700" text-anchor="start" x="28" y="179">Poser un composant</text>
+<text fill="#2B2F33" font-size="8.6" text-anchor="start" x="196" y="179">clic sur le canvas</text>
+<text fill="#2E7D32" font-size="8.6" font-weight="700" text-anchor="start" x="400" y="179">toucher sur le canvas</text>
+<text fill="#6B7378" font-size="8.4" font-style="italic" text-anchor="start" x="16" y="206">Les deux colonnes partagent la même page : seules les règles CSS et la barre tactile changent.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">src/styles.css · 1446–1476, extraits</span>/* Barre d'outils tactile : ajouter (au lieu du double-clic sur le fond) et supprimer
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">src/styles.css · 1446–1476, extraits</span>/* Barre d'outils tactile : ajouter (au lieu du double-clic sur le fond) et supprimer
    (au lieu de la touche Suppr). Invisible à la souris. */
 .magpie-touchbar { position: absolute; right: 10px; bottom: 12px; display: none; … }
 .magpie-touchbar button { min-height: 44px; … }
@@ -220,277 +204,184 @@
 @media (pointer: coarse) {
   .magpie-touchbar { display: flex; }
 }</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Poser d'un toucher</h3>
-      <p>Comme dans Grasshopper, un composant choisi dans le ruban attend qu'on désigne sa place : un toucher sur le canvas le pose centré sous le doigt (graphEditor.jsx, lignes 378–384). Les fils s'accrochent à 28 px d'une poignée (<code>connectionRadius</code>, ligne 405).</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Le dernier bloc gagne</h3>
-      <p>Plusieurs blocs <code>@media (pointer: coarse)</code> se suivent dans <code>styles.css</code>. À sélecteurs égaux, c'est le dernier écrit qui l'emporte : les boutons de la barre, réglés à 44 px ligne 1458, passent à 38 px ligne 1788, pour laisser la place au canvas.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Poser d'un toucher</h3>
+<p>Comme dans Grasshopper, un composant choisi dans le ruban attend qu'on désigne sa place : un toucher sur le canvas le pose centré sous le doigt (graphEditor.jsx, lignes 378–384). Les fils s'accrochent à 28 px d'une poignée (<code>connectionRadius</code>, ligne 405).</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Le dernier bloc gagne</h3>
+<p>Plusieurs blocs <code>@media (pointer: coarse)</code> se suivent dans <code>styles.css</code>. À sélecteurs égaux, c'est le dernier écrit qui l'emporte : les boutons de la barre, réglés à 44 px ligne 1458, passent à 38 px ligne 1788, pour laisser la place au canvas.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Un double-clic sur le fond du canvas ouvre la recherche rapide. Toucher deux fois vite un bouton posé sur le canvas l'ouvrirait aussi : le double-clic remonte jusqu'au fond. Chaque bouton l'arrête, <code>onDoubleClick={(e) =&gt; e.stopPropagation()}</code> (lignes 435, 446, 466).
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 39 · Une application web installable</div>
+<div class="folio">3</div>
+<div class="pied">Cours 39 · Une application web installable</div>
 </section>
-
 <!-- ============ PAGE 4 · L'ÉCRAN DU TÉLÉPHONE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 39</b></div>
-  <p class="rubrique">Schéma 3 · L'écran du téléphone</p>
-  <h2>Plein écran, paysage, zone sûre</h2>
-  <p style="max-width:165mm">Un téléphone tenu en portrait laisse au canvas une bande étroite ; installé ou en plein écran, il passe sous l'encoche. Magpie traite les deux, et ne fait pas la même chose sur Android et sur iPhone.</p>
-
-  <svg viewBox="0 0 600 212" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="212" fill="#EFE9E1"/>
-<rect x="16" y="20" width="300" height="140" rx="12" fill="#fff" stroke="#2B2F33" stroke-width="2"/>
-<rect x="19" y="76.0" width="6" height="28" rx="3" fill="#2B2F33"/>
-<rect x="22" y="26" width="288" height="128" rx="8" fill="#F6D9C8"/>
-<rect x="46" y="34" width="256" height="112" fill="#dcdad2"/>
-<line x1="56" y1="34" x2="56" y2="146" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="66" y1="34" x2="66" y2="146" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="76" y1="34" x2="76" y2="146" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="86" y1="34" x2="86" y2="146" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="96" y1="34" x2="96" y2="146" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="106" y1="34" x2="106" y2="146" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="116" y1="34" x2="116" y2="146" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="126" y1="34" x2="126" y2="146" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="136" y1="34" x2="136" y2="146" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="146" y1="34" x2="146" y2="146" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="156" y1="34" x2="156" y2="146" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="166" y1="34" x2="166" y2="146" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="176" y1="34" x2="176" y2="146" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="186" y1="34" x2="186" y2="146" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="196" y1="34" x2="196" y2="146" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="206" y1="34" x2="206" y2="146" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="216" y1="34" x2="216" y2="146" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="226" y1="34" x2="226" y2="146" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="236" y1="34" x2="236" y2="146" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="246" y1="34" x2="246" y2="146" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="256" y1="34" x2="256" y2="146" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="266" y1="34" x2="266" y2="146" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="276" y1="34" x2="276" y2="146" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="286" y1="34" x2="286" y2="146" stroke="#cdcbc2" stroke-width=".5"/>
-<line x1="296" y1="34" x2="296" y2="146" stroke="#cdcbc2" stroke-width=".5"/>
-<text x="166" y="94" font-size="10" fill="#2B2F33" text-anchor="middle" font-weight="700">contenu</text>
-<text x="34" y="176" font-size="8" fill="#E65100" text-anchor="start" font-style="italic">En orange : env(safe-area-inset-…), sous l'encoche et les bords</text>
-<text x="34" y="190" font-size="8" fill="#E65100" text-anchor="start" font-style="italic">arrondis. Le contenu reste dans la zone sûre.</text>
-<rect x="340" y="20" width="244" height="80" rx="5" fill="#fff" stroke="#2E7D32" stroke-width="1.4"/>
-<text x="352" y="40" font-size="9.6" fill="#2E7D32" text-anchor="start" font-weight="700">Android</text>
-<text x="352" y="60" font-size="8.4" fill="#2B2F33" text-anchor="start">bouton ⤢ au doigt</text>
-<text x="352" y="76" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px">requestFullscreen()</text>
-<text x="352" y="91" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px">puis orientation.lock</text>
-<rect x="340" y="112" width="244" height="80" rx="5" fill="#fff" stroke="#6D4C41" stroke-width="1.4"/>
-<text x="352" y="132" font-size="9.6" fill="#6D4C41" text-anchor="start" font-weight="700">iPhone</text>
-<text x="352" y="152" font-size="8.4" fill="#2B2F33" text-anchor="start">pas de bouton :</text>
-<text x="352" y="168" font-size="8.2" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8.2px">fullscreenEnabled = false</text>
-<text x="352" y="183" font-size="8.2" fill="#2B2F33" text-anchor="start">installer fait ce travail</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 39</b></div>
+<p class="rubrique">Schéma 3 · L'écran du téléphone</p>
+<h2>Plein écran, paysage, zone sûre</h2>
+<p style="max-width:165mm">Un téléphone tenu en portrait laisse au canvas une bande étroite ; installé ou en plein écran, il passe sous l'encoche. Magpie traite les deux, et ne fait pas la même chose sur Android et sur iPhone.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 212" width="100%">
+<rect fill="#EFE9E1" height="212" width="600" x="0" y="0"></rect>
+<rect fill="#fff" height="140" rx="12" stroke="#2B2F33" stroke-width="2" width="300" x="16" y="20"></rect>
+<rect fill="#2B2F33" height="28" rx="3" width="6" x="19" y="76.0"></rect>
+<rect fill="#F6D9C8" height="128" rx="8" width="288" x="22" y="26"></rect>
+<rect fill="#dcdad2" height="112" width="256" x="46" y="34"></rect>
+<line stroke="#cdcbc2" stroke-width=".5" x1="56" x2="56" y1="34" y2="146"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="66" x2="66" y1="34" y2="146"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="76" x2="76" y1="34" y2="146"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="86" x2="86" y1="34" y2="146"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="96" x2="96" y1="34" y2="146"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="106" x2="106" y1="34" y2="146"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="116" x2="116" y1="34" y2="146"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="126" x2="126" y1="34" y2="146"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="136" x2="136" y1="34" y2="146"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="146" x2="146" y1="34" y2="146"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="156" x2="156" y1="34" y2="146"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="166" x2="166" y1="34" y2="146"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="176" x2="176" y1="34" y2="146"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="186" x2="186" y1="34" y2="146"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="196" x2="196" y1="34" y2="146"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="206" x2="206" y1="34" y2="146"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="216" x2="216" y1="34" y2="146"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="226" x2="226" y1="34" y2="146"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="236" x2="236" y1="34" y2="146"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="246" x2="246" y1="34" y2="146"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="256" x2="256" y1="34" y2="146"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="266" x2="266" y1="34" y2="146"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="276" x2="276" y1="34" y2="146"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="286" x2="286" y1="34" y2="146"></line>
+<line stroke="#cdcbc2" stroke-width=".5" x1="296" x2="296" y1="34" y2="146"></line>
+<text fill="#2B2F33" font-size="10" font-weight="700" text-anchor="middle" x="166" y="94">contenu</text>
+<text fill="#E65100" font-size="8" font-style="italic" text-anchor="start" x="34" y="176">En orange : env(safe-area-inset-…), sous l'encoche et les bords</text>
+<text fill="#E65100" font-size="8" font-style="italic" text-anchor="start" x="34" y="190">arrondis. Le contenu reste dans la zone sûre.</text>
+<rect fill="#fff" height="80" rx="5" stroke="#2E7D32" stroke-width="1.4" width="244" x="340" y="20"></rect>
+<text fill="#2E7D32" font-size="9.6" font-weight="700" text-anchor="start" x="352" y="40">Android</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="start" x="352" y="60">bouton ⤢ au doigt</text>
+<text class="mono" fill="#2B2F33" font-size="8.2" style="font-size:8.2px" text-anchor="start" x="352" y="76">requestFullscreen()</text>
+<text class="mono" fill="#2B2F33" font-size="8.2" style="font-size:8.2px" text-anchor="start" x="352" y="91">puis orientation.lock</text>
+<rect fill="#fff" height="80" rx="5" stroke="#6D4C41" stroke-width="1.4" width="244" x="340" y="112"></rect>
+<text fill="#6D4C41" font-size="9.6" font-weight="700" text-anchor="start" x="352" y="132">iPhone</text>
+<text fill="#2B2F33" font-size="8.4" text-anchor="start" x="352" y="152">pas de bouton :</text>
+<text class="mono" fill="#2B2F33" font-size="8.2" style="font-size:8.2px" text-anchor="start" x="352" y="168">fullscreenEnabled = false</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="start" x="352" y="183">installer fait ce travail</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">src/graphEditor.jsx · 354–365</span>const toggleFullscreen = async () => {
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">src/graphEditor.jsx · 354–365</span>const toggleFullscreen = async () =&gt; {
   try {
     if (document.fullscreenElement) {
       await document.exitFullscreen();
       return;
     }
     await document.documentElement.requestFullscreen({ navigationUI: "hide" });
-    await screen.orientation?.lock?.("landscape").catch(() => {});
+    await screen.orientation?.lock?.("landscape").catch(() =&gt; {});
   } catch {
     // refusé par le navigateur : rien à faire, la page reste utilisable
   }
 };</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>La zone sûre</h3>
-      <p><code>viewport-fit=cover</code> (index.html, ligne 5) étend la page sous l'encoche et la barre d'état. Le contenu s'en écarte de <code>env(safe-area-inset-…)</code> de chaque côté (styles.css, ligne 1683), une marge que le téléphone fournit.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>La vraie hauteur</h3>
-      <p>Sur mobile, <code>100vh</code> vaut la hauteur de la fenêtre barre d'adresse masquée : quand la barre est là, la page déborde dessous. <code>100dvh</code> suit la hauteur réellement visible ; Magpie l'utilise là où le navigateur la connaît (<code>@supports</code>, lignes 1362–1366).</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>La zone sûre</h3>
+<p><code>viewport-fit=cover</code> (index.html, ligne 5) étend la page sous l'encoche et la barre d'état. Le contenu s'en écarte de <code>env(safe-area-inset-…)</code> de chaque côté (styles.css, ligne 1683), une marge que le téléphone fournit.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>La vraie hauteur</h3>
+<p>Sur mobile, <code>100vh</code> vaut la hauteur de la fenêtre barre d'adresse masquée : quand la barre est là, la page déborde dessous. <code>100dvh</code> suit la hauteur réellement visible ; Magpie l'utilise là où le navigateur la connaît (<code>@supports</code>, lignes 1362–1366).</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Verrouiller le paysage avant d'être en plein écran : la plupart des navigateurs refusent. D'où l'ordre, <code>requestFullscreen</code> puis <code>orientation.lock</code>, et le <code>.catch()</code> qui avale un refus. Sur iPhone, <code>document.fullscreenEnabled</code> est faux : le bouton n'apparaît pas (ligne 442).
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 39 · Une application web installable</div>
+<div class="folio">4</div>
+<div class="pied">Cours 39 · Une application web installable</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 39</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>useLayoutPrefs : replier selon l'écran</h2>
-  <p style="max-width:165mm">Bandeau, consigne et aperçu 3D se replient pour laisser le canvas respirer. À la première visite, la taille de l'écran décide ; ensuite, c'est le dernier choix de l'apprenant, gardé dans son navigateur.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 39</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>useLayoutPrefs : replier selon l'écran</h2>
+<p style="max-width:165mm">Bandeau, consigne et aperçu 3D se replient pour laisser le canvas respirer. À la première visite, la taille de l'écran décide ; ensuite, c'est le dernier choix de l'apprenant, gardé dans son navigateur.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="n">9</span><span class="kw">function</span> readPrefs() {</div>
-<div class="l k1"><span class="n">10</span>  <span class="kw">try</span> {<span class="rep r1">1</span></div>
-<div class="l k1"><span class="n">11</span>    <span class="kw">return</span> JSON.parse(localStorage.getItem(KEY)) || {};</div>
+<div class="l k1"><span class="n">10</span> <span class="kw">try</span> {<span class="rep r1">1</span></div>
+<div class="l k1"><span class="n">11</span> <span class="kw">return</span> JSON.parse(localStorage.getItem(KEY)) || {};</div>
 <div class="l k1"><span class="n">12</span>  } <span class="kw">catch</span> {</div>
-<div class="l k1"><span class="n">13</span>    <span class="kw">return</span> {};</div>
+<div class="l k1"><span class="n">13</span> <span class="kw">return</span> {};</div>
 <div class="l k2"><span class="n">25</span><span class="kw">const</span> matches = (query) =&gt;<span class="rep r2">2</span></div>
-<div class="l k2"><span class="n"> </span>  <span class="kw">typeof</span> window !== <span class="st">"undefined"</span></div>
+<div class="l k2"><span class="n"> </span> <span class="kw">typeof</span> window !== <span class="st">"undefined"</span></div>
 <div class="l k2"><span class="n"> </span>  &amp;&amp; window.matchMedia(query).matches;</div>
 <div class="l"><span class="n">27</span><span class="kw">export default function</span> useLayoutPrefs() {</div>
-<div class="l k3"><span class="n">28</span>  <span class="kw">const</span> [prefs, setPrefs] = useState(() =&gt; ({<span class="rep r3">3</span></div>
+<div class="l k3"><span class="n">28</span> <span class="kw">const</span> [prefs, setPrefs] = useState(() =&gt; ({<span class="rep r3">3</span></div>
 <div class="l k4"><span class="n">29</span>    chromeOpen: !matches(<span class="st">"(max-height: 500px)"</span>),<span class="rep r4">4</span></div>
 <div class="l k4"><span class="n">30</span>    panelOpen: !matches(<span class="st">"(max-width: 900px)"</span>),</div>
 <div class="l k4"><span class="n">33</span>    viewerOpen: !matches(<span class="st">"(max-width: 900px)"</span>),</div>
 <div class="l"><span class="n">34</span>    viewerWidth: 420,</div>
 <div class="l k5"><span class="n">35</span>    ...readPrefs(),<span class="rep r5">5</span></div>
 <div class="l"><span class="n">36</span>  }));</div>
-<div class="l k6"><span class="n">38</span>  <span class="kw">const</span> toggle = useCallback((field) =&gt; {<span class="rep r6">6</span></div>
+<div class="l k6"><span class="n">38</span> <span class="kw">const</span> toggle = useCallback((field) =&gt; {<span class="rep r6">6</span></div>
 <div class="l k6"><span class="n">39</span>    setPrefs((p) =&gt; {</div>
-<div class="l k6"><span class="n">40</span>      <span class="kw">const</span> next = { ...p, [field]: !p[field] };</div>
+<div class="l k6"><span class="n">40</span> <span class="kw">const</span> next = { ...p, [field]: !p[field] };</div>
 <div class="l k7"><span class="n">41</span>      writePrefs(next);<span class="rep r7">7</span></div>
-<div class="l"><span class="n">42</span>      <span class="kw">return</span> next;</div>
+<div class="l"><span class="n">42</span> <span class="kw">return</span> next;</div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>Lire sans casser</b>Navigation privée ou JSON abîmé : on repart de rien.</li>
-      <li><span class="rep r2">2</span><b>Interroger l'écran</b>La même requête qu'un <code>@media</code>, depuis JavaScript.</li>
-      <li><span class="rep r3">3</span><b>Une seule fois</b>La fonction ne s'exécute qu'au premier rendu.</li>
-      <li><span class="rep r4">4</span><b>Défauts selon l'écran</b>Écran bas : bandeau replié ; étroit : consigne et 3D repliées.</li>
-      <li><span class="rep r5">5</span><b>Le choix gagne</b>Étalé en dernier, il écrase les défauts.</li>
-      <li><span class="rep r6">6</span><b>Basculer un volet</b>Le nom du champ est calculé : <code>[field]</code>.</li>
-      <li><span class="rep r7">7</span><b>Retenir</b>Écrit dans <code>localStorage</code>, sous la clé <code>magpie.layout</code>.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">Une règle d'interface</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>Lire sans casser</b>Navigation privée ou JSON abîmé : on repart de rien.</li>
+<li><span class="rep r2">2</span><b>Interroger l'écran</b>La même requête qu'un <code>@media</code>, depuis JavaScript.</li>
+<li><span class="rep r3">3</span><b>Une seule fois</b>La fonction ne s'exécute qu'au premier rendu.</li>
+<li><span class="rep r4">4</span><b>Défauts selon l'écran</b>Écran bas : bandeau replié ; étroit : consigne et 3D repliées.</li>
+<li><span class="rep r5">5</span><b>Le choix gagne</b>Étalé en dernier, il écrase les défauts.</li>
+<li><span class="rep r6">6</span><b>Basculer un volet</b>Le nom du champ est calculé : <code>[field]</code>.</li>
+<li><span class="rep r7">7</span><b>Retenir</b>Écrit dans <code>localStorage</code>, sous la clé <code>magpie.layout</code>.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">Une règle d'interface</span>
     Les défauts ne servent qu'une fois. Si l'apprenant rouvre la consigne sur son téléphone, elle restera ouverte à la prochaine visite : l'écran propose, l'utilisateur dispose. Le même principe vaut pour l'invite à tourner le téléphone, qui se ferme d'un toucher (App.jsx, lignes 111–117).
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 39 · Une application web installable</div>
+<div class="folio">5</div>
+<div class="pied">Cours 39 · Une application web installable</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 39</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 39</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">index.html trouve le manifeste par…</div><ul>
-      <li><span>A</span>une balise &lt;link rel="manifest"&gt;</li><li><span>B</span>son nom de fichier</li><li><span>C</span>un import JavaScript</li><li><span>D</span>Vite</li></ul></div>
 
-    <div class="q"><div class="enonce">display_override vaut ["fullscreen", "standalone"]. Cela veut dire…</div><ul>
-      <li><span>A</span>les deux à la fois</li><li><span>B</span>standalone d'abord</li><li><span>C</span>fullscreen si possible, sinon standalone</li><li><span>D</span>au choix de l'apprenant</li></ul></div>
 
-    <div class="q"><div class="enonce">L'icône « maskable » sert à…</div><ul>
-      <li><span>A</span>iOS</li><li><span>B</span>le favicon</li><li><span>C</span>masquer l'application</li><li><span>D</span>être découpée par Android sans perdre le dessin</li></ul></div>
 
-    <div class="q"><div class="enonce">Sans « .webmanifest » dans MIME_TYPES, le serveur l'enverrait en…</div><ul>
-      <li><span>A</span>text/html</li><li><span>B</span>application/octet-stream</li><li><span>C</span>application/json</li><li><span>D</span>rien : 404</li></ul></div>
-
-    <div class="q"><div class="enonce">Installée, Magpie fonctionne hors ligne ?</div><ul>
-      <li><span>A</span>non : pas de service worker</li><li><span>B</span>oui, toujours</li><li><span>C</span>oui, sur Android</li><li><span>D</span>oui, sauf la 3D</li></ul></div>
-
-    <div class="q"><div class="enonce">@media (pointer: coarse) vise…</div><ul>
-      <li><span>A</span>les petits écrans</li><li><span>B</span>le mode sombre</li><li><span>C</span>un pointage peu précis, comme le doigt</li><li><span>D</span>l'impression</li></ul></div>
-
-    <div class="q"><div class="enonce">Au doigt, la barre « Ajouter… / Supprimer » remplace… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>le double-clic sur le fond</li><li><span>B</span>la touche Suppr</li><li><span>C</span>le ruban</li><li><span>D</span>le bouton 3D</li></ul></div>
-
-    <div class="q"><div class="enonce">Deux règles de même sélecteur, dans deux blocs @media (pointer: coarse) :</div><ul>
-      <li><span>A</span>la première gagne</li><li><span>B</span>la dernière écrite gagne</li><li><span>C</span>la plus grande valeur gagne</li><li><span>D</span>erreur CSS</li></ul></div>
-
-    <div class="q"><div class="enonce">Pourquoi les boutons du canvas arrêtent-ils le double-clic ?</div><ul>
-      <li><span>A</span>pour aller plus vite</li><li><span>B</span>pour iOS</li><li><span>C</span>pour le zoom</li><li><span>D</span>sinon il remonte au fond et ouvre la recherche</li></ul></div>
-
-    <div class="q"><div class="enonce">Sur iPhone, le bouton plein écran…</div><ul>
-      <li><span>A</span>n'apparaît pas : fullscreenEnabled est faux</li><li><span>B</span>marche normalement</li><li><span>C</span>verrouille le portrait</li><li><span>D</span>installe l'application</li></ul></div>
-
-    <div class="q"><div class="enonce">env(safe-area-inset-top) donne…</div><ul>
-      <li><span>A</span>la hauteur de la barre d'adresse</li><li><span>B</span>la marge à laisser sous l'encoche ou la barre d'état</li><li><span>C</span>la taille de police</li><li><span>D</span>zéro, toujours</li></ul></div>
-
-    <div class="q"><div class="enonce">Un apprenant rouvre la consigne sur son téléphone. À la visite suivante…</div><ul>
-      <li><span>A</span>elle est repliée</li><li><span>B</span>c'est aléatoire</li><li><span>C</span>elle reste ouverte : son choix est gardé</li><li><span>D</span>elle dépend du serveur</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 39 · Une application web installable</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">&lt;link rel="manifest" href="/manifest.webmanifest"&gt;</td><td>désigner le manifeste</td><td>index.html:8</td></tr>
+<tr><td class="c">"display_override": ["fullscreen", "standalone"]</td><td>mode d'affichage préféré</td><td>manifest:9</td></tr>
+<tr><td class="c">@media (pointer: coarse) { … }</td><td>règles pour le doigt</td><td>styles.css:1473</td></tr>
+<tr><td class="c">requestFullscreen({ navigationUI: "hide" })</td><td>passer en plein écran</td><td>graphEditor.jsx:360</td></tr>
+<tr><td class="c">env(safe-area-inset-top) …</td><td>éviter l'encoche</td><td>styles.css:1683</td></tr>
+<tr><td class="c">window.matchMedia(query).matches</td><td>tester l'écran en JS</td><td>useLayoutPrefs.js:25</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Manifeste</dt><dd>Le fichier JSON qui décrit une application web installable.</dd>
+<dt>Service worker</dt><dd>Un script d'arrière-plan qui peut servir des pages sans réseau ; Magpie n'en a pas.</dd>
+<dt>Zone sûre</dt><dd>La partie de l'écran que ni l'encoche ni les barres système ne couvrent.</dd>
+<dt>dvh</dt><dd>Un centième de la hauteur réellement visible de la fenêtre.</dd>
+<dt>Cascade</dt><dd>La règle CSS qui départage deux déclarations ; à égalité, la dernière gagne.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : fiche récap de la partie 8</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 39 · Une application web installable</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 8C</b> · Du serveur à l'application</span><b>Cours 39</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · A.</b> index.html, ligne 8.</div>
-    <div><b>02 · C.</b> Un ordre de préférence.</div>
-    <div><b>03 · D.</b> Le dessin reste au centre.</div>
-    <div><b>04 · B.</b> Le type par défaut, ligne 510.</div>
-    <div><b>05 · A.</b> Rien n'est mis en cache.</div>
-    <div><b>06 · C.</b> Pas la taille de l'écran.</div>
-    <div><b>07 · A et B.</b> Ni double-clic ni clavier au doigt.</div>
-    <div><b>08 · B.</b> La cascade, à sélecteurs égaux.</div>
-    <div><b>09 · D.</b> stopPropagation sur chaque bouton.</div>
-    <div><b>10 · A.</b> L'installation fait ce travail.</div>
-    <div><b>11 · B.</b> Fournie par le téléphone.</div>
-    <div><b>12 · C.</b> readPrefs écrase les défauts.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis la page 4 et <code>useLayoutPrefs</code> page 5. <b>10 à 12</b> : la partie 8 est terminée ; passe à sa fiche récap.
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">&lt;link rel="manifest" href="/manifest.webmanifest"&gt;</td><td>désigner le manifeste</td><td>index.html:8</td></tr>
-      <tr><td class="c">"display_override": ["fullscreen", "standalone"]</td><td>mode d'affichage préféré</td><td>manifest:9</td></tr>
-      <tr><td class="c">@media (pointer: coarse) { … }</td><td>règles pour le doigt</td><td>styles.css:1473</td></tr>
-      <tr><td class="c">requestFullscreen({ navigationUI: "hide" })</td><td>passer en plein écran</td><td>graphEditor.jsx:360</td></tr>
-      <tr><td class="c">env(safe-area-inset-top) …</td><td>éviter l'encoche</td><td>styles.css:1683</td></tr>
-      <tr><td class="c">window.matchMedia(query).matches</td><td>tester l'écran en JS</td><td>useLayoutPrefs.js:25</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Manifeste</dt><dd>Le fichier JSON qui décrit une application web installable.</dd>
-    <dt>Service worker</dt><dd>Un script d'arrière-plan qui peut servir des pages sans réseau ; Magpie n'en a pas.</dd>
-    <dt>Zone sûre</dt><dd>La partie de l'écran que ni l'encoche ni les barres système ne couvrent.</dd>
-    <dt>dvh</dt><dd>Un centième de la hauteur réellement visible de la fenêtre.</dd>
-    <dt>Cascade</dt><dd>La règle CSS qui départage deux déclarations ; à égalité, la dernière gagne.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : fiche récap de la partie 8</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 39 · Une application web installable</div>
-</section>
-
 </body>
 </html>

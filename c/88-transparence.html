@@ -1,252 +1,225 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>88 · La transparence</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-7">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 88</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>La transparence</h1>
-  <p class="chapeau">L'aperçu de Grasshopper, comme celui de Magpie, montre la géométrie en rouge <b>translucide</b> : on voit à travers. Pour la carte graphique, la transparence n'est pas une propriété de la matière mais une <b>opération</b> : mélanger la couleur d'une face avec celle déjà peinte derrière elle. Et ce mélange dépend de l'ordre dans lequel on peint.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>85</b> à <b>87</b></span>
-    <span class="pastille">Exemples · <b>Viewer3D.jsx</b> (Magpie web), <b>Three.js</b></span>
-  </div>
-
-  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
-    <svg viewBox="0 0 600 200" width="100%">
-<rect x="20" y="14" width="120" height="70" rx="6" fill="#BCBCBC" stroke="#999"/>
-<text x="80" y="102" font-size="8.6" fill="#2B2F33" text-anchor="middle" font-weight="700">fond</text>
-<text x="80" y="118" font-size="8.4" fill="#1D6FB8" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">(188, 188, 188)</text>
-<line x1="142" y1="49" x2="163" y2="49" stroke="#6B7378" stroke-width="1.2"/><polygon points="163,49 156.6,51.7 156.6,46.3" fill="#6B7378"/>
-<rect x="165" y="14" width="120" height="70" rx="6" fill="#A75555" stroke="#999"/>
-<text x="225" y="102" font-size="8.6" fill="#2B2F33" text-anchor="middle" font-weight="700">1 couche rouge à 0,55</text>
-<text x="225" y="118" font-size="8.4" fill="#1D6FB8" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">(167, 85, 85)</text>
-<line x1="287" y1="49" x2="308" y2="49" stroke="#6B7378" stroke-width="1.2"/><polygon points="308,49 301.6,51.7 301.6,46.3" fill="#6B7378"/>
-<rect x="310" y="14" width="120" height="70" rx="6" fill="#9E2626" stroke="#999"/>
-<text x="370" y="102" font-size="8.6" fill="#2B2F33" text-anchor="middle" font-weight="700">2 couches</text>
-<text x="370" y="118" font-size="8.4" fill="#1D6FB8" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">(158, 38, 38)</text>
-<line x1="432" y1="49" x2="453" y2="49" stroke="#6B7378" stroke-width="1.2"/><polygon points="453,49 446.6,51.7 446.6,46.3" fill="#6B7378"/>
-<rect x="455" y="14" width="120" height="70" rx="6" fill="#960000" stroke="#999"/>
-<text x="515" y="102" font-size="8.6" fill="#2B2F33" text-anchor="middle" font-weight="700">rouge opaque</text>
-<text x="515" y="118" font-size="8.4" fill="#1D6FB8" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">(150, 0, 0)</text>
-<text x="300" y="150" font-size="9" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:9px">couleur = α × couleur de la face + (1 − α) × couleur déjà peinte</text>
-<text x="300" y="168" font-size="8" fill="#6B7378" text-anchor="middle" class="mono" style="font-size:8px">rouge : 0,55 × 150 + 0,45 × 188 = 167,1 ; vert : 0,45 × 188 = 84,6 (mesuré 167 et 85)</text>
-<text x="300" y="190" font-size="7.4" fill="#6B7378" text-anchor="middle" font-style="italic">Pixels lus dans Chromium (WebGL 2), MeshBasicMaterial, Three.js 0.186.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 88</b></div>
+<p class="rubrique">Le concept</p>
+<h1>La transparence</h1>
+<p class="chapeau">L'aperçu de Grasshopper, comme celui de Magpie, montre la géométrie en rouge <b>translucide</b> : on voit à travers. Pour la carte graphique, la transparence n'est pas une propriété de la matière mais une <b>opération</b> : mélanger la couleur d'une face avec celle déjà peinte derrière elle. Et ce mélange dépend de l'ordre dans lequel on peint.</p>
+<div class="meta">
+<span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>85</b> à <b>87</b></span>
+<span class="pastille">Exemples · <b>Viewer3D.jsx</b> (Magpie web), <b>Three.js</b></span>
+</div>
+<div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+<svg viewbox="0 0 600 200" width="100%">
+<rect fill="#BCBCBC" height="70" rx="6" stroke="#999" width="120" x="20" y="14"></rect>
+<text fill="#2B2F33" font-size="8.6" font-weight="700" text-anchor="middle" x="80" y="102">fond</text>
+<text class="mono" fill="#1D6FB8" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="middle" x="80" y="118">(188, 188, 188)</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="142" x2="163" y1="49" y2="49"></line><polygon fill="#6B7378" points="163,49 156.6,51.7 156.6,46.3"></polygon>
+<rect fill="#A75555" height="70" rx="6" stroke="#999" width="120" x="165" y="14"></rect>
+<text fill="#2B2F33" font-size="8.6" font-weight="700" text-anchor="middle" x="225" y="102">1 couche rouge à 0,55</text>
+<text class="mono" fill="#1D6FB8" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="middle" x="225" y="118">(167, 85, 85)</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="287" x2="308" y1="49" y2="49"></line><polygon fill="#6B7378" points="308,49 301.6,51.7 301.6,46.3"></polygon>
+<rect fill="#9E2626" height="70" rx="6" stroke="#999" width="120" x="310" y="14"></rect>
+<text fill="#2B2F33" font-size="8.6" font-weight="700" text-anchor="middle" x="370" y="102">2 couches</text>
+<text class="mono" fill="#1D6FB8" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="middle" x="370" y="118">(158, 38, 38)</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="432" x2="453" y1="49" y2="49"></line><polygon fill="#6B7378" points="453,49 446.6,51.7 446.6,46.3"></polygon>
+<rect fill="#960000" height="70" rx="6" stroke="#999" width="120" x="455" y="14"></rect>
+<text fill="#2B2F33" font-size="8.6" font-weight="700" text-anchor="middle" x="515" y="102">rouge opaque</text>
+<text class="mono" fill="#1D6FB8" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="middle" x="515" y="118">(150, 0, 0)</text>
+<text class="mono" fill="#2B2F33" font-size="9" font-weight="700" style="font-size:9px" text-anchor="middle" x="300" y="150">couleur = α × couleur de la face + (1 − α) × couleur déjà peinte</text>
+<text class="mono" fill="#6B7378" font-size="8" style="font-size:8px" text-anchor="middle" x="300" y="168">rouge : 0,55 × 150 + 0,45 × 188 = 167,1 ; vert : 0,45 × 188 = 84,6 (mesuré 167 et 85)</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="middle" x="300" y="190">Pixels lus dans Chromium (WebGL 2), MeshBasicMaterial, Three.js 0.186.</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Une face transparente se mélange à ce qui est déjà dans l'image ; pour un résultat juste, il faut peindre du plus loin au plus proche.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Des calques de couleur posés sur une table lumineuse. Le résultat dépend de ceux qui sont dessous ; et si l'on veut le refaire à la peinture, couche par couche, il faut commencer par le fond.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>calculer un mélange alpha ;</li>
-        <li>dire pourquoi l'ordre compte ;</li>
-        <li>choisir le réglage <code>depthWrite</code> ;</li>
-        <li>connaître les remèdes au tri.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Une face transparente se mélange à ce qui est déjà dans l'image ; pour un résultat juste, il faut peindre du plus loin au plus proche.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Des calques de couleur posés sur une table lumineuse. Le résultat dépend de ceux qui sont dessous ; et si l'on veut le refaire à la peinture, couche par couche, il faut commencer par le fond.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>calculer un mélange alpha ;</li>
+<li>dire pourquoi l'ordre compte ;</li>
+<li>choisir le réglage <code>depthWrite</code> ;</li>
+<li>connaître les remèdes au tri.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À retenir</span>
     L'<b>alpha</b> (ou opacité) va de 0, invisible, à 1, opaque. Deux couches de 0,55 laissent passer 0,45 × 0,45 ≈ 20 % du fond : la zone où deux surfaces se recouvrent paraît plus foncée. C'est voulu : on lit les recouvrements.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 88 · La transparence</div>
+<div class="folio">1</div>
+<div class="pied">Cours 88 · La transparence</div>
 </section>
-
 <!-- ============ PAGE 2 · L'ORDRE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 88</b></div>
-  <p class="rubrique">Schéma 1 · L'ordre de peinture</p>
-  <h2>Du plus loin au plus proche</h2>
-  <p style="max-width:165mm">Le mélange n'est pas commutatif : vert sur rouge n'égale pas rouge sur vert. Les moteurs peignent donc d'abord tous les objets opaques, puis les transparents, triés du plus loin au plus proche. Three.js trie par la distance du centre de chaque objet à la caméra.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.4" fill="#1D6FB8" text-anchor="start" font-weight="700">Un plan vert à 0,55 devant un plan rouge à 0,55, sur le fond gris : trois façons de dessiner (pixels mesurés)</text>
-<text x="104" y="46" font-size="8.2" fill="#2E7D32" text-anchor="middle" font-weight="700">trié : le loin d'abord</text>
-<text x="104" y="60" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">rouge, puis vert</text>
-<rect x="44" y="70" width="120" height="70" rx="6" fill="#4B792C" stroke="#999"/>
-<text x="104" y="158" font-size="8.4" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">(75, 121, 44)</text>
-<text x="104" y="176" font-size="8.2" fill="#2E7D32" text-anchor="middle" font-weight="700">juste : le vert domine</text>
-<text x="296" y="46" font-size="8.2" fill="#E65100" text-anchor="middle" font-weight="700">ordre inversé, depthWrite: false</text>
-<text x="296" y="60" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">vert, puis rouge</text>
-<rect x="236" y="70" width="120" height="70" rx="6" fill="#794B28" stroke="#999"/>
-<text x="296" y="158" font-size="8.4" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">(121, 75, 40)</text>
-<text x="296" y="176" font-size="8.2" fill="#E65100" text-anchor="middle" font-weight="700">faux : le rouge passe devant</text>
-<text x="488" y="46" font-size="8.2" fill="#C62828" text-anchor="middle" font-weight="700">ordre inversé, depthWrite: true</text>
-<text x="488" y="60" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">vert, puis rouge</text>
-<rect x="428" y="70" width="120" height="70" rx="6" fill="#55A75A" stroke="#999"/>
-<text x="488" y="158" font-size="8.4" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.4px">(85, 167, 90)</text>
-<text x="488" y="176" font-size="8.2" fill="#C62828" text-anchor="middle" font-weight="700">faux : le rouge disparaît</text>
-<text x="16" y="204" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">depthWrite: true : le vert, dessiné le premier, écrit sa profondeur ; le rouge, plus loin, échoue au test et n'est jamais peint.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 88</b></div>
+<p class="rubrique">Schéma 1 · L'ordre de peinture</p>
+<h2>Du plus loin au plus proche</h2>
+<p style="max-width:165mm">Le mélange n'est pas commutatif : vert sur rouge n'égale pas rouge sur vert. Les moteurs peignent donc d'abord tous les objets opaques, puis les transparents, triés du plus loin au plus proche. Three.js trie par la distance du centre de chaque objet à la caméra.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#1D6FB8" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="22">Un plan vert à 0,55 devant un plan rouge à 0,55, sur le fond gris : trois façons de dessiner (pixels mesurés)</text>
+<text fill="#2E7D32" font-size="8.2" font-weight="700" text-anchor="middle" x="104" y="46">trié : le loin d'abord</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="middle" x="104" y="60">rouge, puis vert</text>
+<rect fill="#4B792C" height="70" rx="6" stroke="#999" width="120" x="44" y="70"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="middle" x="104" y="158">(75, 121, 44)</text>
+<text fill="#2E7D32" font-size="8.2" font-weight="700" text-anchor="middle" x="104" y="176">juste : le vert domine</text>
+<text fill="#E65100" font-size="8.2" font-weight="700" text-anchor="middle" x="296" y="46">ordre inversé, depthWrite: false</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="middle" x="296" y="60">vert, puis rouge</text>
+<rect fill="#794B28" height="70" rx="6" stroke="#999" width="120" x="236" y="70"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="middle" x="296" y="158">(121, 75, 40)</text>
+<text fill="#E65100" font-size="8.2" font-weight="700" text-anchor="middle" x="296" y="176">faux : le rouge passe devant</text>
+<text fill="#C62828" font-size="8.2" font-weight="700" text-anchor="middle" x="488" y="46">ordre inversé, depthWrite: true</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="middle" x="488" y="60">vert, puis rouge</text>
+<rect fill="#55A75A" height="70" rx="6" stroke="#999" width="120" x="428" y="70"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="middle" x="488" y="158">(85, 167, 90)</text>
+<text fill="#C62828" font-size="8.2" font-weight="700" text-anchor="middle" x="488" y="176">faux : le rouge disparaît</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="16" y="204">depthWrite: true : le vert, dessiné le premier, écrit sa profondeur ; le rouge, plus loin, échoue au test et n'est jamais peint.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/src/Viewer3D.jsx · ligne 28 (ligne coupée)</span>mesh: new THREE.MeshLambertMaterial({ color, transparent: true,
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/src/Viewer3D.jsx · ligne 28 (ligne coupée)</span>mesh: new THREE.MeshLambertMaterial({ color, transparent: true,
   opacity: 0.55, side: THREE.DoubleSide, depthWrite: false }),</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Le tri de Three.js</h3>
-      <p>La liste des transparents est triée par <code>renderOrder</code>, puis par profondeur, du plus loin au plus proche (<code>reversePainterSortStable</code>, WebGLRenderLists.js:31–49). La profondeur est celle du centre de la sphère englobante (WebGLRenderer.js:1929).</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Un objet, un rang</h3>
-      <p>Le tri range des objets, pas des triangles. Deux objets qui se traversent, ou un petit objet posé dans un grand, n'ont pas d'ordre juste : selon l'angle de vue, l'un ou l'autre est peint en premier. On le voit à des teintes qui s'échangent en tournant.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Le tri de Three.js</h3>
+<p>La liste des transparents est triée par <code>renderOrder</code>, puis par profondeur, du plus loin au plus proche (<code>reversePainterSortStable</code>, WebGLRenderLists.js:31–49). La profondeur est celle du centre de la sphère englobante (WebGLRenderer.js:1929).</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Un objet, un rang</h3>
+<p>Le tri range des objets, pas des triangles. Deux objets qui se traversent, ou un petit objet posé dans un grand, n'ont pas d'ordre juste : selon l'angle de vue, l'un ou l'autre est peint en premier. On le voit à des teintes qui s'échangent en tournant.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Laisser <code>depthWrite</code> à sa valeur par défaut (vrai) sur un matériau transparent. La première face peinte bouche tout ce qui est derrière elle, même si elle est translucide : dans la mesure ci-dessus, le plan rouge disparaît entièrement.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 88 · La transparence</div>
+<div class="folio">2</div>
+<div class="pied">Cours 88 · La transparence</div>
 </section>
-
 <!-- ============ PAGE 3 · DEUX PASSES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 88</b></div>
-  <p class="rubrique">Schéma 2 · Les faces d'un même objet</p>
-  <h2>Le dos d'abord, la face ensuite</h2>
-  <p style="max-width:165mm">À l'intérieur d'un objet, les triangles ne sont pas triés. Pour une boîte translucide vue des deux côtés, Three.js règle le cas le plus courant : il dessine l'objet deux fois, d'abord ses faces arrière, puis ses faces avant. L'intérieur d'une forme convexe se lit alors toujours juste.</p>
-
-  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#1D6FB8" text-anchor="start" font-weight="700">Une boîte transparente en DoubleSide : Three.js la dessine en deux passes (WebGLRenderer.js:2165–2173)</text>
-<polygon points="80,70 180,70 180,150 80,150" fill='#E6F0FA' stroke='#E65100' stroke-width='1.4' stroke-dasharray=''/>
-<polygon points="40,100 140,100 140,180 40,180" fill='none' fill-opacity='0.8' stroke='#CFC6B8' stroke-width='1' stroke-dasharray='3 2'/>
-<line x1="40" y1="100" x2="80" y2="70" stroke="#CFC6B8" stroke-dasharray="3 2"/>
-<line x1="140" y1="100" x2="180" y2="70" stroke="#CFC6B8" stroke-dasharray="3 2"/>
-<line x1="140" y1="180" x2="180" y2="150" stroke="#CFC6B8" stroke-dasharray="3 2"/>
-<line x1="40" y1="180" x2="80" y2="150" stroke="#CFC6B8" stroke-dasharray="3 2"/>
-<text x="110" y="190" font-size="8.4" fill="#E65100" text-anchor="middle" font-weight="700">passe 1 : faces arrière (BackSide)</text>
-<polygon points="310,70 410,70 410,150 310,150" fill='none' stroke='#CFC6B8' stroke-width='1' stroke-dasharray='3 2'/>
-<polygon points="270,100 370,100 370,180 270,180" fill='#E6F0FA' fill-opacity='0.8' stroke='#1D6FB8' stroke-width='1.6' stroke-dasharray=''/>
-<line x1="270" y1="100" x2="310" y2="70" stroke="#CFC6B8" stroke-dasharray="3 2"/>
-<line x1="370" y1="100" x2="410" y2="70" stroke="#CFC6B8" stroke-dasharray="3 2"/>
-<line x1="370" y1="180" x2="410" y2="150" stroke="#CFC6B8" stroke-dasharray="3 2"/>
-<line x1="270" y1="180" x2="310" y2="150" stroke="#CFC6B8" stroke-dasharray="3 2"/>
-<text x="340" y="190" font-size="8.4" fill="#1D6FB8" text-anchor="middle" font-weight="700">passe 2 : faces avant (FrontSide)</text>
-<line x1="200" y1="120" x2="250" y2="120" stroke="#6B7378" stroke-width="1.4"/><polygon points="250,120 243.6,122.7 243.6,117.3" fill="#6B7378"/>
-<text x="522" y="70" font-size="8" fill="#2B2F33" text-anchor="middle">Le fond de la boîte est</text>
-<text x="522" y="84" font-size="8" fill="#2B2F33" text-anchor="middle">toujours peint avant</text>
-<text x="522" y="98" font-size="8" fill="#2B2F33" text-anchor="middle">sa face avant : l'intérieur</text>
-<text x="522" y="112" font-size="8" fill="#2B2F33" text-anchor="middle">se lit juste, au prix</text>
-<text x="522" y="126" font-size="8" fill="#E65100" text-anchor="middle" font-weight="700">de deux appels de dessin.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 88</b></div>
+<p class="rubrique">Schéma 2 · Les faces d'un même objet</p>
+<h2>Le dos d'abord, la face ensuite</h2>
+<p style="max-width:165mm">À l'intérieur d'un objet, les triangles ne sont pas triés. Pour une boîte translucide vue des deux côtés, Three.js règle le cas le plus courant : il dessine l'objet deux fois, d'abord ses faces arrière, puis ses faces avant. L'intérieur d'une forme convexe se lit alors toujours juste.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 206" width="100%">
+<rect fill="#EFE9E1" height="206" width="600" x="0" y="0"></rect>
+<text fill="#1D6FB8" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">Une boîte transparente en DoubleSide : Three.js la dessine en deux passes (WebGLRenderer.js:2165–2173)</text>
+<polygon fill="#E6F0FA" points="80,70 180,70 180,150 80,150" stroke="#E65100" stroke-dasharray="" stroke-width="1.4"></polygon>
+<polygon fill="none" fill-opacity="0.8" points="40,100 140,100 140,180 40,180" stroke="#CFC6B8" stroke-dasharray="3 2" stroke-width="1"></polygon>
+<line stroke="#CFC6B8" stroke-dasharray="3 2" x1="40" x2="80" y1="100" y2="70"></line>
+<line stroke="#CFC6B8" stroke-dasharray="3 2" x1="140" x2="180" y1="100" y2="70"></line>
+<line stroke="#CFC6B8" stroke-dasharray="3 2" x1="140" x2="180" y1="180" y2="150"></line>
+<line stroke="#CFC6B8" stroke-dasharray="3 2" x1="40" x2="80" y1="180" y2="150"></line>
+<text fill="#E65100" font-size="8.4" font-weight="700" text-anchor="middle" x="110" y="190">passe 1 : faces arrière (BackSide)</text>
+<polygon fill="none" points="310,70 410,70 410,150 310,150" stroke="#CFC6B8" stroke-dasharray="3 2" stroke-width="1"></polygon>
+<polygon fill="#E6F0FA" fill-opacity="0.8" points="270,100 370,100 370,180 270,180" stroke="#1D6FB8" stroke-dasharray="" stroke-width="1.6"></polygon>
+<line stroke="#CFC6B8" stroke-dasharray="3 2" x1="270" x2="310" y1="100" y2="70"></line>
+<line stroke="#CFC6B8" stroke-dasharray="3 2" x1="370" x2="410" y1="100" y2="70"></line>
+<line stroke="#CFC6B8" stroke-dasharray="3 2" x1="370" x2="410" y1="180" y2="150"></line>
+<line stroke="#CFC6B8" stroke-dasharray="3 2" x1="270" x2="310" y1="180" y2="150"></line>
+<text fill="#1D6FB8" font-size="8.4" font-weight="700" text-anchor="middle" x="340" y="190">passe 2 : faces avant (FrontSide)</text>
+<line stroke="#6B7378" stroke-width="1.4" x1="200" x2="250" y1="120" y2="120"></line><polygon fill="#6B7378" points="250,120 243.6,122.7 243.6,117.3"></polygon>
+<text fill="#2B2F33" font-size="8" text-anchor="middle" x="522" y="70">Le fond de la boîte est</text>
+<text fill="#2B2F33" font-size="8" text-anchor="middle" x="522" y="84">toujours peint avant</text>
+<text fill="#2B2F33" font-size="8" text-anchor="middle" x="522" y="98">sa face avant : l'intérieur</text>
+<text fill="#2B2F33" font-size="8" text-anchor="middle" x="522" y="112">se lit juste, au prix</text>
+<text fill="#E65100" font-size="8" font-weight="700" text-anchor="middle" x="522" y="126">de deux appels de dessin.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">three/src/renderers/WebGLRenderer.js (0.186.1) · lignes 2165 à 2173 (extrait)</span>if ( material.transparent === true &amp;&amp; material.side === DoubleSide
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">three/src/renderers/WebGLRenderer.js (0.186.1) · lignes 2165 à 2173 (extrait)</span>if ( material.transparent === true &amp;&amp; material.side === DoubleSide
      &amp;&amp; material.forceSinglePass === false ) {
   material.side = BackSide;  …renderBufferDirect(…);
   material.side = FrontSide; …renderBufferDirect(…);
   material.side = DoubleSide;
 }</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Le prix des deux passes</h3>
-      <p>Chaque maillage transparent en <code>DoubleSide</code> coûte deux appels de dessin au lieu d'un. Dans la mesure du cours 87, 400 boîtes de Magpie donnent 800 appels pour les seules faces. <code>forceSinglePass: true</code> revient à une passe, au prix d'erreurs d'ordre dans l'objet.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Les formes concaves</h3>
-      <p>Une forme creuse (un U, un tore) a des faces avant cachées derrière d'autres faces avant. La double passe ne les trie pas entre elles : de près, certains recouvrements peuvent paraître dans le mauvais ordre. Pour un aperçu, c'est une teinte, pas une forme, qui change.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Le prix des deux passes</h3>
+<p>Chaque maillage transparent en <code>DoubleSide</code> coûte deux appels de dessin au lieu d'un. Dans la mesure du cours 87, 400 boîtes de Magpie donnent 800 appels pour les seules faces. <code>forceSinglePass: true</code> revient à une passe, au prix d'erreurs d'ordre dans l'objet.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Les formes concaves</h3>
+<p>Une forme creuse (un U, un tore) a des faces avant cachées derrière d'autres faces avant. La double passe ne les trie pas entre elles : de près, certains recouvrements peuvent paraître dans le mauvais ordre. Pour un aperçu, c'est une teinte, pas une forme, qui change.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Croire qu'un matériau transparent coûte autant qu'un opaque. Il demande le tri des objets à chaque image, souvent deux passes, et il empêche la carte d'écarter tôt les pixels cachés. Une scène entièrement translucide est la plus chère à peindre.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 88 · La transparence</div>
+<div class="folio">3</div>
+<div class="pied">Cours 88 · La transparence</div>
 </section>
-
 <!-- ============ PAGE 4 · REMÈDES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 88</b></div>
-  <p class="rubrique">Schéma 3 · Les remèdes au tri</p>
-  <h2>Trier mieux, ou ne plus trier</h2>
-  <p style="max-width:165mm">Le tri parfait, triangle par triangle et à chaque image, coûte trop cher. Les moteurs choisissent un compromis : trier grossièrement, ou rendre le mélange indépendant de l'ordre, ou remplacer la transparence par un tramage de pixels pleins et vides.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#1D6FB8" text-anchor="start" font-weight="700">Quatre façons de dessiner du transparent, de la plus simple à la plus robuste</text>
-<text x="30" y="44" font-size="8" fill="#6B7378" text-anchor="start" font-weight="700">méthode</text>
-<text x="220" y="44" font-size="8" fill="#6B7378" text-anchor="start" font-weight="700">ce qu'elle trie</text>
-<text x="400" y="44" font-size="8" fill="#6B7378" text-anchor="start" font-weight="700">limite</text>
-<rect x="16" y="52" width="568" height="26" rx="3" fill="#E6F0FA"/>
-<text x="30" y="69" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">tri par objet (Three.js)</text>
-<text x="220" y="69" font-size="8.2" fill="#2B2F33" text-anchor="start">les objets, par leur centre</text>
-<text x="400" y="69" font-size="8.2" fill="#2B2F33" text-anchor="start">objets imbriqués ou croisés</text>
-<rect x="16" y="82" width="568" height="26" rx="3" fill="#E6F0FA"/>
-<text x="30" y="99" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">double passe arrière / avant</text>
-<text x="220" y="99" font-size="8.2" fill="#2B2F33" text-anchor="start">les faces d'un même objet</text>
-<text x="400" y="99" font-size="8.2" fill="#2B2F33" text-anchor="start">deux appels ; formes concaves</text>
-<rect x="16" y="112" width="568" height="26" rx="3" fill="#fff"/>
-<text x="30" y="129" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">transparence pondérée (OIT)</text>
-<text x="220" y="129" font-size="8.2" fill="#2B2F33" text-anchor="start">rien : mélange commutatif</text>
-<text x="400" y="129" font-size="8.2" fill="#2B2F33" text-anchor="start">approximation, plus de mémoire</text>
-<rect x="16" y="142" width="568" height="26" rx="3" fill="#fff"/>
-<text x="30" y="159" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">tramage (screen-door)</text>
-<text x="220" y="159" font-size="8.2" fill="#2B2F33" text-anchor="start">rien : pixels pleins ou vides</text>
-<text x="400" y="159" font-size="8.2" fill="#2B2F33" text-anchor="start">motif visible, besoin d'anticrénelage</text>
-<text x="16" y="186" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Fond bleu pâle : ce que fait l'aperçu de Magpie. « OIT » : order-independent transparency.</text>
-<text x="16" y="202" font-size="7.8" fill="#2B2F33" text-anchor="start" font-weight="700">Un aperçu de travail se contente du tri par objet : une erreur d'ordre change une teinte, pas la forme.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 88</b></div>
+<p class="rubrique">Schéma 3 · Les remèdes au tri</p>
+<h2>Trier mieux, ou ne plus trier</h2>
+<p style="max-width:165mm">Le tri parfait, triangle par triangle et à chaque image, coûte trop cher. Les moteurs choisissent un compromis : trier grossièrement, ou rendre le mélange indépendant de l'ordre, ou remplacer la transparence par un tramage de pixels pleins et vides.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#1D6FB8" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">Quatre façons de dessiner du transparent, de la plus simple à la plus robuste</text>
+<text fill="#6B7378" font-size="8" font-weight="700" text-anchor="start" x="30" y="44">méthode</text>
+<text fill="#6B7378" font-size="8" font-weight="700" text-anchor="start" x="220" y="44">ce qu'elle trie</text>
+<text fill="#6B7378" font-size="8" font-weight="700" text-anchor="start" x="400" y="44">limite</text>
+<rect fill="#E6F0FA" height="26" rx="3" width="568" x="16" y="52"></rect>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="30" y="69">tri par objet (Three.js)</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="start" x="220" y="69">les objets, par leur centre</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="start" x="400" y="69">objets imbriqués ou croisés</text>
+<rect fill="#E6F0FA" height="26" rx="3" width="568" x="16" y="82"></rect>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="30" y="99">double passe arrière / avant</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="start" x="220" y="99">les faces d'un même objet</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="start" x="400" y="99">deux appels ; formes concaves</text>
+<rect fill="#fff" height="26" rx="3" width="568" x="16" y="112"></rect>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="30" y="129">transparence pondérée (OIT)</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="start" x="220" y="129">rien : mélange commutatif</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="start" x="400" y="129">approximation, plus de mémoire</text>
+<rect fill="#fff" height="26" rx="3" width="568" x="16" y="142"></rect>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="30" y="159">tramage (screen-door)</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="start" x="220" y="159">rien : pixels pleins ou vides</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="start" x="400" y="159">motif visible, besoin d'anticrénelage</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="16" y="186">Fond bleu pâle : ce que fait l'aperçu de Magpie. « OIT » : order-independent transparency.</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="start" x="16" y="202">Un aperçu de travail se contente du tri par objet : une erreur d'ordre change une teinte, pas la forme.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Three.js, forcer un ordre et une passe</span>const vitre = new THREE.Mesh(geometrie, new THREE.MeshLambertMaterial({
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · Three.js, forcer un ordre et une passe</span>const vitre = new THREE.Mesh(geometrie, new THREE.MeshLambertMaterial({
   transparent: true, opacity: 0.4, depthWrite: false,
   side: THREE.DoubleSide, forceSinglePass: true }));
 vitre.renderOrder = 10;   // peinte après les objets de rang 0</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>renderOrder</h3>
-      <p>Quand on sait ce qui doit passer en dernier (une vitre, un volume de sélection), <code>renderOrder</code> l'impose sans calcul : il passe avant la profondeur dans le tri. Utile pour une poignée d'objets, ingérable pour des centaines.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>L'exemple de Rhino</h3>
-      <p>Rhino propose, selon ses modes d'affichage, une transparence triée ou un mode « rayons X ». Grasshopper peint son aperçu translucide et accepte les petites erreurs d'ordre. Pour lire une forme, une teinte imparfaite gêne peu.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>renderOrder</h3>
+<p>Quand on sait ce qui doit passer en dernier (une vitre, un volume de sélection), <code>renderOrder</code> l'impose sans calcul : il passe avant la profondeur dans le tri. Utile pour une poignée d'objets, ingérable pour des centaines.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>L'exemple de Rhino</h3>
+<p>Rhino propose, selon ses modes d'affichage, une transparence triée ou un mode « rayons X ». Grasshopper peint son aperçu translucide et accepte les petites erreurs d'ordre. Pour lire une forme, une teinte imparfaite gêne peu.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Mettre de la transparence pour « faire joli ». Chaque surface translucide brouille celles de derrière et coûte cher à peindre. On la réserve à ce qui doit laisser voir autre chose : un aperçu de travail, un volume englobant, une vitre.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 88 · La transparence</div>
+<div class="folio">4</div>
+<div class="pied">Cours 88 · La transparence</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 88</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>Un aperçu translucide, à la manière de Grasshopper</h2>
-  <p style="max-width:165mm">Magpie reprend le rouge translucide de l'aperçu Grasshopper (commentaire des lignes 5 à 8) et fait les bons réglages : pas d'écriture de profondeur, deux côtés peints, arêtes opaques dessinées par-dessus pour garder la forme lisible.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 88</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>Un aperçu translucide, à la manière de Grasshopper</h2>
+<p style="max-width:165mm">Magpie reprend le rouge translucide de l'aperçu Grasshopper (commentaire des lignes 5 à 8) et fait les bons réglages : pas d'écriture de profondeur, deux côtés peints, arêtes opaques dessinées par-dessus pour garder la forme lisible.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">magpie/web/src/Viewer3D.jsx</span></div>
 <div class="l k1"><span class="n">15</span>normal: 0x960000,<span class="rep r1">1</span></div>
@@ -257,137 +230,55 @@ vitre.renderOrder = 10;   // peinte après les objets de rang 0</div>
 <div class="l"><span class="cm">three/src/renderers/webgl/WebGLRenderLists.js</span></div>
 <div class="l k5"><span class="n">43</span><span class="kw">return</span> b.z - a.z;<span class="rep r5">5</span></div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>Rouge et vert</b>Comme Grasshopper.</li>
-      <li><span class="rep r2">2</span><b>Opacité 0,55</b>Recouvrements plus foncés.</li>
-      <li><span class="rep r3">3</span><b>Sans profondeur</b>Et deux passes.</li>
-      <li><span class="rep r4">4</span><b>Arêtes opaques</b>La forme reste nette.</li>
-      <li><span class="rep r5">5</span><b>Le tri</b>Du loin au proche.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À surveiller · une sélection qui peut changer de teinte</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>Rouge et vert</b>Comme Grasshopper.</li>
+<li><span class="rep r2">2</span><b>Opacité 0,55</b>Recouvrements plus foncés.</li>
+<li><span class="rep r3">3</span><b>Sans profondeur</b>Et deux passes.</li>
+<li><span class="rep r4">4</span><b>Arêtes opaques</b>La forme reste nette.</li>
+<li><span class="rep r5">5</span><b>Le tri</b>Du loin au proche.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À surveiller · une sélection qui peut changer de teinte</span>
     Les objets sélectionnés, en vert, sont triés avec les autres par le centre de leur sphère englobante. Une petite pièce sélectionnée posée dans un grand volume rouge peut donc être peinte avant ou après lui selon l'angle de vue : sa teinte varie en tournant la caméra. Si la sélection doit toujours ressortir, un <code>renderOrder</code> plus grand pour les objets sélectionnés la peindrait en dernier. Comportement déduit du code de Three.js, à vérifier dans l'aperçu.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 88 · La transparence</div>
+<div class="folio">5</div>
+<div class="pied">Cours 88 · La transparence</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 88</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 88</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">Pour la carte graphique, la transparence est…</div><ul>
-      <li><span>A</span>une texture</li><li><span>B</span>un type de lumière</li><li><span>C</span>une propriété du maillage</li><li><span>D</span>un mélange avec la couleur déjà peinte</li></ul></div>
 
-    <div class="q"><div class="enonce">Rouge 150 à α = 0,55 sur un fond de 188 donne (mesuré)…</div><ul>
-      <li><span>A</span>150</li><li><span>B</span>167</li><li><span>C</span>103</li><li><span>D</span>188</li></ul></div>
 
-    <div class="q"><div class="enonce">Deux couches à 0,55 laissent passer du fond environ…</div><ul>
-      <li><span>A</span>0 %</li><li><span>B</span>20 %</li><li><span>C</span>45 %</li><li><span>D</span>55 %</li></ul></div>
 
-    <div class="q"><div class="enonce">Les objets transparents se peignent…</div><ul>
-      <li><span>A</span>après les opaques, du plus loin au plus proche</li><li><span>B</span>dans un ordre au hasard</li><li><span>C</span>du plus proche au plus loin</li><li><span>D</span>avant les opaques</li></ul></div>
-
-    <div class="q"><div class="enonce">Avec <code>depthWrite: true</code> et le mauvais ordre (mesuré)…</div><ul>
-      <li><span>A</span>l'image devient noire</li><li><span>B</span>les couleurs s'inversent seulement</li><li><span>C</span>l'objet du fond disparaît</li><li><span>D</span>tout est juste</li></ul></div>
-
-    <div class="q"><div class="enonce">Three.js trie les transparents selon… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>leur renderOrder</li><li><span>B</span>chacun de leurs triangles</li><li><span>C</span>la profondeur du centre de leur sphère englobante</li><li><span>D</span>leur couleur</li></ul></div>
-
-    <div class="q"><div class="enonce">Une face transparente en DoubleSide est dessinée…</div><ul>
-      <li><span>A</span>en deux passes, arrière puis avant</li><li><span>B</span>seulement de face</li><li><span>C</span>une seule fois</li><li><span>D</span>trois fois</li></ul></div>
-
-    <div class="q"><div class="enonce">Deux objets transparents qui se traversent…</div><ul>
-      <li><span>A</span>ne s'affichent pas</li><li><span>B</span>deviennent opaques</li><li><span>C</span>sont triés triangle par triangle</li><li><span>D</span>n'ont pas d'ordre juste</li></ul></div>
-
-    <div class="q"><div class="enonce">L'opacité de l'aperçu Magpie vaut…</div><ul>
-      <li><span>A</span>1</li><li><span>B</span>0,55</li><li><span>C</span>0,5</li><li><span>D</span>0,25</li></ul></div>
-
-    <div class="q"><div class="enonce"><code>renderOrder</code> sert à…</div><ul>
-      <li><span>A</span>imposer un ordre de peinture</li><li><span>B</span>fusionner des objets</li><li><span>C</span>activer les ombres</li><li><span>D</span>changer l'opacité</li></ul></div>
-
-    <div class="q"><div class="enonce">La transparence pondérée (OIT)…</div><ul>
-      <li><span>A</span>est le réglage par défaut de Three.js</li><li><span>B</span>trie chaque triangle</li><li><span>C</span>ne marche qu'avec deux objets</li><li><span>D</span>rend le mélange indépendant de l'ordre, en approximation</li></ul></div>
-
-    <div class="q"><div class="enonce">Pourquoi Magpie dessine-t-il des arêtes opaques par-dessus ?</div><ul>
-      <li><span>A</span>pour économiser des appels</li><li><span>B</span>pour trier les faces</li><li><span>C</span>pour garder la forme lisible</li><li><span>D</span>pour la sélection</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 88 · La transparence</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">transparent: true, opacity</td><td>activer le mélange et choisir l'alpha</td><td>Viewer3D.jsx:28</td></tr>
+<tr><td class="c">depthWrite: false</td><td>ne pas boucher ce qui est derrière</td><td>Viewer3D.jsx:28</td></tr>
+<tr><td class="c">side: THREE.DoubleSide</td><td>deux côtés, deux passes si transparent</td><td>Viewer3D.jsx:28</td></tr>
+<tr><td class="c">forceSinglePass: true</td><td>une seule passe</td><td>exemple autonome, page 4</td></tr>
+<tr><td class="c">object.renderOrder</td><td>imposer l'ordre de peinture</td><td>exemple autonome, page 4</td></tr>
+<tr><td class="c">reversePainterSortStable</td><td>le tri des transparents</td><td>WebGLRenderLists.js:31</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Alpha</dt><dd>L'opacité d'une couleur, de 0 (invisible) à 1 (opaque).</dd>
+<dt>Mélange (blending)</dt><dd>La combinaison d'une couleur nouvelle avec celle déjà peinte.</dd>
+<dt>Algorithme du peintre</dt><dd>Peindre du plus loin au plus proche, comme on peint un décor.</dd>
+<dt>depthWrite</dt><dd>Le réglage qui fait écrire ou non sa profondeur à un objet.</dd>
+<dt>OIT</dt><dd>Transparence indépendante de l'ordre : un mélange qui ne demande aucun tri.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 89</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 88 · La transparence</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 88</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · D.</b> Une opération de mélange.</div>
-    <div><b>02 · B.</b> 0,55 × 150 + 0,45 × 188.</div>
-    <div><b>03 · B.</b> 0,45 × 0,45 ≈ 0,20.</div>
-    <div><b>04 · A.</b> Le mélange n'est pas commutatif.</div>
-    <div><b>05 · C.</b> Il échoue au test de profondeur.</div>
-    <div><b>06 · A et C.</b> WebGLRenderLists.js:31–49.</div>
-    <div><b>07 · A.</b> WebGLRenderer.js:2165–2173.</div>
-    <div><b>08 · D.</b> Le tri range des objets entiers.</div>
-    <div><b>09 · B.</b> Viewer3D.jsx:28.</div>
-    <div><b>10 · A.</b> Il passe avant la profondeur.</div>
-    <div><b>11 · D.</b> Une somme pondérée, commutative.</div>
-    <div><b>12 · C.</b> Comme l'aperçu Grasshopper.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 89, « Couleur linéaire et gamma ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">transparent: true, opacity</td><td>activer le mélange et choisir l'alpha</td><td>Viewer3D.jsx:28</td></tr>
-      <tr><td class="c">depthWrite: false</td><td>ne pas boucher ce qui est derrière</td><td>Viewer3D.jsx:28</td></tr>
-      <tr><td class="c">side: THREE.DoubleSide</td><td>deux côtés, deux passes si transparent</td><td>Viewer3D.jsx:28</td></tr>
-      <tr><td class="c">forceSinglePass: true</td><td>une seule passe</td><td>exemple autonome, page 4</td></tr>
-      <tr><td class="c">object.renderOrder</td><td>imposer l'ordre de peinture</td><td>exemple autonome, page 4</td></tr>
-      <tr><td class="c">reversePainterSortStable</td><td>le tri des transparents</td><td>WebGLRenderLists.js:31</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Alpha</dt><dd>L'opacité d'une couleur, de 0 (invisible) à 1 (opaque).</dd>
-    <dt>Mélange (blending)</dt><dd>La combinaison d'une couleur nouvelle avec celle déjà peinte.</dd>
-    <dt>Algorithme du peintre</dt><dd>Peindre du plus loin au plus proche, comme on peint un décor.</dd>
-    <dt>depthWrite</dt><dd>Le réglage qui fait écrire ou non sa profondeur à un objet.</dd>
-    <dt>OIT</dt><dd>Transparence indépendante de l'ordre : un mélange qui ne demande aucun tri.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 89</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 88 · La transparence</div>
-</section>
-
 </body>
 </html>

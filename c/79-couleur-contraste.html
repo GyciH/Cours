@@ -1,263 +1,236 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>79 · Couleur et contraste</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-6">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 79</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Couleur et contraste</h1>
-  <p class="chapeau">Une couleur d'interface a un <b>rôle</b> (fond, texte, bordure, état) avant d'avoir une valeur. Et la lisibilité d'un texte ne se juge pas à l'œil sur son propre écran : elle se <b>calcule</b>, par un ratio de contraste entre deux couleurs. Ce cours donne la formule, les seuils, et la règle qui protège les daltoniens : jamais une information par la couleur seule.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>19</b> et <b>23</b></span>
-    <span class="pastille">Exemples · <b>LotGTests</b>, <b>ETATS-NATIFS.md</b>, skill <b>accessibility</b> (SnapSet)</span>
-  </div>
-
-  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
-    <svg viewBox="0 0 600 178" width="100%">
-<rect x="8" y="14" width="104" height="62" rx="6" fill="#C8C8C8" stroke="#323232" stroke-width="2"/>
-<text x="60" y="52" font-size="12" fill="#000000" text-anchor="middle" font-weight="700">Capsule</text>
-<text x="60" y="96" font-size="8.6" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">normal</text>
-<text x="60" y="116" font-size="10" fill="#2E7D32" text-anchor="middle" font-weight="700">12,55:1</text>
-<rect x="126" y="14" width="104" height="62" rx="6" fill="#8C8C9B" stroke="#232323" stroke-width="2"/>
-<text x="178" y="52" font-size="12" fill="#000000" text-anchor="middle" font-weight="700">Capsule</text>
-<text x="178" y="96" font-size="8.6" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">hidden</text>
-<text x="178" y="116" font-size="10" fill="#2E7D32" text-anchor="middle" font-weight="700">6,34:1</text>
-<rect x="244" y="14" width="104" height="62" rx="6" fill="#FF8C14" stroke="#500A00" stroke-width="2"/>
-<text x="296" y="52" font-size="12" fill="#000000" text-anchor="middle" font-weight="700">Capsule</text>
-<text x="296" y="96" font-size="8.6" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">warning</text>
-<text x="296" y="116" font-size="10" fill="#2E7D32" text-anchor="middle" font-weight="700">9,01:1</text>
-<rect x="362" y="14" width="104" height="62" rx="6" fill="#C80000" stroke="#3C0000" stroke-width="2"/>
-<text x="414" y="52" font-size="12" fill="#000000" text-anchor="middle" font-weight="700">Capsule</text>
-<text x="414" y="96" font-size="8.6" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">error</text>
-<text x="414" y="116" font-size="10" fill="#C62828" text-anchor="middle" font-weight="700">3,46:1</text>
-<rect x="480" y="14" width="104" height="62" rx="6" fill="#787878" stroke="#5A5A5A" stroke-width="2"/>
-<text x="532" y="52" font-size="12" fill="#464646" text-anchor="middle" font-weight="700">Capsule</text>
-<text x="532" y="96" font-size="8.6" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">locked</text>
-<text x="532" y="116" font-size="10" fill="#C62828" text-anchor="middle" font-weight="700">2,14:1</text>
-<text x="300" y="146" font-size="7.8" fill="#2B2F33" text-anchor="middle" font-weight="700">Texte sur fond, aux couleurs par défaut du skin de Grasshopper (calculé, seuil 4,5:1 pour du texte).</text>
-<text x="300" y="164" font-size="7.6" fill="#6B7378" text-anchor="middle" font-style="italic">« locked » est grisé exprès : les règles de contraste ne visent pas un élément désactivé.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 79</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Couleur et contraste</h1>
+<p class="chapeau">Une couleur d'interface a un <b>rôle</b> (fond, texte, bordure, état) avant d'avoir une valeur. Et la lisibilité d'un texte ne se juge pas à l'œil sur son propre écran : elle se <b>calcule</b>, par un ratio de contraste entre deux couleurs. Ce cours donne la formule, les seuils, et la règle qui protège les daltoniens : jamais une information par la couleur seule.</p>
+<div class="meta">
+<span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>19</b> et <b>23</b></span>
+<span class="pastille">Exemples · <b>LotGTests</b>, <b>ETATS-NATIFS.md</b>, skill <b>accessibility</b> (SnapSet)</span>
+</div>
+<div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+<svg viewbox="0 0 600 178" width="100%">
+<rect fill="#C8C8C8" height="62" rx="6" stroke="#323232" stroke-width="2" width="104" x="8" y="14"></rect>
+<text fill="#000000" font-size="12" font-weight="700" text-anchor="middle" x="60" y="52">Capsule</text>
+<text class="mono" fill="#2B2F33" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="60" y="96">normal</text>
+<text fill="#2E7D32" font-size="10" font-weight="700" text-anchor="middle" x="60" y="116">12,55:1</text>
+<rect fill="#8C8C9B" height="62" rx="6" stroke="#232323" stroke-width="2" width="104" x="126" y="14"></rect>
+<text fill="#000000" font-size="12" font-weight="700" text-anchor="middle" x="178" y="52">Capsule</text>
+<text class="mono" fill="#2B2F33" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="178" y="96">hidden</text>
+<text fill="#2E7D32" font-size="10" font-weight="700" text-anchor="middle" x="178" y="116">6,34:1</text>
+<rect fill="#FF8C14" height="62" rx="6" stroke="#500A00" stroke-width="2" width="104" x="244" y="14"></rect>
+<text fill="#000000" font-size="12" font-weight="700" text-anchor="middle" x="296" y="52">Capsule</text>
+<text class="mono" fill="#2B2F33" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="296" y="96">warning</text>
+<text fill="#2E7D32" font-size="10" font-weight="700" text-anchor="middle" x="296" y="116">9,01:1</text>
+<rect fill="#C80000" height="62" rx="6" stroke="#3C0000" stroke-width="2" width="104" x="362" y="14"></rect>
+<text fill="#000000" font-size="12" font-weight="700" text-anchor="middle" x="414" y="52">Capsule</text>
+<text class="mono" fill="#2B2F33" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="414" y="96">error</text>
+<text fill="#C62828" font-size="10" font-weight="700" text-anchor="middle" x="414" y="116">3,46:1</text>
+<rect fill="#787878" height="62" rx="6" stroke="#5A5A5A" stroke-width="2" width="104" x="480" y="14"></rect>
+<text fill="#464646" font-size="12" font-weight="700" text-anchor="middle" x="532" y="52">Capsule</text>
+<text class="mono" fill="#2B2F33" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="532" y="96">locked</text>
+<text fill="#C62828" font-size="10" font-weight="700" text-anchor="middle" x="532" y="116">2,14:1</text>
+<text fill="#2B2F33" font-size="7.8" font-weight="700" text-anchor="middle" x="300" y="146">Texte sur fond, aux couleurs par défaut du skin de Grasshopper (calculé, seuil 4,5:1 pour du texte).</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="middle" x="300" y="164">« locked » est grisé exprès : les règles de contraste ne visent pas un élément désactivé.</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>On choisit des couleurs par rôle dans un système commun, on vérifie chaque paire premier plan / support par le calcul, et on double chaque information portée par une teinte d'un signal de forme, d'icône ou de texte.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Les feux de circulation. Rouge et vert sont mal distingués par une partie des conducteurs ; la <b>position</b> de la lampe (en haut, en bas) porte la même information. Personne n'a besoin de voir la teinte pour s'arrêter.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>calculer un ratio de contraste ;</li>
-        <li>appliquer les seuils 4,5:1 et 3:1 ;</li>
-        <li>vérifier qu'un état ne tient pas qu'à la teinte ;</li>
-        <li>poser une couleur par rôle plutôt que par valeur.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:5mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>On choisit des couleurs par rôle dans un système commun, on vérifie chaque paire premier plan / support par le calcul, et on double chaque information portée par une teinte d'un signal de forme, d'icône ou de texte.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Les feux de circulation. Rouge et vert sont mal distingués par une partie des conducteurs ; la <b>position</b> de la lampe (en haut, en bas) porte la même information. Personne n'a besoin de voir la teinte pour s'arrêter.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>calculer un ratio de contraste ;</li>
+<li>appliquer les seuils 4,5:1 et 3:1 ;</li>
+<li>vérifier qu'un état ne tient pas qu'à la teinte ;</li>
+<li>poser une couleur par rôle plutôt que par valeur.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:5mm">
+<span class="titre">À retenir</span>
     Le contraste dépend de la <b>luminance</b>, pas de la teinte. Un rouge vif et un vert vif peuvent avoir presque la même luminance : ils « contrastent » pour l'œil qui distingue les teintes, et se confondent pour l'œil qui ne les distingue pas, ou sur une impression en noir et blanc.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 79 · Couleur et contraste</div>
+<div class="folio">1</div>
+<div class="pied">Cours 79 · Couleur et contraste</div>
 </section>
-
 <!-- ============ PAGE 2 · LE RATIO ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 79</b></div>
-  <p class="rubrique">Schéma 1 · Le ratio de contraste</p>
-  <h2>Une formule, deux seuils</h2>
-  <p style="max-width:165mm">Les règles WCAG, adoptées par la plupart des normes d'accessibilité, mesurent l'écart de luminance entre un premier plan et ce sur quoi il est peint. Le calcul tient en trois étapes, et le skill accessibility de SnapSet le reprend mot pour mot.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#2F6B3A" text-anchor="start" font-weight="700">Du code couleur au ratio : trois étapes (WCAG 2.x)</text>
-<rect x="16" y="32" width="568" height="32" rx="4" fill="#fff" stroke="#2F6B3A" stroke-width="1.2"/>
-<text x="28" y="52" font-size="8.6" fill="#2F6B3A" text-anchor="start" font-weight="700">1 · linéariser</text>
-<text x="140" y="46" font-size="8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8px">c = octet / 255 ; c ≤ 0,04045 ? c / 12,92</text>
-<text x="140" y="59" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic" class="mono" style="font-size:7.6px">: ((c + 0,055) / 1,055)^2,4</text>
-<rect x="16" y="72" width="568" height="32" rx="4" fill="#fff" stroke="#2F6B3A" stroke-width="1.2"/>
-<text x="28" y="92" font-size="8.6" fill="#2F6B3A" text-anchor="start" font-weight="700">2 · luminance</text>
-<text x="140" y="86" font-size="8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8px">L = 0,2126 R + 0,7152 V + 0,0722 B</text>
-<text x="140" y="99" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">le vert compte dix fois plus que le bleu</text>
-<rect x="16" y="112" width="568" height="32" rx="4" fill="#fff" stroke="#2F6B3A" stroke-width="1.2"/>
-<text x="28" y="132" font-size="8.6" fill="#2F6B3A" text-anchor="start" font-weight="700">3 · ratio</text>
-<text x="140" y="126" font-size="8" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:8px">(L claire + 0,05) / (L sombre + 0,05)</text>
-<text x="140" y="139" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">de 1:1 (identiques) à 21:1 (noir sur blanc)</text>
-<rect x="16" y="160" width="276" height="40" rx="4" fill="#E7F0E8" stroke="#1565C0" stroke-width="1.2"/>
-<text x="154" y="177" font-size="12" fill="#1565C0" text-anchor="middle" font-weight="700">4,5:1</text>
-<text x="154" y="193" font-size="7.8" fill="#2B2F33" text-anchor="middle">texte</text>
-<rect x="308" y="160" width="276" height="40" rx="4" fill="#E7F0E8" stroke="#7B1FA2" stroke-width="1.2"/>
-<text x="446" y="177" font-size="12" fill="#7B1FA2" text-anchor="middle" font-weight="700">3:1</text>
-<text x="446" y="193" font-size="7.8" fill="#2B2F33" text-anchor="middle">élément non textuel contre son support</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 79</b></div>
+<p class="rubrique">Schéma 1 · Le ratio de contraste</p>
+<h2>Une formule, deux seuils</h2>
+<p style="max-width:165mm">Les règles WCAG, adoptées par la plupart des normes d'accessibilité, mesurent l'écart de luminance entre un premier plan et ce sur quoi il est peint. Le calcul tient en trois étapes, et le skill accessibility de SnapSet le reprend mot pour mot.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#2F6B3A" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">Du code couleur au ratio : trois étapes (WCAG 2.x)</text>
+<rect fill="#fff" height="32" rx="4" stroke="#2F6B3A" stroke-width="1.2" width="568" x="16" y="32"></rect>
+<text fill="#2F6B3A" font-size="8.6" font-weight="700" text-anchor="start" x="28" y="52">1 · linéariser</text>
+<text class="mono" fill="#2B2F33" font-size="8" style="font-size:8px" text-anchor="start" x="140" y="46">c = octet / 255 ; c ≤ 0,04045 ? c / 12,92</text>
+<text class="mono" fill="#6B7378" font-size="7.6" font-style="italic" style="font-size:7.6px" text-anchor="start" x="140" y="59">: ((c + 0,055) / 1,055)^2,4</text>
+<rect fill="#fff" height="32" rx="4" stroke="#2F6B3A" stroke-width="1.2" width="568" x="16" y="72"></rect>
+<text fill="#2F6B3A" font-size="8.6" font-weight="700" text-anchor="start" x="28" y="92">2 · luminance</text>
+<text class="mono" fill="#2B2F33" font-size="8" style="font-size:8px" text-anchor="start" x="140" y="86">L = 0,2126 R + 0,7152 V + 0,0722 B</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="140" y="99">le vert compte dix fois plus que le bleu</text>
+<rect fill="#fff" height="32" rx="4" stroke="#2F6B3A" stroke-width="1.2" width="568" x="16" y="112"></rect>
+<text fill="#2F6B3A" font-size="8.6" font-weight="700" text-anchor="start" x="28" y="132">3 · ratio</text>
+<text class="mono" fill="#2B2F33" font-size="8" style="font-size:8px" text-anchor="start" x="140" y="126">(L claire + 0,05) / (L sombre + 0,05)</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="140" y="139">de 1:1 (identiques) à 21:1 (noir sur blanc)</text>
+<rect fill="#E7F0E8" height="40" rx="4" stroke="#1565C0" stroke-width="1.2" width="276" x="16" y="160"></rect>
+<text fill="#1565C0" font-size="12" font-weight="700" text-anchor="middle" x="154" y="177">4,5:1</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="middle" x="154" y="193">texte</text>
+<rect fill="#E7F0E8" height="40" rx="4" stroke="#7B1FA2" stroke-width="1.2" width="276" x="308" y="160"></rect>
+<text fill="#7B1FA2" font-size="12" font-weight="700" text-anchor="middle" x="446" y="177">3:1</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="middle" x="446" y="193">élément non textuel contre son support</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">SnapSet/tests/ResolutionTests/LotGTests.cs · lignes 147, 150 et 155 à 156</span>return c &lt;= 0.04045 ? c / 12.92 : Math.Pow((c + 0.055) / 1.055, 2.4);
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">SnapSet/tests/ResolutionTests/LotGTests.cs · lignes 147, 150 et 155 à 156</span>return c &lt;= 0.04045 ? c / 12.92 : Math.Pow((c + 0.055) / 1.055, 2.4);
 private static double Luminance(int[] argb) =&gt; 0.2126 * Lineaire(argb[1]) + 0.7152 * …
 double la = Luminance(a), lb = Luminance(b);
 return (Math.Max(la, lb) + 0.05) / (Math.Min(la, lb) + 0.05);</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Contre son support</h3>
-      <p>Le ratio se calcule contre la couleur qui <b>touche</b> l'élément, pas contre le fond de la fenêtre. Une coche noire dans une boîte grise se juge contre le gris de la boîte. Une bordure compte pour la meilleure de ses deux faces.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Et la transparence ?</h3>
-      <p>Une couleur translucide n'a pas de luminance propre. On la pose d'abord sur son support (mélange composante par composante), puis on calcule le ratio sur le résultat. Sur deux supports différents, elle a deux ratios.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Contre son support</h3>
+<p>Le ratio se calcule contre la couleur qui <b>touche</b> l'élément, pas contre le fond de la fenêtre. Une coche noire dans une boîte grise se juge contre le gris de la boîte. Une bordure compte pour la meilleure de ses deux faces.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Et la transparence ?</h3>
+<p>Une couleur translucide n'a pas de luminance propre. On la pose d'abord sur son support (mélange composante par composante), puis on calcule le ratio sur le résultat. Sur deux supports différents, elle a deux ratios.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Juger le contraste sur son propre écran, réglé à pleine luminosité, dans un bureau sombre. L'élève le verra sur un vidéoprojecteur délavé ou un portable au soleil. Le calcul, lui, ne dépend ni de l'écran ni de l'éclairage.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 79 · Couleur et contraste</div>
+<div class="folio">2</div>
+<div class="pied">Cours 79 · Couleur et contraste</div>
 </section>
-
 <!-- ============ PAGE 3 · DALTONISME ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 79</b></div>
-  <p class="rubrique">Schéma 2 · Jamais par la couleur seule</p>
-  <h2>Ce que voit un œil qui confond rouge et vert</h2>
-  <p style="max-width:165mm">Une part notable des hommes (de l'ordre de 8 % chez les personnes d'origine européenne, selon les études courantes) distingue mal le rouge du vert. La simulation ci-dessous, calculée sur trois fonds de capsule de Grasshopper, montre pourquoi une teinte ne peut pas porter seule un état.</p>
-
-  <svg viewBox="0 0 600 196" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="196" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.4" fill="#2F6B3A" text-anchor="start" font-weight="700">Trois fonds de capsule, vus normalement puis en deutéranopie (simulation, matrice de Machado et al., 2009)</text>
-<text x="130" y="46" font-size="8" fill="#6B7378" text-anchor="middle" font-weight="700">vision courante</text>
-<text x="330" y="46" font-size="8" fill="#6B7378" text-anchor="middle" font-weight="700">deutéranopie</text>
-<rect x="80" y="56" width="100" height="30" rx="5" fill="#FF8C14"/>
-<rect x="280" y="56" width="100" height="30" rx="5" fill="#CAB412"/>
-<line x1="186" y1="71" x2="274" y2="71" stroke="#6B7378" stroke-width="1"/><polygon points="274,71 267.6,73.7 267.6,68.3" fill="#6B7378"/>
-<text x="72" y="75" font-size="8" fill="#2B2F33" text-anchor="end" font-weight="700">avertissement</text>
-<text x="392" y="75" font-size="7.6" fill="#6B7378" text-anchor="start" class="mono" style="font-size:7.6px">#CAB412</text>
-<rect x="80" y="96" width="100" height="30" rx="5" fill="#82D732"/>
-<rect x="280" y="96" width="100" height="30" rx="5" fill="#D4BF44"/>
-<line x1="186" y1="111" x2="274" y2="111" stroke="#6B7378" stroke-width="1"/><polygon points="274,111 267.6,113.7 267.6,108.3" fill="#6B7378"/>
-<text x="72" y="115" font-size="8" fill="#2B2F33" text-anchor="end" font-weight="700">sélectionné</text>
-<text x="392" y="115" font-size="7.6" fill="#6B7378" text-anchor="start" class="mono" style="font-size:7.6px">#D4BF44</text>
-<rect x="80" y="136" width="100" height="30" rx="5" fill="#C80000"/>
-<rect x="280" y="136" width="100" height="30" rx="5" fill="#7F7000"/>
-<line x1="186" y1="151" x2="274" y2="151" stroke="#6B7378" stroke-width="1"/><polygon points="274,151 267.6,153.7 267.6,148.3" fill="#6B7378"/>
-<text x="72" y="155" font-size="8" fill="#2B2F33" text-anchor="end" font-weight="700">erreur</text>
-<text x="392" y="155" font-size="7.6" fill="#6B7378" text-anchor="start" class="mono" style="font-size:7.6px">#7F7000</text>
-<text x="470" y="82" font-size="8.4" fill="#C62828" text-anchor="middle" font-weight="700">orange et vert</text>
-<text x="470" y="98" font-size="8.4" fill="#C62828" text-anchor="middle" font-weight="700">deviennent presque</text>
-<text x="470" y="114" font-size="8.4" fill="#C62828" text-anchor="middle" font-weight="700">le même jaune</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 79</b></div>
+<p class="rubrique">Schéma 2 · Jamais par la couleur seule</p>
+<h2>Ce que voit un œil qui confond rouge et vert</h2>
+<p style="max-width:165mm">Une part notable des hommes (de l'ordre de 8 % chez les personnes d'origine européenne, selon les études courantes) distingue mal le rouge du vert. La simulation ci-dessous, calculée sur trois fonds de capsule de Grasshopper, montre pourquoi une teinte ne peut pas porter seule un état.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 196" width="100%">
+<rect fill="#EFE9E1" height="196" width="600" x="0" y="0"></rect>
+<text fill="#2F6B3A" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="22">Trois fonds de capsule, vus normalement puis en deutéranopie (simulation, matrice de Machado et al., 2009)</text>
+<text fill="#6B7378" font-size="8" font-weight="700" text-anchor="middle" x="130" y="46">vision courante</text>
+<text fill="#6B7378" font-size="8" font-weight="700" text-anchor="middle" x="330" y="46">deutéranopie</text>
+<rect fill="#FF8C14" height="30" rx="5" width="100" x="80" y="56"></rect>
+<rect fill="#CAB412" height="30" rx="5" width="100" x="280" y="56"></rect>
+<line stroke="#6B7378" stroke-width="1" x1="186" x2="274" y1="71" y2="71"></line><polygon fill="#6B7378" points="274,71 267.6,73.7 267.6,68.3"></polygon>
+<text fill="#2B2F33" font-size="8" font-weight="700" text-anchor="end" x="72" y="75">avertissement</text>
+<text class="mono" fill="#6B7378" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="392" y="75">#CAB412</text>
+<rect fill="#82D732" height="30" rx="5" width="100" x="80" y="96"></rect>
+<rect fill="#D4BF44" height="30" rx="5" width="100" x="280" y="96"></rect>
+<line stroke="#6B7378" stroke-width="1" x1="186" x2="274" y1="111" y2="111"></line><polygon fill="#6B7378" points="274,111 267.6,113.7 267.6,108.3"></polygon>
+<text fill="#2B2F33" font-size="8" font-weight="700" text-anchor="end" x="72" y="115">sélectionné</text>
+<text class="mono" fill="#6B7378" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="392" y="115">#D4BF44</text>
+<rect fill="#C80000" height="30" rx="5" width="100" x="80" y="136"></rect>
+<rect fill="#7F7000" height="30" rx="5" width="100" x="280" y="136"></rect>
+<line stroke="#6B7378" stroke-width="1" x1="186" x2="274" y1="151" y2="151"></line><polygon fill="#6B7378" points="274,151 267.6,153.7 267.6,148.3"></polygon>
+<text fill="#2B2F33" font-size="8" font-weight="700" text-anchor="end" x="72" y="155">erreur</text>
+<text class="mono" fill="#6B7378" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="392" y="155">#7F7000</text>
+<text fill="#C62828" font-size="8.4" font-weight="700" text-anchor="middle" x="470" y="82">orange et vert</text>
+<text fill="#C62828" font-size="8.4" font-weight="700" text-anchor="middle" x="470" y="98">deviennent presque</text>
+<text fill="#C62828" font-size="8.4" font-weight="700" text-anchor="middle" x="470" y="114">le même jaune</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · un tableau de résultats, deux signaux par état</span>réussi    → vert   + « ✓ réussi »
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Exemple autonome · un tableau de résultats, deux signaux par état</span>réussi    → vert   + « ✓ réussi »
 échoué    → rouge  + « ✗ échoué »
 en cours  → orange + icône de sablier
 désactivé → gris   + ne réagit plus au clic</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Le second signal natif</h3>
-      <p>Grasshopper double l'avertissement et l'erreur d'une <b>bulle</b> (GH_MessageWidget), 20 × 20 px au-dessus du composant : une forme, pas une teinte. Le skill accessibility note qu'elle disparaît si l'utilisateur coupe l'affichage des messages (SKILL.md:30).</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Vérifier sans être daltonien</h3>
-      <p>Imprimer en niveaux de gris, ou passer la capture dans un simulateur : si deux états deviennent identiques, il manque un signal. Le test de l'impression grise suffit souvent à trouver le problème.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Le second signal natif</h3>
+<p>Grasshopper double l'avertissement et l'erreur d'une <b>bulle</b> (GH_MessageWidget), 20 × 20 px au-dessus du composant : une forme, pas une teinte. Le skill accessibility note qu'elle disparaît si l'utilisateur coupe l'affichage des messages (SKILL.md:30).</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Vérifier sans être daltonien</h3>
+<p>Imprimer en niveaux de gris, ou passer la capture dans un simulateur : si deux états deviennent identiques, il manque un signal. Le test de l'impression grise suffit souvent à trouver le problème.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Une légende « vert = réussi, rouge = échoué » dans un tableau de résultats. Pour un élève daltonien, la colonne est uniforme. Un mot (« réussi »), une icône (✓, ✗) ou une position suffit à rendre l'information lisible par tous.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 79 · Couleur et contraste</div>
+<div class="folio">3</div>
+<div class="pied">Cours 79 · Couleur et contraste</div>
 </section>
-
 <!-- ============ PAGE 4 · RÔLES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 79</b></div>
-  <p class="rubrique">Schéma 3 · Un rôle, pas une valeur</p>
-  <h2>Laisser le skin décider</h2>
-  <p style="max-width:165mm">Grasshopper laisse l'utilisateur changer son <b>skin</b>, l'ensemble des couleurs du canvas. Une capsule qui écrit ses couleurs en dur jure avec un skin sombre ; une capsule qui demande « la couleur de fond de ma palette » suit le choix de l'utilisateur. SnapSet en a fait une règle de projet (décision 3).</p>
-
-  <svg viewBox="0 0 600 200" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="200" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#2F6B3A" text-anchor="start" font-weight="700">Le code nomme un rôle ; le skin de l'utilisateur lui donne sa valeur</text>
-<rect x="16" y="40" width="170" height="120" rx="4" fill="#fff" stroke="#2F6B3A" stroke-width="1.2"/>
-<text x="101" y="62" font-size="9" fill="#2F6B3A" text-anchor="middle" font-weight="700">dans le code</text>
-<text x="101" y="88" font-size="7.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.4px">CouleurDuRole(style, Fond)</text>
-<text x="101" y="110" font-size="7.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.4px">CouleurDuRole(style, Texte)</text>
-<text x="101" y="132" font-size="7.4" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.4px">CouleurDuRole(style, Bordure)</text>
-<rect x="236" y="40" width="160" height="120" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
-<text x="316" y="62" font-size="8.6" fill="#6B7378" text-anchor="middle" font-weight="700">skin par défaut</text>
-<rect x="252" y="78" width="22" height="14" rx="2" fill="#C8C8C8" stroke="#999"/>
-<text x="282" y="89" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">200,200,200</text>
-<rect x="252" y="100" width="22" height="14" rx="2" fill="#000000" stroke="#999"/>
-<text x="282" y="111" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">0,0,0</text>
-<rect x="252" y="122" width="22" height="14" rx="2" fill="#323232" stroke="#999"/>
-<text x="282" y="133" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">50,50,50</text>
-<line x1="188" y1="100" x2="232" y2="100" stroke="#CFC6B8" stroke-width="1"/><polygon points="232,100 225.6,102.7 225.6,97.3" fill="#CFC6B8"/>
-<rect x="414" y="40" width="160" height="120" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
-<text x="494" y="62" font-size="8.6" fill="#6B7378" text-anchor="middle" font-weight="700">skin sombre (exemple)</text>
-<rect x="430" y="78" width="22" height="14" rx="2" fill="#3C3C42" stroke="#999"/>
-<text x="460" y="89" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">60,60,66</text>
-<rect x="430" y="100" width="22" height="14" rx="2" fill="#E6E6E6" stroke="#999"/>
-<text x="460" y="111" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">230,230,230</text>
-<rect x="430" y="122" width="22" height="14" rx="2" fill="#141414" stroke="#999"/>
-<text x="460" y="133" font-size="7.6" fill="#2B2F33" text-anchor="start" class="mono" style="font-size:7.6px">20,20,20</text>
-<text x="405" y="104" font-size="9" fill="#6B7378" text-anchor="middle" font-weight="700">ou</text>
-<text x="16" y="186" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">Une valeur figée (FromArgb) ignorerait le skin choisi ; la couleur que l'utilisateur choisit, elle, est une donnée.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 79</b></div>
+<p class="rubrique">Schéma 3 · Un rôle, pas une valeur</p>
+<h2>Laisser le skin décider</h2>
+<p style="max-width:165mm">Grasshopper laisse l'utilisateur changer son <b>skin</b>, l'ensemble des couleurs du canvas. Une capsule qui écrit ses couleurs en dur jure avec un skin sombre ; une capsule qui demande « la couleur de fond de ma palette » suit le choix de l'utilisateur. SnapSet en a fait une règle de projet (décision 3).</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 200" width="100%">
+<rect fill="#EFE9E1" height="200" width="600" x="0" y="0"></rect>
+<text fill="#2F6B3A" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">Le code nomme un rôle ; le skin de l'utilisateur lui donne sa valeur</text>
+<rect fill="#fff" height="120" rx="4" stroke="#2F6B3A" stroke-width="1.2" width="170" x="16" y="40"></rect>
+<text fill="#2F6B3A" font-size="9" font-weight="700" text-anchor="middle" x="101" y="62">dans le code</text>
+<text class="mono" fill="#2B2F33" font-size="7.4" style="font-size:7.4px" text-anchor="middle" x="101" y="88">CouleurDuRole(style, Fond)</text>
+<text class="mono" fill="#2B2F33" font-size="7.4" style="font-size:7.4px" text-anchor="middle" x="101" y="110">CouleurDuRole(style, Texte)</text>
+<text class="mono" fill="#2B2F33" font-size="7.4" style="font-size:7.4px" text-anchor="middle" x="101" y="132">CouleurDuRole(style, Bordure)</text>
+<rect fill="#fff" height="120" rx="4" stroke="#6B7378" stroke-width="1.2" width="160" x="236" y="40"></rect>
+<text fill="#6B7378" font-size="8.6" font-weight="700" text-anchor="middle" x="316" y="62">skin par défaut</text>
+<rect fill="#C8C8C8" height="14" rx="2" stroke="#999" width="22" x="252" y="78"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="282" y="89">200,200,200</text>
+<rect fill="#000000" height="14" rx="2" stroke="#999" width="22" x="252" y="100"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="282" y="111">0,0,0</text>
+<rect fill="#323232" height="14" rx="2" stroke="#999" width="22" x="252" y="122"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="282" y="133">50,50,50</text>
+<line stroke="#CFC6B8" stroke-width="1" x1="188" x2="232" y1="100" y2="100"></line><polygon fill="#CFC6B8" points="232,100 225.6,102.7 225.6,97.3"></polygon>
+<rect fill="#fff" height="120" rx="4" stroke="#6B7378" stroke-width="1.2" width="160" x="414" y="40"></rect>
+<text fill="#6B7378" font-size="8.6" font-weight="700" text-anchor="middle" x="494" y="62">skin sombre (exemple)</text>
+<rect fill="#3C3C42" height="14" rx="2" stroke="#999" width="22" x="430" y="78"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="460" y="89">60,60,66</text>
+<rect fill="#E6E6E6" height="14" rx="2" stroke="#999" width="22" x="430" y="100"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="460" y="111">230,230,230</text>
+<rect fill="#141414" height="14" rx="2" stroke="#999" width="22" x="430" y="122"></rect>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="start" x="460" y="133">20,20,20</text>
+<text fill="#6B7378" font-size="9" font-weight="700" text-anchor="middle" x="405" y="104">ou</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="start" x="16" y="186">Une valeur figée (FromArgb) ignorerait le skin choisi ; la couleur que l'utilisateur choisit, elle, est une donnée.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">SnapSet/schema/Metrique.cs · lignes 373 à 378</span>public enum RoleDeCouleur
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">SnapSet/schema/Metrique.cs · lignes 373 à 378</span>public enum RoleDeCouleur
 {
     Fond,
     Bordure,
     Texte,
 }</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Style ou donnée</h3>
-      <p>La décision 3 distingue deux couleurs : celle de l'<b>apparence</b> (un rôle du skin) et celle que l'utilisateur <b>choisit</b> dans un échantillon de couleur, qui est une donnée et se rend telle quelle. Le contraste se vérifie pour la première ; la seconde est sa responsabilité.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Un test qui l'interdit</h3>
-      <p>LotGTests.cs:128 vérifie que la peinture d'un Aplat ne contient pas <code>FromArgb</code>, et la ligne 126 qu'elle passe par <code>CouleurDuRole</code>. Une couleur figée glissée par mégarde ferait échouer le test.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Style ou donnée</h3>
+<p>La décision 3 distingue deux couleurs : celle de l'<b>apparence</b> (un rôle du skin) et celle que l'utilisateur <b>choisit</b> dans un échantillon de couleur, qui est une donnée et se rend telle quelle. Le contraste se vérifie pour la première ; la seconde est sa responsabilité.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Un test qui l'interdit</h3>
+<p>LotGTests.cs:128 vérifie que la peinture d'un Aplat ne contient pas <code>FromArgb</code>, et la ligne 126 qu'elle passe par <code>CouleurDuRole</code>. Une couleur figée glissée par mégarde ferait échouer le test.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     « Juste une petite couleur en dur pour ce cas. » Elle n'est vérifiée par aucun calcul de contraste, ne suit pas le skin, et se recopie au cas suivant. Le vocabulaire de couleurs vit à un seul endroit ; un nouveau besoin y devient un rôle.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 79 · Couleur et contraste</div>
+<div class="folio">4</div>
+<div class="pied">Cours 79 · Couleur et contraste</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 79</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>Un contraste calculé et tenu par des tests</h2>
-  <p style="max-width:165mm">SnapSet a relevé les couleurs par défaut du skin dans la DLL de Grasshopper, les a écrites dans <code>docs/ETATS-NATIFS.md</code>, et calcule à chaque test le ratio de chaque paire que sa peinture pose. Les écarts connus sont annoncés dans la doc, et le test vérifie qu'il n'y en a pas d'autres.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 79</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>Un contraste calculé et tenu par des tests</h2>
+<p style="max-width:165mm">SnapSet a relevé les couleurs par défaut du skin dans la DLL de Grasshopper, les a écrites dans <code>docs/ETATS-NATIFS.md</code>, et calcule à chaque test le ratio de chaque paire que sa peinture pose. Les écarts connus sont annoncés dans la doc, et le test vérifie qu'il n'y en a pas d'autres.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">SnapSet/tests/ResolutionTests/LotGTests.cs</span></div>
 <div class="l k1"><span class="n">155</span><span class="kw">double</span> la = Luminance(a), lb = Luminance(b);<span class="rep r1">1</span></div>
@@ -268,137 +241,55 @@ désactivé → gris   + ne réagit plus au clic</div>
 <div class="l k4"><span class="n">283</span>…SurUneCapsuleEnErreurLesPairesSousLeSeuil…()<span class="rep r4">4</span></div>
 <div class="l k5"><span class="n">128</span>Assert.DoesNotContain(<span class="st">"FromArgb"</span>, aplat);<span class="rep r5">5</span></div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>La formule</b>Celle du skill, en C#.</li>
-      <li><span class="rep r2">2</span><b>Les valeurs du skin</b>Relevées dans la DLL, Grasshopper 8.35.</li>
-      <li><span class="rep r3">3</span><b>L'écart annoncé</b>Texte noir sur rouge : 3,46:1.</li>
-      <li><span class="rep r4">4</span><b>La doc vérifiée</b>Le test relit le compte de la note.</li>
-      <li><span class="rep r5">5</span><b>Pas de valeur figée</b>Un rôle, toujours.</li>
-    </ul>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>La formule</b>Celle du skill, en C#.</li>
+<li><span class="rep r2">2</span><b>Les valeurs du skin</b>Relevées dans la DLL, Grasshopper 8.35.</li>
+<li><span class="rep r3">3</span><b>L'écart annoncé</b>Texte noir sur rouge : 3,46:1.</li>
+<li><span class="rep r4">4</span><b>La doc vérifiée</b>Le test relit le compte de la note.</li>
+<li><span class="rep r5">5</span><b>Pas de valeur figée</b>Un rôle, toujours.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À surveiller · deux états qui ne tiennent qu'à un fil</span>
+<b>La capsule en erreur</b> : 14 paires sur 18 sont sous leur seuil, aux couleurs natives (ETATS-NATIFS.md:569–575) ; le second signal est la bulle, qui disparaît si l'utilisateur coupe l'affichage des messages. <b>Le Bouton verrouillé seul</b> se peint comme au repos : rien ne dit l'état (SKILL.md:35–37). Les deux écarts sont assumés et documentés, pas corrigés : ils suivent le comportement natif (décision 4). Il faut les garder en tête pour ne pas y ajouter un troisième état porté par la seule couleur.
   </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À surveiller · deux états qui ne tiennent qu'à un fil</span>
-    <b>La capsule en erreur</b> : 14 paires sur 18 sont sous leur seuil, aux couleurs natives (ETATS-NATIFS.md:569–575) ; le second signal est la bulle, qui disparaît si l'utilisateur coupe l'affichage des messages. <b>Le Bouton verrouillé seul</b> se peint comme au repos : rien ne dit l'état (SKILL.md:35–37). Les deux écarts sont assumés et documentés, pas corrigés : ils suivent le comportement natif (décision 4). Il faut les garder en tête pour ne pas y ajouter un troisième état porté par la seule couleur.
-  </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 79 · Couleur et contraste</div>
+<div class="folio">5</div>
+<div class="pied">Cours 79 · Couleur et contraste</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 79</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 79</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">Le ratio de contraste dépend…</div><ul>
-      <li><span>A</span>de la teinte seule</li><li><span>B</span>de l'écran utilisé</li><li><span>C</span>de la taille de la fenêtre</li><li><span>D</span>de la luminance des deux couleurs</li></ul></div>
 
-    <div class="q"><div class="enonce">Noir sur blanc donne…</div><ul>
-      <li><span>A</span>21:1</li><li><span>B</span>100:1</li><li><span>C</span>4,5:1</li><li><span>D</span>1:1</li></ul></div>
 
-    <div class="q"><div class="enonce">Le seuil pour un texte de capsule est…</div><ul>
-      <li><span>A</span>7:1</li><li><span>B</span>2:1</li><li><span>C</span>3:1</li><li><span>D</span>4,5:1</li></ul></div>
 
-    <div class="q"><div class="enonce">Une coche dans sa boîte se compare…</div><ul>
-      <li><span>A</span>au blanc</li><li><span>B</span>à la couleur de la boîte qui la touche</li><li><span>C</span>au fond de la fenêtre</li><li><span>D</span>au texte voisin</li></ul></div>
-
-    <div class="q"><div class="enonce">Dans la luminance, la composante qui pèse le plus est…</div><ul>
-      <li><span>A</span>elles pèsent pareil</li><li><span>B</span>le rouge</li><li><span>C</span>le vert</li><li><span>D</span>le bleu</li></ul></div>
-
-    <div class="q"><div class="enonce">Texte noir sur la capsule en erreur (200,0,0) :</div><ul>
-      <li><span>A</span>21:1</li><li><span>B</span>12,55:1</li><li><span>C</span>9,01:1</li><li><span>D</span>3,46:1, sous le seuil</li></ul></div>
-
-    <div class="q"><div class="enonce">En deutéranopie, se confondent presque : <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>le gris normal</li><li><span>B</span>le gris verrouillé</li><li><span>C</span>le fond d'avertissement orange</li><li><span>D</span>le fond sélectionné vert</li></ul></div>
-
-    <div class="q"><div class="enonce">Le second signal de l'erreur, dans Grasshopper, est…</div><ul>
-      <li><span>A</span>une bulle au-dessus du composant</li><li><span>B</span>un clignotement</li><li><span>C</span>aucun</li><li><span>D</span>un son</li></ul></div>
-
-    <div class="q"><div class="enonce">Une couleur translucide : on calcule le ratio…</div><ul>
-      <li><span>A</span>après l'avoir posée sur son support</li><li><span>B</span>sur sa valeur brute</li><li><span>C</span>jamais</li><li><span>D</span>en ignorant l'alpha</li></ul></div>
-
-    <div class="q"><div class="enonce">Dans SnapSet, une couleur d'apparence s'obtient par…</div><ul>
-      <li><span>A</span>le registre de Windows</li><li><span>B</span>un rôle, via CouleurDuRole</li><li><span>C</span>une constante hexadécimale</li><li><span>D</span>Color.FromArgb</li></ul></div>
-
-    <div class="q"><div class="enonce">La couleur choisie par l'utilisateur dans un échantillon est…</div><ul>
-      <li><span>A</span>un rôle du skin</li><li><span>B</span>recalculée pour le contraste</li><li><span>C</span>une donnée, rendue telle quelle</li><li><span>D</span>interdite</li></ul></div>
-
-    <div class="q"><div class="enonce">« locked » à 2,14:1 n'est pas une faute parce que…</div><ul>
-      <li><span>A</span>il est sous 3:1</li><li><span>B</span>Rhino l'impose</li><li><span>C</span>un élément désactivé est hors des règles de contraste</li><li><span>D</span>le gris est toujours lisible</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 79 · Couleur et contraste</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">c ≤ 0,04045 ? c / 12,92 : …^2,4</td><td>linéariser une composante sRGB</td><td>LotGTests.cs:147</td></tr>
+<tr><td class="c">0,2126 R + 0,7152 V + 0,0722 B</td><td>luminance relative</td><td>LotGTests.cs:150</td></tr>
+<tr><td class="c">(L1 + 0,05) / (L2 + 0,05)</td><td>ratio de contraste</td><td>LotGTests.cs:156</td></tr>
+<tr><td class="c">4,5:1 · 3:1</td><td>seuils texte · non textuel</td><td>skill accessibility, l. 51–53</td></tr>
+<tr><td class="c">enum RoleDeCouleur</td><td>les rôles, définis une fois</td><td>Metrique.cs:373</td></tr>
+<tr><td class="c">CouleurDuRole(style, role)</td><td>la valeur du rôle dans le skin</td><td>PeintreFeuilles.cs:694</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Luminance relative</dt><dd>La clarté perçue d'une couleur, de 0 (noir) à 1 (blanc).</dd>
+<dt>Ratio de contraste</dt><dd>L'écart de luminance entre deux couleurs, de 1:1 à 21:1.</dd>
+<dt>Deutéranopie</dt><dd>Une forme de daltonisme où le rouge et le vert se confondent.</dd>
+<dt>Second signal</dt><dd>Une forme, une icône ou un texte qui double une information de couleur.</dd>
+<dt>Skin</dt><dd>L'ensemble des couleurs du canvas de Grasshopper, réglable par l'utilisateur.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 80</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 79 · Couleur et contraste</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 6B</b> · Concevoir pour l'utilisateur</span><b>Cours 79</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · D.</b> La teinte n'y entre pas.</div>
-    <div><b>02 · A.</b> Le maximum : (1 + 0,05) / 0,05.</div>
-    <div><b>03 · D.</b> Jamais du « grand texte » à 8 pt.</div>
-    <div><b>04 · B.</b> La couleur qui la touche.</div>
-    <div><b>05 · C.</b> 0,7152 contre 0,2126 et 0,0722.</div>
-    <div><b>06 · D.</b> ETATS-NATIFS.md:571.</div>
-    <div><b>07 · C et D.</b> Le même jaune, ou presque.</div>
-    <div><b>08 · A.</b> GH_MessageWidget, une forme.</div>
-    <div><b>09 · A.</b> Mélangée d'abord, puis calculée.</div>
-    <div><b>10 · B.</b> LotGTests.cs:126 et 128.</div>
-    <div><b>11 · C.</b> Décision 3 : une donnée.</div>
-    <div><b>12 · C.</b> Grisé exprès, désactivé.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 et 2. <b>7 à 9</b> : relis les pages 3 et 4. <b>10 à 12</b> : passe au cours 80, « La typographie à l'écran ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">c ≤ 0,04045 ? c / 12,92 : …^2,4</td><td>linéariser une composante sRGB</td><td>LotGTests.cs:147</td></tr>
-      <tr><td class="c">0,2126 R + 0,7152 V + 0,0722 B</td><td>luminance relative</td><td>LotGTests.cs:150</td></tr>
-      <tr><td class="c">(L1 + 0,05) / (L2 + 0,05)</td><td>ratio de contraste</td><td>LotGTests.cs:156</td></tr>
-      <tr><td class="c">4,5:1 · 3:1</td><td>seuils texte · non textuel</td><td>skill accessibility, l. 51–53</td></tr>
-      <tr><td class="c">enum RoleDeCouleur</td><td>les rôles, définis une fois</td><td>Metrique.cs:373</td></tr>
-      <tr><td class="c">CouleurDuRole(style, role)</td><td>la valeur du rôle dans le skin</td><td>PeintreFeuilles.cs:694</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Luminance relative</dt><dd>La clarté perçue d'une couleur, de 0 (noir) à 1 (blanc).</dd>
-    <dt>Ratio de contraste</dt><dd>L'écart de luminance entre deux couleurs, de 1:1 à 21:1.</dd>
-    <dt>Deutéranopie</dt><dd>Une forme de daltonisme où le rouge et le vert se confondent.</dd>
-    <dt>Second signal</dt><dd>Une forme, une icône ou un texte qui double une information de couleur.</dd>
-    <dt>Skin</dt><dd>L'ensemble des couleurs du canvas de Grasshopper, réglable par l'utilisateur.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 80</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 79 · Couleur et contraste</div>
-</section>
-
 </body>
 </html>

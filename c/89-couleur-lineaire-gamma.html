@@ -1,285 +1,258 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>89 · Couleur linéaire et gamma</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-7">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 89</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Couleur linéaire et gamma</h1>
-  <p class="chapeau">Un octet de 128 n'est pas une moitié de lumière : c'est à peine 22 %. Les images et les codes couleur sont enregistrés en <b>sRGB</b>, une échelle tassée pour l'œil. La lumière, elle, s'additionne en valeurs <b>linéaires</b>. Un moteur 3D juste décode donc chaque couleur, calcule en linéaire, puis réencode pour l'écran.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>45 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>86</b> et <b>88</b></span>
-    <span class="pastille">Exemples · <b>Viewer3D.jsx</b> (Magpie web), <b>LotGTests.cs</b> (SnapSet), <b>Three.js</b></span>
-  </div>
-
-  <div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
-    <svg viewBox="0 0 600 206" width="100%">
-<line x1="50" y1="178" x2="310" y2="178" stroke="#6B7378"/>
-<line x1="50" y1="178" x2="50" y2="18" stroke="#6B7378"/>
-<line x1="50" y1="178" x2="310" y2="18" stroke="#CFC6B8" stroke-dasharray="3 3"/>
-<polyline points="50.0,178.0 55.1,177.8 60.2,177.5 65.3,177.2 70.4,176.9 75.5,176.4 80.6,175.9 85.7,175.3 90.8,174.6 95.9,173.8 101.0,172.9 106.1,171.9 111.2,170.8 116.3,169.5 121.4,168.2 126.5,166.7 131.6,165.2 136.7,163.5 141.8,161.6 146.9,159.7 152.0,157.6 157.1,155.4 162.2,153.1 167.3,150.6 172.4,147.9 177.5,145.2 182.5,142.3 187.6,139.2 192.7,136.0 197.8,132.7 202.9,129.2 208.0,125.6 213.1,121.8 218.2,117.8 223.3,113.7 228.4,109.4 233.5,105.0 238.6,100.4 243.7,95.6 248.8,90.7 253.9,85.6 259.0,80.3 264.1,74.9 269.2,69.3 274.3,63.5 279.4,57.5 284.5,51.4 289.6,45.1 294.7,38.6 299.8,31.9 304.9,25.0 310.0,18.0" fill="none" stroke="#1D6FB8" stroke-width="2"/>
-<line x1="180.5" y1="178" x2="180.5" y2="143.5" stroke="#E65100" stroke-dasharray="2 2"/>
-<line x1="50" y1="143.5" x2="180.5" y2="143.5" stroke="#E65100" stroke-dasharray="2 2"/>
-<circle cx="180.5" cy="143.5" r="3.5" fill="#E65100"/>
-<line x1="202.9" y1="178" x2="202.9" y2="129.2" stroke="#C62828" stroke-dasharray="2 2"/>
-<line x1="50" y1="129.2" x2="202.9" y2="129.2" stroke="#C62828" stroke-dasharray="2 2"/>
-<circle cx="202.9" cy="129.2" r="3.5" fill="#C62828"/>
-<line x1="241.7" y1="178" x2="241.7" y2="97.5" stroke="#2E7D32" stroke-dasharray="2 2"/>
-<line x1="50" y1="97.5" x2="241.7" y2="97.5" stroke="#2E7D32" stroke-dasharray="2 2"/>
-<circle cx="241.7" cy="97.5" r="3.5" fill="#2E7D32"/>
-<text x="180.0" y="198" font-size="7.8" fill="#6B7378" text-anchor="middle">valeur enregistrée (octet sRGB, 0 à 255)</text>
-<text x="18" y="98.0" font-size="7.8" fill="#6B7378" text-anchor="middle" transform="rotate(-90 18 98.0)">lumière réelle (0 à 1)</text>
-<text x="185.20000000000002" y="82.0" font-size="7.2" fill="#6B7378" text-anchor="end" font-style="italic">si c'était proportionnel</text>
-<rect x="340" y="32" width="16" height="16" rx="2" fill="#808080" stroke="#999"/>
-<text x="364" y="44" font-size="9" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">128 → 0,216</text>
-<text x="364" y="58" font-size="7.8" fill="#2B2F33" text-anchor="start">« moitié » des octets, 22 % de la lumière</text>
-<rect x="340" y="72" width="16" height="16" rx="2" fill="#969696" stroke="#999"/>
-<text x="364" y="84" font-size="9" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">150 → 0,305</text>
-<text x="364" y="98" font-size="7.8" fill="#2B2F33" text-anchor="start">le rouge de Magpie, 0x960000</text>
-<rect x="340" y="112" width="16" height="16" rx="2" fill="#BCBCBC" stroke="#999"/>
-<text x="364" y="124" font-size="9" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">188 → 0,503</text>
-<text x="364" y="138" font-size="7.8" fill="#2B2F33" text-anchor="start">le fond de Magpie, 0xbcbcbc : la vraie moitié</text>
-<text x="340" y="172" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Valeurs calculées avec la formule sRGB</text>
-<text x="340" y="184" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">(ColorManagement.js:205–207, LotGTests.cs:144–148).</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 89</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Couleur linéaire et gamma</h1>
+<p class="chapeau">Un octet de 128 n'est pas une moitié de lumière : c'est à peine 22 %. Les images et les codes couleur sont enregistrés en <b>sRGB</b>, une échelle tassée pour l'œil. La lumière, elle, s'additionne en valeurs <b>linéaires</b>. Un moteur 3D juste décode donc chaque couleur, calcule en linéaire, puis réencode pour l'écran.</p>
+<div class="meta">
+<span class="pastille"><b>45 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>86</b> et <b>88</b></span>
+<span class="pastille">Exemples · <b>Viewer3D.jsx</b> (Magpie web), <b>LotGTests.cs</b> (SnapSet), <b>Three.js</b></span>
+</div>
+<div class="panneau" style="padding:5mm 6mm 3mm; margin-bottom:5mm;">
+<svg viewbox="0 0 600 206" width="100%">
+<line stroke="#6B7378" x1="50" x2="310" y1="178" y2="178"></line>
+<line stroke="#6B7378" x1="50" x2="50" y1="178" y2="18"></line>
+<line stroke="#CFC6B8" stroke-dasharray="3 3" x1="50" x2="310" y1="178" y2="18"></line>
+<polyline fill="none" points="50.0,178.0 55.1,177.8 60.2,177.5 65.3,177.2 70.4,176.9 75.5,176.4 80.6,175.9 85.7,175.3 90.8,174.6 95.9,173.8 101.0,172.9 106.1,171.9 111.2,170.8 116.3,169.5 121.4,168.2 126.5,166.7 131.6,165.2 136.7,163.5 141.8,161.6 146.9,159.7 152.0,157.6 157.1,155.4 162.2,153.1 167.3,150.6 172.4,147.9 177.5,145.2 182.5,142.3 187.6,139.2 192.7,136.0 197.8,132.7 202.9,129.2 208.0,125.6 213.1,121.8 218.2,117.8 223.3,113.7 228.4,109.4 233.5,105.0 238.6,100.4 243.7,95.6 248.8,90.7 253.9,85.6 259.0,80.3 264.1,74.9 269.2,69.3 274.3,63.5 279.4,57.5 284.5,51.4 289.6,45.1 294.7,38.6 299.8,31.9 304.9,25.0 310.0,18.0" stroke="#1D6FB8" stroke-width="2"></polyline>
+<line stroke="#E65100" stroke-dasharray="2 2" x1="180.5" x2="180.5" y1="178" y2="143.5"></line>
+<line stroke="#E65100" stroke-dasharray="2 2" x1="50" x2="180.5" y1="143.5" y2="143.5"></line>
+<circle cx="180.5" cy="143.5" fill="#E65100" r="3.5"></circle>
+<line stroke="#C62828" stroke-dasharray="2 2" x1="202.9" x2="202.9" y1="178" y2="129.2"></line>
+<line stroke="#C62828" stroke-dasharray="2 2" x1="50" x2="202.9" y1="129.2" y2="129.2"></line>
+<circle cx="202.9" cy="129.2" fill="#C62828" r="3.5"></circle>
+<line stroke="#2E7D32" stroke-dasharray="2 2" x1="241.7" x2="241.7" y1="178" y2="97.5"></line>
+<line stroke="#2E7D32" stroke-dasharray="2 2" x1="50" x2="241.7" y1="97.5" y2="97.5"></line>
+<circle cx="241.7" cy="97.5" fill="#2E7D32" r="3.5"></circle>
+<text fill="#6B7378" font-size="7.8" text-anchor="middle" x="180.0" y="198">valeur enregistrée (octet sRGB, 0 à 255)</text>
+<text fill="#6B7378" font-size="7.8" text-anchor="middle" transform="rotate(-90 18 98.0)" x="18" y="98.0">lumière réelle (0 à 1)</text>
+<text fill="#6B7378" font-size="7.2" font-style="italic" text-anchor="end" x="185.20000000000002" y="82.0">si c'était proportionnel</text>
+<rect fill="#808080" height="16" rx="2" stroke="#999" width="16" x="340" y="32"></rect>
+<text class="mono" fill="#E65100" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="364" y="44">128 → 0,216</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="364" y="58">« moitié » des octets, 22 % de la lumière</text>
+<rect fill="#969696" height="16" rx="2" stroke="#999" width="16" x="340" y="72"></rect>
+<text class="mono" fill="#C62828" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="364" y="84">150 → 0,305</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="364" y="98">le rouge de Magpie, 0x960000</text>
+<rect fill="#BCBCBC" height="16" rx="2" stroke="#999" width="16" x="340" y="112"></rect>
+<text class="mono" fill="#2E7D32" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="364" y="124">188 → 0,503</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="364" y="138">le fond de Magpie, 0xbcbcbc : la vraie moitié</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="340" y="172">Valeurs calculées avec la formule sRGB</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="340" y="184">(ColorManagement.js:205–207, LotGTests.cs:144–148).</text>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>On stocke en sRGB parce que l'œil distingue mieux les sombres ; on calcule en linéaire parce que la lumière s'additionne.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Une règle graduée en décibels : pratique pour lire un son, fausse pour additionner deux sons. On repasse en puissance, on additionne, puis on relit en décibels.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>convertir sRGB et linéaire ;</li>
-        <li>suivre une couleur dans Three.js ;</li>
-        <li>lire une intensité de lumière ;</li>
-        <li>calculer une luminance et un contraste.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>On stocke en sRGB parce que l'œil distingue mieux les sombres ; on calcule en linéaire parce que la lumière s'additionne.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Une règle graduée en décibels : pratique pour lire un son, fausse pour additionner deux sons. On repasse en puissance, on additionne, puis on relit en décibels.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>convertir sRGB et linéaire ;</li>
+<li>suivre une couleur dans Three.js ;</li>
+<li>lire une intensité de lumière ;</li>
+<li>calculer une luminance et un contraste.</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À retenir</span>
     Le mot <b>gamma</b> désigne cette courbe. Pour le sRGB, elle vaut à peu près « valeur puissance 2,2 » ; la formule exacte a un petit segment droit près du noir, puis une puissance 2,4. Le fond gris de Magpie, 188, est presque exactement la moitié de la lumière du blanc.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 89 · Couleur linéaire et gamma</div>
+<div class="folio">1</div>
+<div class="pied">Cours 89 · Couleur linéaire et gamma</div>
 </section>
-
 <!-- ============ PAGE 2 · LE PARCOURS ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 89</b></div>
-  <p class="rubrique">Schéma 1 · Décoder, calculer, encoder</p>
-  <h2>Le trajet d'un code couleur</h2>
-  <p style="max-width:165mm">Depuis la version 152, Three.js gère la couleur par défaut : un code hexadécimal est lu comme du sRGB et converti en linéaire dès sa création. Le shader éclaire en linéaire, puis réencode le résultat en sRGB avant de l'écrire dans l'image.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.4" fill="#1D6FB8" text-anchor="start" font-weight="700">Le rouge de Magpie sur une face tournée vers +Z : le parcours d'une couleur dans Three.js (pixel mesuré)</text>
-<rect x="22" y="40" width="120" height="52" rx="4" fill="#fff" stroke="#6B7378" stroke-width="1.2"/>
-<text x="82" y="62" font-size="11" fill="#6B7378" text-anchor="middle" font-weight="700" class="mono" style="font-size:11px">0x960000</text>
-<text x="82" y="80" font-size="7.6" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.6px">octet 150</text>
-<text x="82" y="106" font-size="8" fill="#6B7378" text-anchor="middle" font-weight="700">le code</text>
-<line x1="144" y1="66" x2="166" y2="66" stroke="#6B7378" stroke-width="1.2"/><polygon points="166,66 159.6,68.7 159.6,63.3" fill="#6B7378"/>
-<rect x="168" y="40" width="120" height="52" rx="4" fill="#E6F0FA" stroke="#1D6FB8" stroke-width="1.2"/>
-<text x="228" y="62" font-size="11" fill="#1D6FB8" text-anchor="middle" font-weight="700" class="mono" style="font-size:11px">0,305</text>
-<text x="228" y="80" font-size="7.6" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.6px">Color.setHex</text>
-<text x="228" y="106" font-size="8" fill="#1D6FB8" text-anchor="middle" font-weight="700">décoder</text>
-<line x1="290" y1="66" x2="312" y2="66" stroke="#6B7378" stroke-width="1.2"/><polygon points="312,66 305.6,68.7 305.6,63.3" fill="#6B7378"/>
-<rect x="314" y="40" width="120" height="52" rx="4" fill="#E6F0FA" stroke="#1D6FB8" stroke-width="1.2"/>
-<text x="374" y="62" font-size="11" fill="#1D6FB8" text-anchor="middle" font-weight="700" class="mono" style="font-size:11px">0,264</text>
-<text x="374" y="80" font-size="7.6" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.6px">× 2,72 / π</text>
-<text x="374" y="106" font-size="8" fill="#1D6FB8" text-anchor="middle" font-weight="700">éclairer</text>
-<line x1="436" y1="66" x2="458" y2="66" stroke="#6B7378" stroke-width="1.2"/><polygon points="458,66 451.6,68.7 451.6,63.3" fill="#6B7378"/>
-<rect x="460" y="40" width="120" height="52" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="520" y="62" font-size="11" fill="#2E7D32" text-anchor="middle" font-weight="700" class="mono" style="font-size:11px">141</text>
-<text x="520" y="80" font-size="7.6" fill="#2B2F33" text-anchor="middle" class="mono" style="font-size:7.6px">linearToOutputTexel</text>
-<text x="520" y="106" font-size="8" fill="#2E7D32" text-anchor="middle" font-weight="700">encoder</text>
-<rect x="164" y="118" width="268" height="18" rx="3" fill="#E6F0FA"/>
-<text x="298" y="131" font-size="8" fill="#1D6FB8" text-anchor="middle" font-weight="700">espace linéaire : là où l'on calcule</text>
-<text x="22" y="158" font-size="8.2" fill="#C62828" text-anchor="start" font-weight="700">Sortie laissée en linéaire (outputColorSpace = LinearSRGBColorSpace) :</text>
-<text x="22" y="172" font-size="8" fill="#2B2F33" text-anchor="start">0,264 écrit tel quel donne 67 au lieu de 141 ; le fond 0xbcbcbc sort à 128 au lieu de 188 (mesurés).</text>
-<text x="22" y="194" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">2,72 = 1,6 (ambiante) + 1,4 × 0,80 (soleil, cos de l'angle) ; / π vient de BRDF_Lambert (common.glsl.js:103–105).</text>
-<text x="22" y="206" font-size="7.4" fill="#6B7378" text-anchor="start" font-style="italic">Pixels lus dans Chromium (WebGL 2), MeshLambertMaterial opaque, Three.js 0.186.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 89</b></div>
+<p class="rubrique">Schéma 1 · Décoder, calculer, encoder</p>
+<h2>Le trajet d'un code couleur</h2>
+<p style="max-width:165mm">Depuis la version 152, Three.js gère la couleur par défaut : un code hexadécimal est lu comme du sRGB et converti en linéaire dès sa création. Le shader éclaire en linéaire, puis réencode le résultat en sRGB avant de l'écrire dans l'image.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#1D6FB8" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="22">Le rouge de Magpie sur une face tournée vers +Z : le parcours d'une couleur dans Three.js (pixel mesuré)</text>
+<rect fill="#fff" height="52" rx="4" stroke="#6B7378" stroke-width="1.2" width="120" x="22" y="40"></rect>
+<text class="mono" fill="#6B7378" font-size="11" font-weight="700" style="font-size:11px" text-anchor="middle" x="82" y="62">0x960000</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="middle" x="82" y="80">octet 150</text>
+<text fill="#6B7378" font-size="8" font-weight="700" text-anchor="middle" x="82" y="106">le code</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="144" x2="166" y1="66" y2="66"></line><polygon fill="#6B7378" points="166,66 159.6,68.7 159.6,63.3"></polygon>
+<rect fill="#E6F0FA" height="52" rx="4" stroke="#1D6FB8" stroke-width="1.2" width="120" x="168" y="40"></rect>
+<text class="mono" fill="#1D6FB8" font-size="11" font-weight="700" style="font-size:11px" text-anchor="middle" x="228" y="62">0,305</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="middle" x="228" y="80">Color.setHex</text>
+<text fill="#1D6FB8" font-size="8" font-weight="700" text-anchor="middle" x="228" y="106">décoder</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="290" x2="312" y1="66" y2="66"></line><polygon fill="#6B7378" points="312,66 305.6,68.7 305.6,63.3"></polygon>
+<rect fill="#E6F0FA" height="52" rx="4" stroke="#1D6FB8" stroke-width="1.2" width="120" x="314" y="40"></rect>
+<text class="mono" fill="#1D6FB8" font-size="11" font-weight="700" style="font-size:11px" text-anchor="middle" x="374" y="62">0,264</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="middle" x="374" y="80">× 2,72 / π</text>
+<text fill="#1D6FB8" font-size="8" font-weight="700" text-anchor="middle" x="374" y="106">éclairer</text>
+<line stroke="#6B7378" stroke-width="1.2" x1="436" x2="458" y1="66" y2="66"></line><polygon fill="#6B7378" points="458,66 451.6,68.7 451.6,63.3"></polygon>
+<rect fill="#fff" height="52" rx="4" stroke="#2E7D32" stroke-width="1.2" width="120" x="460" y="40"></rect>
+<text class="mono" fill="#2E7D32" font-size="11" font-weight="700" style="font-size:11px" text-anchor="middle" x="520" y="62">141</text>
+<text class="mono" fill="#2B2F33" font-size="7.6" style="font-size:7.6px" text-anchor="middle" x="520" y="80">linearToOutputTexel</text>
+<text fill="#2E7D32" font-size="8" font-weight="700" text-anchor="middle" x="520" y="106">encoder</text>
+<rect fill="#E6F0FA" height="18" rx="3" width="268" x="164" y="118"></rect>
+<text fill="#1D6FB8" font-size="8" font-weight="700" text-anchor="middle" x="298" y="131">espace linéaire : là où l'on calcule</text>
+<text fill="#C62828" font-size="8.2" font-weight="700" text-anchor="start" x="22" y="158">Sortie laissée en linéaire (outputColorSpace = LinearSRGBColorSpace) :</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="22" y="172">0,264 écrit tel quel donne 67 au lieu de 141 ; le fond 0xbcbcbc sort à 128 au lieu de 188 (mesurés).</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="22" y="194">2,72 = 1,6 (ambiante) + 1,4 × 0,80 (soleil, cos de l'angle) ; / π vient de BRDF_Lambert (common.glsl.js:103–105).</text>
+<text fill="#6B7378" font-size="7.4" font-style="italic" text-anchor="start" x="22" y="206">Pixels lus dans Chromium (WebGL 2), MeshLambertMaterial opaque, Three.js 0.186.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">three/src/math/Color.js (0.186.1) · lignes 204 à 214 (lignes vides retirées)</span>setHex( hex, colorSpace = SRGBColorSpace ) {
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">three/src/math/Color.js (0.186.1) · lignes 204 à 214 (lignes vides retirées)</span>setHex( hex, colorSpace = SRGBColorSpace ) {
   hex = Math.floor( hex );
   this.r = ( hex &gt;&gt; 16 &amp; 255 ) / 255;
   …
   ColorManagement.colorSpaceToWorking( this, colorSpace );
   return this;</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Les deux réglages</h3>
-      <p><code>ColorManagement.enabled</code> vaut vrai (ColorManagement.js:21) et l'espace de travail est le linéaire (ligne 23). Le moteur sort en sRGB (<code>_outputColorSpace</code>, WebGLRenderer.js:312). Magpie ne touche à aucun des deux : il garde les défauts.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Pourquoi 141 et pas 150</h3>
-      <p>La face la mieux éclairée reçoit 2,72 / π ≈ 0,87 de la lumière : le rouge 150 sort à 141. Une face tournée droit vers le soleil recevrait 3 / π ≈ 0,95 et sortirait vers 147. Les intensités de Magpie, 1,6 et 1,4, totalisent 3, presque π : choix délibéré ou non, la couleur choisie reste à peu près celle qu'on voit (déduit).</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Les deux réglages</h3>
+<p><code>ColorManagement.enabled</code> vaut vrai (ColorManagement.js:21) et l'espace de travail est le linéaire (ligne 23). Le moteur sort en sRGB (<code>_outputColorSpace</code>, WebGLRenderer.js:312). Magpie ne touche à aucun des deux : il garde les défauts.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Pourquoi 141 et pas 150</h3>
+<p>La face la mieux éclairée reçoit 2,72 / π ≈ 0,87 de la lumière : le rouge 150 sort à 141. Une face tournée droit vers le soleil recevrait 3 / π ≈ 0,95 et sortirait vers 147. Les intensités de Magpie, 1,6 et 1,4, totalisent 3, presque π : choix délibéré ou non, la couleur choisie reste à peu près celle qu'on voit (déduit).</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Régler la sortie en linéaire, ou désactiver la gestion à moitié. Une seule étape oubliée et tout l'aperçu change de teinte : dans la mesure ci-dessus, la sortie linéaire assombrit le rouge de 141 à 67 et le fond de 188 à 128.
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 89 · Couleur linéaire et gamma</div>
+<div class="folio">2</div>
+<div class="pied">Cours 89 · Couleur linéaire et gamma</div>
 </section>
-
 <!-- ============ PAGE 3 · LA LUMIÈRE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 89</b></div>
-  <p class="rubrique">Schéma 2 · Les intensités</p>
-  <h2>Doubler la lumière ne double pas le pixel</h2>
-  <p style="max-width:165mm">L'intensité d'une lumière multiplie une valeur linéaire. Sur l'écran, ce doublement se voit comme un pas de plus en plus court, puis comme un mur à 255 : sans réglage particulier, Three.js coupe tout ce qui dépasse 1.</p>
-
-  <svg viewBox="0 0 600 200" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="200" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#1D6FB8" text-anchor="start" font-weight="700">Une face blanche sous une lumière ambiante d'intensité croissante : pixels mesurés</text>
-<rect x="40" y="108.2" width="44" height="41.8" fill="#6F6F6F" stroke="#999"/>
-<text x="62" y="102.21176470588236" font-size="8.6" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">111</text>
-<text x="62" y="166" font-size="8.4" fill="#1D6FB8" text-anchor="middle" font-weight="700">× 0,5</text>
-<rect x="110" y="92.4" width="44" height="57.6" fill="#999999" stroke="#999"/>
-<text x="132" y="86.4" font-size="8.6" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">153</text>
-<text x="132" y="166" font-size="8.4" fill="#1D6FB8" text-anchor="middle" font-weight="700">× 1</text>
-<rect x="180" y="71.3" width="44" height="78.7" fill="#D1D1D1" stroke="#999"/>
-<text x="202" y="65.31764705882352" font-size="8.6" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">209</text>
-<text x="202" y="166" font-size="8.4" fill="#1D6FB8" text-anchor="middle" font-weight="700">× 2</text>
-<rect x="250" y="54.0" width="44" height="96.0" fill="#FFFFFF" stroke="#999"/>
-<text x="272" y="48.0" font-size="8.6" fill="#2B2F33" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.6px">255</text>
-<text x="272" y="166" font-size="8.4" fill="#1D6FB8" text-anchor="middle" font-weight="700">× 4</text>
-<text x="152" y="186" font-size="7.8" fill="#6B7378" text-anchor="middle">intensité de l'AmbientLight</text>
-<text x="340" y="54" font-size="8.2" fill="#2B2F33" text-anchor="start">Chaque doublement de la lumière ajoute</text>
-<text x="340" y="68" font-size="8.2" fill="#2B2F33" text-anchor="start">moins au pixel : 111 → 153 → 209.</text>
-<text x="340" y="92" font-size="8.2" fill="#2B2F33" text-anchor="start">En linéaire, c'est bien un doublement :</text>
-<text x="340" y="106" font-size="8.2" fill="#1D6FB8" text-anchor="start" font-weight="700" class="mono" style="font-size:8.2px">0,159 → 0,318 → 0,637 (intensité / π).</text>
-<text x="340" y="130" font-size="8.2" fill="#2B2F33" text-anchor="start">À × 4, la valeur 1,27 dépasse 1 :</text>
-<text x="340" y="144" font-size="8.2" fill="#C62828" text-anchor="start" font-weight="700">le pixel plafonne à 255, sans nuance.</text>
-<text x="340" y="168" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">Aucun tone mapping par défaut</text>
-<text x="340" y="180" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">(NoToneMapping, WebGLRenderer.js:277).</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 89</b></div>
+<p class="rubrique">Schéma 2 · Les intensités</p>
+<h2>Doubler la lumière ne double pas le pixel</h2>
+<p style="max-width:165mm">L'intensité d'une lumière multiplie une valeur linéaire. Sur l'écran, ce doublement se voit comme un pas de plus en plus court, puis comme un mur à 255 : sans réglage particulier, Three.js coupe tout ce qui dépasse 1.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 200" width="100%">
+<rect fill="#EFE9E1" height="200" width="600" x="0" y="0"></rect>
+<text fill="#1D6FB8" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">Une face blanche sous une lumière ambiante d'intensité croissante : pixels mesurés</text>
+<rect fill="#6F6F6F" height="41.8" stroke="#999" width="44" x="40" y="108.2"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="62" y="102.21176470588236">111</text>
+<text fill="#1D6FB8" font-size="8.4" font-weight="700" text-anchor="middle" x="62" y="166">× 0,5</text>
+<rect fill="#999999" height="57.6" stroke="#999" width="44" x="110" y="92.4"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="132" y="86.4">153</text>
+<text fill="#1D6FB8" font-size="8.4" font-weight="700" text-anchor="middle" x="132" y="166">× 1</text>
+<rect fill="#D1D1D1" height="78.7" stroke="#999" width="44" x="180" y="71.3"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="202" y="65.31764705882352">209</text>
+<text fill="#1D6FB8" font-size="8.4" font-weight="700" text-anchor="middle" x="202" y="166">× 2</text>
+<rect fill="#FFFFFF" height="96.0" stroke="#999" width="44" x="250" y="54.0"></rect>
+<text class="mono" fill="#2B2F33" font-size="8.6" font-weight="700" style="font-size:8.6px" text-anchor="middle" x="272" y="48.0">255</text>
+<text fill="#1D6FB8" font-size="8.4" font-weight="700" text-anchor="middle" x="272" y="166">× 4</text>
+<text fill="#6B7378" font-size="7.8" text-anchor="middle" x="152" y="186">intensité de l'AmbientLight</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="start" x="340" y="54">Chaque doublement de la lumière ajoute</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="start" x="340" y="68">moins au pixel : 111 → 153 → 209.</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="start" x="340" y="92">En linéaire, c'est bien un doublement :</text>
+<text class="mono" fill="#1D6FB8" font-size="8.2" font-weight="700" style="font-size:8.2px" text-anchor="start" x="340" y="106">0,159 → 0,318 → 0,637 (intensité / π).</text>
+<text fill="#2B2F33" font-size="8.2" text-anchor="start" x="340" y="130">À × 4, la valeur 1,27 dépasse 1 :</text>
+<text fill="#C62828" font-size="8.2" font-weight="700" text-anchor="start" x="340" y="144">le pixel plafonne à 255, sans nuance.</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="340" y="168">Aucun tone mapping par défaut</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="340" y="180">(NoToneMapping, WebGLRenderer.js:277).</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/src/Viewer3D.jsx · lignes 80 à 83</span>scene.add(new THREE.AmbientLight(0xffffff, 1.6));
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">magpie/web/src/Viewer3D.jsx · lignes 80 à 83</span>scene.add(new THREE.AmbientLight(0xffffff, 1.6));
 const sun = new THREE.DirectionalLight(0xffffff, 1.4);
 sun.position.set(1, -2, 3);
 scene.add(sun);</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>D'où vient le π</h3>
-      <p>Le modèle de Lambert renvoie la couleur divisée par π (<code>RECIPROCAL_PI</code>, common.glsl.js:5 et 105). Une lumière d'intensité 1 donne donc 0,318 en linéaire, soit 153 à l'écran. Pour retrouver la couleur choisie, il faut donc des intensités qui totalisent à peu près π.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Le tone mapping</h3>
-      <p>Pour ne pas couper les fortes lumières, un <b>tone mapping</b> comprime les valeurs au-dessus de 1 en douceur, comme un film photo. Three.js en propose plusieurs (ACES, AgX), mais le défaut est aucun. Pour un aperçu en lumière modérée, c'est le bon choix.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>D'où vient le π</h3>
+<p>Le modèle de Lambert renvoie la couleur divisée par π (<code>RECIPROCAL_PI</code>, common.glsl.js:5 et 105). Une lumière d'intensité 1 donne donc 0,318 en linéaire, soit 153 à l'écran. Pour retrouver la couleur choisie, il faut donc des intensités qui totalisent à peu près π.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Le tone mapping</h3>
+<p>Pour ne pas couper les fortes lumières, un <b>tone mapping</b> comprime les valeurs au-dessus de 1 en douceur, comme un film photo. Three.js en propose plusieurs (ACES, AgX), mais le défaut est aucun. Pour un aperçu en lumière modérée, c'est le bon choix.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Choisir un gris « moyen » en écrivant 0x808080. C'est un gris à 22 % de la lumière du blanc, plus sombre qu'il n'y paraît dans un calcul. Le milieu en lumière est 0xbcbcbc, le fond de Magpie.
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 89 · Couleur linéaire et gamma</div>
+<div class="folio">3</div>
+<div class="pied">Cours 89 · Couleur linéaire et gamma</div>
 </section>
-
 <!-- ============ PAGE 4 · MÉLANGER ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 89</b></div>
-  <p class="rubrique">Schéma 3 · Mélanger des couleurs</p>
-  <h2>La moyenne de quoi ?</h2>
-  <p style="max-width:165mm">Un dégradé, un flou, un mélange de transparence : chaque fois, on fait une moyenne. Sur les octets sRGB, le milieu tombe trop sombre ; sur la lumière, il est juste. Le premier calcul reste pourtant le plus courant, en GDI+ comme dans les navigateurs.</p>
-
-  <svg viewBox="0 0 600 214" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="214" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="8.6" fill="#1D6FB8" text-anchor="start" font-weight="700">Le même dégradé du noir au blanc, en 11 pas, calculé de deux façons</text>
-<text x="30" y="55" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">moyenne des octets sRGB</text>
-<rect x="230" y="40" width="30" height="24" fill="#000000"/>
-<rect x="260" y="40" width="30" height="24" fill="#1A1A1A"/>
-<rect x="290" y="40" width="30" height="24" fill="#333333"/>
-<rect x="320" y="40" width="30" height="24" fill="#4C4C4C"/>
-<rect x="350" y="40" width="30" height="24" fill="#666666"/>
-<rect x="380" y="40" width="30" height="24" fill="#808080"/>
-<rect x="410" y="40" width="30" height="24" fill="#999999"/>
-<rect x="440" y="40" width="30" height="24" fill="#B2B2B2"/>
-<rect x="470" y="40" width="30" height="24" fill="#CCCCCC"/>
-<rect x="500" y="40" width="30" height="24" fill="#E6E6E6"/>
-<rect x="530" y="40" width="30" height="24" fill="#FFFFFF"/>
-<text x="395" y="76" font-size="7.4" fill="#E65100" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.4px">milieu 128</text>
-<text x="30" y="101" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">moyenne de la lumière (linéaire)</text>
-<rect x="230" y="86" width="30" height="24" fill="#000000"/>
-<rect x="260" y="86" width="30" height="24" fill="#595959"/>
-<rect x="290" y="86" width="30" height="24" fill="#7C7C7C"/>
-<rect x="320" y="86" width="30" height="24" fill="#959595"/>
-<rect x="350" y="86" width="30" height="24" fill="#AAAAAA"/>
-<rect x="380" y="86" width="30" height="24" fill="#BCBCBC"/>
-<rect x="410" y="86" width="30" height="24" fill="#CBCBCB"/>
-<rect x="440" y="86" width="30" height="24" fill="#DADADA"/>
-<rect x="470" y="86" width="30" height="24" fill="#E7E7E7"/>
-<rect x="500" y="86" width="30" height="24" fill="#F3F3F3"/>
-<rect x="530" y="86" width="30" height="24" fill="#FFFFFF"/>
-<text x="395" y="122" font-size="7.4" fill="#1D6FB8" text-anchor="middle" font-weight="700" class="mono" style="font-size:7.4px">milieu 188</text>
-<line x1="16" y1="142" x2="584" y2="142" stroke="#CFC6B8"/>
-<text x="30" y="162" font-size="8.2" fill="#2B2F33" text-anchor="start" font-weight="700">Un plan blanc à opacité 0,5 sur fond noir, dans Three.js : pixel mesuré</text>
-<rect x="440" y="150" width="36" height="20" fill="#7F7F7F" stroke="#999"/>
-<text x="484" y="164" font-size="9" fill="#E65100" text-anchor="start" font-weight="700" class="mono" style="font-size:9px">127</text>
-<text x="30" y="182" font-size="8" fill="#2B2F33" text-anchor="start">Le mélange se fait après l'encodage, sur les octets : pas sur la lumière, qui donnerait 188.</text>
-<text x="30" y="200" font-size="7.6" fill="#6B7378" text-anchor="start" font-style="italic">L'éclairage est calculé en linéaire, la transparence mélangée en sRGB : deux règles dans une même image.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 89</b></div>
+<p class="rubrique">Schéma 3 · Mélanger des couleurs</p>
+<h2>La moyenne de quoi ?</h2>
+<p style="max-width:165mm">Un dégradé, un flou, un mélange de transparence : chaque fois, on fait une moyenne. Sur les octets sRGB, le milieu tombe trop sombre ; sur la lumière, il est juste. Le premier calcul reste pourtant le plus courant, en GDI+ comme dans les navigateurs.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 214" width="100%">
+<rect fill="#EFE9E1" height="214" width="600" x="0" y="0"></rect>
+<text fill="#1D6FB8" font-size="8.6" font-weight="700" text-anchor="start" x="16" y="22">Le même dégradé du noir au blanc, en 11 pas, calculé de deux façons</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="30" y="55">moyenne des octets sRGB</text>
+<rect fill="#000000" height="24" width="30" x="230" y="40"></rect>
+<rect fill="#1A1A1A" height="24" width="30" x="260" y="40"></rect>
+<rect fill="#333333" height="24" width="30" x="290" y="40"></rect>
+<rect fill="#4C4C4C" height="24" width="30" x="320" y="40"></rect>
+<rect fill="#666666" height="24" width="30" x="350" y="40"></rect>
+<rect fill="#808080" height="24" width="30" x="380" y="40"></rect>
+<rect fill="#999999" height="24" width="30" x="410" y="40"></rect>
+<rect fill="#B2B2B2" height="24" width="30" x="440" y="40"></rect>
+<rect fill="#CCCCCC" height="24" width="30" x="470" y="40"></rect>
+<rect fill="#E6E6E6" height="24" width="30" x="500" y="40"></rect>
+<rect fill="#FFFFFF" height="24" width="30" x="530" y="40"></rect>
+<text class="mono" fill="#E65100" font-size="7.4" font-weight="700" style="font-size:7.4px" text-anchor="middle" x="395" y="76">milieu 128</text>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="30" y="101">moyenne de la lumière (linéaire)</text>
+<rect fill="#000000" height="24" width="30" x="230" y="86"></rect>
+<rect fill="#595959" height="24" width="30" x="260" y="86"></rect>
+<rect fill="#7C7C7C" height="24" width="30" x="290" y="86"></rect>
+<rect fill="#959595" height="24" width="30" x="320" y="86"></rect>
+<rect fill="#AAAAAA" height="24" width="30" x="350" y="86"></rect>
+<rect fill="#BCBCBC" height="24" width="30" x="380" y="86"></rect>
+<rect fill="#CBCBCB" height="24" width="30" x="410" y="86"></rect>
+<rect fill="#DADADA" height="24" width="30" x="440" y="86"></rect>
+<rect fill="#E7E7E7" height="24" width="30" x="470" y="86"></rect>
+<rect fill="#F3F3F3" height="24" width="30" x="500" y="86"></rect>
+<rect fill="#FFFFFF" height="24" width="30" x="530" y="86"></rect>
+<text class="mono" fill="#1D6FB8" font-size="7.4" font-weight="700" style="font-size:7.4px" text-anchor="middle" x="395" y="122">milieu 188</text>
+<line stroke="#CFC6B8" x1="16" x2="584" y1="142" y2="142"></line>
+<text fill="#2B2F33" font-size="8.2" font-weight="700" text-anchor="start" x="30" y="162">Un plan blanc à opacité 0,5 sur fond noir, dans Three.js : pixel mesuré</text>
+<rect fill="#7F7F7F" height="20" stroke="#999" width="36" x="440" y="150"></rect>
+<text class="mono" fill="#E65100" font-size="9" font-weight="700" style="font-size:9px" text-anchor="start" x="484" y="164">127</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="30" y="182">Le mélange se fait après l'encodage, sur les octets : pas sur la lumière, qui donnerait 188.</text>
+<text fill="#6B7378" font-size="7.6" font-style="italic" text-anchor="start" x="30" y="200">L'éclairage est calculé en linéaire, la transparence mélangée en sRGB : deux règles dans une même image.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">three/src/math/ColorManagement.js (0.186.1) · lignes 205 à 213 (lignes vides retirées)</span>export function SRGBToLinear( c ) {
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">three/src/math/ColorManagement.js (0.186.1) · lignes 205 à 213 (lignes vides retirées)</span>export function SRGBToLinear( c ) {
   return ( c &lt; 0.04045 ) ? c * 0.0773993808 : Math.pow( … , 2.4 );
 }
 export function LinearToSRGB( c ) {
   return ( c &lt; 0.0031308 ) ? c * 12.92 : 1.055 * … - 0.055;</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Pourquoi 127</h3>
-      <p>Three.js encode la couleur dans le shader (<code>linearToOutputTexel</code>, colorspace_fragment.glsl.js:2), puis la carte mélange avec ce qui est déjà peint. Le mélange arrive donc après l'encodage : il porte sur les octets. C'est ce que mesurait le cours 88, où 0,55 × 150 + 0,45 × 188 tombait juste.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Et sur la capsule</h3>
-      <p>GDI+ ne connaît que les octets sRGB. Le dégradé natif d'un bouton enfoncé, de <code>Fill</code> à <code>OffsetColour(Fill, +100)</code>, ajoute 100 aux octets (docs/ETATS-NATIFS.md, ligne 99). C'est le dessin de Grasshopper : SnapSet le reproduit tel quel, sans le corriger.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Pourquoi 127</h3>
+<p>Three.js encode la couleur dans le shader (<code>linearToOutputTexel</code>, colorspace_fragment.glsl.js:2), puis la carte mélange avec ce qui est déjà peint. Le mélange arrive donc après l'encodage : il porte sur les octets. C'est ce que mesurait le cours 88, où 0,55 × 150 + 0,45 × 188 tombait juste.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Et sur la capsule</h3>
+<p>GDI+ ne connaît que les octets sRGB. Le dégradé natif d'un bouton enfoncé, de <code>Fill</code> à <code>OffsetColour(Fill, +100)</code>, ajoute 100 aux octets (docs/ETATS-NATIFS.md, ligne 99). C'est le dessin de Grasshopper : SnapSet le reproduit tel quel, sans le corriger.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Calculer une clarté en faisant la moyenne de R, G et B. L'œil est bien plus sensible au vert : la luminance pèse le vert à 72 % et le bleu à 7 %, et toujours sur des valeurs linéaires. Un bleu pur et un vert pur de même octet n'ont pas du tout la même clarté.
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 89 · Couleur linéaire et gamma</div>
+<div class="folio">4</div>
+<div class="pied">Cours 89 · Couleur linéaire et gamma</div>
 </section>
-
 <!-- ============ PAGE 5 · LE CODE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 89</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>La luminance dans les tests de SnapSet</h2>
-  <p style="max-width:165mm">Pour vérifier les contrastes des capsules, les tests de SnapSet décodent les octets du skin en linéaire, pondèrent les trois canaux, puis comparent deux luminances comme le fait la norme WCAG. C'est la même formule que celle de Three.js.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 89</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>La luminance dans les tests de SnapSet</h2>
+<p style="max-width:165mm">Pour vérifier les contrastes des capsules, les tests de SnapSet décodent les octets du skin en linéaire, pondèrent les trois canaux, puis comparent deux luminances comme le fait la norme WCAG. C'est la même formule que celle de Three.js.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="cm">SnapSet/tests/ResolutionTests/LotGTests.cs</span></div>
 <div class="l"><span class="n">144</span><span class="kw">private static double</span> Lineaire(<span class="kw">int</span> octet)</div>
@@ -293,137 +266,55 @@ export function LinearToSRGB( c ) {
 <div class="l k4"><span class="n">156</span>  / (Math.Min(la, lb) + 0.05);</div>
 <div class="l k5"><span class="cm">// le seuil : skill accessibility, ligne 53</span><span class="rep r5">5</span></div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>Le segment droit</b>Près du noir.</li>
-      <li><span class="rep r2">2</span><b>La puissance 2,4</b>Le reste de la courbe.</li>
-      <li><span class="rep r3">3</span><b>Les poids</b>Le vert compte le plus.</li>
-      <li><span class="rep r4">4</span><b>Le ratio</b>De 1 à 21.</li>
-      <li><span class="rep r5">5</span><b>3:1</b>Pour un élément graphique.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">À surveiller · la sélection verte de Magpie ressort peu</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>Le segment droit</b>Près du noir.</li>
+<li><span class="rep r2">2</span><b>La puissance 2,4</b>Le reste de la courbe.</li>
+<li><span class="rep r3">3</span><b>Les poids</b>Le vert compte le plus.</li>
+<li><span class="rep r4">4</span><b>Le ratio</b>De 1 à 21.</li>
+<li><span class="rep r5">5</span><b>3:1</b>Pour un élément graphique.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">À surveiller · la sélection verte de Magpie ressort peu</span>
     Avec cette formule, le vert de sélection 0x00960a sur le fond 0xbcbcbc donne un ratio de 2,06, et en translucide (85, 167, 90, pixel mesuré au cours 88) 1,57 ; le rouge normal donne 4,81 et 2,71. Le seuil de 3:1 que SnapSet impose à ses éléments graphiques n'est atteint ni par les faces ni par les arêtes vertes. Ratios calculés, à confirmer à l'œil : l'éclairage Lambert assombrit un peu les faces, ce qui aide le contraste.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 89 · Couleur linéaire et gamma</div>
+<div class="folio">5</div>
+<div class="pied">Cours 89 · Couleur linéaire et gamma</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 89</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 89</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">L'octet sRGB 128 correspond à une lumière d'environ…</div><ul>
-      <li><span>A</span>22 %</li><li><span>B</span>73 %</li><li><span>C</span>12 %</li><li><span>D</span>50 %</li></ul></div>
 
-    <div class="q"><div class="enonce">On calcule l'éclairage en linéaire parce que…</div><ul>
-      <li><span>A</span>l'écran l'exige</li><li><span>B</span>la lumière s'additionne en valeurs linéaires</li><li><span>C</span>les octets sont trop petits</li><li><span>D</span>c'est plus rapide</li></ul></div>
 
-    <div class="q"><div class="enonce"><code>new THREE.Color(0x960000)</code> donne en rouge…</div><ul>
-      <li><span>A</span>0,588</li><li><span>B</span>150</li><li><span>C</span>0,305</li><li><span>D</span>0,5</li></ul></div>
 
-    <div class="q"><div class="enonce">Où Three.js réencode-t-il en sRGB ?</div><ul>
-      <li><span>A</span>nulle part</li><li><span>B</span>dans le navigateur, après coup</li><li><span>C</span>dans le fragment shader, en fin de calcul</li><li><span>D</span>dans Color.setHex</li></ul></div>
-
-    <div class="q"><div class="enonce">Sortie laissée en linéaire, le rouge mesuré passe de 141 à…</div><ul>
-      <li><span>A</span>188</li><li><span>B</span>150</li><li><span>C</span>255</li><li><span>D</span>67</li></ul></div>
-
-    <div class="q"><div class="enonce">Doubler l'intensité d'une lumière… <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>ne change rien</li><li><span>B</span>double la valeur linéaire</li><li><span>C</span>double l'octet affiché</li><li><span>D</span>ajoute de moins en moins au pixel</li></ul></div>
-
-    <div class="q"><div class="enonce">Le modèle de Lambert de Three.js divise la couleur par…</div><ul>
-      <li><span>A</span>π</li><li><span>B</span>255</li><li><span>C</span>2</li><li><span>D</span>2,2</li></ul></div>
-
-    <div class="q"><div class="enonce">Sans tone mapping, une valeur linéaire de 1,27…</div><ul>
-      <li><span>A</span>est compressée en douceur</li><li><span>B</span>devient noire</li><li><span>C</span>est divisée par π</li><li><span>D</span>est coupée à 255</li></ul></div>
-
-    <div class="q"><div class="enonce">Blanc à 0,5 sur noir dans Three.js, pixel mesuré…</div><ul>
-      <li><span>A</span>255</li><li><span>B</span>127</li><li><span>C</span>64</li><li><span>D</span>188</li></ul></div>
-
-    <div class="q"><div class="enonce">Dans la luminance, le canal qui pèse le plus est…</div><ul>
-      <li><span>A</span>le rouge</li><li><span>B</span>le bleu</li><li><span>C</span>le vert</li><li><span>D</span>aucun, ils sont égaux</li></ul></div>
-
-    <div class="q"><div class="enonce">Le seuil de contraste d'un élément graphique selon SnapSet…</div><ul>
-      <li><span>A</span>4,5:1</li><li><span>B</span>21:1</li><li><span>C</span>7:1</li><li><span>D</span>3:1</li></ul></div>
-
-    <div class="q"><div class="enonce">Le gris qui vaut la moitié de la lumière du blanc est…</div><ul>
-      <li><span>A</span>0x808080</li><li><span>B</span>0xbcbcbc</li><li><span>C</span>0xe0e0e0</li><li><span>D</span>0x404040</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 89 · Couleur linéaire et gamma</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">new THREE.Color(0x960000)</td><td>lire un code sRGB, stocker en linéaire</td><td>Color.js:204–214</td></tr>
+<tr><td class="c">SRGBToLinear / LinearToSRGB</td><td>les deux sens de la courbe</td><td>ColorManagement.js:205–213</td></tr>
+<tr><td class="c">renderer.outputColorSpace</td><td>l'espace de l'image, sRGB par défaut</td><td>WebGLRenderer.js:312</td></tr>
+<tr><td class="c">renderer.toneMapping</td><td>comprimer au-dessus de 1, aucun par défaut</td><td>WebGLRenderer.js:277</td></tr>
+<tr><td class="c">Lineaire(octet)</td><td>décoder un octet du skin</td><td>LotGTests.cs:144–148</td></tr>
+<tr><td class="c">(L1 + 0,05) / (L2 + 0,05)</td><td>le ratio de contraste WCAG</td><td>LotGTests.cs:153–157</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>sRGB</dt><dd>L'espace de couleur des écrans et des images, aux valeurs tassées pour l'œil.</dd>
+<dt>Linéaire</dt><dd>Une valeur proportionnelle à la quantité de lumière.</dd>
+<dt>Gamma</dt><dd>La courbe qui relie les deux, proche d'une puissance 2,2.</dd>
+<dt>Luminance</dt><dd>La clarté perçue, somme pondérée des trois canaux linéaires.</dd>
+<dt>Tone mapping</dt><dd>La compression des valeurs trop fortes avant l'affichage.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 90</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 89 · Couleur linéaire et gamma</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 7A</b> · De la scène à l'image</span><b>Cours 89</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · A.</b> SRGBToLinear(128 / 255) ≈ 0,216.</div>
-    <div><b>02 · B.</b> Les sRGB sont tassés pour l'œil.</div>
-    <div><b>03 · C.</b> setHex décode le sRGB (Color.js:212).</div>
-    <div><b>04 · C.</b> colorspace_fragment.glsl.js:2.</div>
-    <div><b>05 · D.</b> 0,264 × 255 ≈ 67, sans encodage.</div>
-    <div><b>06 · B et D.</b> 111 → 153 → 209.</div>
-    <div><b>07 · A.</b> RECIPROCAL_PI, common.glsl.js:105.</div>
-    <div><b>08 · D.</b> NoToneMapping, WebGLRenderer.js:277.</div>
-    <div><b>09 · B.</b> Mélange après l'encodage.</div>
-    <div><b>10 · C.</b> 0,7152, LotGTests.cs:150.</div>
-    <div><b>11 · D.</b> Skill accessibility, ligne 53.</div>
-    <div><b>12 · B.</b> 188 se décode en 0,503.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis les pages 4 et 5. <b>10 à 12</b> : passe au cours 90, « Profondeur et précision ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">new THREE.Color(0x960000)</td><td>lire un code sRGB, stocker en linéaire</td><td>Color.js:204–214</td></tr>
-      <tr><td class="c">SRGBToLinear / LinearToSRGB</td><td>les deux sens de la courbe</td><td>ColorManagement.js:205–213</td></tr>
-      <tr><td class="c">renderer.outputColorSpace</td><td>l'espace de l'image, sRGB par défaut</td><td>WebGLRenderer.js:312</td></tr>
-      <tr><td class="c">renderer.toneMapping</td><td>comprimer au-dessus de 1, aucun par défaut</td><td>WebGLRenderer.js:277</td></tr>
-      <tr><td class="c">Lineaire(octet)</td><td>décoder un octet du skin</td><td>LotGTests.cs:144–148</td></tr>
-      <tr><td class="c">(L1 + 0,05) / (L2 + 0,05)</td><td>le ratio de contraste WCAG</td><td>LotGTests.cs:153–157</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>sRGB</dt><dd>L'espace de couleur des écrans et des images, aux valeurs tassées pour l'œil.</dd>
-    <dt>Linéaire</dt><dd>Une valeur proportionnelle à la quantité de lumière.</dd>
-    <dt>Gamma</dt><dd>La courbe qui relie les deux, proche d'une puissance 2,2.</dd>
-    <dt>Luminance</dt><dd>La clarté perçue, somme pondérée des trois canaux linéaires.</dd>
-    <dt>Tone mapping</dt><dd>La compression des valeurs trop fortes avant l'affichage.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 90</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 89 · Couleur linéaire et gamma</div>
-</section>
-
 </body>
 </html>

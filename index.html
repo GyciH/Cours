@@ -200,7 +200,8 @@ details[open] summary::after{content:"–"}
 (function(){
 'use strict';
 var INTERVALLES=[1,1,3,7,16,35];   // jours avant de revoir une carte, par boîte (0 = ratée)
-var SEUIL=7;                         // sur 12 : en dessous, le cours est « à revoir »
+var SEUIL=7/12;                      // part de bonnes réponses : en dessous, le cours est « à revoir »
+var MAITRISE=10/12;
 var CLE='bibliotheque-cours-progres';
 var NIV=['','N1 · découvrir','N2 · pratiquer','N3 · maîtriser'];
 var ETATS={afaire:'À faire',encours:'En cours',fini:'Terminé',revoir:'À revoir'};
@@ -210,7 +211,13 @@ var P=vide();
 var ui={groupe:'partie',statut:'tous',q:'',partie:0,zoom:0};
 var sess=null; // séance de QCM ou de révision en cours
 
-function vide(){return {v:1,cours:{},cartes:{},jours:{},dernier:null}}
+function vide(){return {v:2,cours:{},cartes:{},jours:{},dernier:null}}
+// v1 → v2 : les cours passent de 7 à 6 pages (QCM et corrigé retirés) ; l'ancienne page 7 devient la 6
+function migrer(x){x=JSON.parse(JSON.stringify(x||{}));if((x.v|0)>=2)return x;for(var n in (x.cours||{})){var c=x.cours[n],b=c.pg|0;c.pg=(b&31)|(((b>>6)&1)<<5)}if(x.dernier&&x.dernier.pg>6)x.dernier.pg=6;x.v=2;return x}
+function nbPages(n){return CO[n].pg.length}
+function totQ(pr){return pr.tot||12}
+function ratio(pr){return (pr.best||0)/totQ(pr)}
+function nettoyer(){for(var k in P.cartes){var p=k.split('-');if(!CO[+p[0]]||!CO[+p[0]].qk[+p[1]])delete P.cartes[k]}}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function norm(s){return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')}
 function jour(d){d=d||new Date();var m=d.getMonth()+1,j=d.getDate();return d.getFullYear()+'-'+(m<10?'0':'')+m+'-'+(j<10?'0':'')+j}
@@ -220,7 +227,7 @@ function num(c){return c.num}
 function pagesLues(n){var c=P.cours[n];if(!c||!c.pg)return 0;var k=0,b=c.pg;while(b){k+=b&1;b>>=1}return k}
 
 /* ---------- état d'un cours ---------- */
-function statut(n){var c=P.cours[n];if(!c)return 'afaire';if(c.nb>0)return c.best>=SEUIL?'fini':'revoir';if(c.pg)return 'encours';return 'afaire'}
+function statut(n){var c=P.cours[n];if(!c)return 'afaire';if(c.nb>0)return ratio(c)>=SEUIL-1e-9?'fini':'revoir';if(c.pg)return 'encours';return 'afaire'}
 function etatHtml(n){var s=statut(n);return '<span class="etat '+s+'">'+ETATS[s]+'</span>'}
 function cartesDues(){var t=jour(),r=[];for(var k in P.cartes){if(P.cartes[k].d<=t)r.push(k)}return r}
 function noter(){P.jours[jour()]=(P.jours[jour()]||0)+1}
@@ -255,8 +262,8 @@ function brancherBase(){
       if(enAttente)return;
       syncEtat='ok';
       var avant=JSON.stringify(P);
-      var distant=s.exists?s.data():null;
-      P=distant?fusion(distant,P):P;
+      var distant=s.exists?migrer(s.data()):null;
+      P=distant?fusion(distant,P):P;if(CAT)nettoyer();
       ecrireLocal();
       if(!distant||JSON.stringify(P)!==JSON.stringify(distant))sauver();
       if(JSON.stringify(P)!==avant&&!sess)rendre();else majSync();
@@ -292,7 +299,7 @@ function majBadge(){var b=document.getElementById('badge');if(!b||!CAT)return;va
 
 /* ---------- fragments ---------- */
 function ligneCours(c,sansNum){var p=PAR[c.p];
-  return '<a class="cours-ligne pc" style="'+pc(c.p)+'" href="#cours-'+c.n+'"><span class="num">'+esc(c.num)+'</span><span style="min-width:0"><span class="t">'+esc(c.t)+'</span><br><span class="m">'+c.ch+' · N'+c.niv+' · '+esc(c.dur)+(statut(c.n)==='encours'?' · page '+pagesLues(c.n)+'/7':'')+(P.cours[c.n]&&P.cours[c.n].nb?' · '+P.cours[c.n].best+'/12':'')+'</span></span>'+etatHtml(c.n)+'</a>'}
+  return '<a class="cours-ligne pc" style="'+pc(c.p)+'" href="#cours-'+c.n+'"><span class="num">'+esc(c.num)+'</span><span style="min-width:0"><span class="t">'+esc(c.t)+'</span><br><span class="m">'+c.ch+' · N'+c.niv+' · '+esc(c.dur)+(statut(c.n)==='encours'?' · page '+pagesLues(c.n)+'/'+nbPages(c.n):'')+(P.cours[c.n]&&P.cours[c.n].nb?' · '+P.cours[c.n].best+'/'+totQ(P.cours[c.n]):'')+'</span></span>'+etatHtml(c.n)+'</a>'}
 function suivantDansParcours(apres){var i=apres?ORDRE.indexOf(apres)+1:0;for(;i<ORDRE.length;i++){var s=statut(ORDRE[i]);if(s!=='fini')return ORDRE[i]}return null}
 function compte(liste){var f=0;liste.forEach(function(n){if(statut(n)==='fini')f++});return f}
 
@@ -304,12 +311,12 @@ function vueAccueil(){
   // Reprendre
   var der=P.dernier&&CO[P.dernier.n]?CO[P.dernier.n]:null;
   if(der&&statut(der.n)!=='fini'){
-    var lu=pagesLues(der.n),pg=Math.min(7,(P.dernier.pg||1));
-    var cible=lu>=5?'#qcm-'+der.n:'#lire-'+der.n+'-'+pg;
+    var lu=pagesLues(der.n),np=nbPages(der.n),pg=Math.min(np,(P.dernier.pg||1));
+    var cible=lu>=np-1?'#qcm-'+der.n:'#lire-'+der.n+'-'+pg;
     h+='<div class="carte pc" style="'+pc(der.p)+';border-left:5px solid var(--pc)"><h2>Reprendre</h2>'+
       '<a href="#cours-'+der.n+'" style="text-decoration:none"><span class="mono" style="color:var(--pt);font-size:13px">Cours '+esc(der.num)+' · '+der.ch+'</span><br><span style="font-size:19px;font-weight:700;line-height:1.25">'+esc(der.t)+'</span></a>'+
-      '<div class="ligne"><div class="barre"><i style="width:'+Math.round(lu/7*100)+'%"></i></div><span style="font-size:13px;color:var(--muted)">'+lu+' / 7 pages</span></div>'+
-      '<div class="ligne"><a class="btn plein" href="'+cible+'" style="flex:1">'+(lu>=5?'Faire le QCM':'Lire la page '+pg)+'</a><a class="btn" href="#cours-'+der.n+'">Fiche</a></div></div>';
+      '<div class="ligne"><div class="barre"><i style="width:'+Math.round(lu/np*100)+'%"></i></div><span style="font-size:13px;color:var(--muted)">'+lu+' / '+np+' pages</span></div>'+
+      '<div class="ligne"><a class="btn plein" href="'+cible+'" style="flex:1">'+(lu>=np-1?'Faire le QCM':'Lire la page '+pg)+'</a><a class="btn" href="#cours-'+der.n+'">Fiche</a></div></div>';
   } else {
     var s=suivantDansParcours(der?der.n:null)||suivantDansParcours(null);
     if(s){var c=CO[s];h+='<div class="carte pc" style="'+pc(c.p)+';border-left:5px solid var(--pc)"><h2>'+(der?'Cours suivant':'Pour commencer')+'</h2>'+
@@ -376,12 +383,12 @@ function vueCours(n){
   var h='<div class="pc" style="'+pc(c.p)+'"><div class="bandeau"><div class="haut"><a href="#biblio" onclick="history.length>1&&(event.preventDefault(),history.back())">‹ Retour</a><span>Partie '+c.p+' · '+c.ch+' · '+esc(CH[c.ch].nom)+'</span></div>'+
     '<span class="mono" style="font-size:14px;opacity:.9">'+(c.num==='HS'?'Hors-série':'Cours '+esc(c.num))+'</span><h1>'+esc(c.t)+'</h1><p>'+esc(c.chap)+'</p></div>';
   h+='<div class="ecran">';
-  h+='<div class="puces"><span class="puce">'+ETATS[s]+(pr.nb?' <b>'+pr.best+'/12</b>':'')+'</span><span class="puce">Durée<b>'+esc(c.dur)+'</b></span><span class="puce">Niveau<b>N'+c.niv+'</b></span><span class="puce">'+c.comp+'<b>'+esc(COMP[c.comp])+'</b></span></div>';
-  h+='<div class="ligne"><a class="btn plein" style="flex:1" href="#lire-'+n+'-'+Math.min(7,premiereNonLue(n))+'">'+(lu?(lu>=7?'Relire':'Continuer · page '+premiereNonLue(n)):'Lire le cours')+'</a><a class="btn" style="flex:1" href="#qcm-'+n+'">'+(pr.nb?'Refaire le QCM':'Faire le QCM')+'</a></div>';
+  h+='<div class="puces"><span class="puce">'+ETATS[s]+(pr.nb?' <b>'+pr.best+'/'+totQ(pr)+'</b>':'')+'</span><span class="puce">Durée<b>'+esc(c.dur)+'</b></span><span class="puce">Niveau<b>N'+c.niv+'</b></span><span class="puce">'+c.comp+'<b>'+esc(COMP[c.comp])+'</b></span></div>';
+  h+='<div class="ligne"><a class="btn plein" style="flex:1" href="#lire-'+n+'-'+premiereNonLue(n)+'">'+(lu?(lu>=c.pg.length?'Relire':'Continuer · page '+premiereNonLue(n)):'Lire le cours')+'</a><a class="btn" style="flex:1" href="#qcm-'+n+'">'+(pr.nb?'Refaire le QCM':'Faire le QCM')+'</a></div>';
   h+='<div class="carte"><h2>L’idée</h2><p class="idee">'+esc(c.idee)+'</p></div>';
   if(c.obj&&c.obj.length)h+='<div class="carte"><h2>Tu sauras</h2><ol class="obj">'+c.obj.map(function(o){return '<li><span>'+esc(o.replace(/[;.]\s*$/,''))+'</span></li>'}).join('')+'</ol></div>';
   h+='<div class="retenir"><b>À retenir</b>'+esc(c.ret)+'</div>';
-  h+='<div class="carte"><div class="ligne ecarte"><h2>Les 7 pages</h2><span style="font-size:13px;color:var(--muted)">'+lu+' lue'+(lu>1?'s':'')+'</span></div><div class="pages">'+c.pg.map(function(t,k){var l=pr.pg&(1<<k);return '<a href="#lire-'+n+'-'+(k+1)+'"><span class="pn">'+(k+1)+'</span><span>'+esc(t)+'</span>'+(l?'<span class="lu">✓ lue</span>':'<span></span>')+'</a>'}).join('')+'</div></div>';
+  h+='<div class="carte"><div class="ligne ecarte"><h2>Les '+c.pg.length+' pages</h2><span style="font-size:13px;color:var(--muted)">'+lu+' lue'+(lu>1?'s':'')+'</span></div><div class="pages">'+c.pg.map(function(t,k){var l=pr.pg&(1<<k);return '<a href="#lire-'+n+'-'+(k+1)+'"><span class="pn">'+(k+1)+'</span><span>'+esc(t)+'</span>'+(l?'<span class="lu">✓ lue</span>':'<span></span>')+'</a>'}).join('')+'</div></div>';
   if((c.pre&&c.pre.length)||(c.ex&&c.ex.length)){
     h+='<div class="carte">';
     if(c.pre&&c.pre.length)h+='<h2>Prérequis</h2><div class="puces">'+c.pre.filter(function(x){return CO[x]}).map(function(x){return '<a class="puce" style="text-decoration:none" href="#cours-'+x+'">'+esc(CO[x].num)+' · '+esc(CO[x].t)+' · '+ETATS[statut(x)].toLowerCase()+'</a>'}).join('')+'</div>';
@@ -392,7 +399,7 @@ function vueCours(n){
   h+='</div></div>';
   $app.innerHTML=h;
 }
-function premiereNonLue(n){var b=(P.cours[n]||{}).pg|0;for(var k=0;k<7;k++)if(!(b&(1<<k)))return k+1;return 1}
+function premiereNonLue(n){var b=(P.cours[n]||{}).pg|0;for(var k=0;k<nbPages(n);k++)if(!(b&(1<<k)))return k+1;return 1}
 
 /* ---------- Lecteur ---------- */
 var cacheCours={}, feuilleCss=null;
@@ -405,12 +412,12 @@ function chargerCours(c){
     return cacheCours[c.n]={css:st,cls:d.body.className,pages:pages}});
 }
 function vueLire(n,k){
-  var c=CO[n];k=Math.max(1,Math.min(7,k||1));
-  var h='<div class="pc" style="'+pc(c.p)+'"><div class="lecteur-barre"><a class="btn petit" href="#cours-'+n+'" aria-label="Retour à la fiche">‹</a><div class="titre"><b>'+esc(c.t)+'</b><span>Page '+k+' / 7 · '+esc(c.pg[k-1])+'</span></div><button class="btn petit" id="zoom" aria-label="Changer le zoom">'+['Ajusté','Agrandi','100 %'][ui.zoom]+'</button></div>'+
+  var c=CO[n],np=c.pg.length;k=Math.max(1,Math.min(np,k||1));
+  var h='<div class="pc" style="'+pc(c.p)+'"><div class="lecteur-barre"><a class="btn petit" href="#cours-'+n+'" aria-label="Retour à la fiche">‹</a><div class="titre"><b>'+esc(c.t)+'</b><span>Page '+k+' / '+np+' · '+esc(c.pg[k-1])+'</span></div><button class="btn petit" id="zoom" aria-label="Changer le zoom">'+['Ajusté','Agrandi','100 %'][ui.zoom]+'</button></div>'+
     '<div class="feuille" id="feuille"><div class="feuille-hote" id="hote"><p class="vide">Chargement de la page…</p></div></div>'+
     '<div class="lecteur-pied">'+(k>1?'<a class="btn" href="#lire-'+n+'-'+(k-1)+'">‹ Page '+(k-1)+'</a>':'<span></span>')+
     '<div class="points">'+c.pg.map(function(_,i){var l=(P.cours[n]||{}).pg&(1<<i);return '<i class="'+(i+1===k?'on':(l?'lu':''))+'"></i>'}).join('')+'</div>'+
-    (k<7?'<a class="btn plein" href="#lire-'+n+'-'+(k+1)+'" style="justify-self:end">Page '+(k+1)+' ›</a>':'<a class="btn plein" href="#qcm-'+n+'" style="justify-self:end">QCM ›</a>')+'</div></div>';
+    (k<np?'<a class="btn plein" href="#lire-'+n+'-'+(k+1)+'" style="justify-self:end">Page '+(k+1)+' ›</a>':'<a class="btn plein" href="#qcm-'+n+'" style="justify-self:end">QCM ›</a>')+'</div></div>';
   $app.innerHTML=h;
   document.getElementById('zoom').onclick=function(){ui.zoom=(ui.zoom+1)%3;this.textContent=['Ajusté','Agrandi','100 %'][ui.zoom];poserZoom()};
   // la page compte comme lue, et devient le point de reprise
@@ -435,7 +442,7 @@ window.addEventListener('resize',function(){if(route()[0]==='lire')poserZoom()})
 /* ---------- QCM et révisions ---------- */
 function vueQcm(n){
   if(!sess||sess.type!=='qcm'||sess.n!==n){
-    sess={type:'qcm',n:n,items:CO[n].q.map(function(_,i){return {n:n,i:i}}),k:0,choix:[],valide:false,res:[]};
+    sess={type:'qcm',n:n,items:CO[n].q.map(function(q){return {n:n,i:q.k}}),k:0,choix:[],valide:false,res:[]};
   }
   dessinerQuestion();
 }
@@ -446,7 +453,7 @@ function vueRevisions(){
   var h='<div class="ecran"><div><h1>Révisions</h1><p class="sous">Chaque question revient juste avant que tu l’oublies : le lendemain si tu l’as ratée, puis après 3, 7, 16 et 35 jours.</p></div>';
   h+='<div class="carte"><div class="ligne ecarte"><div><span class="grand">'+dues.length+'</span><br><span style="color:var(--muted);font-size:14px">question'+(dues.length>1?'s':'')+' à revoir aujourd’hui</span></div>'+(dues.length?'<a class="btn plein" href="#revision">Commencer</a>':'')+'</div>'+
     (dues.length>15?'<p style="margin:0;font-size:13px;color:var(--muted)">Une séance en prend 15, les plus anciennes d’abord.</p>':'')+
-    (!dues.length?'<p style="margin:0;font-size:14px;color:var(--muted)">'+(total?'Demain : '+demain+' question'+(demain>1?'s':'')+'.':'Fais le QCM d’un cours : ses 12 questions entrent ici.')+'</p>':'')+'</div>';
+    (!dues.length?'<p style="margin:0;font-size:14px;color:var(--muted)">'+(total?'Demain : '+demain+' question'+(demain>1?'s':'')+'.':'Fais le QCM d’un cours : ses questions entrent ici.')+'</p>':'')+'</div>';
   if(total){
     h+='<div class="carte"><h2>Tes '+total+' questions en mémoire</h2><div style="display:flex;flex-direction:column;gap:8px">'+
       ['Ratées, demain','Boîte 1 · 1 jour','Boîte 2 · 3 jours','Boîte 3 · 7 jours','Boîte 4 · 16 jours','Boîte 5 · 35 jours'].map(function(l,b){return '<div class="ligne"><span style="width:130px;font-size:13px;flex:none">'+l+'</span><div class="barre"><i style="width:'+Math.round(boites[b]/total*100)+'%;background:'+(b===0?'var(--ko)':'var(--ok)')+'"></i></div><span class="mono" style="font-size:12px;width:34px;text-align:right">'+boites[b]+'</span></div>'}).join('')+'</div></div>';
@@ -468,7 +475,7 @@ function vueSeance(){
 }
 function dessinerQuestion(){
   var s=sess;if(s.k>=s.items.length)return finSeance();
-  var it=s.items[s.k],c=CO[it.n],q=c.q[it.i],multi=q.m;
+  var it=s.items[s.k],c=CO[it.n],q=c.qk[it.i],multi=q.m;
   var h='<div class="pc" style="'+pc(c.p)+'"><div class="ecran">';
   h+='<div class="q-tete"><a class="btn petit" href="'+(s.type==='qcm'?'#cours-'+c.n:'#revisions')+'">‹ Quitter</a><span>'+(s.type==='qcm'?'QCM · cours '+esc(c.num):'Révision')+' · <b style="color:var(--ink)">'+(s.k+1)+' / '+s.items.length+'</b></span></div>';
   h+='<div class="progression-q"><i style="width:'+Math.round(s.k/s.items.length*100)+'%"></i></div>';
@@ -499,13 +506,14 @@ function finSeance(){
   var s=sess,ok=s.res.filter(Boolean).length,tot=s.items.length,h='<div class="ecran">';
   if(s.type==='qcm'){
     var c=CO[s.n],pr=P.cours[s.n]||(P.cours[s.n]={pg:0,best:0,last:0,nb:0,at:''});
-    if(!s.enregistre){pr.last=ok;pr.best=Math.max(pr.best||0,ok);pr.nb=(pr.nb||0)+1;pr.at=jour();P.dernier={n:s.n,pg:7,t:Date.now()};s.enregistre=true;sauver()}
-    var msg=ok>=10?'Maîtrisé. Les questions reviendront espacées pour le rester.':ok>=SEUIL?'Acquis. Les questions ratées reviennent demain en révision.':'À revoir. Relis les pages concernées, puis refais le QCM.';
+    if(!s.enregistre){if(pr.nb&&!pr.tot)pr.best=Math.round(pr.best*tot/12);pr.tot=tot;pr.last=ok;pr.best=Math.max(pr.best||0,ok);pr.nb=(pr.nb||0)+1;pr.at=jour();P.dernier={n:s.n,pg:nbPages(s.n),t:Date.now()};s.enregistre=true;sauver()}
+    var mm=Math.ceil(tot*MAITRISE-1e-9),ma=Math.ceil(tot*SEUIL-1e-9);
+    var msg=ok>=mm?'Maîtrisé. Les questions reviendront espacées pour le rester.':ok>=ma?'Acquis. Les questions ratées reviennent demain en révision.':'À revoir. Relis les pages concernées, puis refais le QCM.';
     h+='<div class="pc" style="'+pc(c.p)+'"><a class="mono" href="#cours-'+c.n+'" style="font-size:13px;color:var(--pt);text-decoration:none">Cours '+esc(c.num)+' · '+esc(c.t)+'</a></div>';
-    h+='<div class="carte" style="align-items:flex-start"><div class="score">'+ok+'<small> / '+tot+'</small></div><p style="margin:0;font-size:16px;font-weight:600">'+msg+'</p><p style="margin:0;font-size:13px;color:var(--muted)">Barème : 10 à 12 maîtrisé · 7 à 9 acquis · moins de 7 à revoir. Meilleur score : '+pr.best+' / 12.</p>'+
+    h+='<div class="carte" style="align-items:flex-start"><div class="score">'+ok+'<small> / '+tot+'</small></div><p style="margin:0;font-size:16px;font-weight:600">'+msg+'</p><p style="margin:0;font-size:13px;color:var(--muted)">Barème : '+mm+' à '+tot+' maîtrisé · '+ma+' à '+(mm-1)+' acquis · moins de '+ma+' à revoir. Meilleur score : '+pr.best+' / '+tot+'.</p>'+
       '<div class="recap-q">'+s.res.map(function(r,i){return '<span class="'+(r?'o':'x')+'" title="Question '+(i+1)+'">'+(i+1)+'</span>'}).join('')+'</div></div>';
     var nx=suivantDansParcours(s.n);
-    h+='<div class="ligne">'+(ok<SEUIL?'<a class="btn plein" style="flex:1" href="#lire-'+c.n+'-1">Relire le cours</a>':(nx?'<a class="btn plein" style="flex:1" href="#cours-'+nx+'">Cours suivant · '+esc(CO[nx].num)+'</a>':''))+'<a class="btn" style="flex:1" href="#cours-'+c.n+'">Retour à la fiche</a></div>';
+    h+='<div class="ligne">'+(ok<ma?'<a class="btn plein" style="flex:1" href="#lire-'+c.n+'-1">Relire le cours</a>':(nx?'<a class="btn plein" style="flex:1" href="#cours-'+nx+'">Cours suivant · '+esc(CO[nx].num)+'</a>':''))+'<a class="btn" style="flex:1" href="#cours-'+c.n+'">Retour à la fiche</a></div>';
   } else {
     h+='<div><h1>Séance terminée</h1><p class="sous">'+ok+' juste'+(ok>1?'s':'')+' sur '+tot+'. Les réponses justes montent d’une boîte, les ratées reviennent demain.</p></div>';
     h+='<div class="carte"><div class="recap-q">'+s.res.map(function(r,i){return '<span class="'+(r?'o':'x')+'">'+(i+1)+'</span>'}).join('')+'</div></div>';
@@ -526,7 +534,7 @@ function vueProgres(){
   var h='<div class="ecran"><div><h1>Progrès</h1><p class="sous">Où tu en es, compétence par compétence.</p></div>';
   h+='<div class="kpis"><div class="kpi"><b>'+fini+'<small style="font-size:14px;color:var(--muted);font-weight:500"> / '+ORDRE.length+'</small></b><span>cours terminés</span></div>'+
     '<div class="kpi"><b>'+serie+'</b><span>jour'+(serie>1?'s':'')+' de suite</span></div>'+
-    '<div class="kpi"><b>'+repondues+'</b><span>questions vues sur '+ORDRE.length*12+'</span></div>'+
+    '<div class="kpi"><b>'+repondues+'</b><span>questions vues sur '+ORDRE.reduce(function(a,n){return a+CO[n].q.length},0)+'</span></div>'+
     '<div class="kpi"><b>'+memo+'</b><span>bien ancrées (7 j et plus)</span></div></div>';
   // activité 28 jours, lundi en tête
   var cases=[],auj=new Date(),deb=new Date();deb.setDate(auj.getDate()-27);
@@ -539,7 +547,7 @@ function vueProgres(){
     h+='<a class="comp" href="#biblio" data-comp="'+k.id+'"><span class="id">'+k.id+'</span><span class="nm">'+esc(k.nom)+'</span><div class="niv">'+[1,2,3].map(function(v){var l=parN[v];if(!l.length)return '<div><span>N'+v+' · aucun cours</span><div class="barre"></div></div>';var f=compte(l);return '<div><span>N'+v+' · '+f+'/'+l.length+'</span><div class="barre"><i style="width:'+Math.round(f/l.length*100)+'%"></i></div></div>'}).join('')+'</div></a>'});
   h+='</div></div>';
   var rev=ORDRE.filter(function(n){return statut(n)==='revoir'});
-  h+='<div class="carte"><h2>À revoir · score sous '+SEUIL+' / 12</h2>'+(rev.length?'<div>'+rev.map(function(n){return ligneCours(CO[n])}).join('')+'</div>':'<p style="margin:0;color:var(--muted);font-size:14px">Aucun cours sous le seuil.</p>')+'</div>';
+  h+='<div class="carte"><h2>À revoir · moins de 7 bonnes réponses sur 12</h2>'+(rev.length?'<div>'+rev.map(function(n){return ligneCours(CO[n])}).join('')+'</div>':'<p style="margin:0;color:var(--muted);font-size:14px">Aucun cours sous le seuil.</p>')+'</div>';
   h+='<div class="carte"><h2>Sauvegarde</h2><p style="margin:0;font-size:14px;color:var(--muted)">Ta progression vit sur ce téléphone. Exporte-la de temps en temps : le fichier permet de la retrouver après un changement de téléphone.</p><div class="ligne"><button class="btn" style="flex:1" id="exporter">Exporter</button><label class="btn" style="flex:1">Importer<input type="file" id="importer" accept=".json,application/json" hidden></label></div><p id="msg-sauve" style="margin:0;font-size:13px" hidden></p></div>';
   h+='<p class="sync" id="sync">'+syncTexte()+'</p></div>';
   $app.innerHTML=h;
@@ -549,13 +557,14 @@ function vueProgres(){
 }
 
 /* ---------- démarrage ---------- */
-var local=lireLocal();if(local&&local.cours)P=fusion(vide(),local);
+var local=lireLocal();if(local&&local.cours)P=fusion(vide(),migrer(local));
 fetch('catalogue.json').then(function(r){if(!r.ok)throw new Error(r.status);return r.json()}).then(function(d){
   CAT=d;
   d.parties.forEach(function(p){PAR[p.p]=p;p.chs.forEach(function(ch){CH[ch.id]=ch;ORDRE=ORDRE.concat(ch.cours)})});
-  d.cours.forEach(function(c){CO[c.n]=c});
+  d.cours.forEach(function(c){CO[c.n]=c;c.qk={};c.q.forEach(function(q){c.qk[q.k]=q})});
   ORDRE=ORDRE.filter(function(n){return CO[n]});
   d.comps.forEach(function(k){COMP[k.id]=k.nom});
+  nettoyer();ecrireLocal();
   derniereVue=location.hash;rendre();
 },function(){$app.innerHTML='<div class="ecran"><p class="vide">Le catalogue n’a pas pu être chargé. Recharge la page.</p></div>'});
 if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(function(){});

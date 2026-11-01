@@ -1,177 +1,161 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8"/>
 <title>45 · Écrire des exercices avec Claude</title>
-<link rel="stylesheet" href="trame.css">
+<link href="trame.css" rel="stylesheet"/>
 </head>
 <body class="partie-12">
-
 <!-- ============ PAGE 1 · LE CONCEPT ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Cours 45</b></div>
-
-  <p class="rubrique">Le concept</p>
-  <h1>Écrire des exercices avec Claude</h1>
-  <p class="chapeau">Dans Magpie, Claude n'écrit pas seulement du code : il aide à concevoir les exercices, puis les <b>passe pour de vrai</b> sur le canvas. Le dossier <code>pedagogie/</code> contient trois pièces : une <b>skill</b> qui fixe les règles, deux <b>agents</b> qui ne voient pas les mêmes choses, et un <b>banc d'essai</b> qui les fait travailler sur Grasshopper.</p>
-
-  <div class="meta">
-    <span class="pastille"><b>50 min</b> de lecture et de QCM</span>
-    <span class="pastille">Prérequis · <b>28</b>, <b>30</b> et <b>40</b></span>
-    <span class="pastille">Exemples · <b>pedagogie/skill</b>, <b>pedagogie/agents</b>, <b>pedagogie/banc</b> (Magpie)</span>
-  </div>
-
-  <div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
-    <svg viewBox="0 0 600 208" width="100%">
-<rect x="6" y="10" width="184" height="98" rx="5" fill="#fff" stroke="#1565C0" stroke-width="1.4"/>
-<text x="16" y="28" font-size="8.8" fill="#1565C0" text-anchor="start" font-weight="700">La skill</text>
-<text x="16" y="44" font-size="7.8" fill="#2B2F33" text-anchor="start">les règles de conception</text>
-<text x="16" y="57" font-size="7.8" fill="#2B2F33" text-anchor="start">dix règles, quinze vérifications</text>
-<text x="16" y="70" font-size="7.8" fill="#2B2F33" text-anchor="start">références lues au besoin</text>
-<text x="16" y="83" font-size="7.8" fill="#2B2F33" text-anchor="start">pedagogie/skill/</text>
-<rect x="206" y="10" width="184" height="98" rx="5" fill="#fff" stroke="#7B1FA2" stroke-width="1.4"/>
-<text x="216" y="28" font-size="8.8" fill="#7B1FA2" text-anchor="start" font-weight="700">Deux agents</text>
-<text x="216" y="44" font-size="7.8" fill="#2B2F33" text-anchor="start">magpie-eleve : l'énoncé seul</text>
-<text x="216" y="57" font-size="7.8" fill="#2B2F33" text-anchor="start">magpie-auditeur : tout</text>
-<text x="216" y="70" font-size="7.8" fill="#2B2F33" text-anchor="start">un fichier Markdown chacun</text>
-<text x="216" y="83" font-size="7.8" fill="#2B2F33" text-anchor="start">pedagogie/agents/</text>
-<rect x="406" y="10" width="186" height="98" rx="5" fill="#fff" stroke="#E65100" stroke-width="1.4"/>
-<text x="416" y="28" font-size="8.8" fill="#E65100" text-anchor="start" font-weight="700">Le banc d'essai</text>
-<text x="416" y="44" font-size="7.8" fill="#2B2F33" text-anchor="start">scripts Node</text>
-<text x="416" y="57" font-size="7.8" fill="#2B2F33" text-anchor="start">pilote un vrai Grasshopper</text>
-<text x="416" y="70" font-size="7.8" fill="#2B2F33" text-anchor="start">via Cordyceps (JSON-RPC)</text>
-<text x="416" y="83" font-size="7.8" fill="#2B2F33" text-anchor="start">pedagogie/banc/</text>
-<rect x="6" y="130" width="384" height="60" rx="5" fill="#FCEDE5" stroke="#C2410C" stroke-dasharray="5 3"/>
-<text x="18" y="150" font-size="8.4" fill="#C2410C" text-anchor="start" font-weight="700">pedagogie/ est la source ; .claude/ en est une copie</text>
-<text x="18" y="166" font-size="7.8" fill="#2B2F33" text-anchor="start">node outils/sync-claude.mjs recopie skill et agents là où</text>
-<text x="18" y="179" font-size="7.8" fill="#2B2F33" text-anchor="start">Claude Code les cherche (cours 46).</text>
-<rect x="406" y="130" width="186" height="60" rx="5" fill="#3A3A3A"/>
-<text x="499" y="152" font-size="8.4" fill="#fff" text-anchor="middle" font-weight="700">Rhino 8 + Grasshopper</text>
-<text x="499" y="168" font-size="7.6" fill="#ddd" text-anchor="middle">Cordyceps sur le canvas</text>
-<text x="499" y="181" font-size="7.6" fill="#ddd" text-anchor="middle" class="mono" style="font-size:7.6px">127.0.0.1:26929</text>
-<line x1="499" y1="108" x2="499" y2="128" stroke="#E65100" stroke-width="1.4"/><polygon points="499,128 496.3,121.6 501.7,121.6" fill="#E65100"/>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Cours 45</b></div>
+<p class="rubrique">Le concept</p>
+<h1>Écrire des exercices avec Claude</h1>
+<p class="chapeau">Dans Magpie, Claude n'écrit pas seulement du code : il aide à concevoir les exercices, puis les <b>passe pour de vrai</b> sur le canvas. Le dossier <code>pedagogie/</code> contient trois pièces : une <b>skill</b> qui fixe les règles, deux <b>agents</b> qui ne voient pas les mêmes choses, et un <b>banc d'essai</b> qui les fait travailler sur Grasshopper.</p>
+<div class="meta">
+<span class="pastille"><b>50 min</b> de lecture et de QCM</span>
+<span class="pastille">Prérequis · <b>28</b>, <b>30</b> et <b>40</b></span>
+<span class="pastille">Exemples · <b>pedagogie/skill</b>, <b>pedagogie/agents</b>, <b>pedagogie/banc</b> (Magpie)</span>
+</div>
+<div class="panneau" style="padding:6mm 6mm 4mm; margin-bottom:6mm;">
+<svg viewbox="0 0 600 208" width="100%">
+<rect fill="#fff" height="98" rx="5" stroke="#1565C0" stroke-width="1.4" width="184" x="6" y="10"></rect>
+<text fill="#1565C0" font-size="8.8" font-weight="700" text-anchor="start" x="16" y="28">La skill</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="16" y="44">les règles de conception</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="16" y="57">dix règles, quinze vérifications</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="16" y="70">références lues au besoin</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="16" y="83">pedagogie/skill/</text>
+<rect fill="#fff" height="98" rx="5" stroke="#7B1FA2" stroke-width="1.4" width="184" x="206" y="10"></rect>
+<text fill="#7B1FA2" font-size="8.8" font-weight="700" text-anchor="start" x="216" y="28">Deux agents</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="216" y="44">magpie-eleve : l'énoncé seul</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="216" y="57">magpie-auditeur : tout</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="216" y="70">un fichier Markdown chacun</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="216" y="83">pedagogie/agents/</text>
+<rect fill="#fff" height="98" rx="5" stroke="#E65100" stroke-width="1.4" width="186" x="406" y="10"></rect>
+<text fill="#E65100" font-size="8.8" font-weight="700" text-anchor="start" x="416" y="28">Le banc d'essai</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="416" y="44">scripts Node</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="416" y="57">pilote un vrai Grasshopper</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="416" y="70">via Cordyceps (JSON-RPC)</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="416" y="83">pedagogie/banc/</text>
+<rect fill="#FCEDE5" height="60" rx="5" stroke="#C2410C" stroke-dasharray="5 3" width="384" x="6" y="130"></rect>
+<text fill="#C2410C" font-size="8.4" font-weight="700" text-anchor="start" x="18" y="150">pedagogie/ est la source ; .claude/ en est une copie</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="18" y="166">node outils/sync-claude.mjs recopie skill et agents là où</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="18" y="179">Claude Code les cherche (cours 46).</text>
+<rect fill="#3A3A3A" height="60" rx="5" width="186" x="406" y="130"></rect>
+<text fill="#fff" font-size="8.4" font-weight="700" text-anchor="middle" x="499" y="152">Rhino 8 + Grasshopper</text>
+<text fill="#ddd" font-size="7.6" text-anchor="middle" x="499" y="168">Cordyceps sur le canvas</text>
+<text class="mono" fill="#ddd" font-size="7.6" style="font-size:7.6px" text-anchor="middle" x="499" y="181">127.0.0.1:26929</text>
+<line stroke="#E65100" stroke-width="1.4" x1="499" x2="499" y1="108" y2="128"></line><polygon fill="#E65100" points="499,128 496.3,121.6 501.7,121.6"></polygon>
 </svg>
-  </div>
-
-  <div class="deuxcol">
-    <div>
-      <h3>L'idée en une phrase</h3>
-      <p>Un checker vert prouve qu'un exercice est bien formé, pas qu'il est faisable ni qu'il exerce ce qu'il enseigne ; pour le savoir, on le fait résoudre par un élève qui ne connaît pas la réponse, et on fait juger la passe par un autre qui la connaît.</p>
-      <h3 style="margin-top:4mm">L'analogie</h3>
-      <p>Le test en aveugle. Le goûteur ne sait pas quel verre contient quoi ; celui qui dépouille les fiches le sait. Si le goûteur voyait les étiquettes, son avis ne vaudrait plus rien.</p>
-    </div>
-    <div>
-      <h3>À la fin, tu sais</h3>
-      <ol class="objectifs">
-        <li>dire ce qu'une skill apporte à Claude, et comment elle se range ;</li>
-        <li>appliquer le test des trois contournements ;</li>
-        <li>expliquer pourquoi l'élève et l'auditeur sont séparés ;</li>
-        <li>faire une passe du banc, de « poser » à « dossier ».</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="encadre" style="margin-top:5mm">
-    <span class="titre">À retenir</span>
+</div>
+<div class="deuxcol">
+<div>
+<h3>L'idée en une phrase</h3>
+<p>Un checker vert prouve qu'un exercice est bien formé, pas qu'il est faisable ni qu'il exerce ce qu'il enseigne ; pour le savoir, on le fait résoudre par un élève qui ne connaît pas la réponse, et on fait juger la passe par un autre qui la connaît.</p>
+<h3 style="margin-top:4mm">L'analogie</h3>
+<p>Le test en aveugle. Le goûteur ne sait pas quel verre contient quoi ; celui qui dépouille les fiches le sait. Si le goûteur voyait les étiquettes, son avis ne vaudrait plus rien.</p>
+</div>
+<div>
+<h3>À la fin, tu sais</h3>
+<ol class="objectifs">
+<li>dire ce qu'une skill apporte à Claude, et comment elle se range ;</li>
+<li>appliquer le test des trois contournements ;</li>
+<li>expliquer pourquoi l'élève et l'auditeur sont séparés ;</li>
+<li>faire une passe du banc, de « poser » à « dossier ».</li>
+</ol>
+</div>
+</div>
+<div class="encadre" style="margin-top:5mm">
+<span class="titre">À retenir</span>
     Le résultat qui a tout lancé : vingt-sept exercices passés sur le canvas par un agent qui n'avait que l'énoncé, vingt et un validés par le checker, et <b>aucun</b> sans défaut (skill/SKILL.md, lignes 25–27). Le défaut dominant : l'exercice qui se valide sans exercer ce qu'il enseigne.
   </div>
-
-  <div class="folio">1</div>
-  <div class="pied">Cours 45 · Écrire des exercices avec Claude</div>
+<div class="folio">1</div>
+<div class="pied">Cours 45 · Écrire des exercices avec Claude</div>
 </section>
-
 <!-- ============ PAGE 2 · LA SKILL ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Cours 45</b></div>
-  <p class="rubrique">Schéma 1 · La règle la plus violée</p>
-  <h2>La grandeur doit bouger sous la compétence</h2>
-  <p style="max-width:165mm">La skill <code>magpie-conception-exercices</code> tient en dix règles et quinze vérifications. Sa règle 3 est violée par treize exercices sur vingt-sept : un <b>autre</b> montage, honnête, rend exactement la même valeur que la bonne méthode. Le verdict ne peut alors pas distinguer les deux.</p>
-
-  <svg viewBox="0 0 600 206" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="206" fill="#EFE9E1"/>
-<text x="16" y="22" font-size="9" fill="#C2410C" text-anchor="start" font-weight="700">Quelle valeur rendrait quelqu'un qui ne fait pas l'exercice ?</text>
-<rect x="16" y="34" width="568" height="28" rx="4" fill="#fff" stroke="#2E7D32" stroke-width="1.2"/>
-<text x="28" y="52" font-size="8.6" fill="#2E7D32" text-anchor="start" font-weight="700">La bonne méthode</text>
-<text x="230" y="52" font-size="8" fill="#2B2F33" text-anchor="start">la compétence exercée</text>
-<text x="420" y="52" font-size="8.4" fill="#2E7D32" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">= attendu</text>
-<text x="574" y="52" font-size="8" fill="#2E7D32" text-anchor="end" font-style="italic">doit valider</text>
-<rect x="16" y="68" width="568" height="28" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
-<text x="28" y="86" font-size="8.6" fill="#C62828" text-anchor="start" font-weight="700">Ne rien faire</text>
-<text x="230" y="86" font-size="8" fill="#2B2F33" text-anchor="start">sortie du graphe de départ</text>
-<text x="420" y="86" font-size="8.4" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">≠ attendu ?</text>
-<text x="574" y="86" font-size="8" fill="#C62828" text-anchor="end" font-style="italic">doit échouer</text>
-<rect x="16" y="102" width="568" height="28" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
-<text x="28" y="120" font-size="8.6" fill="#C62828" text-anchor="start" font-weight="700">Brancher la donnée sur REPONSE</text>
-<text x="230" y="120" font-size="8" fill="#2B2F33" text-anchor="start">la donnée brute, telle quelle</text>
-<text x="420" y="120" font-size="8.4" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">≠ attendu ?</text>
-<text x="574" y="120" font-size="8" fill="#C62828" text-anchor="end" font-style="italic">doit échouer</text>
-<rect x="16" y="136" width="568" height="28" rx="4" fill="#fff" stroke="#C62828" stroke-width="1.2"/>
-<text x="28" y="154" font-size="8.6" fill="#C62828" text-anchor="start" font-weight="700">Monter l'erreur attendue</text>
-<text x="230" y="154" font-size="8" fill="#2B2F33" text-anchor="start">le montage fautif typique</text>
-<text x="420" y="154" font-size="8.4" fill="#C62828" text-anchor="start" font-weight="700" class="mono" style="font-size:8.4px">≠ attendu ?</text>
-<text x="574" y="154" font-size="8" fill="#C62828" text-anchor="end" font-style="italic">doit échouer</text>
-<text x="16" y="186" font-size="8.4" fill="#C62828" text-anchor="start" font-weight="700">Un seul des trois qui passe condamne l'exercice : c'est la grandeur rendue qu'il faut changer.</text>
-<text x="16" y="200" font-size="7.8" fill="#6B7378" text-anchor="start" font-style="italic">A-21 (Simplify Tree) : ne rien faire rend le même nombre de branches.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Cours 45</b></div>
+<p class="rubrique">Schéma 1 · La règle la plus violée</p>
+<h2>La grandeur doit bouger sous la compétence</h2>
+<p style="max-width:165mm">La skill <code>magpie-conception-exercices</code> tient en dix règles et quinze vérifications. Sa règle 3 est violée par treize exercices sur vingt-sept : un <b>autre</b> montage, honnête, rend exactement la même valeur que la bonne méthode. Le verdict ne peut alors pas distinguer les deux.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 206" width="100%">
+<rect fill="#EFE9E1" height="206" width="600" x="0" y="0"></rect>
+<text fill="#C2410C" font-size="9" font-weight="700" text-anchor="start" x="16" y="22">Quelle valeur rendrait quelqu'un qui ne fait pas l'exercice ?</text>
+<rect fill="#fff" height="28" rx="4" stroke="#2E7D32" stroke-width="1.2" width="568" x="16" y="34"></rect>
+<text fill="#2E7D32" font-size="8.6" font-weight="700" text-anchor="start" x="28" y="52">La bonne méthode</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="230" y="52">la compétence exercée</text>
+<text class="mono" fill="#2E7D32" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="420" y="52">= attendu</text>
+<text fill="#2E7D32" font-size="8" font-style="italic" text-anchor="end" x="574" y="52">doit valider</text>
+<rect fill="#fff" height="28" rx="4" stroke="#C62828" stroke-width="1.2" width="568" x="16" y="68"></rect>
+<text fill="#C62828" font-size="8.6" font-weight="700" text-anchor="start" x="28" y="86">Ne rien faire</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="230" y="86">sortie du graphe de départ</text>
+<text class="mono" fill="#C62828" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="420" y="86">≠ attendu ?</text>
+<text fill="#C62828" font-size="8" font-style="italic" text-anchor="end" x="574" y="86">doit échouer</text>
+<rect fill="#fff" height="28" rx="4" stroke="#C62828" stroke-width="1.2" width="568" x="16" y="102"></rect>
+<text fill="#C62828" font-size="8.6" font-weight="700" text-anchor="start" x="28" y="120">Brancher la donnée sur REPONSE</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="230" y="120">la donnée brute, telle quelle</text>
+<text class="mono" fill="#C62828" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="420" y="120">≠ attendu ?</text>
+<text fill="#C62828" font-size="8" font-style="italic" text-anchor="end" x="574" y="120">doit échouer</text>
+<rect fill="#fff" height="28" rx="4" stroke="#C62828" stroke-width="1.2" width="568" x="16" y="136"></rect>
+<text fill="#C62828" font-size="8.6" font-weight="700" text-anchor="start" x="28" y="154">Monter l'erreur attendue</text>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="230" y="154">le montage fautif typique</text>
+<text class="mono" fill="#C62828" font-size="8.4" font-weight="700" style="font-size:8.4px" text-anchor="start" x="420" y="154">≠ attendu ?</text>
+<text fill="#C62828" font-size="8" font-style="italic" text-anchor="end" x="574" y="154">doit échouer</text>
+<text fill="#C62828" font-size="8.4" font-weight="700" text-anchor="start" x="16" y="186">Un seul des trois qui passe condamne l'exercice : c'est la grandeur rendue qu'il faut changer.</text>
+<text fill="#6B7378" font-size="7.8" font-style="italic" text-anchor="start" x="16" y="200">A-21 (Simplify Tree) : ne rien faire rend le même nombre de branches.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Magpie · pedagogie/skill/SKILL.md · 117–120</span>**Le test, à faire avant d'écrire la consigne** : *quelle valeur rendrait quelqu'un qui ne
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Magpie · pedagogie/skill/SKILL.md · 117–120</span>**Le test, à faire avant d'écrire la consigne** : *quelle valeur rendrait quelqu'un qui ne
 fait pas l'exercice ?* Trois candidats à essayer systématiquement — ne rien faire, brancher
 la donnée de départ directement sur `REPONSE`, et monter l'`erreur_attendue`. Si l'un des
 trois donne l'attendu, **c'est la grandeur qu'il faut changer, pas l'énoncé**.</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Une skill, c'est quoi</h3>
-      <p>Un dossier avec un <code>SKILL.md</code> : un en-tête (nom, description qui dit <b>quand</b> s'en servir) et des règles. Les références lourdes (fondements, défauts constatés, transcription) restent à côté et ne sont lues qu'au besoin (table « Où trouver quoi », lignes 31–40).</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Déplacer la grandeur</h3>
-      <p>La parade préférée : faire porter la réponse sur ce que seule la bonne méthode produit. A-11 en donne le patron : on demande l'élément désigné par un index <b>calculé</b>, pas le nombre d'éléments (lignes 122–128).</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège réel</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Une skill, c'est quoi</h3>
+<p>Un dossier avec un <code>SKILL.md</code> : un en-tête (nom, description qui dit <b>quand</b> s'en servir) et des règles. Les références lourdes (fondements, défauts constatés, transcription) restent à côté et ne sont lues qu'au besoin (table « Où trouver quoi », lignes 31–40).</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Déplacer la grandeur</h3>
+<p>La parade préférée : faire porter la réponse sur ce que seule la bonne méthode produit. A-11 en donne le patron : on demande l'élément désigné par un index <b>calculé</b>, pas le nombre d'éléments (lignes 122–128).</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège réel</span>
     L'inversion. Sur A-15, le montage qui donne la bonne réponse est littéralement le contenu du champ <code>erreur_attendue</code> : le chemin qui valide <b>est</b> l'erreur que l'exercice voulait prendre en défaut. A-25 et IA-10 sont dans le même cas (lignes 112–115).
   </div>
-
-  <div class="folio">2</div>
-  <div class="pied">Cours 45 · Écrire des exercices avec Claude</div>
+<div class="folio">2</div>
+<div class="pied">Cours 45 · Écrire des exercices avec Claude</div>
 </section>
-
 <!-- ============ PAGE 3 · DEUX RÉGIMES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Cours 45</b></div>
-  <p class="rubrique">Schéma 2 · Deux agents, deux régimes d'information</p>
-  <h2>L'élève ne sait rien, l'auditeur sait tout</h2>
-  <p style="max-width:165mm">Un agent qui a lu la réponse attendue ne peut plus juger la faisabilité : il construira le graphe qui la donne. Le banc sépare donc deux agents, définis chacun par un fichier Markdown dans <code>pedagogie/agents/</code>, avec leurs outils et leurs règles.</p>
-
-  <svg viewBox="0 0 600 204" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="204" fill="#EFE9E1"/>
-<rect x="16" y="12" width="280" height="184" rx="6" fill="#fff" stroke="#7B1FA2" stroke-width="1.4"/>
-<text x="28" y="32" font-size="9.4" fill="#7B1FA2" text-anchor="start" font-weight="700">magpie-eleve</text>
-<text x="28" y="52" font-size="8" fill="#2E7D32" text-anchor="start" font-weight="700">voit</text>
-<text x="38" y="68" font-size="7.8" fill="#2B2F33" text-anchor="start">· sujet.json (expurgé)</text>
-<text x="38" y="81" font-size="7.8" fill="#2B2F33" text-anchor="start">· le canvas et ses essais</text>
-<text x="38" y="94" font-size="7.8" fill="#2B2F33" text-anchor="start">· le catalogue de composants</text>
-<text x="38" y="107" font-size="7.8" fill="#2B2F33" text-anchor="start">· le code du banc</text>
-<text x="28" y="130" font-size="8" fill="#C62828" text-anchor="start" font-weight="700">ne voit pas</text>
-<text x="38" y="146" font-size="7.8" fill="#C62828" text-anchor="start">· pedagogie/referentiel/ (corrigés)</text>
-<text x="38" y="159" font-size="7.8" fill="#C62828" text-anchor="start">· ExpectedNumbers, Mode, Tolerance</text>
-<text x="38" y="172" font-size="7.8" fill="#C62828" text-anchor="start">· verdict.json, dossier.json</text>
-<rect x="304" y="12" width="280" height="184" rx="6" fill="#fff" stroke="#1565C0" stroke-width="1.4"/>
-<text x="316" y="32" font-size="9.4" fill="#1565C0" text-anchor="start" font-weight="700">magpie-auditeur</text>
-<text x="316" y="52" font-size="8" fill="#2E7D32" text-anchor="start" font-weight="700">voit</text>
-<text x="326" y="68" font-size="7.8" fill="#2B2F33" text-anchor="start">· la définition transcrite</text>
-<text x="326" y="81" font-size="7.8" fill="#2B2F33" text-anchor="start">· le descripteur du référentiel</text>
-<text x="326" y="94" font-size="7.8" fill="#2B2F33" text-anchor="start">· le sujet vu par l'élève</text>
-<text x="326" y="107" font-size="7.8" fill="#2B2F33" text-anchor="start">· le canvas posé, le montage</text>
-<text x="326" y="120" font-size="7.8" fill="#2B2F33" text-anchor="start">· le journal de l'élève</text>
-<text x="326" y="133" font-size="7.8" fill="#2B2F33" text-anchor="start">· le relevé et le verdict</text>
-<text x="444" y="168" font-size="8.2" fill="#1565C0" text-anchor="middle" font-weight="700">→ une fiche de correctifs</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Cours 45</b></div>
+<p class="rubrique">Schéma 2 · Deux agents, deux régimes d'information</p>
+<h2>L'élève ne sait rien, l'auditeur sait tout</h2>
+<p style="max-width:165mm">Un agent qui a lu la réponse attendue ne peut plus juger la faisabilité : il construira le graphe qui la donne. Le banc sépare donc deux agents, définis chacun par un fichier Markdown dans <code>pedagogie/agents/</code>, avec leurs outils et leurs règles.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 204" width="100%">
+<rect fill="#EFE9E1" height="204" width="600" x="0" y="0"></rect>
+<rect fill="#fff" height="184" rx="6" stroke="#7B1FA2" stroke-width="1.4" width="280" x="16" y="12"></rect>
+<text fill="#7B1FA2" font-size="9.4" font-weight="700" text-anchor="start" x="28" y="32">magpie-eleve</text>
+<text fill="#2E7D32" font-size="8" font-weight="700" text-anchor="start" x="28" y="52">voit</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="38" y="68">· sujet.json (expurgé)</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="38" y="81">· le canvas et ses essais</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="38" y="94">· le catalogue de composants</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="38" y="107">· le code du banc</text>
+<text fill="#C62828" font-size="8" font-weight="700" text-anchor="start" x="28" y="130">ne voit pas</text>
+<text fill="#C62828" font-size="7.8" text-anchor="start" x="38" y="146">· pedagogie/referentiel/ (corrigés)</text>
+<text fill="#C62828" font-size="7.8" text-anchor="start" x="38" y="159">· ExpectedNumbers, Mode, Tolerance</text>
+<text fill="#C62828" font-size="7.8" text-anchor="start" x="38" y="172">· verdict.json, dossier.json</text>
+<rect fill="#fff" height="184" rx="6" stroke="#1565C0" stroke-width="1.4" width="280" x="304" y="12"></rect>
+<text fill="#1565C0" font-size="9.4" font-weight="700" text-anchor="start" x="316" y="32">magpie-auditeur</text>
+<text fill="#2E7D32" font-size="8" font-weight="700" text-anchor="start" x="316" y="52">voit</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="326" y="68">· la définition transcrite</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="326" y="81">· le descripteur du référentiel</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="326" y="94">· le sujet vu par l'élève</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="326" y="107">· le canvas posé, le montage</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="326" y="120">· le journal de l'élève</text>
+<text fill="#2B2F33" font-size="7.8" text-anchor="start" x="326" y="133">· le relevé et le verdict</text>
+<text fill="#1565C0" font-size="8.2" font-weight="700" text-anchor="middle" x="444" y="168">→ une fiche de correctifs</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Magpie · pedagogie/banc/banc.mjs · 120–134</span>// Ce que voit l'élève, et rien d'autre. Ni Mode, ni Tolerance (qui trahiraient
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Magpie · pedagogie/banc/banc.mjs · 120–134</span>// Ce que voit l'élève, et rien d'autre. Ni Mode, ni Tolerance (qui trahiraient
 // la forme de la réponse), ni ExpectedNumbers, ni la fiche du référentiel.
 function sujet(id, muet = false) {
   const def = definition(id);
@@ -182,100 +166,89 @@ function sujet(id, muet = false) {
     ouRepondre: "appelez zone(\"" + def.Id + "\") en tête de votre montage, puis rendre(…)",
     parametreReponse: "REPONSE",
   };</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Tenu par le harnais</h3>
-      <p>La séparation ne repose pas sur la bonne volonté de l'agent : <code>sujet</code> écrit un fichier expurgé, le seul que l'élève ait le droit d'ouvrir, et le verdict est rendu par une autre commande, qu'il ne lance pas (banc/README.md, lignes 27–30).</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Un témoignage, pas une réponse</h3>
-      <p>L'élève rend un journal : lectures concurrentes, impasses, réponse, confiance. L'auditeur en tire une fiche de correctifs <b>actionnables</b> : pas « l'énoncé est ambigu », mais quelle phrase ajouter, et pourquoi.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège réel</span>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Tenu par le harnais</h3>
+<p>La séparation ne repose pas sur la bonne volonté de l'agent : <code>sujet</code> écrit un fichier expurgé, le seul que l'élève ait le droit d'ouvrir, et le verdict est rendu par une autre commande, qu'il ne lance pas (banc/README.md, lignes 27–30).</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Un témoignage, pas une réponse</h3>
+<p>L'élève rend un journal : lectures concurrentes, impasses, réponse, confiance. L'auditeur en tire une fiche de correctifs <b>actionnables</b> : pas « l'énoncé est ambigu », mais quelle phrase ajouter, et pourquoi.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège réel</span>
     La contamination par une recherche. Bloqué, l'élève cherche un nom de composant… et tombe sur le cahier des charges, qui contient <b>tous</b> les corrigés. C'est arrivé sur A-25, dont la passe a été refaite. D'où une règle de lieu, « tu n'ouvres RIEN sous <code>pedagogie/referentiel/</code> », plutôt qu'une liste de fichiers (magpie-eleve.md, lignes 21–31).
   </div>
-
-  <div class="folio">3</div>
-  <div class="pied">Cours 45 · Écrire des exercices avec Claude</div>
+<div class="folio">3</div>
+<div class="pied">Cours 45 · Écrire des exercices avec Claude</div>
 </section>
-
 <!-- ============ PAGE 4 · LE BANC ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Cours 45</b></div>
-  <p class="rubrique">Schéma 3 · Une passe du banc</p>
-  <h2>Quatre commandes, deux agents</h2>
-  <p style="max-width:165mm">Le banc est un script Node qui pilote un vrai Grasshopper ouvert dans Rhino 8. Il parle au composant Cordyceps, posé sur le canvas, en JSON-RPC sur <code>127.0.0.1:26929</code> : il pose le graphe de départ, relève les sorties, rend le verdict du checker.</p>
-
-  <svg viewBox="0 0 600 200" width="100%" style="margin-top:2mm">
-<rect x="0" y="0" width="600" height="200" fill="#EFE9E1"/>
-<rect x="16" y="22" width="84" height="40" rx="4" fill="#fff" stroke="#6D4C41" stroke-width="1.4"/>
-<text x="58.0" y="46" font-size="8.8" fill="#6D4C41" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.8px">etat</text>
-<rect x="108" y="22" width="84" height="40" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.4"/>
-<text x="150.0" y="46" font-size="8.8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.8px">poser</text>
-<rect x="200" y="22" width="92" height="40" rx="20" fill="#7B1FA2" fill-opacity=".12" stroke="#7B1FA2" stroke-width="1.4"/>
-<text x="246.0" y="46" font-size="8.8" fill="#7B1FA2" text-anchor="middle" font-weight="700">élève</text>
-<rect x="316" y="22" width="84" height="40" rx="4" fill="#fff" stroke="#E65100" stroke-width="1.4"/>
-<text x="358.0" y="46" font-size="8.8" fill="#E65100" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.8px">verdict</text>
-<rect x="408" y="22" width="84" height="40" rx="4" fill="#fff" stroke="#1565C0" stroke-width="1.4"/>
-<text x="450.0" y="46" font-size="8.8" fill="#1565C0" text-anchor="middle" font-weight="700" class="mono" style="font-size:8.8px">dossier</text>
-<rect x="500" y="22" width="84" height="40" rx="20" fill="#7B1FA2" fill-opacity=".12" stroke="#7B1FA2" stroke-width="1.4"/>
-<text x="542.0" y="46" font-size="8.8" fill="#7B1FA2" text-anchor="middle" font-weight="700">auditeur</text>
-<line x1="100" y1="42" x2="108" y2="42" stroke="#2B2F33" stroke-width="1.1"/><polygon points="108,42 101.6,44.7 101.6,39.3" fill="#2B2F33"/>
-<line x1="192" y1="42" x2="200" y2="42" stroke="#2B2F33" stroke-width="1.1"/><polygon points="200,42 193.6,44.7 193.6,39.3" fill="#2B2F33"/>
-<line x1="292" y1="42" x2="316" y2="42" stroke="#2B2F33" stroke-width="1.1"/><polygon points="316,42 309.6,44.7 309.6,39.3" fill="#2B2F33"/>
-<line x1="400" y1="42" x2="408" y2="42" stroke="#2B2F33" stroke-width="1.1"/><polygon points="408,42 401.6,44.7 401.6,39.3" fill="#2B2F33"/>
-<line x1="492" y1="42" x2="500" y2="42" stroke="#2B2F33" stroke-width="1.1"/><polygon points="500,42 493.6,44.7 493.6,39.3" fill="#2B2F33"/>
-<text x="246" y="78" font-size="7.6" fill="#7B1FA2" text-anchor="middle" font-style="italic">journal</text>
-<text x="546" y="78" font-size="7.6" fill="#7B1FA2" text-anchor="middle" font-style="italic">fiche</text>
-<rect x="16" y="116" width="576" height="40" rx="5" fill="#3A3A3A"/>
-<text x="304" y="134" font-size="8.4" fill="#fff" text-anchor="middle" font-weight="700">Grasshopper dans Rhino 8 · Cordyceps : tools/call en JSON-RPC sur HTTP</text>
-<text x="304" y="148" font-size="7.6" fill="#ddd" text-anchor="middle">poser le graphe, relever les sorties, lire le canvas</text>
-<line x1="58" y1="62" x2="58" y2="114" stroke="#6B7378" stroke-dasharray="3 2"/>
-<line x1="150" y1="62" x2="150" y2="114" stroke="#6B7378" stroke-dasharray="3 2"/>
-<line x1="246" y1="62" x2="246" y2="114" stroke="#6B7378" stroke-dasharray="3 2"/>
-<line x1="358" y1="62" x2="358" y2="114" stroke="#6B7378" stroke-dasharray="3 2"/>
-<text x="16" y="180" font-size="8" fill="#2B2F33" text-anchor="start">Les commandes en monospace sont lancées à la main ; élève et auditeur sont des agents de Claude.</text>
-<text x="16" y="194" font-size="8" fill="#6B7378" text-anchor="start" font-style="italic">L'auditeur ne monte rien : il analyse une passe déjà faite.</text>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Cours 45</b></div>
+<p class="rubrique">Schéma 3 · Une passe du banc</p>
+<h2>Quatre commandes, deux agents</h2>
+<p style="max-width:165mm">Le banc est un script Node qui pilote un vrai Grasshopper ouvert dans Rhino 8. Il parle au composant Cordyceps, posé sur le canvas, en JSON-RPC sur <code>127.0.0.1:26929</code> : il pose le graphe de départ, relève les sorties, rend le verdict du checker.</p>
+<svg style="margin-top:2mm" viewbox="0 0 600 200" width="100%">
+<rect fill="#EFE9E1" height="200" width="600" x="0" y="0"></rect>
+<rect fill="#fff" height="40" rx="4" stroke="#6D4C41" stroke-width="1.4" width="84" x="16" y="22"></rect>
+<text class="mono" fill="#6D4C41" font-size="8.8" font-weight="700" style="font-size:8.8px" text-anchor="middle" x="58.0" y="46">etat</text>
+<rect fill="#fff" height="40" rx="4" stroke="#1565C0" stroke-width="1.4" width="84" x="108" y="22"></rect>
+<text class="mono" fill="#1565C0" font-size="8.8" font-weight="700" style="font-size:8.8px" text-anchor="middle" x="150.0" y="46">poser</text>
+<rect fill="#7B1FA2" fill-opacity=".12" height="40" rx="20" stroke="#7B1FA2" stroke-width="1.4" width="92" x="200" y="22"></rect>
+<text fill="#7B1FA2" font-size="8.8" font-weight="700" text-anchor="middle" x="246.0" y="46">élève</text>
+<rect fill="#fff" height="40" rx="4" stroke="#E65100" stroke-width="1.4" width="84" x="316" y="22"></rect>
+<text class="mono" fill="#E65100" font-size="8.8" font-weight="700" style="font-size:8.8px" text-anchor="middle" x="358.0" y="46">verdict</text>
+<rect fill="#fff" height="40" rx="4" stroke="#1565C0" stroke-width="1.4" width="84" x="408" y="22"></rect>
+<text class="mono" fill="#1565C0" font-size="8.8" font-weight="700" style="font-size:8.8px" text-anchor="middle" x="450.0" y="46">dossier</text>
+<rect fill="#7B1FA2" fill-opacity=".12" height="40" rx="20" stroke="#7B1FA2" stroke-width="1.4" width="84" x="500" y="22"></rect>
+<text fill="#7B1FA2" font-size="8.8" font-weight="700" text-anchor="middle" x="542.0" y="46">auditeur</text>
+<line stroke="#2B2F33" stroke-width="1.1" x1="100" x2="108" y1="42" y2="42"></line><polygon fill="#2B2F33" points="108,42 101.6,44.7 101.6,39.3"></polygon>
+<line stroke="#2B2F33" stroke-width="1.1" x1="192" x2="200" y1="42" y2="42"></line><polygon fill="#2B2F33" points="200,42 193.6,44.7 193.6,39.3"></polygon>
+<line stroke="#2B2F33" stroke-width="1.1" x1="292" x2="316" y1="42" y2="42"></line><polygon fill="#2B2F33" points="316,42 309.6,44.7 309.6,39.3"></polygon>
+<line stroke="#2B2F33" stroke-width="1.1" x1="400" x2="408" y1="42" y2="42"></line><polygon fill="#2B2F33" points="408,42 401.6,44.7 401.6,39.3"></polygon>
+<line stroke="#2B2F33" stroke-width="1.1" x1="492" x2="500" y1="42" y2="42"></line><polygon fill="#2B2F33" points="500,42 493.6,44.7 493.6,39.3"></polygon>
+<text fill="#7B1FA2" font-size="7.6" font-style="italic" text-anchor="middle" x="246" y="78">journal</text>
+<text fill="#7B1FA2" font-size="7.6" font-style="italic" text-anchor="middle" x="546" y="78">fiche</text>
+<rect fill="#3A3A3A" height="40" rx="5" width="576" x="16" y="116"></rect>
+<text fill="#fff" font-size="8.4" font-weight="700" text-anchor="middle" x="304" y="134">Grasshopper dans Rhino 8 · Cordyceps : tools/call en JSON-RPC sur HTTP</text>
+<text fill="#ddd" font-size="7.6" text-anchor="middle" x="304" y="148">poser le graphe, relever les sorties, lire le canvas</text>
+<line stroke="#6B7378" stroke-dasharray="3 2" x1="58" x2="58" y1="62" y2="114"></line>
+<line stroke="#6B7378" stroke-dasharray="3 2" x1="150" x2="150" y1="62" y2="114"></line>
+<line stroke="#6B7378" stroke-dasharray="3 2" x1="246" x2="246" y1="62" y2="114"></line>
+<line stroke="#6B7378" stroke-dasharray="3 2" x1="358" x2="358" y1="62" y2="114"></line>
+<text fill="#2B2F33" font-size="8" text-anchor="start" x="16" y="180">Les commandes en monospace sont lancées à la main ; élève et auditeur sont des agents de Claude.</text>
+<text fill="#6B7378" font-size="8" font-style="italic" text-anchor="start" x="16" y="194">L'auditeur ne monte rien : il analyse une passe déjà faite.</text>
 </svg>
-
-  <div class="boite apres" style="margin-top:4mm"><span class="etiq">Magpie · pedagogie/banc/README.md · 50–54</span>node pedagogie/banc/banc.mjs etat            # Rhino répond ? le canvas est-il libre ?
+<div class="boite apres" style="margin-top:4mm"><span class="etiq">Magpie · pedagogie/banc/README.md · 50–54</span>node pedagogie/banc/banc.mjs etat            # Rhino répond ? le canvas est-il libre ?
 node pedagogie/banc/banc.mjs poser   A-01    # canvas nu + graphe de départ + paramètre REPONSE
-                                   # -> lancer l'agent magpie-eleve sur A-01
+                                   # -&gt; lancer l'agent magpie-eleve sur A-01
 node pedagogie/banc/banc.mjs verdict A-01    # après le journal de l'élève, jamais avant
-node pedagogie/banc/banc.mjs dossier A-01    # -> lancer l'agent magpie-auditeur sur A-01</div>
-
-  <div class="deuxcol" style="margin-top:4mm">
-    <div style="font-size:8.6pt">
-      <h3>Pourquoi un vrai canvas</h3>
-      <p>« Ces contrôles vérifient la forme, pas le sens » (banc/README.md, ligne 9). L'énoncé de A-01 parlait d'une baie de 2 400 mm, et le corrigé relevé valait 42. Seule une passe réelle, avec les vraies sorties de Grasshopper, attrape ce genre d'écart.</p>
-    </div>
-    <div style="font-size:8.6pt">
-      <h3>Sans le client MCP</h3>
-      <p><code>gh-driver.mjs</code> envoie lui-même ses requêtes <code>tools/call</code> à l'adresse de Cordyceps, par <code>fetch</code> (lignes 1–20). Le banc marche donc même quand la session de Claude n'est pas connectée au serveur : c'est le même protocole, sans intermédiaire.</p>
-    </div>
-  </div>
-
-  <div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
-    <span class="titre">Piège courant</span>
+node pedagogie/banc/banc.mjs dossier A-01    # -&gt; lancer l'agent magpie-auditeur sur A-01</div>
+<div class="deuxcol" style="margin-top:4mm">
+<div style="font-size:8.6pt">
+<h3>Pourquoi un vrai canvas</h3>
+<p>« Ces contrôles vérifient la forme, pas le sens » (banc/README.md, ligne 9). L'énoncé de A-01 parlait d'une baie de 2 400 mm, et le corrigé relevé valait 42. Seule une passe réelle, avec les vraies sorties de Grasshopper, attrape ce genre d'écart.</p>
+</div>
+<div style="font-size:8.6pt">
+<h3>Sans le client MCP</h3>
+<p><code>gh-driver.mjs</code> envoie lui-même ses requêtes <code>tools/call</code> à l'adresse de Cordyceps, par <code>fetch</code> (lignes 1–20). Le banc marche donc même quand la session de Claude n'est pas connectée au serveur : c'est le même protocole, sans intermédiaire.</p>
+</div>
+</div>
+<div class="encadre piege" style="position:absolute; left:16mm; right:16mm; bottom:20mm;">
+<span class="titre">Piège courant</span>
     Lancer <code>verdict</code> avant que l'élève ait écrit son journal. Le journal doit être écrit sans savoir si l'on a réussi : un élève qui connaît son verdict réécrit son témoignage pour qu'il colle au résultat. La README l'écrit en commentaire : « après le journal de l'élève, jamais avant ».
   </div>
-
-  <div class="folio">4</div>
-  <div class="pied">Cours 45 · Écrire des exercices avec Claude</div>
+<div class="folio">4</div>
+<div class="pied">Cours 45 · Écrire des exercices avec Claude</div>
 </section>
-
 <!-- ============ PAGE 5 · LA LISTE ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Cours 45</b></div>
-  <p class="rubrique">Dans tes projets</p>
-  <h2>Vérifier avant de livrer</h2>
-  <p style="max-width:165mm">La skill finit sur quinze vérifications. Les quatre premières sont celles que la passe du banc a montrées décisives, parce qu'elles attrapent des défauts qu'un checker vert ne signale pas.</p>
-
-  <div class="code-zone" style="margin-top:3mm">
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Cours 45</b></div>
+<p class="rubrique">Dans tes projets</p>
+<h2>Vérifier avant de livrer</h2>
+<p style="max-width:165mm">La skill finit sur quinze vérifications. Les quatre premières sont celles que la passe du banc a montrées décisives, parce qu'elles attrapent des défauts qu'un checker vert ne signale pas.</p>
+<div class="code-zone" style="margin-top:3mm">
 <div class="code">
 <div class="l"><span class="n">437</span><span class="cm">## Vérifier avant de livrer</span></div>
 <div class="l k1"><span class="n">442</span><span class="kw">1.</span> La grandeur discrimine.<span class="rep r1">1</span></div>
@@ -289,141 +262,59 @@ node pedagogie/banc/banc.mjs dossier A-01    # -> lancer l'agent magpie-auditeur
 <div class="l k5"><span class="n">455</span><span class="kw">6.</span> Valeurs relevées, pas déduites<span class="rep r5">5</span></div>
 <div class="l k6"><span class="n">459</span><span class="kw">7.</span> Le corrigé produit l'attendu<span class="rep r6">6</span></div>
 <div class="l k7"><span class="n">468</span><span class="kw">10.</span> Consigne muette : aucun composant<span class="rep r7">7</span></div>
-<div class="l"><span class="n"> </span>   <span class="cm">… quinze points en tout (lignes 437–480)</span></div>
+<div class="l"><span class="n"> </span> <span class="cm">… quinze points en tout (lignes 437–480)</span></div>
 </div>
-
-    <ul class="notes">
-      <li><span class="rep r1">1</span><b>Discriminer</b>Un seul contournement qui passe condamne l'exercice.</li>
-      <li><span class="rep r2">2</span><b>Départ propre</b>Une valeur pré-réglée suffit à tout ruiner.</li>
-      <li><span class="rep r3">3</span><b>Forme fermée</b>Sans nommer d'outil.</li>
-      <li><span class="rep r4">4</span><b>Lire en novice</b>Chaque lecture défendable, calculée.</li>
-      <li><span class="rep r5">5</span><b>Relever</b>L'aperçu masque les nulls, à 10 éléments.</li>
-      <li><span class="rep r6">6</span><b>Suivre le corrigé</b>Onze exercices échouaient ici.</li>
-      <li><span class="rep r7">7</span><b>Consigne muette</b>Le titre ne la complète pas.</li>
-    </ul>
-  </div>
-
-  <div class="encadre" style="margin-top:4mm">
-    <span class="titre">Ce que la skill avoue ne pas résoudre</span>
+<ul class="notes">
+<li><span class="rep r1">1</span><b>Discriminer</b>Un seul contournement qui passe condamne l'exercice.</li>
+<li><span class="rep r2">2</span><b>Départ propre</b>Une valeur pré-réglée suffit à tout ruiner.</li>
+<li><span class="rep r3">3</span><b>Forme fermée</b>Sans nommer d'outil.</li>
+<li><span class="rep r4">4</span><b>Lire en novice</b>Chaque lecture défendable, calculée.</li>
+<li><span class="rep r5">5</span><b>Relever</b>L'aperçu masque les nulls, à 10 éléments.</li>
+<li><span class="rep r6">6</span><b>Suivre le corrigé</b>Onze exercices échouaient ici.</li>
+<li><span class="rep r7">7</span><b>Consigne muette</b>Le titre ne la complète pas.</li>
+</ul>
+</div>
+<div class="encadre" style="margin-top:4mm">
+<span class="titre">Ce que la skill avoue ne pas résoudre</span>
     Elle finit par ses limites (lignes 482–493) : l'étayage ne s'adapte pas à l'apprenant, la validation reste aveugle à la méthode, le nom des chemins d'un arbre n'est pas lu, et réussir un exercice ne prouve pas le transfert. Une bonne skill dit aussi où elle s'arrête.
   </div>
-
-  <div class="folio">5</div>
-  <div class="pied">Cours 45 · Écrire des exercices avec Claude</div>
+<div class="folio">5</div>
+<div class="pied">Cours 45 · Écrire des exercices avec Claude</div>
 </section>
 
-<!-- ============ PAGE 6 · QCM ============ -->
+
+<!-- ============ PAGE 6 · REPÈRES ============ -->
 <section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Cours 45</b></div>
-  <p class="rubrique">Vérifier</p>
-  <h2>QCM · 12 questions, environ 15 minutes</h2>
-  <p>Une seule bonne réponse, sauf mention <span class="tag" style="font-size:7.6pt;color:var(--m2);font-weight:600">PLUSIEURS RÉPONSES</span>. Corrigé expliqué page suivante.</p>
+<div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Cours 45</b></div><p class="rubrique">Repères</p><h2>Aide-mémoire et glossaire</h2>
 
-  <div class="qcm" style="margin-top:4mm">
-    <div class="q"><div class="enonce">Un checker vert prouve qu'un exercice est…</div><ul>
-      <li><span>A</span>faisable</li><li><span>B</span>bien formé, sans plus</li><li><span>C</span>bien conçu</li><li><span>D</span>sans ambiguïté</li></ul></div>
 
-    <div class="q"><div class="enonce">La description d'une skill sert à dire…</div><ul>
-      <li><span>A</span>son auteur</li><li><span>B</span>sa version</li><li><span>C</span>quand s'en servir</li><li><span>D</span>sa licence</li></ul></div>
 
-    <div class="q"><div class="enonce">Les trois contournements à essayer : <span class="tag">PLUSIEURS RÉPONSES</span></div><ul>
-      <li><span>A</span>ne rien faire</li><li><span>B</span>brancher la donnée de départ sur REPONSE</li><li><span>C</span>monter l'erreur attendue</li><li><span>D</span>demander à un collègue</li></ul></div>
 
-    <div class="q"><div class="enonce">Un contournement donne l'attendu : on change…</div><ul>
-      <li><span>A</span>l'énoncé</li><li><span>B</span>la tolérance</li><li><span>C</span>le titre</li><li><span>D</span>la grandeur rendue</li></ul></div>
-
-    <div class="q"><div class="enonce">Pourquoi l'élève ne voit-il pas ExpectedNumbers ?</div><ul>
-      <li><span>A</span>il monterait le graphe qui donne la valeur, et jugerait tout faisable</li><li><span>B</span>c'est trop long</li><li><span>C</span>c'est confidentiel</li><li><span>D</span>il ne sait pas lire le JSON</li></ul></div>
-
-    <div class="q"><div class="enonce">Le sujet expurgé contient…</div><ul>
-      <li><span>A</span>le mode et la tolérance</li><li><span>B</span>Id, titre, consigne, où répondre</li><li><span>C</span>le corrigé</li><li><span>D</span>la fiche du référentiel</li></ul></div>
-
-    <div class="q"><div class="enonce">Pourquoi cacher aussi Mode et Tolerance ?</div><ul>
-      <li><span>A</span>ils sont secrets</li><li><span>B</span>ils sont vides</li><li><span>C</span>ils trahiraient la forme de la réponse</li><li><span>D</span>ils changent à chaque passe</li></ul></div>
-
-    <div class="q"><div class="enonce">Le banc parle à Grasshopper…</div><ul>
-      <li><span>A</span>en JSON-RPC, au composant Cordyceps</li><li><span>B</span>par Rhino Compute</li><li><span>C</span>par le presse-papiers</li><li><span>D</span>par des captures d'écran</li></ul></div>
-
-    <div class="q"><div class="enonce">Quand lancer verdict ?</div><ul>
-      <li><span>A</span>avant de poser</li><li><span>B</span>pendant que l'élève travaille</li><li><span>C</span>jamais</li><li><span>D</span>après le journal de l'élève</li></ul></div>
-
-    <div class="q"><div class="enonce">L'élève voit par erreur un corrigé. Il doit…</div><ul>
-      <li><span>A</span>abandonner la passe</li><li><span>B</span>l'écrire en tête du journal, avec ce qu'il savait avant</li><li><span>C</span>le cacher</li><li><span>D</span>recommencer en silence</li></ul></div>
-
-    <div class="q"><div class="enonce">L'inversion, c'est quand…</div><ul>
-      <li><span>A</span>le montage qui valide est l'erreur visée</li><li><span>B</span>l'ordre de la liste est inversé</li><li><span>C</span>l'élève et l'auditeur échangent</li><li><span>D</span>la tolérance est négative</li></ul></div>
-
-    <div class="q"><div class="enonce">Que produit l'auditeur ?</div><ul>
-      <li><span>A</span>une note sur 20</li><li><span>B</span>un nouveau graphe</li><li><span>C</span>une fiche de correctifs actionnables</li><li><span>D</span>un QCM</li></ul></div>
-  </div>
-
-  <div class="folio">6</div>
-  <div class="pied">Cours 45 · Écrire des exercices avec Claude</div>
+<p class="rubrique" style="">Aide-mémoire</p>
+<table class="aide">
+<thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
+<tbody>
+<tr><td class="c">banc.mjs etat</td><td>Rhino répond, canvas libre ?</td><td>banc/README.md:50</td></tr>
+<tr><td class="c">banc.mjs poser A-01</td><td>poser le graphe de départ</td><td>banc/README.md:51</td></tr>
+<tr><td class="c">banc.mjs verdict A-01</td><td>le checker, après le journal</td><td>banc/README.md:53</td></tr>
+<tr><td class="c">banc.mjs dossier A-01</td><td>tout réunir pour l'auditeur</td><td>banc/README.md:54</td></tr>
+<tr><td class="c">sujet(id)</td><td>écrire le sujet expurgé</td><td>banc/banc.mjs:122</td></tr>
+<tr><td class="c">fetch(URL, { … "tools/call" … })</td><td>parler à Cordyceps</td><td>banc/gh-driver.mjs:10</td></tr>
+</tbody>
+</table>
+<p class="rubrique" style="margin-top:5mm">Glossaire</p>
+<dl class="glossaire">
+<dt>Skill</dt><dd>Un dossier de règles que Claude charge quand sa description correspond à la tâche.</dd>
+<dt>Agent</dt><dd>Un Claude lancé avec son propre rôle, ses outils et ses interdits, défini en Markdown.</dd>
+<dt>Contournement</dt><dd>Un montage qui rend l'attendu sans exercer la compétence visée.</dd>
+<dt>Sujet expurgé</dt><dd>Ce que voit l'élève : l'énoncé, sans rien qui trahisse la réponse.</dd>
+<dt>JSON-RPC</dt><dd>Un appel de fonction à distance, écrit en JSON : méthode, paramètres, identifiant.</dd>
+</dl>
+<div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
+<span>Cours terminé le ____ / ____ / ________</span><span>Suite : cours 48</span>
+</div>
+<div class="folio">6</div>
+<div class="pied">Cours 45 · Écrire des exercices avec Claude</div>
 </section>
-
-<!-- ============ PAGE 7 · CORRIGÉ ET REPÈRES ============ -->
-<section class="page">
-  <div class="entete"><span>Bibliothèque de cours · <b>Chapitre 12A</b> · Magpie de bout en bout</span><b>Cours 45</b></div>
-  <p class="rubrique">Corrigé expliqué</p>
-  <h2>Les réponses, et pourquoi</h2>
-
-  <div class="corrige" style="margin-top:3mm">
-    <div><b>01 · B.</b> La forme, pas le sens.</div>
-    <div><b>02 · C.</b> C'est ce qui la déclenche.</div>
-    <div><b>03 · A, B et C.</b> Le test de la règle 3.</div>
-    <div><b>04 · D.</b> Pas l'énoncé.</div>
-    <div><b>05 · A.</b> La séparation est le dispositif.</div>
-    <div><b>06 · B.</b> banc.mjs, lignes 127–134.</div>
-    <div><b>07 · C.</b> Commentaire des lignes 120–121.</div>
-    <div><b>08 · A.</b> 127.0.0.1:26929, tools/call.</div>
-    <div><b>09 · D.</b> Le journal s'écrit sans savoir.</div>
-    <div><b>10 · B.</b> Une contamination signalée reste exploitable.</div>
-    <div><b>11 · A.</b> A-15, A-25, IA-10.</div>
-    <div><b>12 · C.</b> Quoi changer, et pourquoi.</div>
-  </div>
-
-  <div class="panneau" style="padding:4mm 5mm; margin-top:4mm; display:flex; gap:6mm; align-items:center;">
-    <svg viewBox="0 0 120 40" style="width:34mm;flex:none">
-      <g font-size="9" font-weight="700" text-anchor="middle">
-        <rect x="0" y="6" width="36" height="28" rx="4" fill="#C62828"/><text x="18" y="24" fill="#fff">0–6</text>
-        <rect x="42" y="6" width="36" height="28" rx="4" fill="#E65100"/><text x="60" y="24" fill="#fff">7–9</text>
-        <rect x="84" y="6" width="36" height="28" rx="4" fill="#2E7D32"/><text x="102" y="24" fill="#fff">10–12</text>
-      </g>
-    </svg>
-    <div style="font-size:8.4pt; line-height:1.45">
-      <b>0 à 6</b> : relis les pages 1 à 3. <b>7 à 9</b> : relis la page 4 et la liste de la page 5. <b>10 à 12</b> : passe au cours 48, « Licences et CGU ».
-    </div>
-  </div>
-
-  <p class="rubrique" style="margin-top:5mm">Aide-mémoire</p>
-  <table class="aide">
-    <thead><tr><th>Écriture</th><th>Ce qu'elle fait</th><th>Où la voir</th></tr></thead>
-    <tbody>
-      <tr><td class="c">banc.mjs etat</td><td>Rhino répond, canvas libre ?</td><td>banc/README.md:50</td></tr>
-      <tr><td class="c">banc.mjs poser A-01</td><td>poser le graphe de départ</td><td>banc/README.md:51</td></tr>
-      <tr><td class="c">banc.mjs verdict A-01</td><td>le checker, après le journal</td><td>banc/README.md:53</td></tr>
-      <tr><td class="c">banc.mjs dossier A-01</td><td>tout réunir pour l'auditeur</td><td>banc/README.md:54</td></tr>
-      <tr><td class="c">sujet(id)</td><td>écrire le sujet expurgé</td><td>banc/banc.mjs:122</td></tr>
-      <tr><td class="c">fetch(URL, { … "tools/call" … })</td><td>parler à Cordyceps</td><td>banc/gh-driver.mjs:10</td></tr>
-    </tbody>
-  </table>
-
-  <p class="rubrique" style="margin-top:5mm">Glossaire</p>
-  <dl class="glossaire">
-    <dt>Skill</dt><dd>Un dossier de règles que Claude charge quand sa description correspond à la tâche.</dd>
-    <dt>Agent</dt><dd>Un Claude lancé avec son propre rôle, ses outils et ses interdits, défini en Markdown.</dd>
-    <dt>Contournement</dt><dd>Un montage qui rend l'attendu sans exercer la compétence visée.</dd>
-    <dt>Sujet expurgé</dt><dd>Ce que voit l'élève : l'énoncé, sans rien qui trahisse la réponse.</dd>
-    <dt>JSON-RPC</dt><dd>Un appel de fonction à distance, écrit en JSON : méthode, paramètres, identifiant.</dd>
-  </dl>
-
-  <div style="position:absolute; left:16mm; right:16mm; bottom:20mm; border-top:.3mm solid var(--line); padding-top:3mm; display:flex; justify-content:space-between; font-size:8.6pt;">
-    <span>Cours terminé le ____ / ____ / ________</span><span>Score QCM : ____ / 12</span><span>Suite : cours 48</span>
-  </div>
-
-  <div class="folio">7</div>
-  <div class="pied">Cours 45 · Écrire des exercices avec Claude</div>
-</section>
-
 </body>
 </html>
