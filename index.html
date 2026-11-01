@@ -476,19 +476,22 @@ function vueSeance(){
 function dessinerQuestion(){
   var s=sess;if(s.k>=s.items.length)return finSeance();
   var it=s.items[s.k],c=CO[it.n],q=c.qk[it.i],multi=q.m;
+  // ordre des réponses tiré au hasard une fois par question : la bonne réponse n'est plus toujours au même endroit
+  if(!it.perm){it.perm=q.o.map(function(_,i){return i});for(var z=it.perm.length-1;z>0;z--){var y=Math.floor(Math.random()*(z+1)),w=it.perm[z];it.perm[z]=it.perm[y];it.perm[y]=w}}
+  var lettre=function(i){return 'ABCD'[it.perm.indexOf(i)]};
   var h='<div class="pc" style="'+pc(c.p)+'"><div class="ecran">';
   h+='<div class="q-tete"><a class="btn petit" href="'+(s.type==='qcm'?'#cours-'+c.n:'#revisions')+'">‹ Quitter</a><span>'+(s.type==='qcm'?'QCM · cours '+esc(c.num):'Révision')+' · <b style="color:var(--ink)">'+(s.k+1)+' / '+s.items.length+'</b></span></div>';
   h+='<div class="progression-q"><i style="width:'+Math.round(s.k/s.items.length*100)+'%"></i></div>';
   if(s.type==='rev')h+='<a href="#cours-'+c.n+'" class="mono" style="font-size:12.5px;color:var(--pt);text-decoration:none">Cours '+esc(c.num)+' · '+esc(c.t)+'</a>';
   h+='<div>'+(multi?'<span class="q-tag">Plusieurs réponses</span>':'')+'<p class="q-enonce">'+esc(q.e)+'</p></div>';
-  h+='<div class="options" role="group">'+q.o.map(function(o,i){
+  h+='<div class="options" role="group">'+it.perm.map(function(i){var o=q.o[i];
     var cls='opt'+(multi?' multi':''),verdict='';
     var ch=s.choix.indexOf(i)>=0,bon=q.r.indexOf(i)>=0;
     if(s.valide){if(bon){cls+=' juste';verdict=ch?'Bonne réponse':'Il fallait la cocher'}else if(ch){cls+=' faux';verdict='Fausse'}}
     else if(ch)cls+=' choisi';
-    return '<button class="'+cls+'" data-i="'+i+'" aria-pressed="'+ch+'"'+(s.valide?' disabled':'')+'><span class="l">'+'ABCD'[i]+'</span><span>'+esc(o)+'</span>'+(verdict?'<span class="verdict">'+verdict+'</span>':'')+'</button>'}).join('')+'</div>';
+    return '<button class="'+cls+'" data-i="'+i+'" aria-pressed="'+ch+'"'+(s.valide?' disabled':'')+'><span class="l">'+lettre(i)+'</span><span>'+esc(o)+'</span>'+(verdict?'<span class="verdict">'+verdict+'</span>':'')+'</button>'}).join('')+'</div>';
   if(s.valide){var ok=s.res[s.k];
-    h+='<div class="retour '+(ok?'bon':'mauvais')+'"><b>'+(ok?'Juste.':'Pas tout à fait. Réponse : '+q.r.map(function(i){return 'ABCD'[i]}).join(' et ')+'.')+'</b>'+esc(q.x)+'</div>';
+    h+='<div class="retour '+(ok?'bon':'mauvais')+'"><b>'+(ok?'Juste.':'Pas tout à fait. Réponse : '+q.r.map(lettre).sort().join(' et ')+'.')+'</b>'+esc(q.x)+'</div>';
     h+='<button class="btn plein" id="suite">'+(s.k+1<s.items.length?'Question suivante':'Voir le résultat')+'</button>';
   } else h+='<button class="btn plein" id="valider"'+(s.choix.length?'':' disabled')+'>Valider</button>';
   h+='</div></div>';
